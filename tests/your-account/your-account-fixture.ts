@@ -1,16 +1,13 @@
-import { demoAccountApiFixture } from 'fixtures';
+import { demoAccountApiFixture, mainTest } from 'fixtures';
 import { ProfilePage } from '@pages/profile-page';
+import { ShortcutsPage } from '@pages/shortcuts-page';
 
 type YourAccountFixtures = {
   profilePage: ProfilePage;
 };
 
-type PasswordFixtures = YourAccountFixtures & {
-  currentPassword: string;
-};
-
 // Open Your Account > Profile section
-export const profileTest = demoAccountApiFixture.extend<YourAccountFixtures>({
+export const profileTest = mainTest.extend<YourAccountFixtures>({
   profilePage: async ({ page }, use) => {
     const profilePage = new ProfilePage(page);
 
@@ -22,10 +19,8 @@ export const profileTest = demoAccountApiFixture.extend<YourAccountFixtures>({
 });
 
 // Open Your Account > Password section
-export const passwordTest = demoAccountApiFixture.extend<PasswordFixtures>({
-  currentPassword: async ({ demoAccountPassword }, use) => {
-    await use(demoAccountPassword);
-  },
+// NOTE: Uses a fresh demo account (via the API); its password is `demoAccountPassword`
+export const passwordTest = demoAccountApiFixture.extend<YourAccountFixtures>({
   profilePage: async ({ page }, use) => {
     const profilePage = new ProfilePage(page);
 
@@ -50,7 +45,7 @@ export const integrationsTest = demoAccountApiFixture.extend<YourAccountFixtures
 });
 
 // Open Your Account > Give Feedback section
-export const giveFeedbackTest = demoAccountApiFixture.extend<YourAccountFixtures>({
+export const giveFeedbackTest = mainTest.extend<YourAccountFixtures>({
   profilePage: async ({ page }, use) => {
     const profilePage = new ProfilePage(page);
 
@@ -58,5 +53,24 @@ export const giveFeedbackTest = demoAccountApiFixture.extend<YourAccountFixtures
     await profilePage.isHeaderDisplayed('Your account');
 
     await use(profilePage);
+  },
+});
+
+type ShortcutsFixtures = {
+  shortcutsPage: ShortcutsPage;
+};
+
+// Open Your Account > Shortcuts section
+// NOTE: Uses a fresh demo account (via the API), since these tests change the account's shortcuts
+export const shortcutsTest = demoAccountApiFixture.extend<ShortcutsFixtures>({
+  shortcutsPage: async ({ page }, use) => {
+    const profilePage = new ProfilePage(page);
+    const shortcutsPage = new ShortcutsPage(page);
+
+    await profilePage.openYourAccountPage();
+    await profilePage.isHeaderDisplayed('Your account');
+    await shortcutsPage.openFromYourAccount();
+
+    await use(shortcutsPage);
   },
 });

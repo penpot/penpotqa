@@ -18,12 +18,12 @@ test(qase(35, 'Login with an email address'), async () => {
   await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
   await loginPage.enterPwd(process.env.LOGIN_PWD);
   await loginPage.clickLoginButton();
-  await dashboardPage.isHeaderDisplayed('Projects');
+  await dashboardPage.isHeaderDisplayed('Personal Projects');
 });
 
 test(qase(40, 'Login with invalid email address'), async ({ page }) => {
   await loginPage.enterEmail('test@com');
-  await loginPage.isEmailInputErrorDisplayed('Enter a valid email please');
+  await loginPage.isEmailInputErrorVisible('Enter a valid email please');
   await loginPage.isLoginButtonDisplayed();
   await loginPage.isLoginButtonDisabled();
 });
@@ -53,6 +53,6 @@ test(
     await loginPage.enterEmail(process.env.SSO_LOGIN_EMAIL);
     await loginPage.enterPwd(process.env.SSO_LOGIN_PWD);
     await loginPage.clickLoginButton();
-    await dashboardPage.isHeaderDisplayed('Projects');
+    await dashboardPage.isHeaderDisplayed('Personal Projects');
   },
 );

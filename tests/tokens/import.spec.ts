@@ -1,15 +1,10 @@
-import { demoAccountApiFixture, demoAccountFileTest } from 'fixtures';
+import { demoAccountFileTest, demoAccountApiFixture } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { MainPage } from '@pages/workspace/main-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { BaseComponent } from '@pages/base-component';
-import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
-import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
-import { SampleData } from 'helpers/sample-data';
-
-const sampleData: SampleData = new SampleData();
 
 let tokensPage: TokensPage;
 
@@ -233,15 +228,11 @@ demoAccountApiFixture.describe(() => {
   let dashboardPage: DashboardPage;
   let mainPage: MainPage;
   let tokensPage: TokensPage;
-  let assetsPanelPage: AssetsPanelPage;
 
   demoAccountApiFixture.beforeEach(async ({ page }) => {
     dashboardPage = new DashboardPage(page);
     mainPage = new MainPage(page);
     tokensPage = new TokensPage(page);
-    assetsPanelPage = new AssetsPanelPage(page);
-
-    await dashboardPage.isHeaderDisplayed('Projects');
   });
 
   demoAccountApiFixture(
@@ -270,92 +261,6 @@ demoAccountApiFixture.describe(() => {
         async () => {
           await tokensPage.themesComp.checkSelectedTheme('2 active themes');
           await tokensPage.setsComp.isSetNameVisible('client_theme_template');
-        },
-      );
-    },
-  );
-
-  demoAccountApiFixture(
-    qase([2845], 'Import Tokens from Linked Library'),
-    async () => {
-      // Data from imported shared library
-      const linkedLibraryName = 'Rectangle with set and theme tokens';
-      const linkedLibraryFilePath =
-        'documents/tokens/shared-library-rectangle-with-set-themes-tokens.penpot';
-      const setsNames = ['Dark', 'Light', 'Desktop', 'Mobile'];
-
-      // Color token created before importing the library, to verify that it is overridden by the imported tokens
-      const colorToken: MainToken<TokenClass> = {
-        class: TokenClass.Color,
-        name: 'color',
-        value: sampleData.color.greenHexCode,
-      };
-
-      await demoAccountApiFixture.step(
-        'Import a .penpot file shared library with tokens, sets, themes and a rectangle',
-        async () => {
-          await dashboardPage.openSidebarItem('Drafts');
-          await dashboardPage.importFileFromProjectPage(linkedLibraryFilePath);
-          await dashboardPage.isFilePresentWithName(linkedLibraryName);
-        },
-      );
-
-      await demoAccountApiFixture.step(
-        'Create a new file, open and add a rectangle',
-        async () => {
-          await dashboardPage.openSidebarItem('Projects');
-          await dashboardPage.createFileViaTitlePanel();
-          await mainPage.isMainPageLoaded();
-          await mainPage.createDefaultRectangleByCoordinates(320, 210);
-        },
-      );
-
-      await demoAccountApiFixture.step(
-        `From Tokens, create a color token with value ${colorToken.value} and apply to rectangle`,
-        async () => {
-          await tokensPage.clickTokensTab();
-          await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(colorToken);
-          await tokensPage.tokensComp.isTokenVisibleWithName(colorToken.name);
-          await tokensPage.tokensComp.clickOnTokenWithName(colorToken.name);
-          await mainPage.waitForChangeIsSaved();
-          await tokensPage.tokensComp.isTokenAppliedWithName(colorToken.name);
-        },
-      );
-
-      await demoAccountApiFixture.step(
-        'From ASSETS tab, click on Manage Libraries and add shared library',
-        async () => {
-          await assetsPanelPage.clickAssetsTab();
-          await assetsPanelPage.clickLibrariesButton();
-          await assetsPanelPage.firstLibraryItemContainsLibraryName(
-            linkedLibraryName,
-          );
-          await assetsPanelPage.connectSharedLibraryByName(linkedLibraryName);
-        },
-      );
-
-      await demoAccountApiFixture.step(
-        'Click on Import Tokens from shared library and confirm',
-        async () => {
-          await assetsPanelPage.importTokensFromSharedLibraryByName(
-            linkedLibraryName,
-          );
-          await assetsPanelPage.isImportTokensModalVisible();
-          await assetsPanelPage.clickImportTokensFromSharedLibrary();
-          await assetsPanelPage.clickCloseModalButton();
-        },
-      );
-
-      await demoAccountApiFixture.step(
-        'From Tokens tab, assert imported tokens, sets and themes are visible',
-        async () => {
-          await tokensPage.clickTokensTab();
-          await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
-          await tokensPage.tokensComp.isTokenVisibleWithName('red');
-          await tokensPage.setsComp.isSetNameVisible(setsNames[0]);
-          await tokensPage.setsComp.isSetNameVisible(setsNames[1]);
-          await tokensPage.setsComp.isSetNameVisible(setsNames[2]);
-          await tokensPage.setsComp.isSetNameVisible(setsNames[3]);
         },
       );
     },

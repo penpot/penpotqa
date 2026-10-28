@@ -71,47 +71,31 @@ demoAccountFileTest(qase([834], 'Duplicate page'), async ({ mainPage }) => {
   });
 });
 
-demoAccountFileTest(
-  qase([835], 'Switch between pages'),
-  async ({ page, mainPage }) => {
-    await demoAccountFileTest.step('Navigate to second page', async () => {
-      await pagesPanelPage.clickAddPageButton();
-      await pagesPanelPage.clickOnPageOnLayersPanel(2);
-      await mainPage.clickMoveButton();
-      await mainPage.clickViewportTwice();
-      await mainPage.waitForChangeIsSaved();
-    });
+demoAccountFileTest(qase([835], 'Switch between pages'), async () => {
+  let firstPageId: string;
 
-    await demoAccountFileTest.step('Verify second page canvas', async () => {
-      await expect(page).toHaveScreenshot('canvas-second-page-selected.png', {
-        mask: [
-          mainPage.guides,
-          mainPage.guidesFragment,
-          mainPage.toolBarWindow,
-          mainPage.usersSection,
-        ],
-      });
-    });
+  await demoAccountFileTest.step('Navigate to second page', async () => {
+    firstPageId = await pagesPanelPage.getCurrentPageId();
+    await pagesPanelPage.clickAddPageButton();
+    await pagesPanelPage.clickOnPageOnLayersPanel(2);
+  });
 
-    await demoAccountFileTest.step('Navigate back to first page', async () => {
-      await pagesPanelPage.clickOnPageOnLayersPanel();
-      await mainPage.clickMoveButton();
-      await mainPage.clickViewportTwice();
-      await mainPage.waitForChangeIsSaved();
-    });
+  await demoAccountFileTest.step('Verify second page is selected', async () => {
+    await pagesPanelPage.isPageNameSelected('Page 2');
+    await pagesPanelPage.isPageNameSelected('Page 1', false);
+    await pagesPanelPage.isCurrentPageId(firstPageId, false);
+  });
 
-    await demoAccountFileTest.step('Verify first page canvas', async () => {
-      await expect(page).toHaveScreenshot('canvas-first-page-selected.png', {
-        mask: [
-          mainPage.guides,
-          mainPage.guidesFragment,
-          mainPage.toolBarWindow,
-          mainPage.usersSection,
-        ],
-      });
-    });
-  },
-);
+  await demoAccountFileTest.step('Navigate back to first page', async () => {
+    await pagesPanelPage.clickOnPageOnLayersPanel();
+  });
+
+  await demoAccountFileTest.step('Verify first page is selected', async () => {
+    await pagesPanelPage.isPageNameSelected('Page 1');
+    await pagesPanelPage.isPageNameSelected('Page 2', false);
+    await pagesPanelPage.isCurrentPageId(firstPageId);
+  });
+});
 
 demoAccountFileTest(
   qase([836], 'Collapse/expand pages list'),
@@ -217,7 +201,6 @@ demoAccountFileTest(
         await pagesPanelPage.clickAddPageButton();
         await mainPage.waitForChangeIsSaved();
         await pagesPanelPage.clickOnPageOnLayersPanel(2);
-        await mainPage.waitForChangeIsSaved();
         await assetsPanelPage.clickAssetsTab();
         await assetsPanelPage.expandComponentsBlockOnAssetsTab();
         await assetsPanelPage.dragComponentOnCanvas(100, 100);
@@ -232,14 +215,10 @@ demoAccountFileTest(
         await layersPanelPage.clickCopyComponentOnLayersTab();
         await designPanelPage.changeHeightAndWidthForLayer('100', '150');
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isWidthAndHeightValue(150, 100);
         await basePage.resetOverridesViaRightClick();
         await mainPage.waitForChangeIsSaved();
-        await expect(mainPage.viewport).toHaveScreenshot(
-          'page-copies-component-reset-overrides.png',
-          {
-            mask: mainPage.maskViewport(),
-          },
-        );
+        await designPanelPage.isWidthAndHeightValue(100, 100);
       },
     );
   },
@@ -289,12 +268,8 @@ demoAccountFileTest(
       'Navigate to Page 1 and verify updated component',
       async () => {
         await pagesPanelPage.clickOnPageOnLayersPanel(1);
-        await expect(mainPage.viewport).toHaveScreenshot(
-          'page-copies-component-update-main.png',
-          {
-            mask: mainPage.maskViewport(),
-          },
-        );
+        await layersPanelPage.clickMainComponentOnLayersTab();
+        await designPanelPage.isFillHexCodeSetComponent('#243e8e');
       },
     );
   },

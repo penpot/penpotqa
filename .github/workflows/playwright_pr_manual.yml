@@ -30,11 +30,16 @@ on:
           - tests/composition/text
           - tests/composition/image
           - tests/composition/comments
+          - tests/composition/path-editor
           - tests/dashboard
           - tests/dashboard/teams
           - tests/dashboard/teams/settings
           - tests/dashboard/trash
           - tests/enterprise
+          - tests/enterprise/admin-console
+          - tests/enterprise/billing-ui-flow
+          - tests/enterprise/dashboard-enterprise
+          - tests/enterprise/destructive
           - tests/login-signup
           - tests/panels-features
           - tests/panels-features/main-menu
@@ -60,6 +65,10 @@ on:
         required: true
         type: string
         default: '1'
+      test_grep:
+        description: 'Grep pattern to filter tests by title (optional, only used with "by_folder" or "by_spec"), e.g. "1718|1728"'
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -76,7 +85,7 @@ jobs:
       TZ: Europe/Madrid
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -87,6 +96,7 @@ jobs:
         id: run-tests
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
+          LICENSES_MANAGER_URL: ${{ secrets.LICENSES_MANAGER_URL }}
           LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
           SECOND_EMAIL: ${{ secrets.SECOND_EMAIL }}
           LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
@@ -99,8 +109,16 @@ jobs:
           GMAIL_NAME: ${{ secrets.GMAIL_NAME }}
           GMAIL_DOMAIN: ${{ secrets.GMAIL_DOMAIN }}
           STRIPE_SK: ${{ secrets.STRIPE_SK }}
+          ENTERPRISE_SSO_ISSUER_URL: ${{ secrets.ENTERPRISE_SSO_ISSUER_URL }}
+          ENTERPRISE_SSO_CLIENT_ID: ${{ secrets.ENTERPRISE_SSO_CLIENT_ID }}
+          ENTERPRISE_SSO_CLIENT_SECRET: ${{ secrets.ENTERPRISE_SSO_CLIENT_SECRET }}
+          TEST_MODE: ${{ github.event.inputs.test_mode }}
+          TEST_FOLDER: ${{ github.event.inputs.test_folder }}
+          TEST_SPEC: ${{ github.event.inputs.test_spec }}
+          REPEAT_EACH: ${{ github.event.inputs.repeat_each }}
+          TEST_GREP: ${{ github.event.inputs.test_grep }}
         run: |
-          case "${{ github.event.inputs.test_mode }}" in
+          case "$TEST_MODE" in
             "all_tests")
               echo "🚀 Running all tests..."
               npx playwright test --project=chrome
@@ -110,28 +128,36 @@ jobs:
               npx playwright test --project=chrome --only-changed=origin/main
               ;;
             "by_folder")
-              echo "📁 Running tests from folder: ${{ github.event.inputs.test_folder }}"
-              if [ -z "${{ github.event.inputs.test_folder }}" ]; then
+              echo "📁 Running tests from folder: $TEST_FOLDER"
+              if [ -z "$TEST_FOLDER" ]; then
                 echo "❌ Error: No test folder specified"
                 exit 1
               fi
-              if [ ! -d "${{ github.event.inputs.test_folder }}" ]; then
-                echo "❌ Error: Folder '${{ github.event.inputs.test_folder }}' does not exist"
+              if [ ! -d "$TEST_FOLDER" ]; then
+                echo "❌ Error: Folder '$TEST_FOLDER' does not exist"
                 exit 1
               fi
-              # tests/enterprise/ lives in its own Playwright project (see
-              # tests/enterprise/README.md) — the `chrome` project explicitly
-              # ignores it, and most of its cases are still `test.skip`
-              # stubs, so route it to `--project=enterprise` instead.
-              if [ "${{ github.event.inputs.test_folder }}" = "tests/enterprise" ]; then
-                npx playwright test --project=enterprise --repeat-each='${{ github.event.inputs.repeat_each }}'
-              else
-                npx playwright test --project=chrome --repeat-each='${{ github.event.inputs.repeat_each }}' ${{ github.event.inputs.test_folder }}
+              # tests/enterprise/ (and its subfolders) live in their own
+              # Playwright project (see tests/enterprise/README.md) — the
+              # `chrome` project explicitly ignores them, so route to
+              # `--project=enterprise` instead.
+              case "$TEST_FOLDER" in
+                tests/enterprise*)
+                  PROJECT=enterprise
+                  ;;
+                *)
+                  PROJECT=chrome
+                  ;;
+              esac
+              ARGS=(--project="$PROJECT" --repeat-each="$REPEAT_EACH" "$TEST_FOLDER")
+              if [ -n "$TEST_GREP" ]; then
+                ARGS+=(-g "$TEST_GREP")
               fi
+              npx playwright test "${ARGS[@]}"
               ;;
             "by_spec")
-              echo "📄 Running test spec: ${{ github.event.inputs.test_spec }}"
-              case "${{ github.event.inputs.test_spec }}" in
+              echo "📄 Running test spec: $TEST_SPEC"
+              case "$TEST_SPEC" in
                 tests/enterprise/*)
                   PROJECT=enterprise
                   ;;
@@ -139,7 +165,11 @@ jobs:
                   PROJECT=chrome
                   ;;
               esac
-              npx playwright test --project=$PROJECT --repeat-each='${{ github.event.inputs.repeat_each }}' '${{ github.event.inputs.test_spec }}'
+              ARGS=(--project="$PROJECT" --repeat-each="$REPEAT_EACH" "$TEST_SPEC")
+              if [ -n "$TEST_GREP" ]; then
+                ARGS+=(-g "$TEST_GREP")
+              fi
+              npx playwright test "${ARGS[@]}"
               ;;
             *)
               echo "❌ Error: Invalid test mode"
@@ -156,7 +186,6 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
           browser-name: 'Chrome'
           is-manual-execution: 'true'
-          testdino_api_key: ${{ secrets.TDPW_API_KEY }}
         if: always()
 
       - name: Send Mattermost Notification

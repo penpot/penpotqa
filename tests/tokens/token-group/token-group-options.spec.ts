@@ -160,9 +160,8 @@ demoAccountFileTest.describe('Context menu > Delete', () => {
         `Verify "${secondaryToken.name}" is highlighted as invalid and shows correct tooltip`,
         async () => {
           await tokensPage.tokensComp.checkInvalidTokenCount(1);
-          await tokensPage.tokensComp.invalidToken.hover();
-          await expect(tokensPage.tokensComp.invalidToken).toHaveAttribute(
-            'title',
+          await tokensPage.tokensComp.checkTokenTooltip(
+            tokensPage.tokensComp.invalidToken,
             `Reference in {${secondaryToken.name}} is not valid or is not in any active set.`,
           );
         },
@@ -246,9 +245,7 @@ demoAccountFileTest.describe('Context menu > Rename', () => {
         async () => {
           await tokensPage.setsComp.clickSetItemButton(set);
           await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
-          await tokensPage.tokensComp.clickOnTokenWithName(colorTokenName);
-          await mainPage.waitForChangeIsSaved();
-          await tokensPage.tokensComp.isTokenAppliedWithName(colorTokenName);
+          await tokensPage.tokensComp.applyTokenToSelectedShape(colorTokenName);
         },
       );
 

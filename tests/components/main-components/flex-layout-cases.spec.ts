@@ -1,16 +1,16 @@
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { expect } from '@playwright/test';
-import { demoAccountFileTest } from 'fixtures';
+import { mainAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 let designPanelPage: DesignPanelPage;
 
-demoAccountFileTest.beforeEach(async ({ page }) => {
+mainAccountFileTest.beforeEach(async ({ page }) => {
   designPanelPage = new DesignPanelPage(page);
 });
 
-demoAccountFileTest.describe(() => {
-  demoAccountFileTest.beforeEach(
+mainAccountFileTest.describe(() => {
+  mainAccountFileTest.beforeEach(
     'Add a flex layout board, rectangle and ellipse components',
     async ({ mainPage }) => {
       await mainPage.createDefaultBoardByCoordinates(200, 200);
@@ -31,13 +31,13 @@ demoAccountFileTest.describe(() => {
     },
   );
 
-  demoAccountFileTest(
+  mainAccountFileTest(
     qase(
       [1503],
       'Create flex board with main component and its copy, change direction and alignment',
     ),
     async ({ mainPage }) => {
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Create flex board with main component and its copy, change direction',
         async () => {
           await designPanelPage.changeLayoutDirection('Column');
@@ -54,9 +54,9 @@ demoAccountFileTest.describe(() => {
   );
 });
 
-demoAccountFileTest.describe(() => {
-  demoAccountFileTest.beforeEach(async ({ mainPage }) => {
-    await demoAccountFileTest.slow();
+mainAccountFileTest.describe(() => {
+  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
+    await mainAccountFileTest.slow();
 
     await mainPage.createDefaultBoardByCoordinates(200, 200);
     await designPanelPage.changeHeightAndWidthForLayer('300', '300');
@@ -65,15 +65,15 @@ demoAccountFileTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  demoAccountFileTest(
+  mainAccountFileTest(
     qase(
       [1511],
       'Create component with 2 boards with components inside it. change paddings',
     ),
     async ({ mainPage }) => {
-      await demoAccountFileTest.slow();
+      await mainAccountFileTest.slow();
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Add two boards with elements and create components',
         async () => {
           await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
@@ -102,7 +102,7 @@ demoAccountFileTest.describe(() => {
         },
       );
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Add flex layout and change paddings',
         async () => {
           await mainPage.addFlexLayoutViaRightClickForNComponent('0');
@@ -114,7 +114,7 @@ demoAccountFileTest.describe(() => {
         },
       );
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Verify component padding changes on canvas',
         async () => {
           await expect(
@@ -128,10 +128,10 @@ demoAccountFileTest.describe(() => {
     },
   );
 
-  demoAccountFileTest(
+  mainAccountFileTest(
     qase([1514], 'Create component inside flex board, change alignment for element'),
     async ({ mainPage }) => {
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Create component inside flex board and change alignment',
         async () => {
           await mainPage.createDefaultRectangleByCoordinates(200, 200, true);
@@ -143,7 +143,7 @@ demoAccountFileTest.describe(() => {
         },
       );
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Verify alignment change on canvas',
         async () => {
           await expect(

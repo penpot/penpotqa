@@ -9,22 +9,28 @@ exports.TeamPage = class TeamPage extends BasePage {
     super(page);
 
     // Teams
-    this.teamCurrentBtn = page.locator('button[class*="current-team"]');
-    this.teamList = page.locator('ul[class*="teams-dropdown"]');
+    // Combined org/team switcher — one button and one `role="menu"` dropdown
+    // for both organizations and teams. The dropdown is scoped by its
+    // "Create new team" item so it isn't confused with the "Team management"
+    // options menu, which is also `role="menu"`.
+    this.teamCurrentBtn = page.locator(
+      'button[class*="organization_team_switch__current-selection"]',
+    );
     this.createNewTeamMenuItem = page.getByRole('menuitem', {
       name: 'Create new team',
     });
+    this.teamList = page
+      .getByRole('menu')
+      .filter({ has: this.createNewTeamMenuItem });
     this.teamNameInput = page.locator('#name');
     this.createNewTeamButton = page.getByRole('button', { name: 'Create new team' });
-    this.teamCurrentNameDiv = page.locator(
-      'button[class*="current-team"] div[class*="team-name"]',
+    this.teamCurrentNameDiv = this.teamCurrentBtn.locator(
+      'span[class*="current-team-name"]',
     );
     this.teamNameLabel = page.locator(
       '//div[text()="Team info"]/following-sibling::div[1]',
     );
-    this.teamOptionsMenuButton = page.getByRole('button', {
-      name: 'team-management',
-    });
+    this.teamOptionsMenuButton = page.getByTestId('team-options-button');
     this.deleteTeamMenuItem = page.getByRole('menuitem', { name: 'Delete team' });
     this.deleteTeamButton = page.getByRole('button', { name: 'Delete team' });
     this.teamSettingsMenuItem = page.getByRole('menuitem', { name: 'Settings' });
@@ -63,21 +69,40 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.addTeamToOrgSubmitButton = page.getByRole('button', {
       name: 'Add to organization',
     });
-    this.addedToOrgMessage = page.getByText(
-      /This team is now part of the organization/,
-    );
+    // Toast reads "<team> now belongs to <org>" for both add and move.
+    this.addedToOrgMessage = page.getByText(/ now belongs to /);
     // Shown inside the same modal instead of the org combobox when
     // "Create Teams" is 'Only me' and the actor isn't the owner (PENPOT-3333).
     this.noPermissionToAddTeamMessage = page.getByText(
       "You don't have permission to add teams to any of your organizations.",
     );
     this.teamOrgOptionsButton = this.teamOrganizationSection.locator('button');
+    this.changeTeamOrgMenuItem = page.getByText('Change team organization');
+    this.moveTeamSubmitButton = page.getByRole('button', { name: 'Move team' });
     this.removeTeamFromOrgMenuItem = page.getByText('Remove team from organization');
     this.removeTeamFromOrgConfirmButton = page.getByRole('button', {
       name: 'Remove from organization',
     });
-    this.removedFromOrgMessage = page.getByText(
-      /This team is no longer part of the organization/,
+    // Toast reads "<team> is no longer part of <org>".
+    this.removedFromOrgMessage = page.getByText(/ is no longer part of /);
+    this.moveTeamBlockedModalHeading = page.getByRole('heading', {
+      name: "Change team's organization",
+    });
+
+    // Shown after SELECTING (not just considering) a restricted org that the
+    // team's members all belong to, but whose pending invitations don't —
+    // advisory only, doesn't block the submit button below.
+    this.externalInvitationsCancelWarning = page.getByText(
+      'Pending invitations to external users will be canceled.',
+      { exact: true },
+    );
+    // A separate, blocking `.main_ui_alert__` modal — shown instead of the
+    // combobox entirely when NO organization would accept the team. Distinct
+    // wording from noPermissionToAddTeamMessage above (that one gates on the
+    // "Create Teams" permission, "teams" plural, no "this").
+    this.noOrgAllowsTeamMoveMessage = page.getByText(
+      "You don't have permission to add this team to any of your organizations.",
+      { exact: true },
     );
 
     this.membersMenuItem = page.getByRole('menuitem', { name: 'Members' });
@@ -113,6 +138,24 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.sendInvitationButton = page.getByRole('button', {
       name: 'Send invitation',
     });
+
+    // "New team members: Organization members only" — sending a mix of
+    // org-member and non-member addresses replaces the invite dialog with
+    // this modal instead of sending anything; the blocked addresses are
+    // listed only once the toggle below is expanded.
+    this.blockedInvitationsModalHeading = page.getByRole('heading', {
+      name: "Some invitations can't be sent",
+    });
+    this.blockedInvitationsToggle = page.getByRole('button', {
+      name: "Addresses that won't receive an invitation",
+    });
+    this.blockedInvitationsList = page
+      .locator('[class*="restricted-email-list"]')
+      .getByRole('listitem');
+    this.blockedInvitationsCancelButton = page.getByRole('button', {
+      name: 'Cancel',
+      exact: true,
+    });
     this.invitationRecord = page.locator(
       'div[class*="table-rows"] div[class*="table-row"]',
     );
@@ -134,6 +177,12 @@ exports.TeamPage = class TeamPage extends BasePage {
       .filter({ hasText: 'Resend invitation' });
     this.resendButton = page.getByRole('button', { name: 'Resend', exact: true });
     this.deleteInvitationButton = page.locator('button:has([href="#icon-delete"])');
+    // Per-row action, not gated behind the options menu.
+    this.copyInvitationLinkButton = page.getByRole('button', { name: 'Copy link' });
+    // Substring without the apostrophe — the live UI uses a curly one (’).
+    this.noPermissionToInviteMessage = page.getByText(
+      'have permission to invite people to join this team or to edit or delete invitations',
+    );
     this.memberRecordLeaveTeamMenuItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Leave team' });
@@ -181,7 +230,9 @@ exports.TeamPage = class TeamPage extends BasePage {
       'use[href="#icon-character-u"]',
     );
     this.teamPlanName = page.locator('[class*="subscription__team-text"]');
-    this.teamCurrentBtnText = this.teamCurrentBtn.locator('span[class*="text"]');
+    this.teamCurrentBtnText = this.teamCurrentBtn.locator(
+      'span[class*="current-team-name"]',
+    );
   }
 
   async createTeam(teamName) {
@@ -193,17 +244,46 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.isTeamSelected(teamName);
   }
 
-  async isTeamSelected(teamName) {
-    await expect(this.teamCurrentBtnText).toHaveText(teamName);
+  async isTeamSelected(teamName, timeout) {
+    await expect(this.teamCurrentBtnText).toHaveText(teamName, { timeout });
+  }
+
+  /** Navigates to the dashboard root, same as OrganizationPage.goto() —
+   * use before switchTeam() when the currently-active team/org context
+   * doesn't matter yet. */
+  async goto() {
+    await this.page.goto(`${process.env.BASE_URL}`);
+  }
+
+  /** Direct-URL navigation to a team's own dashboard, by id — an
+   * alternative to switchTeam() when the switcher's own list can't be
+   * relied on yet (e.g. right after registering a brand-new manually
+   * created account). Built explicitly from BASE_URL, not a relative
+   * goto() — see LoginPage.goto()'s own comment for why that matters on
+   * manually-created contexts. */
+  async goToTeamDashboard(teamId) {
+    await this.page.goto(
+      `${process.env.BASE_URL}?screen=dashboard-recent&team-id=${teamId}`,
+    );
   }
 
   /** Checks the URL itself shows a team's own dashboard
-   * (/dashboard/recent?team-id=...) — use alongside isTeamSelected(), which
+   * (?screen=dashboard-recent&team-id=...) — use alongside isTeamSelected(), which
    * only checks the displayed team name, not the URL. */
   async isOnTeamDashboardUrl() {
     await expect(this.page, "On a team's own dashboard URL").toHaveURL(
-      /\/dashboard\/recent\?team-id=/,
+      /\?screen=dashboard-recent&team-id=/,
     );
+  }
+
+  /** Extracts the team's id from its own dashboard URL — more reliable
+   * than the team/org switchers once a team belongs to an organization. */
+  getTeamIdFromUrl() {
+    const match = this.page.url().match(/[?&]team-id=([^&]+)/);
+    if (!match) {
+      throw new Error(`Not on a team dashboard URL: ${this.page.url()}`);
+    }
+    return match[1];
   }
 
   async isTeamListed(teamName, listed = true) {
@@ -219,9 +299,16 @@ exports.TeamPage = class TeamPage extends BasePage {
    * genuinely has no organization yet.
    */
   async addTeamToOrganization(orgName) {
-    await this.addTeamToOrgLink.click();
-    await this.addTeamToOrgCombobox.click();
-    await this.page.getByRole('option', { name: orgName }).click();
+    await this.openAddTeamToOrgComboboxOptions();
+    await this.selectOrgInPicker(orgName);
+    await this.submitAddToOrg();
+  }
+
+  /** Submits the "Add to an organization" form for an already-selected org
+   * — split out from addTeamToOrganization() so a caller can inspect picker
+   * state (e.g. the cancel-invitations warning) between selecting an option
+   * and submitting. */
+  async submitAddToOrg() {
     await this.addTeamToOrgSubmitButton.click();
     await expect(
       this.addedToOrgMessage,
@@ -229,11 +316,66 @@ exports.TeamPage = class TeamPage extends BasePage {
     ).toBeVisible();
   }
 
+  /** Moves the team to a different org via "Change team organization".
+   * Assumes Team Settings is open; reuses addedToOrgMessage's toast text. */
+  async changeTeamOrganization(orgName) {
+    await this.openChangeTeamOrgModal();
+    await this.addTeamToOrgCombobox.click();
+    await this.selectOrgInPicker(orgName);
+    await this.moveTeamSubmitButton.click();
+    await expect(
+      this.addedToOrgMessage,
+      'Team-moved-to-organization message is shown',
+    ).toBeVisible();
+  }
+
+  /** Doesn't assume success — a disallowed move shows a blocking modal here instead of the org combobox. */
+  async openChangeTeamOrgModal() {
+    await this.teamOrgOptionsButton.click();
+    await this.changeTeamOrgMenuItem.click();
+  }
+
+  async isMoveTeamBlockedModalVisible(orgName) {
+    await expect(
+      this.page.getByText(
+        `You are not allowed to move teams that are part of ${orgName} organization. If you need more information, contact the organization's owner.`,
+      ),
+      `Move-team blocked modal names "${orgName}"`,
+    ).toBeVisible();
+  }
+
+  /** Its overlay otherwise intercepts every later click on the page. */
+  async closeMoveTeamBlockedModal() {
+    await this.clickOnESC();
+    await expect(
+      this.moveTeamBlockedModalHeading,
+      'Move-team blocked modal is closed',
+    ).not.toBeVisible();
+  }
+
   /** Opens the "Add team to an organization" modal without assuming success
    * — a restricted non-owner sees a permission-denied message here instead
-   * of the org combobox (see isNoPermissionToAddTeamMessageVisible()). */
+   * of the org combobox (see isNoPermissionToAddTeamMessageVisible()/
+   * isNoOrgAllowsTeamMoveMessageVisible() for the two different gates that
+   * can short-circuit straight to a message here). */
   async openAddTeamToOrgModal() {
     await this.addTeamToOrgLink.click();
+  }
+
+  /** Opens "Add to an organization" up to its org combobox, without
+   * selecting anything — for inspecting picker option state (enabled/
+   * disabled, tooltip) before choosing one. */
+  async openAddTeamToOrgComboboxOptions() {
+    await this.openAddTeamToOrgModal();
+    await this.addTeamToOrgCombobox.click();
+  }
+
+  /** Picks an option from an already-open org combobox, without submitting
+   * — lets a caller inspect state (e.g. the cancel-invitations warning)
+   * before deciding to go through with addTeamToOrgSubmitButton/
+   * moveTeamSubmitButton. */
+  async selectOrgInPicker(orgName) {
+    await this.page.getByRole('option', { name: orgName }).click();
   }
 
   async isNoPermissionToAddTeamMessageVisible() {
@@ -241,6 +383,72 @@ exports.TeamPage = class TeamPage extends BasePage {
       this.noPermissionToAddTeamMessage,
       'No-permission-to-add-team message is shown',
     ).toBeVisible();
+  }
+
+  async isNoOrgAllowsTeamMoveMessageVisible() {
+    await expect(
+      this.noOrgAllowsTeamMoveMessage,
+      'No-organization-allows-this-move message is shown',
+    ).toBeVisible();
+  }
+
+  /** Checks a picker option's disabled state — set when not all of the
+   * team's actual members belong to that organization. Disabled options are
+   * inert (clicking one selects nothing) and carry a native `title` tooltip,
+   * not an ARIA tooltip element. */
+  async isOrgPickerOptionDisabled(orgName, disabled = true) {
+    const restrictedOrgPickerOptionTooltip =
+      'Only people within your organization can be invited.';
+    const option = this.page.getByRole('option', { name: orgName });
+    await expect(
+      option,
+      `"${orgName}" option is ${disabled ? '' : 'not '}disabled in the org picker`,
+    ).toHaveAttribute('aria-disabled', disabled ? 'true' : 'false');
+    if (disabled) {
+      await expect(
+        option,
+        `"${orgName}" option shows the restricted-org tooltip`,
+      ).toHaveAttribute('title', restrictedOrgPickerOptionTooltip);
+    }
+  }
+
+  async isExternalInvitationsCancelWarningVisible(visible = true) {
+    visible
+      ? await expect(
+          this.externalInvitationsCancelWarning,
+          'Pending-external-invitations-will-be-canceled warning is shown',
+        ).toBeVisible()
+      : await expect(
+          this.externalInvitationsCancelWarning,
+          'Pending-external-invitations-will-be-canceled warning is not shown',
+        ).not.toBeVisible();
+  }
+
+  async isBlockedInvitationsModalVisible(visible = true) {
+    visible
+      ? await expect(
+          this.blockedInvitationsModalHeading,
+          '"Some invitations can\'t be sent" modal is shown',
+        ).toBeVisible()
+      : await expect(
+          this.blockedInvitationsModalHeading,
+          '"Some invitations can\'t be sent" modal is not shown',
+        ).not.toBeVisible();
+  }
+
+  async openBlockedInvitationsList() {
+    await this.blockedInvitationsToggle.click();
+  }
+
+  async isEmailBlockedFromInvitation(email) {
+    await expect(
+      this.blockedInvitationsList.filter({ hasText: email }),
+      `"${email}" is listed as blocked from the invitation`,
+    ).toBeVisible();
+  }
+
+  async cancelBlockedInvitationsModal() {
+    await this.blockedInvitationsCancelButton.click();
   }
 
   /**
@@ -282,6 +490,16 @@ exports.TeamPage = class TeamPage extends BasePage {
     ).toBeVisible();
   }
 
+  /** Pushed live to a member with the team's dashboard open, no reload. */
+  async isTeamNoLongerPartOfOrgMessageShown(teamName, orgName) {
+    await expect(
+      this.page.getByText(`${teamName} is no longer part of ${orgName}`, {
+        exact: true,
+      }),
+      `"${teamName} is no longer part of ${orgName}" message is shown`,
+    ).toBeVisible();
+  }
+
   async isTeamNotPartOfAnyOrg(notPartOf = true) {
     notPartOf
       ? await expect(
@@ -316,14 +534,37 @@ exports.TeamPage = class TeamPage extends BasePage {
     await expect(this.teamList).toBeVisible();
   }
 
+  /** Self-heals by navigating back to the dashboard root (not a reload —
+   * the switcher's list can go stale after a heavy navigation, e.g. Admin
+   * Console or accepting an org invite, and a fresh root navigation
+   * clears that). Also
+   * retries the click itself, not just the list check: confirmed live
+   * that clicking the target team can silently land back on Personal
+   * Projects instead (a structurally different view with no
+   * "Team management" button at all — waiting for one there would time out
+   * indefinitely, not just briefly race). isTeamSelected()'s own check
+   * gets a short timeout here so a full click-and-check cycle stays quick
+   * enough to actually get several real attempts within the 30s budget,
+   * rather than one attempt eating most of it via the default 15s wait. */
   async switchTeam(teamName) {
-    await this.openTeamsListIfClosed();
-    const teamOption = this.page
-      .getByRole('menuitem')
-      .filter({ hasText: teamName })
-      .first();
-    await teamOption.click();
-    await this.isTeamSelected(teamName);
+    await expect(async () => {
+      await this.openTeamsListIfClosed();
+      const teamOption = this.teamList
+        .getByRole('menuitem')
+        .filter({ hasText: teamName })
+        .first();
+      try {
+        await expect(
+          teamOption,
+          `"${teamName}" is listed in the team switcher`,
+        ).toBeVisible({ timeout: 2000 });
+      } catch {
+        await this.goto();
+        throw new Error(`"${teamName}" not yet listed in the team switcher`);
+      }
+      await teamOption.click();
+      await this.isTeamSelected(teamName, 3000);
+    }).toPass({ timeout: 30000 });
   }
 
   async deleteTeam(teamName) {
@@ -336,8 +577,7 @@ exports.TeamPage = class TeamPage extends BasePage {
     if (await teamSel.isVisible()) {
       await teamSel.click();
       await this.isTeamSelected(teamName);
-      await this.teamOptionsMenuButton.click();
-      await this.deleteTeamMenuItem.click();
+      await this.openTeamOptionsMenuItem(this.deleteTeamMenuItem);
       await this.deleteTeamButton.click();
     }
   }
@@ -349,7 +589,9 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async isTeamDeleted(teamName) {
-    await expect(this.page.getByText('Personal Projects')).toBeVisible({
+    await expect(
+      this.page.getByRole('heading', { name: 'Personal Projects' }),
+    ).toBeVisible({
       timeout: 8000,
     });
     await this.openTeamsListIfClosed();
@@ -363,15 +605,34 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.teamOptionsMenuButton.click();
   }
 
+  /** Self-healing — clicking right after an action that re-renders the
+   * header (e.g. switchTeam()) can catch this button, or the menu item it
+   * opens, mid-replacement and detach it from under an in-flight click.
+   * Checks whether the target item is already visible first, same as
+   * openOrgSwitcher() — re-clicking the trigger when the menu is already
+   * open would just toggle it closed instead of helping. Confirmed live
+   * (CI and remote runs) with the "element was detached from the DOM"
+   * signature, on this exact button, across several of its callers —
+   * every caller that clicks a specific menu item now goes through this.
+   * openTeamOptionsMenu() is the one exception: it only opens the menu
+   * with no destination item, so it doesn't fit this method's contract
+   * and still clicks the button directly (no evidence of the race there). */
+  async openTeamOptionsMenuItem(menuItem) {
+    await expect(async () => {
+      if (!(await menuItem.isVisible())) {
+        await this.teamOptionsMenuButton.click();
+      }
+      await menuItem.click({ timeout: 5000 });
+    }).toPass({ timeout: 30000 });
+  }
+
   async openMembersPageViaOptionsMenu() {
-    await this.teamOptionsMenuButton.click();
-    await this.membersMenuItem.click();
+    await this.openTeamOptionsMenuItem(this.membersMenuItem);
     await this.isHeaderDisplayed('Members');
   }
 
   async openInvitationsPageViaOptionsMenu() {
-    await this.teamOptionsMenuButton.click();
-    await this.invitationsMenuItem.click();
+    await this.openTeamOptionsMenuItem(this.invitationsMenuItem);
     await this.isHeaderDisplayed('Invitations');
   }
 
@@ -379,8 +640,17 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.inviteMembersToTeamButton.click();
   }
 
-  async isInviteMembersToTeamButtonDisabled() {
+  // Button isn't rendered at all (e.g. a plain non-admin member).
+  async isInviteMembersToTeamButtonHidden() {
     await expect(this.inviteMembersToTeamButton).not.toBeVisible();
+  }
+
+  // Button stays rendered but disabled (e.g. "Team owners only" permission).
+  async isInviteMembersToTeamButtonDisabled() {
+    await expect(
+      this.inviteMembersToTeamButton,
+      'Invite people button is visible but disabled',
+    ).toBeDisabled();
   }
 
   async isInviteMembersPopUpHeaderVisible() {
@@ -623,8 +893,7 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async openTeamSettingsPageViaOptionsMenu() {
-    await this.teamOptionsMenuButton.click();
-    await this.teamSettingsMenuItem.click();
+    await this.openTeamOptionsMenuItem(this.teamSettingsMenuItem);
     await this.isHeaderDisplayed('Settings');
   }
 
@@ -632,10 +901,10 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.uploadTeamImageButton.setInputFiles(filePath);
     await this.page.waitForResponse(
       (response) =>
-        response.url() ===
-          `${process.env.BASE_URL}api/main/methods/push-audit-events` &&
-        response.status() === 204,
+        response.url().includes('/api/main/methods/update-team-photo') &&
+        response.status() === 200,
     );
+    await expect(this.teamIcon).toHaveAttribute('src', /^https?:\/\//);
   }
 
   async isTeamOwnerInfoDisplayed(name) {
@@ -664,8 +933,7 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   async renameTeam(teamName) {
-    await this.teamOptionsMenuButton.click();
-    await this.renameTeamMenuItem.click();
+    await this.openTeamOptionsMenuItem(this.renameTeamMenuItem);
     await this.teamNameInput.fill(teamName);
     await this.updateTeamButton.click();
   }
@@ -696,6 +964,29 @@ exports.TeamPage = class TeamPage extends BasePage {
       `//div[contains(@class, 'dashboard_team__field-email') and contains(text(), '${email}')]/following-sibling::div/button`,
     );
     await expect(locator).not.toBeVisible();
+  }
+
+  async isCopyInvitationLinkButtonVisible(email, visible = true) {
+    const emailSelector = `[class*="dashboard_team__field-email"]:has-text("${email}")`;
+    const locator = this.page
+      .locator(`[class*="table-row-invitations"]:has(${emailSelector})`)
+      .getByRole('button', { name: 'Copy link' });
+    visible
+      ? await expect(
+          locator,
+          `Copy link button is visible for ${email}`,
+        ).toBeVisible()
+      : await expect(
+          locator,
+          `Copy link button is not visible for ${email}`,
+        ).not.toBeVisible();
+  }
+
+  async isNoPermissionToInviteMessageVisible() {
+    await expect(
+      this.noPermissionToInviteMessage,
+      'No-permission-to-invite message is shown',
+    ).toBeVisible();
   }
 
   async selectMember(name) {

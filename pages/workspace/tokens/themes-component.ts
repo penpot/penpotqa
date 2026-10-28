@@ -91,7 +91,10 @@ export class ThemesComponent {
   }
 
   async activateSetInTheme(name: string) {
-    await this.themeUpdateCreateModal.getByRole('button', { name: name }).click();
+    await this.themeUpdateCreateModal
+      .getByRole('button', { name: name })
+      .getByRole('checkbox')
+      .click();
   }
 
   async saveTheme() {

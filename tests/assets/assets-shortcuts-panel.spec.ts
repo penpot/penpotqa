@@ -1,11 +1,11 @@
 import { expect } from '@playwright/test';
-import { demoAccountFileTest } from 'fixtures';
+import { mainAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
-demoAccountFileTest(
+mainAccountFileTest(
   qase([1020], 'Open panel main menu - help&info'),
   async ({ mainPage }) => {
-    await demoAccountFileTest.step(
+    await mainAccountFileTest.step(
       'Open shortcuts panel via main menu',
       async () => {
         await mainPage.clickMainMenuButton();
@@ -14,7 +14,7 @@ demoAccountFileTest(
       },
     );
 
-    await demoAccountFileTest.step(
+    await mainAccountFileTest.step(
       'Verify shortcuts panel is displayed and matches screenshot',
       async () => {
         await mainPage.isShortcutsPanelDisplayed();
@@ -26,7 +26,7 @@ demoAccountFileTest(
       },
     );
 
-    await demoAccountFileTest.step(
+    await mainAccountFileTest.step(
       'Close shortcuts panel via main menu and verify it is hidden',
       async () => {
         await mainPage.clickMainMenuButton();
@@ -38,8 +38,8 @@ demoAccountFileTest(
   },
 );
 
-demoAccountFileTest(qase([1025], 'Show/hide panel'), async ({ mainPage }) => {
-  await demoAccountFileTest.step(
+mainAccountFileTest(qase([1025], 'Show/hide panel'), async ({ mainPage }) => {
+  await mainAccountFileTest.step(
     'Open shortcuts panel via keyboard shortcut',
     async () => {
       await mainPage.pressShortcutsPanelShortcut();
@@ -47,7 +47,7 @@ demoAccountFileTest(qase([1025], 'Show/hide panel'), async ({ mainPage }) => {
     },
   );
 
-  await demoAccountFileTest.step(
+  await mainAccountFileTest.step(
     'Close shortcuts panel and verify it is hidden',
     async () => {
       await mainPage.clickViewportTwice();

@@ -18,7 +18,10 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
     this.saveColorStyleButton = page.getByRole('button', {
       name: 'Save color style',
     });
-    this.colorButton = this.colorPicker.getByTitle('Color', { exact: true });
+    this.colorButton = this.colorPicker.getByRole('button', {
+      name: 'Color',
+      exact: true,
+    });
 
     // Color Palette
     this.colorPaletteActionsBtn = page.locator('button[class*="palette-actions"]');
@@ -136,6 +139,14 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
   async selectColorGradient() {
     await this.colorPaletteSolidDropdown.click();
     await this.colorPaletteGradientOpt.click();
+  }
+
+  /**
+   * @param {'Linear'|'Radial'} type
+   */
+  async selectGradientType(type) {
+    await this.page.locator('[class*="gradient-options-select"]').click();
+    await this.page.getByRole('option').filter({ hasText: type }).click();
   }
 
   async colorPaletteAddStop() {

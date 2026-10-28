@@ -22,7 +22,7 @@ jobs:
       TZ: Europe/Madrid
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -33,6 +33,8 @@ jobs:
         id: run-tests
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
+          LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
+          LICENSES_MANAGER_URL: ${{ secrets.LICENSES_MANAGER_URL }}
           LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
           REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
@@ -43,6 +45,12 @@ jobs:
           QASE_API_TOKEN: ${{ secrets.QASE_API_TOKEN }}
           QASE_MODE: ${{ vars.QASE_MODE }}
           QASE_PROJECT_CODE: ${{ secrets.QASE_PROJECT_CODE }}
+          STRIPE_SK: ${{ secrets.STRIPE_SK }}
+          TESTDINO_TOKEN: ${{ secrets.TESTDINO_TOKEN }}
+          ENTERPRISE_SSO_ISSUER_URL: ${{ secrets.ENTERPRISE_SSO_ISSUER_URL }}
+          ENTERPRISE_SSO_CLIENT_ID: ${{ secrets.ENTERPRISE_SSO_CLIENT_ID }}
+          ENTERPRISE_SSO_CLIENT_SECRET: ${{ secrets.ENTERPRISE_SSO_CLIENT_SECRET }}
+
         run: |
           # --workers left unset (config default) — GitHub runners need
           # their own calibration before raising it, unlike local dev.
@@ -50,13 +58,17 @@ jobs:
           npx playwright test --project=enterprise 2>&1 | tee test-output.log
 
       - name: Add Qase run link to summary
+        id: run-links
         if: always()
         run: |
-          QASE_LINK=$(grep -oP 'https://app\.qase\.io/run/[A-Z0-9]+/dashboard/\d+' test-output.log | head -1)
+          QASE_LINK=$(grep -oP 'https://app\.qase\.io/run/[A-Z0-9]+/dashboard/\d+' test-output.log | head -1 || true)
           if [ -n "$QASE_LINK" ]; then
             echo "## Qase Report" >> $GITHUB_STEP_SUMMARY
             echo "🔗 [View run in Qase]($QASE_LINK)" >> $GITHUB_STEP_SUMMARY
           fi
+
+          TESTDINO_URL=$(grep -oP 'https://app\.testdino\.com/\S+/test-runs/\S+' test-output.log | head -1)
+          echo "testdino-url=$TESTDINO_URL" >> $GITHUB_OUTPUT
 
       - name: Generate and Upload Reports
         uses: ./.github/actions/upload-reports
@@ -65,17 +77,17 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-          browser-name: 'Enterprise'
+          browser-name: 'Chrome'
           is-manual-execution: 'true'
-          testdino_api_key: ${{ secrets.TDPW_API_KEY }}
         if: always()
 
       - name: Send Mattermost Notification
         uses: ./.github/actions/send-notification
         with:
           mattermost-webhook-url: ${{ secrets.MATTERMOST_WEBHOOK_PR }}
-          browser-name: 'Enterprise'
+          browser-name: 'Chrome'
           folder-path: 'tests/enterprise'
           is-manual-execution: 'true'
           username: ${{ github.actor }}
+          testdino-url: ${{ steps.run-links.outputs.testdino-url }}
         if: always()

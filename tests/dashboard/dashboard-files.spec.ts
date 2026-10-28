@@ -85,6 +85,41 @@ demoAccountApiFixture.describe('Drafts management', () => {
   );
 
   demoAccountApiFixture(
+    qase([1134], 'Delete files (multiselect, in Drafts)'),
+    async () => {
+      const fileNames = ['New File 1', 'New File 2', 'New File 3'];
+
+      await demoAccountApiFixture.step('Create 3 files', async () => {
+        for (let i = 0; i < 3; i++) {
+          await dashboardPage.createFileViaTitlePanel();
+          await mainPage.clickPencilBoxButton();
+        }
+      });
+
+      await demoAccountApiFixture.step(
+        'Go to "Drafts" and multiselect the files by clicking SHIFT',
+        async () => {
+          await dashboardPage.openSidebarItem('Drafts');
+          await dashboardPage.clickShiftAndSelectFilesByName(fileNames);
+        },
+      );
+
+      await demoAccountApiFixture.step(
+        'From context menu, click "Delete 3 files" and confirm → the files are deleted',
+        async () => {
+          await dashboardPage.deleteSelectedFilesViaRightClick(fileNames.length);
+          await dashboardPage.isSuccessMessageDisplayed(
+            'Your files have been deleted successfully',
+          );
+          for (const fileName of fileNames) {
+            await dashboardPage.isFileByNameNotVisible(fileName);
+          }
+        },
+      );
+    },
+  );
+
+  demoAccountApiFixture(
     qase(1913, 'Download Penpot file (.penpot) (in Drafts) via right click'),
     async () => {
       await dashboardPage.createFileViaPlaceholder();
@@ -116,6 +151,39 @@ demoAccountApiFixture.describe('Files management', () => {
     },
   );
 
+  demoAccountApiFixture(
+    qase([81], 'Open file in a new tab (in project)'),
+    async ({ page }) => {
+      await demoAccountApiFixture.step(
+        'Open "Projects" section → the new file is listed',
+        async () => {
+          await dashboardPage.openSidebarItem('Projects');
+          await dashboardPage.isFilePresentWithName('New File 1');
+        },
+      );
+
+      await demoAccountApiFixture.step(
+        'Right-click the file → "Open file in a new tab" → the file opens in a new tab',
+        async () => {
+          const newPage = await dashboardPage.openFileInNewTabViaRightClick();
+          await new MainPage(newPage).isMainPageLoaded();
+          await newPage.close();
+        },
+      );
+
+      await demoAccountApiFixture.step(
+        'Go back to "Projects", click "Options" → "Open file in a new tab" → the file opens in a new tab',
+        async () => {
+          await page.bringToFront();
+          await dashboardPage.openSidebarItem('Projects');
+          const newPage = await dashboardPage.openFileInNewTabViaOptionsIcon();
+          await new MainPage(newPage).isMainPageLoaded();
+          await newPage.close();
+        },
+      );
+    },
+  );
+
   demoAccountApiFixture(qase(1114, 'Rename file in Project'), async () => {
     await dashboardPage.renameFile('New File 1', 'test_panel', false);
     await dashboardPage.renameFile('test_panel', 'test_rightclick');
@@ -141,7 +209,7 @@ demoAccountApiFixture.describe('Files management', () => {
   demoAccountApiFixture(
     qase(
       [1119, 1120],
-      'Add file as Shared Library in Project via right click and delete via right click',
+      'Add file as Shared Library in Project via right click and unpublish via right click',
     ),
     async () => {
       await demoAccountApiFixture.step(
@@ -153,9 +221,9 @@ demoAccountApiFixture.describe('Files management', () => {
       );
 
       await demoAccountApiFixture.step(
-        '(1120) Remove file as Shared Library (in project)',
+        '(1120) Unpublish file as Shared Library (in project)',
         async () => {
-          await dashboardPage.deleteFileAsSharedLibraryViaRightclick();
+          await dashboardPage.unpublishFileAsSharedLibraryViaRightclick();
           await dashboardPage.isSharedLibraryIconNotDisplayed();
         },
       );
@@ -248,7 +316,7 @@ demoAccountApiFixture(
   ),
   async () => {
     const longName =
-      'QTest Project With An Excessively Long Name To Check Overflow Test Project With An Excessively Long Name To Check Overflow';
+      'QTest Project With An Excessively Long Name To Check Overflow Test Project With An Excessively Long Name To Check Overflow And Even More Words Added So The Name Never Fits In The Projects List Header At Full Width';
     const longName250 =
       'QTest Project With An Excessively Long Name To Check Overflow Test Project With An Excessively Long Name To Check OverflowQTest Project With An Excessively Long Name To Check Overflow Test Project With An Excessively Project With An Excessively Exces';
 

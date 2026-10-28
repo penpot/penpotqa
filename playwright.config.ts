@@ -12,6 +12,11 @@ export default defineConfig({
     /**
      * Maximum time expect() should wait for the condition to be met.
      * For example in `await expect(locator).toHaveText();`
+     *
+     * Each project below sets its own `expect`, which REPLACES this whole
+     * block rather than merging with it — repeat `timeout: 15000` there too,
+     * or assertions in that project silently fall back to Playwright's own
+     * 5000ms default.
      */
     timeout: 15000,
     toMatchSnapshot: {
@@ -25,6 +30,8 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
+  /* Run CI retries at the end, isolated, to avoid interference with the rest of the suite */
+  retryStrategy: process.env.CI ? 'isolated' : undefined,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 3 : 3,
   /* Directory where test artifacts are stored */
@@ -36,6 +43,14 @@ export default defineConfig({
         ['github'], // GitHub Actions annotations
         ['html'],
         ['json', { outputFile: 'playwright-report/results.json' }],
+        ...(process.env.TESTDINO_TOKEN
+          ? [
+              [
+                '@testdino/playwright',
+                { token: process.env.TESTDINO_TOKEN },
+              ] as const,
+            ]
+          : []),
         [
           'playwright-qase-reporter',
           {
@@ -89,6 +104,9 @@ export default defineConfig({
       name: 'chrome',
       testIgnore: ['enterprise/**'],
       expect: {
+        // Repeats the top-level default (see its own comment) — this
+        // project's `expect` replaces rather than merges with it.
+        timeout: 15000,
         toHaveScreenshot: {
           maxDiffPixelRatio: 0.0001,
         },
@@ -113,6 +131,9 @@ export default defineConfig({
       name: 'enterprise',
       testDir: './tests/enterprise',
       expect: {
+        // Repeats the top-level default (see its own comment) — this
+        // project's `expect` replaces rather than merges with it.
+        timeout: 15000,
         toHaveScreenshot: {
           maxDiffPixelRatio: 0.0001,
         },

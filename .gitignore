@@ -58,6 +58,9 @@ npm-debug.log*
 /test-results/
 testResults.json
 
+# Stripe cleanup script audit logs
+stripe_customers_deleted_*.csv
+
 # GitHub Copilot chat modes
 .github/chatmodes
 

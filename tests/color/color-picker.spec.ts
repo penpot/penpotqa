@@ -1,4 +1,4 @@
-import { demoAccountFileTest, mainAccountFileTest } from 'fixtures';
+import { mainAccountFileTest } from 'fixtures';
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { expect } from '@playwright/test';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
@@ -11,7 +11,7 @@ let designPanelPage: DesignPanelPage;
 let assetsPanelPage: AssetsPanelPage;
 let layersPanelPage: LayersPanelPage;
 
-demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   assetsPanelPage = new AssetsPanelPage(page);
   designPanelPage = new DesignPanelPage(page);
   colorPalettePage = new ColorPalettePage(page);
@@ -19,38 +19,34 @@ demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   await mainPage.clickMoveButton();
 });
 
-mainAccountFileTest(
-  qase([1029], 'Open color picker from Stroke menu'),
-  async ({ page, mainPage }) => {
-    designPanelPage = new DesignPanelPage(page);
-    colorPalettePage = new ColorPalettePage(page);
-    await mainPage.clickMoveButton();
+mainAccountFileTest.describe('Color Picker', () => {
+  mainAccountFileTest(
+    qase([1029], 'Open color picker from Stroke menu'),
+    async ({ mainPage }) => {
+      await mainAccountFileTest.step('Create default closed path', async () => {
+        await mainPage.createDefaultClosedPath();
+      });
 
-    await mainAccountFileTest.step('Create default closed path', async () => {
-      await mainPage.createDefaultClosedPath();
-    });
+      await mainAccountFileTest.step(
+        'Open color picker from stroke menu and verify it is displayed',
+        async () => {
+          await designPanelPage.clickStrokeColorBullet();
+          await colorPalettePage.isColorPalettePopUpOpened();
+        },
+      );
+    },
+  );
 
-    await mainAccountFileTest.step(
-      'Open color picker from stroke menu and verify it is displayed',
-      async () => {
-        await designPanelPage.clickStrokeColorBullet();
-        await colorPalettePage.isColorPalettePopUpOpened();
-      },
-    );
-  },
-);
-
-demoAccountFileTest.describe('Color Picker', () => {
-  demoAccountFileTest(
+  mainAccountFileTest(
     qase([1030], 'Open color picker from Fill menu'),
     async ({ mainPage }) => {
-      await demoAccountFileTest.step('Create board', async () => {
+      await mainAccountFileTest.step('Create board', async () => {
         await mainPage.clickCreateBoardButton();
         await mainPage.clickViewportTwice();
         await mainPage.waitForChangeIsSaved();
       });
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Open color picker from fill menu and verify it is displayed',
         async () => {
           await designPanelPage.clickFillColorIcon();
@@ -60,17 +56,17 @@ demoAccountFileTest.describe('Color Picker', () => {
     },
   );
 
-  demoAccountFileTest(
+  mainAccountFileTest(
     qase([1031], 'Open color picker from Canvas background menu'),
     async () => {
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Open color picker from canvas background menu',
         async () => {
           await designPanelPage.clickCanvasBackgroundColorIcon();
         },
       );
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Verify color picker is displayed',
         async () => {
           await colorPalettePage.isColorPalettePopUpOpened();
@@ -79,11 +75,11 @@ demoAccountFileTest.describe('Color Picker', () => {
     },
   );
 
-  demoAccountFileTest(qase(1035, 'Use Recent colors'), async ({ mainPage }) => {
+  mainAccountFileTest(qase(1035, 'Use Recent colors'), async ({ mainPage }) => {
     const color1 = '#FF0000';
     const color2 = '#B1B2B5';
 
-    await demoAccountFileTest.step(
+    await mainAccountFileTest.step(
       'Create rectangle and set first fill color',
       async () => {
         await mainPage.clickCreateRectangleButton();
@@ -96,7 +92,7 @@ demoAccountFileTest.describe('Color Picker', () => {
       },
     );
 
-    await demoAccountFileTest.step(
+    await mainAccountFileTest.step(
       `Set second fill color to ${color2}`,
       async () => {
         await designPanelPage.clickFillColorIcon();
@@ -106,7 +102,7 @@ demoAccountFileTest.describe('Color Picker', () => {
       },
     );
 
-    await demoAccountFileTest.step(
+    await mainAccountFileTest.step(
       `Apply recent color and verify board appearance`,
       async () => {
         await designPanelPage.clickFillColorIcon();
@@ -123,12 +119,12 @@ demoAccountFileTest.describe('Color Picker', () => {
     );
   });
 
-  demoAccountFileTest(
+  mainAccountFileTest(
     qase(1036, 'Use colors from File library'),
     async ({ mainPage }) => {
       const color = '#ffff00';
 
-      await demoAccountFileTest.step('Add color to file library', async () => {
+      await mainAccountFileTest.step('Add color to file library', async () => {
         await assetsPanelPage.clickAssetsTab();
         await assetsPanelPage.clickAddFileLibraryColorButton();
         await colorPalettePage.setHex(color);
@@ -137,7 +133,7 @@ demoAccountFileTest.describe('Color Picker', () => {
         await mainPage.waitForChangeIsSaved();
       });
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Apply file library color to board',
         async () => {
           await mainPage.createDefaultBoardByCoordinates(200, 300);
@@ -149,7 +145,7 @@ demoAccountFileTest.describe('Color Picker', () => {
         },
       );
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Verify board displays file library color',
         async () => {
           await expect(
@@ -163,10 +159,10 @@ demoAccountFileTest.describe('Color Picker', () => {
     },
   );
 
-  demoAccountFileTest(
+  mainAccountFileTest(
     qase([1054], 'Open color picker from add or edit color in assets'),
     async () => {
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Open color picker from assets panel',
         async () => {
           await assetsPanelPage.clickAssetsTab();
@@ -174,7 +170,7 @@ demoAccountFileTest.describe('Color Picker', () => {
         },
       );
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Verify color picker is displayed',
         async () => {
           await colorPalettePage.isColorPalettePopUpOpened();
@@ -183,10 +179,10 @@ demoAccountFileTest.describe('Color Picker', () => {
     },
   );
 
-  demoAccountFileTest(
+  mainAccountFileTest(
     qase([1996], 'Delete linear gradient stop (from color picker stops list)'),
     async ({ mainPage }) => {
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Create board and open gradient color picker',
         async () => {
           await mainPage.clickCreateBoardButton();
@@ -198,12 +194,12 @@ demoAccountFileTest.describe('Color Picker', () => {
         },
       );
 
-      await demoAccountFileTest.step('Add gradient stop', async () => {
+      await mainAccountFileTest.step('Add gradient stop', async () => {
         await colorPalettePage.colorPaletteAddStop();
         await mainPage.waitForChangeIsSaved();
       });
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Remove gradient stop and verify two stops remain',
         async () => {
           await colorPalettePage.colorPaletteRemoveStop(1);
@@ -213,13 +209,13 @@ demoAccountFileTest.describe('Color Picker', () => {
     },
   );
 
-  demoAccountFileTest(
+  mainAccountFileTest(
     qase(2962, 'List view displays each color with visible swatch and visible name'),
     async ({ mainPage }) => {
       const color1 = '#ffff00';
       const color2 = '#cdc548';
 
-      await demoAccountFileTest.step('Add two colors to file library', async () => {
+      await mainAccountFileTest.step('Add two colors to file library', async () => {
         await assetsPanelPage.clickAssetsTab();
         await assetsPanelPage.clickAddFileLibraryColorButton();
         await colorPalettePage.setHex(color1);
@@ -233,7 +229,7 @@ demoAccountFileTest.describe('Color Picker', () => {
         await mainPage.waitForChangeIsSaved();
       });
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Create a rectangle, open color picker and switch to Recent colors',
         async () => {
           await layersPanelPage.openLayersTab();
@@ -246,7 +242,7 @@ demoAccountFileTest.describe('Color Picker', () => {
         },
       );
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Click on List View icon and assert colors are displayed as list showing each color as a row with swatch + name visible',
         async () => {
           await colorPalettePage.clickListViewButton();
@@ -260,11 +256,11 @@ demoAccountFileTest.describe('Color Picker', () => {
   );
 });
 
-demoAccountFileTest.describe('Palette', () => {
-  demoAccountFileTest(
+mainAccountFileTest.describe('Palette', () => {
+  mainAccountFileTest(
     qase([1045], 'Open Color palette from shortcut'),
     async ({ mainPage }) => {
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Create board and add recent colors',
         async () => {
           await mainPage.clickCreateBoardButton();
@@ -281,7 +277,7 @@ demoAccountFileTest.describe('Palette', () => {
         },
       );
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Open color palette via shortcut and verify it is displayed',
         async () => {
           await mainPage.pressColorsPaletteShortcut();
@@ -293,7 +289,7 @@ demoAccountFileTest.describe('Palette', () => {
         },
       );
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Close color palette via shortcut and verify it is hidden',
         async () => {
           await mainPage.pressColorsPaletteShortcut();
@@ -303,10 +299,10 @@ demoAccountFileTest.describe('Palette', () => {
     },
   );
 
-  demoAccountFileTest(
+  mainAccountFileTest(
     qase([1046, 1040], 'Open Color palette from toolbar. Type valid color code.'),
     async ({ mainPage }) => {
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Create board and add recent colors',
         async () => {
           await mainPage.clickCreateBoardButton();
@@ -323,7 +319,7 @@ demoAccountFileTest.describe('Palette', () => {
         },
       );
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Open color palette from sidebar and verify it is displayed',
         async () => {
           await mainPage.openCloseColorsPaletteFromSidebar();
@@ -335,7 +331,7 @@ demoAccountFileTest.describe('Palette', () => {
         },
       );
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Close color palette from sidebar and verify it is hidden',
         async () => {
           await mainPage.openCloseColorsPaletteFromSidebar();
@@ -343,13 +339,13 @@ demoAccountFileTest.describe('Palette', () => {
         },
       );
 
-      await demoAccountFileTest.step('Create rectangle', async () => {
+      await mainAccountFileTest.step('Create rectangle', async () => {
         await mainPage.clickCreateRectangleButton();
         await mainPage.clickViewportTwice();
         await mainPage.waitForChangeIsSaved();
       });
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Open color picker from fill section and type valid color code #FF0000',
         async () => {
           await designPanelPage.clickFillColorIcon();
@@ -360,7 +356,7 @@ demoAccountFileTest.describe('Palette', () => {
         },
       );
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Verify rectangle fill color changed to red',
         async () => {
           await designPanelPage.isFillHexCodeSet('#FF0000');
@@ -369,10 +365,10 @@ demoAccountFileTest.describe('Palette', () => {
     },
   );
 
-  demoAccountFileTest(
+  mainAccountFileTest(
     qase(1048, 'Choose file library colors'),
     async ({ mainPage }) => {
-      await demoAccountFileTest.step('Add two colors to file library', async () => {
+      await mainAccountFileTest.step('Add two colors to file library', async () => {
         await assetsPanelPage.clickAssetsTab();
         await assetsPanelPage.clickAddFileLibraryColorButton();
         await colorPalettePage.setHex('#ffff00');
@@ -386,7 +382,7 @@ demoAccountFileTest.describe('Palette', () => {
         await mainPage.waitForChangeIsSaved();
       });
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Open color palette and switch to file library',
         async () => {
           await mainPage.pressColorsPaletteShortcut();
@@ -398,7 +394,7 @@ demoAccountFileTest.describe('Palette', () => {
         },
       );
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Verify file library colors are displayed in palette',
         async () => {
           await expect(
@@ -408,7 +404,7 @@ demoAccountFileTest.describe('Palette', () => {
         },
       );
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Close color palette and verify it is hidden',
         async () => {
           await mainPage.pressColorsPaletteShortcut();
@@ -418,10 +414,10 @@ demoAccountFileTest.describe('Palette', () => {
     },
   );
 
-  demoAccountFileTest(
+  mainAccountFileTest(
     qase(1049, 'Click any layer and change Fill color from palette'),
     async ({ mainPage }) => {
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Create rectangle and set fill colors',
         async () => {
           await mainPage.clickCreateRectangleButton();
@@ -438,7 +434,7 @@ demoAccountFileTest.describe('Palette', () => {
         },
       );
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Verify rectangle displays color #B1B2B5',
         async () => {
           await expect(
@@ -450,7 +446,7 @@ demoAccountFileTest.describe('Palette', () => {
         },
       );
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Open color palette and verify recent colors',
         async () => {
           await mainPage.pressColorsPaletteShortcut();
@@ -462,7 +458,7 @@ demoAccountFileTest.describe('Palette', () => {
         },
       );
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Select color #FF0000 from palette and verify rectangle color changed',
         async () => {
           await colorPalettePage.selectColorBulletFromPalette('#FF0000');
@@ -475,7 +471,7 @@ demoAccountFileTest.describe('Palette', () => {
         },
       );
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Close color palette and verify it is hidden',
         async () => {
           await mainPage.pressColorsPaletteShortcut();

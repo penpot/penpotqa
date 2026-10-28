@@ -1,8 +1,9 @@
-import { expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { registerTest } from 'fixtures';
 import { profileTest } from './your-account-fixture';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { random } from 'helpers/string-generator';
+import { loginAsDemoAccount } from 'helpers/accounts/login-as-demo-account';
 import { LoginPage } from '@pages/login-page';
 import { ProfilePage } from '@pages/profile-page';
 import {
@@ -16,7 +17,7 @@ profileTest(
   qase(187, 'Edit profile: profile name and image'),
   async ({ profilePage }) => {
     const newName = random();
-    const oldName = await profilePage.profileNameInput.inputValue();
+    const oldName = 'QA Engineer';
 
     await profileTest.step('Change profile name and verify success', async () => {
       await profilePage.changeProfileName(newName);
@@ -73,6 +74,42 @@ profileTest(qase(205, 'Logout from Account'), async ({ page, profilePage }) => {
   });
 });
 
+// Uses a fresh demo account (not the shared LOGIN_EMAIL one, which other
+// tests need). loginAsDemoAccount() is called directly instead of through
+// demoAccountApiFixture to keep the credentials and check they no longer work.
+test(qase([211], 'Delete account'), async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  const profilePage = new ProfilePage(page);
+  let credentials: { email: string; password: string };
+
+  await test.step('Setup: log in as a fresh demo account', async () => {
+    credentials = await loginAsDemoAccount(page);
+  });
+
+  await test.step('Open Your account', async () => {
+    await profilePage.openYourAccountPage();
+    await profilePage.isHeaderDisplayed('Your account');
+  });
+
+  await test.step('Click "Want to remove your account?" → confirmation modal with "Cancel and keep my account" and "Yes, delete my account"', async () => {
+    await profilePage.clickOnWantToRemoveAccountLink();
+    await profilePage.isDeleteAccountModalButtonsVisible();
+  });
+
+  await test.step('Click "Yes, delete my account" → redirected to the login page', async () => {
+    await profilePage.clickOnConfirmDeleteAccountButton();
+    await loginPage.isLoginPageUrlShown();
+    await loginPage.isLoginPageOpened();
+  });
+
+  await test.step('The account is deleted → logging in with its credentials fails', async () => {
+    await loginPage.enterEmailAndClickOnContinue(credentials.email);
+    await loginPage.enterPwd(credentials.password);
+    await loginPage.clickLoginButton();
+    await loginPage.isLoginErrorMessageDisplayed('Email or password is incorrect.');
+  });
+});
+
 registerTest(qase(190, 'Change email to valid'), async ({ page, name, email }) => {
   await registerTest.slow();
   const newEmail = `${process.env.GMAIL_NAME}+${random().concat(
@@ -102,7 +139,6 @@ registerTest(qase(190, 'Change email to valid'), async ({ page, name, email }) =
 
   await registerTest.step('Logout and login with new email', async () => {
     await profilePage.logout();
-    await loginPage.isLoginPageOpened();
     await loginPage.enterEmailAndClickOnContinue(newEmail);
     await loginPage.enterPwd(process.env.LOGIN_PWD);
     await loginPage.clickLoginButton();

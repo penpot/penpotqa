@@ -1,11 +1,11 @@
-import { demoAccountFileTest } from 'fixtures';
+import { mainAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { expect } from 'playwright/test';
 
 let layersPanelPage: LayersPanelPage;
 
-demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   layersPanelPage = new LayersPanelPage(page);
   await mainPage.createDefaultRectangleByCoordinates(100, 100);
   await layersPanelPage.isLayerNameDisplayed('Rectangle');
@@ -13,15 +13,15 @@ demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   await layersPanelPage.isLayerNameDisplayed('Ellipse');
 });
 
-demoAccountFileTest(
+mainAccountFileTest(
   qase([2940], 'Paste to Replace on single selected shape'),
   async ({ mainPage }) => {
-    await demoAccountFileTest.step('Select Rectangle and copy', async () => {
+    await mainAccountFileTest.step('Select Rectangle and copy', async () => {
       await layersPanelPage.selectLayerByName('Rectangle');
       await mainPage.copyLayerViaRightClick();
     });
 
-    await demoAccountFileTest.step(
+    await mainAccountFileTest.step(
       'Select Ellipse and paste to replace',
       async () => {
         await layersPanelPage.selectLayerByName('Ellipse');

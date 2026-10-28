@@ -1,4 +1,4 @@
-import { demoAccountApiFixture, demoAccountFileTest } from 'fixtures';
+import { demoAccountFileTest, demoAccountApiFixture } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { MainPage } from '@pages/workspace/main-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
@@ -215,7 +215,6 @@ demoAccountApiFixture.describe(
       designPanelPage = new DesignPanelPage(page);
       layersPanelPage = new LayersPanelPage(page);
 
-      await dashboardPage.isHeaderDisplayed('Projects');
       await dashboardPage.openSidebarItem('Drafts');
       await dashboardPage.importFileFromProjectPage(
         'documents/num-inputs-in-set-themes.penpot',

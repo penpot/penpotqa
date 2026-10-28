@@ -24,8 +24,15 @@ exports.LoginPage = class LoginPage extends BasePage {
     return this.page.getByRole('alert').filter({ hasText: text });
   }
 
+  /** Builds the URL explicitly from BASE_URL rather than a relative
+   * goto() — this runs on manually-created contexts too (see
+   * registerNewAccount(), used by createTeamInviteeSession()/
+   * createOrgInviteeSession()). Playwright Test's own `browser` fixture
+   * does thread baseURL through to those contexts' relative gotos
+   * (confirmed directly), but that's a fixture-specific nuance this
+   * doesn't need to depend on. */
   async goto() {
-    await this.page.goto('/#/auth/login');
+    await this.page.goto(`${process.env.BASE_URL}?screen=auth-login`);
   }
 
   async enterEmail(loginEmail) {
@@ -50,7 +57,7 @@ exports.LoginPage = class LoginPage extends BasePage {
     await this.pwdInput.click();
   }
 
-  async isEmailInputErrorDisplayed(error) {
+  async isEmailInputErrorVisible(error) {
     await expect(
       this.emailInputError,
       `Email input error is displayed: ${error}`,
@@ -97,10 +104,10 @@ exports.LoginPage = class LoginPage extends BasePage {
 
   /** Checks the URL itself, in addition to isLoginPageOpened() checking the
    * heading — use when a case cares specifically about being redirected to
-   * /#/auth/login (e.g. after hitting a protected page while logged out). */
+   * ?screen=auth-login (e.g. after hitting a protected page while logged out). */
   async isLoginPageUrlShown() {
     await expect(this.page, 'Redirected to the login page').toHaveURL(
-      /\/#\/auth\/login/,
+      /\?screen=auth-login/,
     );
   }
 

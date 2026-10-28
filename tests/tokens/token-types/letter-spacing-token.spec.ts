@@ -92,7 +92,6 @@ demoAccountFileTest.describe(() => {
           await assetsPanelPage.clickAddFileLibraryTypographyButton();
           await assetsPanelPage.waitForChangeIsSaved();
           await assetsPanelPage.selectLetterSpacing(newTokenValue);
-          await designPanelPage.clickOnEnter();
           await assetsPanelPage.waitForChangeIsSaved();
         },
       );
@@ -148,7 +147,7 @@ demoAccountFileTest(
         await mainPage.waitForChangeIsSaved();
         await tokensPage.tokensComp.checkTokenTitle(
           letterSpacingToken.name,
-          `Token: ${letterSpacingToken.name}\n` +
+          `Name: ${letterSpacingToken.name}\n` +
             `Original value: ${letterSpacingToken.value}\n` +
             'Resolved value: 10',
         );
@@ -163,7 +162,7 @@ demoAccountFileTest(
         await mainPage.waitForChangeIsSaved();
         await tokensPage.tokensComp.checkTokenTitle(
           letterSpacingToken.name,
-          `Token: ${letterSpacingToken.name}\n` +
+          `Name: ${letterSpacingToken.name}\n` +
             `Original value: ${updatedTokenData.value}\n` +
             'Resolved value: 2.5',
         );
@@ -179,7 +178,7 @@ demoAccountFileTest(
         await mainPage.waitForChangeIsSaved();
         await tokensPage.tokensComp.checkTokenTitle(
           letterSpacingToken.name,
-          `Token: ${letterSpacingToken.name}\n` +
+          `Name: ${letterSpacingToken.name}\n` +
             `Original value: ${updatedTokenData.value}\n` +
             'Resolved value: 7',
         );
@@ -195,7 +194,7 @@ demoAccountFileTest(
         await mainPage.waitForChangeIsSaved();
         await tokensPage.tokensComp.checkTokenTitle(
           letterSpacingToken.name,
-          `Token: ${letterSpacingToken.name}\n` +
+          `Name: ${letterSpacingToken.name}\n` +
             `Original value: ${updatedTokenData.value}\n` +
             'Resolved value: 3',
         );

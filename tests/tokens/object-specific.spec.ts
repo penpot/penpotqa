@@ -1,4 +1,4 @@
-import { demoAccountFileTest, mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
@@ -34,6 +34,7 @@ demoAccountFileTest(
         await tokensPage.tokensComp.isTokenDisabledWithName('FONT-SIZE-100', true);
         await tokensPage.tokensComp.isTokenDisabledWithName('OPACITY-20', false);
         await tokensPage.tokensComp.isTokenDisabledWithName('ROTATION-15', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('SHADOW-1', false);
         await tokensPage.tokensComp.isTokenDisabledWithName('SIZING-0.5', false);
         await tokensPage.tokensComp.isTokenDisabledWithName('SPACING-10', true);
         await tokensPage.tokensComp.isTokenDisabledWithName(
@@ -69,6 +70,7 @@ demoAccountFileTest(
         await tokensPage.tokensComp.isTokenDisabledWithName('FONT-SIZE-100', false);
         await tokensPage.tokensComp.isTokenDisabledWithName('OPACITY-20', false);
         await tokensPage.tokensComp.isTokenDisabledWithName('ROTATION-15', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('SHADOW-1', false);
         await tokensPage.tokensComp.isTokenDisabledWithName('SIZING-0.5', false);
         await tokensPage.tokensComp.isTokenDisabledWithName('SPACING-10', true);
         await tokensPage.tokensComp.isTokenDisabledWithName(
@@ -107,6 +109,7 @@ demoAccountFileTest(
         await tokensPage.tokensComp.isTokenDisabledWithName('FONT-SIZE-100', true);
         await tokensPage.tokensComp.isTokenDisabledWithName('OPACITY-20', false);
         await tokensPage.tokensComp.isTokenDisabledWithName('ROTATION-15', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('SHADOW-1', false);
         await tokensPage.tokensComp.isTokenDisabledWithName('SIZING-0.5', false);
         await tokensPage.tokensComp.isTokenDisabledWithName('SPACING-10', true);
         await tokensPage.tokensComp.isTokenDisabledWithName(
@@ -118,48 +121,30 @@ demoAccountFileTest(
   },
 );
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
-    tokensPage = new TokensPage(page);
-    layersPanelPage = new LayersPanelPage(page);
-
-    await mainPage.clickMoveButton();
-    await tokensPage.clickTokensTab();
-    await tokensPage.toolsComp.clickOnTokenToolsButton();
-    await tokensPage.toolsComp.importTokens(
-      'documents/tokens-for-each-category.json',
+demoAccountFileTest(
+  qase([2385], 'Path: Check active tokens in token list'),
+  async ({ mainPage }) => {
+    await demoAccountFileTest.step(
+      'Create path and verify active/disabled tokens',
+      async () => {
+        await mainPage.createDefaultOpenPath();
+        await tokensPage.tokensComp.isTokenDisabledWithName('BORDER-RADIUS-1', true);
+        await tokensPage.tokensComp.isTokenDisabledWithName('COLOR-1', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('DIMENSIONS-1', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('FONT-SIZE-100', true);
+        await tokensPage.tokensComp.isTokenDisabledWithName('OPACITY-20', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('ROTATION-15', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('SHADOW-1', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('SIZING-0.5', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('SPACING-10', true);
+        await tokensPage.tokensComp.isTokenDisabledWithName(
+          'STROKE-WIDTH-10',
+          false,
+        );
+      },
     );
-    await tokensPage.setsComp.isSetNameVisible('Global');
-    await tokensPage.tokensComp.expandAllTokens();
-  });
-
-  mainAccountFileTest(
-    qase([2385], 'Path: Check active tokens in token list'),
-    async ({ mainPage }) => {
-      await mainAccountFileTest.step(
-        'Create path and verify active/disabled tokens',
-        async () => {
-          await mainPage.createDefaultOpenPath();
-          await tokensPage.tokensComp.isTokenDisabledWithName(
-            'BORDER-RADIUS-1',
-            true,
-          );
-          await tokensPage.tokensComp.isTokenDisabledWithName('COLOR-1', false);
-          await tokensPage.tokensComp.isTokenDisabledWithName('DIMENSIONS-1', false);
-          await tokensPage.tokensComp.isTokenDisabledWithName('FONT-SIZE-100', true);
-          await tokensPage.tokensComp.isTokenDisabledWithName('OPACITY-20', false);
-          await tokensPage.tokensComp.isTokenDisabledWithName('ROTATION-15', false);
-          await tokensPage.tokensComp.isTokenDisabledWithName('SIZING-0.5', false);
-          await tokensPage.tokensComp.isTokenDisabledWithName('SPACING-10', true);
-          await tokensPage.tokensComp.isTokenDisabledWithName(
-            'STROKE-WIDTH-10',
-            false,
-          );
-        },
-      );
-    },
-  );
-});
+  },
+);
 
 demoAccountFileTest(
   qase([2386], 'Image: Check active tokens in token list'),
@@ -177,6 +162,7 @@ demoAccountFileTest(
         await tokensPage.tokensComp.isTokenDisabledWithName('FONT-SIZE-100', true);
         await tokensPage.tokensComp.isTokenDisabledWithName('OPACITY-20', false);
         await tokensPage.tokensComp.isTokenDisabledWithName('ROTATION-15', false);
+        await tokensPage.tokensComp.isTokenDisabledWithName('SHADOW-1', false);
         await tokensPage.tokensComp.isTokenDisabledWithName('SIZING-0.5', false);
         await tokensPage.tokensComp.isTokenDisabledWithName('SPACING-10', true);
         await tokensPage.tokensComp.isTokenDisabledWithName(

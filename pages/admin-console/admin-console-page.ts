@@ -1,4 +1,4 @@
-import { type Locator, type Page, expect } from '@playwright/test';
+import { type Locator, type Page, type Response, expect } from '@playwright/test';
 import { BasePage } from '../base-page';
 
 /**
@@ -141,6 +141,9 @@ export class AdminConsolePage extends BasePage {
   readonly deleteOrgAffectedTeamsToggle: Locator;
   readonly deleteOrgFinalConfirmButton: Locator;
   readonly orgDeletedToast: Locator;
+  readonly pageNotFoundHeading: Locator;
+  readonly pageNotFoundText: Locator;
+  readonly backToHomeButton: Locator;
 
   // Admin Console's own org switcher (top-left, next to the org name) — a
   // different component from OrganizationPage's dashboard-sidebar switcher:
@@ -167,19 +170,19 @@ export class AdminConsolePage extends BasePage {
   // one row per team, 7 columns (see TeamsTableColumn).
   readonly teamsNavLink: Locator;
   readonly teamsTable: Locator;
+  readonly teamsEmptyState: Locator;
 
   // People tab (sidebar nav item) — where the invitePeopleButton et al.
   // below actually live; not visible from the Teams tab. Its own table (one
-  // row per org member, 4 columns — see PeopleTableColumn) is a different
-  // `getByRole('table')` match from teamsTable, since only one of the two
-  // tabs is ever open at a time.
+  // row per org member, 4 columns — see PeopleTableColumn), scoped by its
+  // "People" accessible name (its <caption>) so a stale Teams table
+  // lingering mid-transition can't be mistaken for it, and vice versa.
   readonly peopleNavLink: Locator;
   readonly peopleTable: Locator;
 
   // People tab's "invite to the organization" modal — org-level invites,
   // distinct from a single team's own invite flow (TeamPage's), which
-  // isn't even offered once a team belongs to an Enterprise
-  // org: membership is managed at the org level instead.
+  // still works once a team belongs to an org — either kind adds the person to both.
   readonly invitePeopleButton: Locator;
   readonly invitePeopleEmailInput: Locator;
   readonly sendInviteButton: Locator;
@@ -190,6 +193,22 @@ export class AdminConsolePage extends BasePage {
   // live the Cancel button only becomes visible on hovering its row.
   readonly pendingTab: Locator;
   readonly pendingTable: Locator;
+
+  // Only shown when the target belongs to at least one team.
+  readonly removeMemberConfirmButton: Locator;
+
+  // Teams row's "Team options" menu and its "Move to another org" dialog
+  // (destinations: the user's own orgs, minus the team's current one).
+  readonly moveTeamMenuItem: Locator;
+  readonly removeTeamFromOrgMenuItem: Locator;
+  readonly moveTeamDialog: Locator;
+  readonly moveTeamDestinations: Locator;
+  readonly moveTeamCancelButton: Locator;
+  readonly moveTeamSubmitButton: Locator;
+
+  // Same row menu's "Remove from org" confirmation dialog.
+  readonly removeTeamDialog: Locator;
+  readonly removeTeamConfirmButton: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -253,11 +272,20 @@ export class AdminConsolePage extends BasePage {
     );
     this.orgDeletedToast = page.getByText(/has been deleted\.$/);
 
+    this.pageNotFoundHeading = page.getByText('404', { exact: true });
+    this.pageNotFoundText = page.getByText("This page doesn't exist", {
+      exact: true,
+    });
+    this.backToHomeButton = page.getByRole('button', {
+      name: 'Back to home',
+      exact: true,
+    });
+
     // No accessible name either — there are 2
     // `[aria-haspopup="true"]` elements on the page (one off-screen at x=0,
     // presumably an unused/hidden duplicate), and this is reliably the
     // second/visible one.
-    this.orgSwitcherButton = page.locator('[aria-haspopup="true"]:visible').last();
+    this.orgSwitcherButton = page.locator('[aria-haspopup="true"]').visible().last();
     this.orgSwitcherItem = page.getByRole('menuitemradio');
     this.createOrganizationSwitcherItem = this.orgSwitcherItem.filter({
       hasText: 'Create organization',
@@ -271,9 +299,10 @@ export class AdminConsolePage extends BasePage {
       name: 'Advanced Permissions',
     });
     this.teamsNavLink = page.getByRole('link', { name: 'Teams' });
-    this.teamsTable = page.getByRole('table');
+    this.teamsTable = page.getByRole('table', { name: 'Teams' });
+    this.teamsEmptyState = page.getByText('There are no teams yet');
     this.peopleNavLink = page.getByRole('link', { name: 'People' });
-    this.peopleTable = page.getByRole('table');
+    this.peopleTable = page.getByRole('table', { name: 'People' });
 
     // `.first()` — there are 2 identically-labelled "Invite
     // people" buttons when the People tab is in its empty state (the toolbar
@@ -295,6 +324,35 @@ export class AdminConsolePage extends BasePage {
 
     this.pendingTab = page.getByRole('tab', { name: /^Pending/ });
     this.pendingTable = page.getByRole('table');
+
+    this.removeMemberConfirmButton = page.getByRole('button', {
+      name: 'Remove user',
+    });
+
+    this.moveTeamMenuItem = page.getByRole('menuitem', {
+      name: 'Move to another org',
+    });
+    this.removeTeamFromOrgMenuItem = page.getByRole('menuitem', {
+      name: 'Remove from org',
+    });
+    this.moveTeamDialog = page.getByRole('dialog').filter({
+      has: page.getByRole('heading', {
+        name: /to another of your organizations\?$/,
+      }),
+    });
+    this.moveTeamDestinations = this.moveTeamDialog.getByRole('radio');
+    this.moveTeamCancelButton = this.moveTeamDialog.getByRole('button', {
+      name: 'Cancel',
+    });
+    this.moveTeamSubmitButton = this.moveTeamDialog.getByRole('button', {
+      name: 'Move team',
+    });
+    this.removeTeamDialog = page.getByRole('dialog').filter({
+      has: page.getByRole('button', { name: 'Remove from organization' }),
+    });
+    this.removeTeamConfirmButton = this.removeTeamDialog.getByRole('button', {
+      name: 'Remove from organization',
+    });
   }
 
   /* -------------------------------------------------
@@ -317,6 +375,12 @@ export class AdminConsolePage extends BasePage {
 
   private getTeamsTableCell(teamName: string, column: TeamsTableColumn): Locator {
     return this.getTeamsTableRow(teamName).getByRole('cell').nth(column);
+  }
+
+  /** Matches by label rather than the radio itself — the real <input> is
+   * visually hidden, so the label is what actually takes the click. */
+  private getMoveTeamDestinationLabel(orgName: string): Locator {
+    return this.moveTeamDialog.locator('label').filter({ hasText: orgName });
   }
 
   private getPeopleTableRow(memberName: string): Locator {
@@ -346,8 +410,21 @@ export class AdminConsolePage extends BasePage {
     await this.welcomeCreateOrganizationButton.click();
   }
 
-  async goToFiles() {
+  /** "Go to Files" first renders as a bare link to the dashboard root, and
+   * only gets the org's team-id once the org data loads — clicked before
+   * that, it lands on the personal team, outside any org. Then waits until
+   * the dashboard is inside `orgName` (its name shows in the org/team
+   * switcher), so a team created next isn't created outside the org. */
+  async goToFiles(orgName: string) {
+    await expect(
+      this.goToFilesLink,
+      '"Go to Files" links to a team of the current organization',
+    ).toHaveAttribute('href', /team-id=/);
     await this.goToFilesLink.click();
+    await expect(
+      this.page.getByRole('button', { name: orgName }),
+      `Dashboard is inside organization "${orgName}"`,
+    ).toBeVisible();
   }
 
   async openAdvancedPermissionsTab() {
@@ -357,12 +434,13 @@ export class AdminConsolePage extends BasePage {
     );
   }
 
-  /** Checks the URL rather than the table itself — an org
-   * with zero teams shows an entirely different empty state ("There are no
-   * teams yet"), with no `<table>` element at all, not an empty table. */
   async openTeamsTab() {
     await this.teamsNavLink.click();
     await expect(this.page, 'On the Teams tab').toHaveURL(/\/teams$/);
+    await expect(
+      this.teamsTable.or(this.teamsEmptyState),
+      'Teams tab has finished rendering',
+    ).toBeVisible();
   }
 
   async openPeopleTab() {
@@ -412,9 +490,78 @@ export class AdminConsolePage extends BasePage {
     await this.sendInvites();
   }
 
+  /** Self-healing — same hydration race as openOrgSwitcher()/openSettings()
+   * when clicked right after openPeopleTab(). Checked via `aria-selected`,
+   * not `pendingTable`'s visibility: that locator is identical to
+   * `peopleTable`, so it stays visible even while Members is still active. */
   async openPendingTab() {
-    await this.pendingTab.click();
-    await expect(this.pendingTable, 'Pending table is visible').toBeVisible();
+    await expect(async () => {
+      if ((await this.pendingTab.getAttribute('aria-selected')) !== 'true') {
+        await this.pendingTab.click();
+      }
+      await expect(this.pendingTab, 'Pending tab is the active one').toHaveAttribute(
+        'aria-selected',
+        'true',
+        { timeout: 2000 },
+      );
+    }).toPass({ timeout: 15000 });
+  }
+
+  /** Opens a Teams table row's "Team options" menu — its button only shows
+   * on row hover. Self-healing, same hydration race as openPendingTab(). */
+  async openTeamOptionsMenu(teamName: string) {
+    const row = this.getTeamsTableRow(teamName);
+    await expect(async () => {
+      await row.hover();
+      await row
+        .getByRole('button', { name: `Team options for ${teamName}` })
+        .click();
+      await expect(
+        this.moveTeamMenuItem,
+        `"Team options" menu for "${teamName}" is open`,
+      ).toBeVisible({ timeout: 2000 });
+    }).toPass({ timeout: 15000 });
+  }
+
+  async openMoveTeamDialog(teamName: string) {
+    await this.openTeamOptionsMenu(teamName);
+    await this.moveTeamMenuItem.click();
+    await expect(
+      this.moveTeamDialog,
+      `"Move ${teamName} to another org" dialog is open`,
+    ).toBeVisible();
+  }
+
+  async selectMoveTeamDestination(orgName: string) {
+    await this.getMoveTeamDestinationLabel(orgName).click();
+  }
+
+  async cancelMoveTeam() {
+    await this.moveTeamCancelButton.click();
+    await expect(this.moveTeamDialog, 'Move team dialog is closed').toBeHidden();
+  }
+
+  /** Confirms the move and waits for its "<team> moved to <org>" toast. */
+  async confirmMoveTeam(teamName: string, orgName: string) {
+    await this.moveTeamSubmitButton.click();
+    await expect(
+      this.page.getByText(`${teamName} moved to ${orgName}`, { exact: true }),
+      `"${teamName} moved to ${orgName}" toast is shown`,
+    ).toBeVisible();
+  }
+
+  async openRemoveTeamFromOrgDialog(teamName: string) {
+    await this.openTeamOptionsMenu(teamName);
+    await this.removeTeamFromOrgMenuItem.click();
+    await expect(
+      this.removeTeamDialog,
+      `"Remove ${teamName} from the organization" dialog is open`,
+    ).toBeVisible();
+  }
+
+  async confirmRemoveTeamFromOrg() {
+    await this.removeTeamConfirmButton.click();
+    await expect(this.removeTeamDialog, 'Remove team dialog is closed').toBeHidden();
   }
 
   /** Opens the confirmation dialog for canceling one pending invitation —
@@ -516,17 +663,13 @@ export class AdminConsolePage extends BasePage {
     ).toBeVisible();
   }
 
-  /** Opens the org switcher, unless it's already open — clicking the trigger
-   * again would just toggle it closed instead (this broke
-   * switchToOrg() when a prior step had already opened it).
-   *
-   * Retries the click: right after a fresh navigation, `orgSwitcherButton`'s
-   * `aria-haspopup` attribute can attach after the button is already
-   * clickable, so an early click lands on the user-menu button (the only
-   * other, already-hydrated `aria-haspopup` element) instead — same
-   * hydration race as openSettings() above, different button. */
+  /** Opens the org switcher unless already open. Retries because an early click can
+   * open the user menu instead (hydration race), so that menu is closed first. */
   async openOrgSwitcher() {
     await expect(async () => {
+      if (await this.userMenuItem.first().isVisible()) {
+        await this.page.keyboard.press('Escape');
+      }
       if (!(await this.orgSwitcherItem.first().isVisible())) {
         await this.orgSwitcherButton.click();
       }
@@ -698,9 +841,32 @@ export class AdminConsolePage extends BasePage {
   async isDisplayingOrganization(orgName: string) {
     // Not a semantic heading — it's a styled div, same
     // pattern as the newer Tailwind components elsewhere (no ARIA role).
+    // Scoped to `main`: right after switching orgs, the closing org
+    // switcher dropdown (rendered outside it) still lists the same name.
     await expect(
-      this.page.getByText(orgName, { exact: true }),
+      this.page.getByRole('main').getByText(orgName, { exact: true }),
       `Organization "${orgName}" is the one displayed`,
+    ).toBeVisible();
+  }
+
+  /** Asserts the HTTP status of a direct navigation to an Admin Console
+   * URL (e.g. a non-member's org URL should resolve to a 404). */
+  hasNavigationStatusCode(response: Response | null, status: number) {
+    expect(
+      response?.status(),
+      `Admin Console navigation returns an HTTP ${status} response`,
+    ).toBe(status);
+  }
+
+  async isPageNotFoundVisible() {
+    await expect(this.pageNotFoundHeading, '404 page is shown').toBeVisible();
+    await expect(
+      this.pageNotFoundText,
+      '"This page doesn\'t exist" message is shown',
+    ).toBeVisible();
+    await expect(
+      this.backToHomeButton,
+      '"Back to home" button is shown',
     ).toBeVisible();
   }
 
@@ -806,13 +972,6 @@ export class AdminConsolePage extends BasePage {
         ).toHaveCount(0);
   }
 
-  async isServerErrorPageVisible(visible = true) {
-    const errorText = this.page.getByText('Something went wrong!');
-    visible
-      ? await expect(errorText, 'Server error page is shown').toBeVisible()
-      : await expect(errorText, 'Server error page is not shown').not.toBeVisible();
-  }
-
   async isLogoutMenuItemVisible(visible = true) {
     visible
       ? await expect(
@@ -837,9 +996,15 @@ export class AdminConsolePage extends BasePage {
 
   /** Checks the Teams table has exactly the expected columns, in order. */
   async hasExpectedTeamsTableColumns() {
+    const headers = this.teamsTable.getByRole('columnheader');
+    // 8th column is the unlabeled per-row actions (kebab menu) column.
     await expect(
-      this.teamsTable.getByRole('columnheader'),
-      'Teams table has the expected columns, in order',
+      headers,
+      'Teams table has the expected number of columns',
+    ).toHaveCount(8);
+    await expect(
+      headers.filter({ hasText: /\S/ }),
+      'Teams table has the expected labeled columns, in order',
     ).toHaveText([
       'Team',
       'Created',
@@ -920,20 +1085,59 @@ export class AdminConsolePage extends BasePage {
       : await expect(row, `Member "${memberName}" is not listed`).toHaveCount(0);
   }
 
-  /** Removes a member from the org via the People table's own row action —
-   * a plain (non-team-owning) member is removed directly on
-   * click, no confirmation dialog. The action only appears on hover.
-   *
-   * Doesn't assert on a success toast: direct DOM inspection found no
-   * `notification`/`toast`/`pill`-classed element ever appears for several
-   * seconds after the click, despite one being visible in an unrelated
-   * failure screenshot once — unreliable. Callers should verify success via
-   * `isMemberListedInPeopleTable(name, false)` instead, which is both more
-   * reliable and closer to what actually matters. */
+  /** Clicks the row's "Remove" action (hover to reveal) — self-healing:
+   * clicking right after openPeopleTab() can silently no-op, same
+   * hydration race as openPendingTab()/openSettings(). No team → removed
+   * immediately, verify via `isMemberListedInPeopleTable(name, false)` (no
+   * reliable toast). Belongs to a team → see `isRemoveMemberDialogShown()`. */
   async removeMemberFromPeopleTable(memberName: string) {
     const row = this.getPeopleTableRow(memberName);
-    await row.hover();
-    await row.getByRole('button', { name: /remove/i }).click();
+    await expect(async () => {
+      await row.hover();
+      await row.getByRole('button', { name: /remove/i }).click();
+      // Matches isRemoveMemberDialogShown()'s own 15000ms — a shorter wait
+      // here would misread a genuinely slow (but real) dialog render as "no
+      // effect" and re-click, risking a duplicate remove action.
+      const acted = await Promise.race([
+        this.removeMemberConfirmButton
+          .waitFor({ state: 'visible', timeout: 15000 })
+          .then(() => true)
+          .catch(() => false),
+        row
+          .waitFor({ state: 'detached', timeout: 15000 })
+          .then(() => true)
+          .catch(() => false),
+      ]);
+      if (!acted) {
+        throw new Error(`Remove action for "${memberName}" had no visible effect`);
+      }
+    }).toPass({ timeout: 45000 });
+  }
+
+  /** Body text differs by case: sole team member warns of deletion,
+   * otherwise it's a plain "removed from all teams" notice. */
+  async isRemoveMemberDialogShown(memberName: string, bodyText: string) {
+    // Deciding dialog-vs-immediate-removal needs a backend team-membership
+    // check first — can outrun the default timeout under CI load.
+    await expect(
+      this.page.getByRole('heading', {
+        name: `Remove ${memberName} from the organization?`,
+      }),
+      `Remove-member confirmation dialog for "${memberName}" is shown`,
+    ).toBeVisible({ timeout: 15000 });
+    await expect(
+      this.page.getByText(bodyText, { exact: true }),
+      `Remove-member dialog body is "${bodyText}"`,
+    ).toBeVisible();
+  }
+
+  /** Confirms the remove-member dialog and waits for its success message. */
+  async confirmRemoveMember(memberName: string) {
+    await this.removeMemberConfirmButton.click();
+    await expect(
+      this.page.getByText(`${memberName} has been removed`),
+      `"${memberName} has been removed" message is shown`,
+    ).toBeVisible();
   }
 
   /** Checks the Teams column count for a member's row in the People table
@@ -987,5 +1191,118 @@ export class AdminConsolePage extends BasePage {
       this.getPendingTableCell(email, PendingTableColumn.DateAdded),
       `Pending invitation for "${email}" shows a date added`,
     ).not.toBeEmpty();
+  }
+
+  async isTeamOptionsMenuShown() {
+    await expect(
+      this.moveTeamMenuItem,
+      '"Move to another org" option is shown',
+    ).toBeVisible();
+    await expect(
+      this.removeTeamFromOrgMenuItem,
+      '"Remove from org" option is shown',
+    ).toBeVisible();
+  }
+
+  async isMoveTeamDialogShown(teamName: string) {
+    await expect(
+      this.moveTeamDialog.getByRole('heading'),
+      'Move team dialog title names the team',
+    ).toHaveText(`Move ${teamName} to another of your organizations?`);
+    await expect(
+      this.moveTeamDialog.getByText(
+        'Projects and files will remain available to team members. The team will get the configuration from the new organization.',
+        { exact: true },
+      ),
+      'Move team dialog explains what happens to the team',
+    ).toBeVisible();
+    await expect(this.moveTeamCancelButton, 'Cancel button is shown').toBeVisible();
+    await expect(
+      this.moveTeamSubmitButton,
+      '"Move team" button is shown',
+    ).toBeVisible();
+  }
+
+  /** Checks the dialog offers exactly these destinations, in any order. */
+  async hasMoveTeamDestinations(orgNames: string[]) {
+    await expect(
+      this.moveTeamDestinations,
+      `Move team dialog lists ${orgNames.length} destination(s)`,
+    ).toHaveCount(orgNames.length);
+    for (const orgName of orgNames) {
+      await expect(
+        this.getMoveTeamDestinationLabel(orgName),
+        `"${orgName}" is listed as a destination`,
+      ).toBeVisible();
+    }
+  }
+
+  async isMoveTeamDestinationSelected(orgName: string, selected = true) {
+    const radio = this.getMoveTeamDestinationLabel(orgName).getByRole('radio');
+    selected
+      ? await expect(radio, `"${orgName}" is selected`).toBeChecked()
+      : await expect(radio, `"${orgName}" is not selected`).not.toBeChecked();
+  }
+
+  async isNoMoveTeamDestinationSelected() {
+    await expect(
+      this.moveTeamDialog.getByRole('radio', { checked: true }),
+      'No destination is selected',
+    ).toHaveCount(0);
+  }
+
+  async isMoveTeamButtonEnabled(enabled = true) {
+    enabled
+      ? await expect(
+          this.moveTeamSubmitButton,
+          '"Move team" is enabled',
+        ).toBeEnabled()
+      : await expect(
+          this.moveTeamSubmitButton,
+          '"Move team" is disabled',
+        ).toBeDisabled();
+  }
+
+  /** The alert shown when the selected destination only allows its own
+   * members in teams and the team has pending invitations to outsiders. */
+  async isMoveTeamRevokeInvitationsAlertShown(
+    teamName: string,
+    orgName: string,
+    visible = true,
+  ) {
+    const alert = this.moveTeamDialog.getByText(
+      `${teamName} has pending invitations to people outside ${orgName}. Moving it will revoke those invitations.`,
+      { exact: true },
+    );
+    visible
+      ? await expect(alert, 'Revoke-invitations alert is shown').toBeVisible()
+      : await expect(alert, 'Revoke-invitations alert is not shown').toBeHidden();
+  }
+
+  /** `notMember`: the user isn't in the team, so the dialog also warns that
+   * they'll lose access to it. */
+  async isRemoveTeamDialogShown(
+    teamName: string,
+    orgName: string,
+    { notMember = false } = {},
+  ) {
+    await expect(
+      this.removeTeamDialog.getByRole('heading'),
+      'Remove team dialog title names the team and the org',
+    ).toHaveText(`Remove ${teamName} from ${orgName}?`);
+    await expect(
+      this.removeTeamDialog.getByText(
+        `${teamName} will leave ${orgName}. The team, its projects and files are not deleted and will keep working. You will find them under 'Other teams'`,
+        { exact: true },
+      ),
+      'Remove team dialog explains the team keeps working',
+    ).toBeVisible();
+    const accessWarning = this.removeTeamDialog.getByText(
+      `You are not a member of ${teamName}, so you will lose access to its projects and files.`,
+      { exact: true },
+    );
+    notMember
+      ? await expect(accessWarning, 'Access-loss warning is shown').toBeVisible()
+      : await expect(accessWarning, 'Access-loss warning is not shown').toBeHidden();
   }
 }

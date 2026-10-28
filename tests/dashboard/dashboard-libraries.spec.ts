@@ -1,4 +1,4 @@
-import { demoAccountApiFixture, demoAccountFileTest } from 'fixtures';
+import { demoAccountApiFixture, mainAccountFileTest } from 'fixtures';
 import { expect } from '@playwright/test';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
@@ -10,14 +10,14 @@ let layersPanelPage: LayersPanelPage;
 let designPanelPage: DesignPanelPage;
 let colorPalettePage: ColorPalettePage;
 
-demoAccountFileTest.describe(() => {
-  demoAccountFileTest.beforeEach(async ({ page }) => {
+mainAccountFileTest.describe(() => {
+  mainAccountFileTest.beforeEach(async ({ page }) => {
     layersPanelPage = new LayersPanelPage(page);
     designPanelPage = new DesignPanelPage(page);
     colorPalettePage = new ColorPalettePage(page);
   });
 
-  demoAccountFileTest(
+  mainAccountFileTest(
     qase(
       1351,
       'Check actual library view after adding / updating / removing assets',
@@ -67,8 +67,8 @@ demoAccountFileTest.describe(() => {
     },
   );
 
-  demoAccountFileTest.describe(() => {
-    demoAccountFileTest.beforeEach(async ({ mainPage, dashboardPage }) => {
+  mainAccountFileTest.describe(() => {
+    mainAccountFileTest.beforeEach(async ({ mainPage, dashboardPage }) => {
       await mainPage.clickPencilBoxButton();
       await dashboardPage.hideLibrariesAndTemplatesCarrousel();
       await dashboardPage.addFileAsSharedLibraryViaOptionsIcon();
@@ -77,7 +77,7 @@ demoAccountFileTest.describe(() => {
       await dashboardPage.isFilePresentWithName('New File 1');
     });
 
-    demoAccountFileTest(
+    mainAccountFileTest(
       qase(1057, 'Rename file from Libraries tab'),
       async ({ dashboardPage }) => {
         await dashboardPage.renameFile('New File 1', 'Renamed Test File');
@@ -85,7 +85,7 @@ demoAccountFileTest.describe(() => {
       },
     );
 
-    demoAccountFileTest(
+    mainAccountFileTest(
       qase(1058, 'Duplicate file from Libraries tab'),
       async ({ dashboardPage }) => {
         await dashboardPage.duplicateFileViaRightclick();

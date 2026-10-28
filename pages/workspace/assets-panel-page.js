@@ -100,7 +100,9 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
       name: 'Search font',
     });
     this.fontSizeInput = page.locator('div[class*="font-size-select"] input');
-    this.letterSpacingInput = page.getByTitle('Letter Spacing').locator('input');
+    this.letterSpacingInput = this.assetsTabpanel
+      .getByTitle('Letter Spacing')
+      .locator('input');
     this.typographyNameInput = page.locator('input[class*="adv-typography-name"]');
     this.assetsTitleText = page.locator(
       'div[class*="asset-section"] span[class*="title-name"]',
@@ -156,6 +158,12 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
 
     // Shared Libraries - Modal
     this.librariesModal = page.locator('.main_ui_workspace_libraries__modal-dialog');
+    this.librariesThisFileTab = this.librariesModal.getByRole('tab', {
+      name: 'This file',
+    });
+    this.librariesListTab = this.librariesModal.getByRole('tab', {
+      name: 'LIBRARIES',
+    });
     this.librariesUpdatesTab = this.librariesModal.getByRole('tab', {
       name: 'UPDATES',
     });
@@ -187,14 +195,6 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     });
     this.wrapperMoreInfoButton = this.wrapperMessage.getByRole('button', {
       name: 'More info',
-    });
-
-    // Import Tokens Confirmation Modal
-    this.importTokensModal = page.locator(
-      '.main_ui_workspace_tokens_import_from_library__modal-dialog',
-    );
-    this.importTokensButton = this.importTokensModal.getByRole('button', {
-      name: 'Import tokens',
     });
   }
 
@@ -459,6 +459,14 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     await expect(this.assetComponentLabel).toBeVisible();
   }
 
+  // Thumbnail is server-rendered as a base64-inlined PNG, read directly.
+  async getComponentThumbnailBuffer() {
+    const href = await this.assetComponentLabel
+      .locator('image')
+      .getAttribute('href');
+    return Buffer.from(href.split(',')[1], 'base64');
+  }
+
   async selectTypeFromAllAssetsDropdown(type) {
     await this.assetsTypeButton.click();
     await expect(this.assetsTypeDropdown).toBeVisible();
@@ -523,6 +531,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
   }
 
   async isSharedLibraryVisibleByName(name, visible = true) {
+    await this.clickLibrariesListTab();
     const elem = this.page
       .locator(`div[data-testid="library-item"]:has-text("${name}")`)
       .getByRole('button');
@@ -554,8 +563,33 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     await libTitle.last().click();
   }
 
+  /**
+   * Opens a linked library file in a new tab from the "Open library file" link
+   * next to its title in the Assets tab.
+   * @param {string} libraryName
+   * @returns {Promise<import('@playwright/test').Page>} The new tab
+   */
+  async openLibraryFileInNewTab(libraryName) {
+    const titleBar = this.page
+      .locator('div[class*="title-bar"]')
+      .filter({
+        has: this.page.locator(
+          `div[class*="special-title"]:has-text("${libraryName}")`,
+        ),
+      })
+      .last();
+    const newPage = this.page.context().waitForEvent('page');
+    await titleBar.hover();
+    await titleBar.getByTitle('Open library file').click();
+    return newPage;
+  }
+
   async clickDismissButton() {
     await this.wrapperDismissButton.click();
+  }
+
+  async clickLibrariesListTab() {
+    await this.librariesListTab.click();
   }
 
   async clickUpdatesTab() {
@@ -571,6 +605,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
   }
 
   async searchSharedLibraries(name) {
+    await this.clickLibrariesListTab();
     await this.librariesSearchInput.click();
     await this.librariesSearchInput.pressSequentially(name);
     await this.page.keyboard.press('Enter');
@@ -644,6 +679,7 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
   }
 
   async firstLibraryItemContainsLibraryName(name) {
+    await this.clickLibrariesListTab();
     await expect(
       this.getLibraryItemByName(name).first(),
       `Library item contains text "${name}"`,
@@ -670,20 +706,57 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
       .click();
   }
 
-  async importTokensFromSharedLibraryByName(name) {
+  async setSharedLibraryAsTokensSource(name) {
+    await this.librariesThisFileTab.click();
     await this.getLibraryItemByName(name)
-      .getByRole('button', { name: 'Import tokens' })
+      .getByRole('button', { name: 'Set as tokens source' })
       .click();
   }
 
-  async clickImportTokensFromSharedLibrary() {
-    await this.importTokensButton.click();
+  async disconnectSharedLibraryByName(name) {
+    await this.librariesThisFileTab.click();
+    await this.getLibraryItemByName(name)
+      .getByRole('button', { name: 'Disconnect library' })
+      .click();
   }
 
-  async isImportTokensModalVisible() {
-    expect(
-      await this.importTokensModal,
-      'Import tokens modal is visible',
+  async isNoConnectedLibrariesMessageVisible() {
+    await expect(
+      this.librariesModal.getByText('No connected libraries yet.'),
+      'No connected libraries message is visible',
     ).toBeVisible();
+  }
+
+  async isLibraryUpdatesMessageVisible() {
+    await expect(
+      this.wrapperMessage.getByText('There are updates in shared libraries'),
+      'Library updates message is visible',
+    ).toBeVisible();
+  }
+
+  async clickWrapperUpdateButton() {
+    await this.wrapperUpdateButton.click();
+  }
+
+  async isSharedLibraryTokensSource(name) {
+    await expect(
+      this.getLibraryItemByName(name).getByText('Tokens source', { exact: true }),
+      `"${name}" is the tokens source`,
+    ).toBeVisible();
+  }
+
+  /**
+   * Connects a shared library from the Libraries modal and sets it as the
+   * tokens source of the current file.
+   * @param {string} name - Shared library name
+   */
+  async linkSharedLibraryAsTokensSource(name) {
+    await this.clickAssetsTab();
+    await this.clickLibrariesButton();
+    await this.firstLibraryItemContainsLibraryName(name);
+    await this.connectSharedLibraryByName(name);
+    await this.setSharedLibraryAsTokensSource(name);
+    await this.isSharedLibraryTokensSource(name);
+    await this.clickCloseModalButton();
   }
 };

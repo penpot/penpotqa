@@ -492,14 +492,11 @@ demoAccountFileTest(
       await expect(mainPage.viewport).toHaveScreenshot('text-align-left.png', {
         mask: mainPage.maskViewport(),
       });
-      await mainPage.focusLayerViaShortcut();
     });
 
     await demoAccountFileTest.step('Align center', async () => {
       await designPanelPage.changeTextOption('Center');
       await mainPage.waitForChangeIsSaved();
-      await mainPage.focusLayerViaShortcut();
-      await mainPage.clickOnLayerOnCanvas();
       await expect(mainPage.viewport).toHaveScreenshot('text-align-center.png', {
         mask: mainPage.maskViewport(),
       });
@@ -508,8 +505,6 @@ demoAccountFileTest(
     await demoAccountFileTest.step('Align right', async () => {
       await designPanelPage.changeTextOption('Right');
       await mainPage.waitForChangeIsSaved();
-      await mainPage.focusLayerViaShortcut();
-      await mainPage.clickOnLayerOnCanvas();
       await expect(mainPage.viewport).toHaveScreenshot('text-align-right.png', {
         mask: mainPage.maskViewport(),
       });
@@ -518,11 +513,212 @@ demoAccountFileTest(
     await demoAccountFileTest.step('Justify', async () => {
       await designPanelPage.changeTextOption('Justify');
       await mainPage.waitForChangeIsSaved();
-      await mainPage.focusLayerViaShortcut();
-      await mainPage.clickOnLayerOnCanvas();
       await expect(mainPage.viewport).toHaveScreenshot('text-align-justify.png', {
         mask: mainPage.maskViewport(),
       });
     });
+  },
+);
+
+/** Reads a layer's X/Y/W/H from the Design tab. */
+async function getLayerBounds(name: string) {
+  await designPanelPage.deselectAndWaitForMeasuresHidden();
+  await layersPanelPage.selectLayerByExactName(name);
+  return designPanelPage.getSelectedLayerBounds();
+}
+
+demoAccountFileTest(
+  qase(
+    [419],
+    'Select 3 texts and distribute horizontal/vertical space (Design tab and shortcuts)',
+  ),
+  async ({ mainPage }) => {
+    let first: Awaited<ReturnType<typeof getLayerBounds>>;
+    let third: Awaited<ReturnType<typeof getLayerBounds>>;
+
+    await demoAccountFileTest.step(
+      'Create "First", "Second" and "Third" in one row with uneven gaps',
+      async () => {
+        await mainPage.createTextLayerByCoordinates(200, 300, 'First');
+        await mainPage.createTextLayerByCoordinates(260, 300, 'Second');
+        await mainPage.createTextLayerByCoordinates(600, 300, 'Third');
+        first = await getLayerBounds('First');
+        third = await getLayerBounds('Third');
+      },
+    );
+
+    await demoAccountFileTest.step(
+      'Select the three texts → "Distribute horizontal spacing" shows its shortcut in the tooltip',
+      async () => {
+        await mainPage.clickOnESC();
+        await mainPage.pressSelectAllShortcut();
+        await designPanelPage.checkDistributeHorizontalSpacingTooltip();
+      },
+    );
+
+    await demoAccountFileTest.step(
+      'Click it → equal horizontal gaps, "First" and "Third" stay in place',
+      async () => {
+        await designPanelPage.clickDistributeHorizontalSpacingButton();
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkEvenHorizontalSpacing([
+          await getLayerBounds('First'),
+          await getLayerBounds('Second'),
+          await getLayerBounds('Third'),
+        ]);
+        await designPanelPage.checkXAxis(String(third.x));
+        await layersPanelPage.selectLayerByExactName('First');
+        await designPanelPage.checkXAxis(String(first.x));
+      },
+    );
+
+    await demoAccountFileTest.step(
+      'Move the three texts into one column with uneven vertical gaps',
+      async () => {
+        for (const [name, y] of [
+          ['First', '100'],
+          ['Second', '140'],
+          ['Third', '400'],
+        ]) {
+          await layersPanelPage.selectLayerByExactName(name);
+          await designPanelPage.changeXAxisForLayer('200');
+          await designPanelPage.changeYAxisForLayer(y);
+        }
+        first = await getLayerBounds('First');
+        third = await getLayerBounds('Third');
+      },
+    );
+
+    await demoAccountFileTest.step(
+      'Select them and press Ctrl+Shift+Alt+V → equal vertical gaps, top and bottom texts stay in place',
+      async () => {
+        await mainPage.clickOnESC();
+        await mainPage.pressSelectAllShortcut();
+        await mainPage.pressDistributeVerticalSpacingShortcut();
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkEvenVerticalSpacing([
+          await getLayerBounds('First'),
+          await getLayerBounds('Second'),
+          await getLayerBounds('Third'),
+        ]);
+        await designPanelPage.checkYAxis(String(third.y));
+        await layersPanelPage.selectLayerByExactName('First');
+        await designPanelPage.checkYAxis(String(first.y));
+      },
+    );
+  },
+);
+
+demoAccountFileTest(
+  qase([428], 'Use auto width, height (Design section)'),
+  async ({ mainPage }) => {
+    const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit';
+    let singleLine: { width: number; height: number };
+
+    await demoAccountFileTest.step(
+      'Create a 300 px wide text that wraps into several lines',
+      async () => {
+        await mainPage.createTextLayerInBoxViaPaste(200, 200, 500, 260, text);
+        await designPanelPage.isTextOptionSelected('Fixed');
+      },
+    );
+
+    await demoAccountFileTest.step(
+      'Click "Auto width" → the box grows wider and the text fits in a single line',
+      async () => {
+        const fixedHeight = await designPanelPage.getHeightValue();
+        await designPanelPage.changeTextOption('Auto width');
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isTextOptionSelected('Auto width');
+        await designPanelPage.checkWidthHasValueGreaterThan(300);
+        await designPanelPage.checkHeightHasValueLessThan(fixedHeight);
+        singleLine = {
+          width: await designPanelPage.getWidthValue(),
+          height: await designPanelPage.getHeightValue(),
+        };
+      },
+    );
+
+    await demoAccountFileTest.step(
+      'Drag the bottom-right corner to make it narrower → the text wraps and "Fixed" is selected',
+      async () => {
+        await mainPage.dragSelectionBottomRightCorner(-150, 0);
+        await designPanelPage.isTextOptionSelected('Fixed');
+        await designPanelPage.checkWidthHasValueLessThan(singleLine.width);
+      },
+    );
+
+    await demoAccountFileTest.step(
+      'Click "Auto height" → the height fits the wrapped text and the width is kept',
+      async () => {
+        const width = await designPanelPage.getWidthValue();
+        await designPanelPage.changeTextOption('Auto height');
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isTextOptionSelected('Auto height');
+        await designPanelPage.checkHeightHasValueGreaterThan(singleLine.height);
+        await designPanelPage.isWidthValue(width);
+      },
+    );
+  },
+);
+
+demoAccountFileTest(
+  qase([432], 'Change color, font and size of selected words'),
+  async ({ mainPage }) => {
+    await demoAccountFileTest.step('Create "Hello brave new world"', async () => {
+      await mainPage.createTextLayerByCoordinates(200, 300, 'Hello brave new world');
+    });
+
+    await demoAccountFileTest.step('Select "brave new" in the editor', async () => {
+      await mainPage.createdLayer.click();
+      await mainPage.clickOnEnter();
+      await mainPage.doubleClickOnTextAt(0.38);
+      await mainPage.selectNextCharactersInTextEditor(4);
+    });
+
+    await demoAccountFileTest.step(
+      'Set color FFD700, font "Sofia" and size 36',
+      async () => {
+        await designPanelPage.typeFillHexCode('FFD700');
+        await designPanelPage.changeTextFont('Sofia');
+        await designPanelPage.selectTextFontSizeFromDropdown('36');
+        await mainPage.waitForChangeIsSaved();
+      },
+    );
+
+    await demoAccountFileTest.step(
+      'Leave the editor → the text has mixed fill, font and size, with FFD700 among its colors',
+      async () => {
+        await mainPage.clickOnESC();
+        await designPanelPage.checkFillMixedIsVisible();
+        await designPanelPage.checkSelectedColorIsVisible('ffd700');
+        await designPanelPage.checkSelectedColorIsVisible('000000');
+        await designPanelPage.checkFontName('Mixed Font Families');
+        await designPanelPage.checkFontSizeHasMixedValue();
+      },
+    );
+
+    await demoAccountFileTest.step(
+      '"Hello" keeps the default style (000000, Source Sans Pro, 14)',
+      async () => {
+        await mainPage.clickOnEnter();
+        await mainPage.moveCaretToTextStart();
+        await designPanelPage.isFillHexCodeSet('#000000');
+        await designPanelPage.checkFontName('Source Sans Pro');
+        await designPanelPage.checkFontSize('14');
+      },
+    );
+
+    await demoAccountFileTest.step(
+      'Only "brave new" is drawn in yellow, Sofia and size 36',
+      async () => {
+        await mainPage.clickOnESC();
+        await mainPage.clickViewportByCoordinates(900, 700);
+        await expect(mainPage.viewport).toHaveScreenshot(
+          'text-styled-selected-words.png',
+          { mask: mainPage.maskViewport() },
+        );
+      },
+    );
   },
 );

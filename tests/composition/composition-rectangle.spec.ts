@@ -5,6 +5,7 @@ import { expect } from '@playwright/test';
 import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
+const defaultNameRectangle = 'Rectangle';
 let colorPalettePage: ColorPalettePage;
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
@@ -70,10 +71,7 @@ demoAccountFileTest.describe(() => {
           await designPanelPage.clickIndividualCornersRadiusButton();
           await designPanelPage.changeIndependentCorners('30', '60', '90', '120');
           await mainPage.waitForChangeIsSaved();
-          await expect(mainPage.viewport).toHaveScreenshot(
-            'rectangle-changed-corners.png',
-            { mask: mainPage.maskViewport() },
-          );
+          await designPanelPage.checkIndividualCorners('30', '60', '90', '120');
         },
       );
 
@@ -82,9 +80,7 @@ demoAccountFileTest.describe(() => {
         async () => {
           await designPanelPage.changeIndependentCorners('0', '0', '0', '0');
           await mainPage.waitForChangeIsSaved();
-          await expect(mainPage.viewport).toHaveScreenshot('rectangle.png', {
-            mask: mainPage.maskViewport(),
-          });
+          await designPanelPage.checkIndividualCorners('0', '0', '0', '0');
         },
       );
     },
@@ -185,9 +181,13 @@ demoAccountFileTest(
   async ({ mainPage }) => {
     await demoAccountFileTest.step('Create four rectangles on canvas', async () => {
       await mainPage.createDefaultRectangleByCoordinates(400, 800);
-      await mainPage.createDefaultRectangleByCoordinates(400, 200, true);
-      await mainPage.createDefaultRectangleByCoordinates(100, 600, true);
-      await mainPage.createDefaultRectangleByCoordinates(700, 600, true);
+      await layersPanelPage.isNumLayerNameVisible(defaultNameRectangle, 1);
+      await mainPage.createDefaultRectangleByCoordinates(400, 200);
+      await layersPanelPage.isNumLayerNameVisible(defaultNameRectangle, 2);
+      await mainPage.createDefaultRectangleByCoordinates(100, 600);
+      await layersPanelPage.isNumLayerNameVisible(defaultNameRectangle, 3);
+      await mainPage.createDefaultRectangleByCoordinates(700, 600);
+      await layersPanelPage.isNumLayerNameVisible(defaultNameRectangle, 4);
       await mainPage.clickViewportTwice();
       await mainPage.waitForChangeIsSaved();
     });

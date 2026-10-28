@@ -29,6 +29,9 @@ exports.PluginsPage = class PluginsPage extends MainPage {
     this.pluginManagementModal = page.locator(
       '.main_ui_workspace_plugins__plugin-management',
     );
+    this.pluginConfirmDeleteModal = page.locator(
+      '.main_ui_confirm__modal-container',
+    );
     this.closePluginPanelButton = this.pluginManagementModal.locator(
       '.main_ui_workspace_plugins__close-btn',
     );
@@ -40,6 +43,10 @@ exports.PluginsPage = class PluginsPage extends MainPage {
     this.deletePluginPanelButton = this.pluginManagementModal
       .getByRole('button', { name: 'Remove plugin' })
       .first();
+    this.confirmDeletePluginButton = this.pluginConfirmDeleteModal.getByRole(
+      'button',
+      { name: 'Remove plugin' },
+    );
     this.pluginList = this.pluginManagementModal.locator(
       '.main_ui_workspace_plugins__plugins-list',
     );
@@ -98,6 +105,10 @@ exports.PluginsPage = class PluginsPage extends MainPage {
 
   async clickOnDeletePluginButton() {
     await this.deletePluginPanelButton.click();
+  }
+
+  async clickOnConfirmDeletePluginButton() {
+    await this.confirmDeletePluginButton.click();
   }
 
   async clickOnAllowPluginButton() {

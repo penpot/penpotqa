@@ -125,6 +125,16 @@ export class PagesPanelPage extends MainPage {
     return this.getUrlParam(await this.getUrl(), 'page-id');
   }
 
+  async isCurrentPageId(pageId: string, current = true) {
+    current
+      ? await expect
+          .poll(() => this.getCurrentPageId(), `Current page id is ${pageId}`)
+          .toBe(pageId)
+      : await expect
+          .poll(() => this.getCurrentPageId(), `Current page id is not ${pageId}`)
+          .not.toBe(pageId);
+  }
+
   async isBulkDeleteContextMenuVisible() {
     await expect(
       this.contextMenu.getByRole('listitem'),

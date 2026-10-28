@@ -66,13 +66,13 @@ exports.MainPage = class MainPage extends BasePage {
     this.connectedMCPButton = page.getByText('MCP connected');
     this.colorsPaletteButton = page.locator('button[title^="Color Palette"]');
     this.designTab = page.getByRole('tab', { name: 'design' });
-    this.createPathPointer = page.locator('#viewport-controls.cursor-pen.drawing');
+    this.createPathPointer = page.locator('#viewport-controls.cursor-draw.drawing');
 
     //Grid editor Toolbar
     this.gridEditorToolBar = page.getByText('Editing grid').locator('..');
 
     //Viewport
-    this.textbox = this.viewport.getByRole('textbox').first();
+    this.textbox = page.getByTestId('text-editor-container');
     this.guides = page.locator('.guides .new-guides');
     this.rulers = page.locator('.rulers');
     this.horizontalRulerTrack = page.locator(
@@ -91,35 +91,6 @@ exports.MainPage = class MainPage extends BasePage {
 
     //Node panel
     this.pathActionsBlock = page.locator('div[class$="path_actions__sub-actions"]');
-    this.firstNode = page.locator(
-      'g[class="path-point"] circle[pointer-events="visible"] >> nth=0',
-    );
-    this.secondNode = page.locator(
-      'g[class="path-point"] circle[pointer-events="visible"] >> nth=2',
-    );
-    this.thirdNode = page.locator(
-      'g[class="path-point"] circle[pointer-events="visible"] >> nth=3',
-    );
-    this.fourthNode = page.locator(
-      'g[class="path-point"] circle[pointer-events="visible"] >> nth=4',
-    );
-    this.fifthNode = page.locator(
-      'g[class="path-point"] circle[pointer-events="visible"] >> nth=5',
-    );
-    this.sixthNode = page.locator(
-      'g[class="path-point"] circle[pointer-events="visible"] >> nth=6',
-    );
-    this.nodePanelAddNodeButton = page.locator('button[title^="Add node"]');
-    this.nodePanelDeleteNodeButton = page.locator('button[title^="Delete node"]');
-    this.nodePanelMergeNodesButton = page.locator('button[title^="Merge nodes"]');
-    this.nodePanelDrawNodesButton = page.locator('button[title^="Draw nodes"]');
-    this.nodePanelMoveNodesButton = page.locator('button[title^="Move nodes"]');
-    this.nodePanelJoinNodesButton = page.locator('button[title^="Join nodes"]');
-    this.nodePanelSeparateNodesButton = page.locator(
-      'button[title^="Separate nodes"]',
-    );
-    this.nodePanelToCornerButton = page.locator('button[title^="To corner"]');
-    this.nodePanelToCurveButton = page.locator('button[title^="To curve"]');
 
     // Main menu - first level
     this.mainMenuButton = page.getByRole('button', { name: 'Main menu' });
@@ -204,8 +175,16 @@ exports.MainPage = class MainPage extends BasePage {
     this.disconnectMCPServerMenuSubItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Disconnect' });
-    this.downloadFileTickIcon = page.locator('use[href="#icon-tick"]');
-    this.downloadFileCloseButton = page.locator('input[value="Close"]');
+
+    // Download Files Modal
+    this.downloadFilesModalContainer = page.locator(
+      '.main_ui_exports_files__modal-container',
+    );
+    this.downloadFileTickIcon = this.downloadFilesModalContainer.locator(
+      '.main_ui_notifications_context_notification__icon > use',
+    );
+    this.downloadFileCloseButton =
+      this.downloadFilesModalContainer.getByText('Close');
 
     // Export as PDF
     this.exportAsPDFModalTitle = page.getByRole('heading', {
@@ -304,7 +283,6 @@ exports.MainPage = class MainPage extends BasePage {
   }
 
   async clickCreatePathButton() {
-    await this.viewport.click();
     await this.pathToolButton.click();
     await this.viewport.hover();
     await expect(this.createPathPointer).toBeVisible();
@@ -467,12 +445,18 @@ exports.MainPage = class MainPage extends BasePage {
     await this.focusModeTag.click();
   }
 
+  async isFocusModeOn(on = true) {
+    on
+      ? await expect(this.focusModeTag, 'Focus mode is on').toBeVisible()
+      : await expect(this.focusModeTag, 'Focus mode is off').toBeHidden();
+  }
+
   async drawCurve(x1, y1, x2, y2) {
     await this.page.waitForTimeout(200);
     await this.page.mouse.move(x1, y1);
     await this.page.mouse.down();
     await this.page.mouse.move(x1, y1);
-    await this.page.mouse.move(x2, y2);
+    await this.page.mouse.move(x2, y2, { steps: 10 });
     await this.page.mouse.up();
   }
 
@@ -533,89 +517,17 @@ exports.MainPage = class MainPage extends BasePage {
     await this.pressDeleteKeyboardButton();
   }
 
-  async clickFirstNode() {
-    await this.firstNode.click({ force: true });
-  }
-
-  async clickSecondNode() {
-    await this.secondNode.click({ force: true });
-  }
-
-  async clickThirdNode() {
-    await this.thirdNode.click({ force: true });
-  }
-
-  async clickFourthNode() {
-    await this.fourthNode.click({ force: true });
-  }
-
-  async clickFifthNode() {
-    await this.fifthNode.click({ force: true });
-  }
-
-  async clickSixthNode() {
-    await this.sixthNode.click({ force: true });
-  }
-
-  async holdShiftKeyboardButton() {
-    await this.page.keyboard.down('Shift');
-  }
-
-  async releaseShiftKeyboardButton() {
-    await this.page.keyboard.up('Shift');
-  }
-
-  async clickAddNodeButtonOnNodePanel() {
-    await this.nodePanelAddNodeButton.click();
-  }
-
-  async pressShiftPlusKeyboardShortcut() {
-    await this.page.keyboard.press('Shift+NumpadAdd');
-  }
-
-  async clickDeleteNodeButtonOnNodePanel() {
-    await this.nodePanelDeleteNodeButton.click();
-  }
-
   async pressDeleteKeyboardButton() {
     await this.page.keyboard.press('Delete');
   }
 
-  async clickMergeNodesButtonOnNodePanel() {
-    await this.nodePanelMergeNodesButton.click();
-  }
-
-  async pressCtrlJKeyboardShortcut() {
-    await this.page.keyboard.press('Control+J');
-  }
-
-  async clickDrawNodesButtonOnNodePanel() {
-    await this.nodePanelDrawNodesButton.click();
-  }
-
-  async clickMoveNodesButtonOnNodePanel() {
-    await this.nodePanelMoveNodesButton.click();
-  }
-
-  async clickJoinNodesButtonOnNodePanel() {
-    await this.nodePanelJoinNodesButton.click();
+  async pressBackspaceKeyboardButton() {
+    await this.page.keyboard.press('Backspace');
   }
 
   async pressKeyboardShortcut(key) {
     const normalizedKey = key.length === 1 ? key.toUpperCase() : key;
     await this.page.keyboard.press(normalizedKey);
-  }
-
-  async clickSeparateNodesButtonOnNodePanel() {
-    await this.nodePanelSeparateNodesButton.click();
-  }
-
-  async clickToCornerButtonOnNodePanel() {
-    await this.nodePanelToCornerButton.click();
-  }
-
-  async clickToCurveButtonOnNodePanel() {
-    await this.nodePanelToCurveButton.click();
   }
 
   async clickMainMenuButton() {
@@ -923,9 +835,9 @@ exports.MainPage = class MainPage extends BasePage {
     await expect(this.typographiesColorsBottomPanel).not.toBeVisible();
   }
 
-  async backToDashboardFromFileEditor() {
+  async backToDashboardFromFileEditor(header = 'Projects') {
     await this.clickPencilBoxButton();
-    await this.isHeaderDisplayed('Projects');
+    await this.isHeaderDisplayed(header);
   }
 
   async pressOpenTypographiesBottomPanelShortcut() {
@@ -936,6 +848,7 @@ exports.MainPage = class MainPage extends BasePage {
   async createDefaultBoardByCoordinates(x, y, double = false) {
     await this.clickCreateBoardButton();
     await this.clickViewportByCoordinates(x, y);
+    await this.waitForChangeIsSaved();
     double === true
       ? await this.clickViewportByCoordinates(x, y)
       : await this.waitForChangeIsSaved();
@@ -944,6 +857,7 @@ exports.MainPage = class MainPage extends BasePage {
   async createDefaultRectangleByCoordinates(x, y, double = false) {
     await this.clickCreateRectangleButton();
     await this.clickViewportByCoordinates(x, y);
+    await this.waitForChangeIsSaved();
     double === true
       ? await this.clickViewportByCoordinates(x, y)
       : await this.waitForChangeIsSaved();
@@ -997,8 +911,15 @@ exports.MainPage = class MainPage extends BasePage {
     await this.page.keyboard.press('Enter');
     await expect(this.pathActionsBlock).toBeVisible();
     await this.page.keyboard.press('Enter');
-    // await this.clickMoveNodesButtonOnNodePanel();
-    // await this.clickDrawNodesButtonOnNodePanel();
+    await this.waitForChangeIsSaved();
+  }
+
+  async createOpenPathWithEsc() {
+    await this.clickCreatePathButton();
+    await this.clickViewportByCoordinates(500, 200);
+    await this.clickViewportByCoordinates(1200, 700);
+    await this.clickViewportByCoordinates(1000, 400);
+    await this.page.keyboard.press('Escape');
     await this.waitForChangeIsSaved();
   }
 
@@ -1053,12 +974,62 @@ exports.MainPage = class MainPage extends BasePage {
     await this.waitForChangeIsSaved();
   }
 
+  /** In the text editor, extends the selection `count` characters to the right. */
+  async selectNextCharactersInTextEditor(count) {
+    for (let i = 0; i < count; i++) {
+      await this.page.keyboard.press('Shift+ArrowRight');
+    }
+  }
+
+  async moveCaretToTextStart() {
+    await this.page.keyboard.press('Home');
+  }
+
+  /** Dragging a box (not clicking) creates a Fixed-size text. */
+  async createTextLayerInBoxViaPaste(x1, y1, x2, y2, text) {
+    await this.clickCreateTextButton();
+    await this.dragOnViewport(x1, y1, x2, y2);
+    await this.pasteTextFromKeyboard(text);
+    await this.clickMoveButton();
+    await expect(this.createdLayer).toContainText(text.substring(0, 50));
+    await this.waitForChangeIsSaved();
+  }
+
+  /** Handlers have no per-side attribute: edges are thin bars, corners are squares. */
+  async getResizeHandlerBoxes() {
+    await this.waitForResizeHandlerVisible();
+    return this.resizeHandler.evaluateAll((elements) =>
+      elements.map((element) => element.getBoundingClientRect().toJSON()),
+    );
+  }
+
+  async dragFromBoxCenter(box, dx, dy) {
+    const x = box.x + box.width / 2;
+    const y = box.y + box.height / 2;
+    await this.page.mouse.move(x, y);
+    await this.page.mouse.down();
+    await this.page.mouse.move(x + dx, y + dy, { steps: 10 });
+    await this.page.mouse.up();
+    await this.waitForChangeIsSaved();
+  }
+
+  /** Changes width and height (a text becomes Fixed). */
+  async dragSelectionBottomRightCorner(dx, dy) {
+    const corners = (await this.getResizeHandlerBoxes()).filter(
+      (box) => box.width === box.height,
+    );
+    const bottomRight = corners.reduce((a, b) => (b.x + b.y > a.x + a.y ? b : a));
+    await this.dragFromBoxCenter(bottomRight, dx, dy);
+  }
+
   async createTextLayerByCoordinatesViaPaste(x, y, text) {
     await this.clickCreateTextButton();
     await this.clickViewportByCoordinates(x, y);
     await this.pasteTextFromKeyboard(text);
-    await expect(this.textbox).toHaveText(text);
     await this.clickMoveButton();
+    // The WASM text editor doesn't sync pasted content back into the contenteditable DOM,
+    // so the layer name (auto-set from the text, only after exiting edit mode) is checked instead.
+    await expect(this.createdLayer).toContainText(text.substring(0, 50));
     await this.waitForChangeIsSaved();
   }
 
@@ -1296,6 +1267,41 @@ exports.MainPage = class MainPage extends BasePage {
     const textSel = this.page.locator(`rect[class="main viewport-selrect"]`);
     await textSel.dblclick();
     await textSel.dblclick();
+  }
+
+  /**
+   * Opens the text editor of the selected text layer and deletes the given text
+   * from the end of the content with Backspace.
+   * @param {string} text
+   */
+  async deleteTextFromEndInEditor(text) {
+    await this.clickOnEnter();
+    await this.page.keyboard.press('End');
+    for (let i = 0; i < text.length; i++) {
+      await this.page.keyboard.press('Backspace');
+    }
+  }
+
+  /**
+   * Double-clicks inside the selected text at a relative horizontal position
+   * (0 = left edge, 1 = right edge), e.g. to select a word in the text editor.
+   * @param {number} xRatio
+   */
+  async doubleClickOnTextAt(xRatio) {
+    const box = await this.page
+      .locator(`rect[class="main viewport-selrect"]`)
+      .boundingBox();
+    await this.page.mouse.dblclick(
+      box.x + box.width * xRatio,
+      box.y + box.height / 2,
+    );
+  }
+
+  async isErrorScreenNotDisplayed() {
+    await expect(
+      this.errorScreen,
+      'Internal error screen is not shown',
+    ).toBeHidden();
   }
 
   async editTextLayer(text) {

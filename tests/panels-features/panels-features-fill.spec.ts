@@ -1,7 +1,7 @@
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { expect } from '@playwright/test';
-import { demoAccountFileTest, mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 let colorPalettePage: ColorPalettePage;
@@ -89,21 +89,19 @@ demoAccountFileTest.describe(() => {
   });
 });
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
-    designPanelPage = new DesignPanelPage(page);
-    colorPalettePage = new ColorPalettePage(page);
+demoAccountFileTest.describe(() => {
+  demoAccountFileTest.beforeEach(async ({ mainPage }) => {
     await mainPage.createDefaultClosedPath();
     await mainPage.isCreatedLayerVisible();
   });
 
-  mainAccountFileTest(qase([790], 'Add fill to path'), async ({ mainPage }) => {
-    await mainAccountFileTest.step('Add fill to path', async () => {
+  demoAccountFileTest(qase([790], 'Add fill to path'), async ({ mainPage }) => {
+    await demoAccountFileTest.step('Add fill to path', async () => {
       await designPanelPage.clickAddFillButton();
       await mainPage.waitForChangeIsSaved();
     });
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Verify path fill values and screenshot',
       async () => {
         await designPanelPage.isFillHexCodeSet('#B1B2B5');
@@ -116,10 +114,10 @@ mainAccountFileTest.describe(() => {
     );
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([795], 'Change fill color for path'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step('Change path fill color', async () => {
+      await demoAccountFileTest.step('Change path fill color', async () => {
         await designPanelPage.clickAddFillButton();
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.clickFillColorIcon();
@@ -128,7 +126,7 @@ mainAccountFileTest.describe(() => {
         await mainPage.waitForChangeIsSaved();
       });
 
-      await mainAccountFileTest.step('Verify changed path fill', async () => {
+      await demoAccountFileTest.step('Verify changed path fill', async () => {
         await designPanelPage.isFillHexCodeSet('#FF0000');
         await designPanelPage.isFillOpacitySet('100');
         await expect(mainPage.viewport).toHaveScreenshot('path-changed-fill.png', {
@@ -138,17 +136,17 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([800], 'Change fill opacity for path'),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step('Change path fill opacity', async () => {
+      await demoAccountFileTest.step('Change path fill opacity', async () => {
         await designPanelPage.clickAddFillButton();
         await designPanelPage.changeOpacityForFill('70');
         await mainPage.clickOnDesignTab();
         await mainPage.waitForChangeIsSaved();
       });
 
-      await mainAccountFileTest.step('Verify changed path opacity', async () => {
+      await demoAccountFileTest.step('Verify changed path opacity', async () => {
         await designPanelPage.isFillHexCodeSet('#B1B2B5');
         await designPanelPage.isFillOpacitySet('70');
         await mainPage.waitForResizeHandlerVisible();
@@ -162,8 +160,8 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(qase([815], 'Remove fill for path'), async ({ mainPage }) => {
-    await mainAccountFileTest.step('Remove path fill', async () => {
+  demoAccountFileTest(qase([815], 'Remove fill for path'), async ({ mainPage }) => {
+    await demoAccountFileTest.step('Remove path fill', async () => {
       await designPanelPage.clickAddFillButton();
       await mainPage.waitForChangeIsSaved();
       await designPanelPage.clickRemoveFillButton();
@@ -171,7 +169,8 @@ mainAccountFileTest.describe(() => {
       await mainPage.clickOnDesignTab();
     });
 
-    await mainAccountFileTest.step('Verify removed path fill', async () => {
+    await demoAccountFileTest.step('Verify removed path fill', async () => {
+      await mainPage.waitForResizeHandlerVisible();
       await expect(mainPage.viewport).toHaveScreenshot('path-removed-fill.png', {
         mask: mainPage.maskViewport(),
       });

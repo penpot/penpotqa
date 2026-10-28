@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import { demoAccountTeamFileTest } from 'fixtures';
+import { mainAccountFileTest } from 'fixtures';
 import { random } from 'helpers/string-generator';
 import {
   waitMessage,
@@ -10,32 +10,37 @@ import { qase } from 'playwright-qase-reporter/playwright';
 import { ProfilePage } from '@pages/profile-page';
 import { LoginPage } from '@pages/login-page';
 import { RegisterPage } from '@pages/register-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 
+const defaultNameBoard = 'Board';
 let profilePage: ProfilePage;
 let loginPage: LoginPage;
 let registerPage: RegisterPage;
+let layersPanelPage: LayersPanelPage;
 
-demoAccountTeamFileTest.beforeEach(async ({ page }) => {
+mainAccountFileTest.beforeEach(async ({ page }) => {
   profilePage = new ProfilePage(page);
   loginPage = new LoginPage(page);
   registerPage = new RegisterPage(page);
+  layersPanelPage = new LayersPanelPage(page);
 });
 
-demoAccountTeamFileTest.describe(() => {
-  demoAccountTeamFileTest(
+mainAccountFileTest.describe(() => {
+  mainAccountFileTest(
     qase([2036], 'Share link of two Boards to a user from your team'),
     async ({ page, mainPage, teamPage, dashboardPage, teamName }) => {
-      await demoAccountTeamFileTest.slow();
+      await mainAccountFileTest.slow();
       const firstEditor = random().concat('autotest');
       const firstEmail = `${process.env.GMAIL_NAME}+${firstEditor}${process.env.GMAIL_DOMAIN}`;
       let link = '';
 
-      await demoAccountTeamFileTest.step(
+      await mainAccountFileTest.step(
         'Create two boards and copy their link',
         async () => {
           await mainPage.createDefaultBoardByCoordinates(100, 100);
-          await mainPage.createDefaultBoardByCoordinates(100, 300, true);
-          await mainPage.clickViewportTwice();
+          await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 1);
+          await mainPage.createDefaultBoardByCoordinates(100, 300);
+          await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 2);
           await mainPage.clickMainMenuButton();
           await mainPage.clickEditMainMenuItem();
           await mainPage.clickSelectAllMainMenuSubItem();
@@ -48,7 +53,7 @@ demoAccountTeamFileTest.describe(() => {
 
       const firstInvite = await (async () => {
         let invite: Awaited<ReturnType<typeof waitMessage>>;
-        await demoAccountTeamFileTest.step(
+        await mainAccountFileTest.step(
           `Invite ${firstEmail} to the team as Editor`,
           async () => {
             await teamPage.openInvitationsPageViaOptionsMenu();
@@ -64,11 +69,10 @@ demoAccountTeamFileTest.describe(() => {
         return invite!;
       })();
 
-      await demoAccountTeamFileTest.step(
+      await mainAccountFileTest.step(
         'Accept invitation and verify shared board link',
         async () => {
           await profilePage.logout();
-          await loginPage.isLoginPageOpened();
           await page.goto(firstInvite.inviteUrl);
           await registerPage.registerAccount(
             firstEditor,
@@ -91,12 +95,12 @@ demoAccountTeamFileTest.describe(() => {
     },
   );
 
-  demoAccountTeamFileTest(
+  mainAccountFileTest(
     qase([2035], 'Share link of Component with a user without team permission'),
     async ({ page, mainPage, teamPage, dashboardPage }) => {
       let link = '';
 
-      await demoAccountTeamFileTest.step(
+      await mainAccountFileTest.step(
         'Create component and copy its link',
         async () => {
           await mainPage.createDefaultRectangleByCoordinates(100, 100);
@@ -107,7 +111,7 @@ demoAccountTeamFileTest.describe(() => {
         },
       );
 
-      await demoAccountTeamFileTest.step(
+      await mainAccountFileTest.step(
         'Log in as a user without team permission',
         async () => {
           await profilePage.logout();
@@ -120,7 +124,7 @@ demoAccountTeamFileTest.describe(() => {
         },
       );
 
-      await demoAccountTeamFileTest.step(
+      await mainAccountFileTest.step(
         'Verify access is denied via shared component link',
         async () => {
           await page.goto(link);
@@ -131,4 +135,12 @@ demoAccountTeamFileTest.describe(() => {
       );
     },
   );
+
+  mainAccountFileTest.afterEach(async ({ dashboardPage }) => {
+    await profilePage.logout();
+    await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
+    await loginPage.enterPwd(process.env.LOGIN_PWD);
+    await loginPage.clickLoginButton();
+    await dashboardPage.isDashboardOpenedAfterLogin();
+  });
 });

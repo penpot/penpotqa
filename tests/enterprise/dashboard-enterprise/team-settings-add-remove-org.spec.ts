@@ -12,6 +12,7 @@
 import { qase } from 'playwright-qase-reporter/playwright';
 import { createOrgName } from 'helpers/organizations/create-org-name';
 import { createTeamName } from 'helpers/teams/create-team-name';
+import { goToOtherTeam } from 'helpers/teams/go-to-other-team';
 import { subscribeAndCreateOrg } from 'helpers/organizations/subscribe-and-create-org';
 import { enterprisePageTest } from '@tests/enterprise/fixtures/enterprise-fixtures';
 
@@ -40,11 +41,9 @@ enterprisePageTest.describe(
         await enterprisePageTest.step(
           'Switch to the pre-existing team → Team Settings shows "not part of any organization" and an "Add to an organization" link',
           async () => {
-            await adminConsolePage.goToFiles();
-            // A real reload — the dashboard's in-memory team list can go
-            // stale right after an Admin Console round-trip, otherwise.
-            await page.goto('/');
-            await teamPage.switchTeam(teamName);
+            await adminConsolePage.goToFiles(orgName);
+            // The pre-existing team isn't in the org, so it's under "Other teams".
+            await goToOtherTeam(orgPage, teamPage, teamName);
             await teamPage.openTeamSettingsPageViaOptionsMenu();
             await teamPage.isTeamNotPartOfAnyOrg();
           },
@@ -75,7 +74,7 @@ enterprisePageTest.describe(
               stripePage,
               orgName,
             );
-            await adminConsolePage.goToFiles();
+            await adminConsolePage.goToFiles(orgName);
             await teamPage.createTeam(teamName);
             await teamPage.openTeamSettingsPageViaOptionsMenu();
             await teamPage.isTeamPartOfOrganization(orgName);

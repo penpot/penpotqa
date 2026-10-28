@@ -41,7 +41,8 @@ enterprisePageTest.describe(
             ownerName = await adminConsolePage.getUserName();
             orgAdminConsoleUrl = page.url();
 
-            await adminConsolePage.goToFiles();
+            await adminConsolePage.goToFiles(orgName);
+
             await teamPage.createTeam(teamName);
           },
         );
@@ -50,6 +51,7 @@ enterprisePageTest.describe(
           'Admin Console > People → owner listed with a Teams count of 1',
           async () => {
             await page.goto(orgAdminConsoleUrl);
+            await adminConsolePage.page.reload();
             await adminConsolePage.isMemberListedInPeopleTable(ownerName);
             await adminConsolePage.hasMemberTeamsCountInPeopleTable(ownerName, 1);
           },
@@ -60,7 +62,7 @@ enterprisePageTest.describe(
           async () => {
             // deleteTeam() itself opens the team switcher and selects the team
             // by name before deleting it — no need to switch to it first.
-            await adminConsolePage.goToFiles();
+            await adminConsolePage.goToFiles(orgName);
             await teamPage.deleteTeam(teamName);
           },
         );
@@ -69,6 +71,7 @@ enterprisePageTest.describe(
           'Admin Console > Teams → deleted team no longer listed',
           async () => {
             await page.goto(orgAdminConsoleUrl);
+            await adminConsolePage.page.reload();
             await adminConsolePage.openTeamsTab();
             await adminConsolePage.isTeamListedInTeamsTable(teamName, false);
           },

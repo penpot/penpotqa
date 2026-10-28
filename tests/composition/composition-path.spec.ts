@@ -1,21 +1,21 @@
-import { mainAccountFileTest } from 'fixtures';
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
-import { expect } from '@playwright/test';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { expect } from '@playwright/test';
+import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
 let colorPalettePage: ColorPalettePage;
 
-mainAccountFileTest.beforeEach(async ({ page }) => {
+demoAccountFileTest.beforeEach(async ({ page }) => {
   colorPalettePage = new ColorPalettePage(page);
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([487], 'Create Path (Toolbar) - closed'),
   async ({ mainPage }) => {
     await mainPage.createDefaultClosedPath();
@@ -27,28 +27,42 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([489], 'Create Path (Toolbar) - opened'),
   async ({ mainPage }) => {
-    await mainPage.createDefaultOpenPath();
-    await mainPage.isCreatedLayerVisible();
-    await layersPanelPage.selectLayerByName('Path');
-    await expect(mainPage.viewport).toHaveScreenshot('path-opened.png', {
-      mask: mainPage.maskViewport(),
-    });
+    await demoAccountFileTest.step(
+      'Create path and finish it with Esc',
+      async () => {
+        await mainPage.createOpenPathWithEsc();
+        await mainPage.isCreatedLayerVisible();
+      },
+    );
+
+    await demoAccountFileTest.step(
+      'Verify path remains open for editing',
+      async () => {
+        await expect(
+          mainPage.pathActionsBlock,
+          'Path node actions should stay visible after Esc',
+        ).toBeVisible();
+        await expect(mainPage.viewport).toHaveScreenshot('path-opened.png', {
+          mask: mainPage.maskViewport(),
+        });
+      },
+    );
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([501], 'Add edit and remove Stroke Caps to Path (arrow, marker)'),
   async ({ mainPage }) => {
-    await mainAccountFileTest.step('Create and select Path layer', async () => {
+    await demoAccountFileTest.step('Create and select Path layer', async () => {
       await mainPage.createDefaultOpenPath();
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.selectLayerByName('Path');
     });
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Add Arrow (first) and Diamond (second) caps',
       async () => {
         await designPanelPage.changeCap('Arrow', 'first');
@@ -66,7 +80,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Switch caps and verify Diamond (first) and Arrow (second)',
       async () => {
         await designPanelPage.clickSwitchCapButton();
@@ -84,7 +98,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Remove caps and verify None on both',
       async () => {
         await designPanelPage.changeCap('None', 'first');
@@ -105,12 +119,12 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
+demoAccountFileTest.describe(() => {
+  demoAccountFileTest.beforeEach(async ({ mainPage }) => {
     await mainPage.createDefaultClosedPath();
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([512], 'Change rotation (Design page in the right)'),
     async ({ mainPage }) => {
       await designPanelPage.changeRotationForLayer('90');
@@ -140,7 +154,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([513], 'Delete Path (From right click)'),
     async ({ mainPage }) => {
       await mainPage.isCreatedLayerVisible();
@@ -150,7 +164,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([2543], 'Delete Path (From Keyboard)'),
     async ({ mainPage }) => {
       await mainPage.isCreatedLayerVisible();
@@ -160,7 +174,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       [525],
       'Flip Vertical and Flip Horizontal path (From right click and Shortcut Shift +V Shift + H)',
@@ -195,17 +209,11 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(qase([537], 'Selection to board'), async ({ mainPage }) => {
+  demoAccountFileTest(qase([537], 'Selection to board'), async ({ mainPage }) => {
     await mainPage.selectionToBoardViaRightClick();
     await mainPage.waitForChangeIsSaved();
     await expect(mainPage.viewport).toHaveScreenshot('path-to-board.png', {
       mask: mainPage.maskViewport(),
     });
-  });
-});
-
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
-    await mainPage.createDefaultOpenPath();
   });
 });

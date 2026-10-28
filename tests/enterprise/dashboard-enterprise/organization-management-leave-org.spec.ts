@@ -1,63 +1,108 @@
 /**
  * Qase suite: Enterprise Dashboard > Organizations Dropdown > Organization Management > Leave Org
  *
- * Stubs below (`test.skip`) await automation — see the Enterprise Plan
- * automation plan.
- *
- * Base fixture: `demoAccountApiFixture` (does NOT grant Enterprise
- * entitlement by itself — see enterprise-fixtures.ts's `enterprisePageTest`/
- * `ownerAndInviteeTest`). Per-case "Accounts:" notes cover invitees
- * needing a real, readable inbox instead (see the
- * enterprise-demo-account-email memory).
+ * Base fixture: `ownerAndInviteeActivatedTest` (see enterprise-fixtures.ts)
+ * — the owner is Enterprise-entitled via the activation-code path,
+ * skipping the Stripe checkout UI. PRE/dev environments only — skips
+ * automatically wherever `LICENSES_MANAGER_URL` is unset. `invitee` needs
+ * a real, readable inbox (see the enterprise-demo-account-email memory).
  */
-import { demoAccountApiFixture } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
+import { waitMessage, waitSecondMessage } from 'helpers/gmail';
+import { createTeamInviteeSession } from 'helpers/accounts/create-invitee-session';
+import { InvitationRole } from 'helpers/teams/invitation-role';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { OrganizationPage } from '@pages/dashboard/organization-page';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { createOrgName } from 'helpers/organizations/create-org-name';
+import { createTeamName } from 'helpers/teams/create-team-name';
+import { createOrgForLicensedAccount } from 'helpers/organizations/create-org-for-licensed-account';
+import { ownerAndInviteeActivatedTest } from '@tests/enterprise/fixtures/enterprise-fixtures';
 
-demoAccountApiFixture.describe(
+ownerAndInviteeActivatedTest.describe(
   'Enterprise Dashboard > Organizations Dropdown > Organization Management > Leave Org',
   () => {
-    demoAccountApiFixture.skip(
-      qase([3120], 'Team owner leaves organization with other members'),
-      async ({ page }) => {
-        /**
-         * Qase steps (see PENPOT-3120 for full detail):
-         * 1. Navigate to organizations list
-         * 2. Click leave trigger next to OrgA
-         * 3. Confirmation modal asks to choose a new owner for Team-Coconut
-         * 4. User7 (admin) suggested as default new owner
-         * 5. New owner can be selected from team members
-         * 6. Confirm leaving → redirected to Personal Projects in the ghost organization
-         */
-        // TODO: automate — see automation plan (not yet unblocked, or not yet reached
-        // in the implementation order from section 4).
-      },
-    );
+    ownerAndInviteeActivatedTest(
+      qase(
+        [3120, 3123, 3127],
+        'Team owner leaves organization: ownership transfers, lands on the zero-org dashboard',
+      ),
+      async ({ browser, invitee, orgPage, adminConsolePage }) => {
+        // Real Gmail waits for 2 accepted invites (invitee's own, plus the
+        // team admin's) don't fit the default per-test budget.
+        ownerAndInviteeActivatedTest.slow();
 
-    demoAccountApiFixture.skip(
-      qase([3123], 'Team ownership is transferred when owner leaves'),
-      async ({ page }) => {
-        /**
-         * Qase steps (see PENPOT-3123 for full detail):
-         * 1. Navigate to Team-Coconut settings
-         * 2. Check the team owner section
-         * 3. User7 is shown as the current owner of Team-Coconut
-         */
-        // TODO: automate — see automation plan (not yet unblocked, or not yet reached
-        // in the implementation order from section 4).
-      },
-    );
+        const orgName = createOrgName();
+        const teamName = createTeamName();
+        const inviteeOrgPage = new OrganizationPage(invitee.page);
+        const inviteeTeamPage = new TeamPage(invitee.page);
+        const admin = await createTeamInviteeSession(browser, InvitationRole.Admin);
 
-    demoAccountApiFixture.skip(
-      qase([3127], 'User is redirected to ghost organization dashboard'),
-      async ({ page }) => {
-        /**
-         * Qase steps (see PENPOT-3127 for full detail):
-         * 1. Confirm leaving the organization
-         * 2. Wait for page redirect
-         * 3. User lands on Personal Projects dashboard in the ghost organization
-         */
-        // TODO: automate — see automation plan (not yet unblocked, or not yet reached
-        // in the implementation order from section 4).
+        try {
+          await ownerAndInviteeActivatedTest.step(
+            'Setup: create an org (Enterprise-activated) and invite the second account',
+            async () => {
+              await createOrgForLicensedAccount(orgPage, orgName);
+              await adminConsolePage.invitePersonToOrganization(invitee.email);
+              await inviteeOrgPage.acceptOrgInviteFromInbox(invitee.email, orgName);
+            },
+          );
+
+          await ownerAndInviteeActivatedTest.step(
+            'Invitee creates a team (becomes its owner) and invites a third account as Admin',
+            async () => {
+              await inviteeOrgPage.switchToOrg(orgName);
+              await inviteeTeamPage.createTeam(teamName);
+              await inviteeTeamPage.openInvitationsPageViaOptionsMenu();
+              await inviteeTeamPage.clickInviteMembersToTeamButton();
+              await inviteeTeamPage.enterEmailToInviteMembersPopUp(admin.email);
+              await inviteeTeamPage.selectInvitationRoleInPopUp(
+                InvitationRole.Admin,
+              );
+              await inviteeTeamPage.clickSendInvitationButton();
+
+              await waitSecondMessage(invitee.page, admin.email, 40);
+              const invite = await waitMessage(invitee.page, admin.email, 40);
+              const adminDashboardPage = new DashboardPage(admin.page);
+              await admin.page.goto(invite!.inviteUrl);
+              await adminDashboardPage.isSuccessMessageDisplayed(
+                'Joined the team successfully',
+              );
+            },
+          );
+
+          await ownerAndInviteeActivatedTest.step(
+            '3120: Invitee leaves the organization → confirmation dialog → confirm',
+            async () => {
+              await invitee.page.reload();
+              await invitee.page.waitForLoadState('networkidle');
+
+              await inviteeOrgPage.openOrganizationOptionsMenu();
+              await inviteeOrgPage.clickLeaveOrg();
+              await inviteeOrgPage.isLeaveOrgDialogShown();
+              await inviteeOrgPage.confirmPromoteAndLeave();
+            },
+          );
+
+          await ownerAndInviteeActivatedTest.step(
+            '3123: Team ownership transferred to the promoted admin',
+            async () => {
+              await adminConsolePage.page.reload();
+              await adminConsolePage.openTeamsTab();
+              await adminConsolePage.hasTeamOwnerInTeamsTable(teamName, admin.name);
+            },
+          );
+
+          await ownerAndInviteeActivatedTest.step(
+            '3127: Invitee lands on the zero-org (ghost organization) Personal Projects dashboard',
+            async () => {
+              await inviteeOrgPage.isLeftOrganizationMessageShown(orgName);
+              await inviteeOrgPage.isZeroOrgAccountStateShown();
+            },
+          );
+        } finally {
+          await admin.close();
+        }
       },
     );
   },

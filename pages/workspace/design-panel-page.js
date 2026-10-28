@@ -11,10 +11,17 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
     //Design panel
     this.rightSidebar = this.page.getByTestId('right-sidebar');
+    this.viewModeRightSidebar = page.locator(
+      `aside[class*='inspect_right_sidebar']`,
+    );
     this.designTabpanel = page.getByRole('tabpanel', { name: 'design' });
-    this.canvasBackgroundColorIcon = page
-      .locator('div[class*="page__element-set"] div[class*="color-bullet-wrapper"]')
-      .first();
+    this.canvasBackgroundSection = page.getByLabel('Canvas background section');
+    this.canvasBackgroundColorIcon = this.canvasBackgroundSection.locator(
+      '.main_ui_ds_utilities_swatch__swatch-opacity',
+    );
+    this.canvasBackgroundTokenName = this.canvasBackgroundSection.locator(
+      'div[class*="color_row__token-name"]',
+    );
     this.layerRotationInput = page.getByRole('textbox', { name: 'Rotation' });
     this.individualCornersRadiusButton = page.getByRole('button', {
       name: 'Show independent radius',
@@ -55,6 +62,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.alignTopButton = page.getByTitle('Align top');
     this.alignVerticalCenterButton = page.getByTitle('Align vertical center');
     this.alignBottomButton = page.getByTitle('Align bottom');
+    this.distributeHorizontalSpacingButton = page.getByTitle(
+      'Distribute horizontal spacing',
+    );
+    this.distributeVerticalSpacingButton = page.getByTitle(
+      'Distribute vertical spacing',
+    );
 
     //Design panel - Fill section
     this.fillSection = page.getByLabel('Fill section');
@@ -80,6 +93,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
         'div[class*="fill-content"] div[class*="opacity-element-wrapper"] input',
       )
       .last();
+    this.fillRows = this.fillSection.locator('div[class*="color-data"]');
     this.addFillButton = page.getByTestId('add-fill');
     this.removeFillButton = page
       .locator('div[class*="fill-content"]')
@@ -95,6 +109,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     });
     this.colorPickerTokensButton =
       this.colorPickerContainer.getByTestId('opt-token-color');
+    this.colorPickerColorButton = this.colorPickerContainer.getByTestId('opt-color');
 
     this.colorPickerTogglePanelSetButtons = this.colorPickerContainer.getByRole(
       'button',
@@ -436,9 +451,11 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     //Design panel - Export section
     this.exportSection = page.getByText('Export', { exact: true });
     this.addExportButton = page.getByRole('button', { name: 'Add export' });
-    this.addExportVieverButton = page.locator(
-      'button[class*="exports__add-export"]',
-    );
+    this.addExportVieverButton = this.viewModeRightSidebar.getByRole('button', {
+      name: 'Add export',
+    });
+    this.viewModeExportSuffixInput =
+      this.viewModeRightSidebar.getByPlaceholder('Suffix');
     this.removeExportButton = page.getByRole('button', { name: 'Remove export' });
     this.exportElementButton = page.getByRole('button', {
       name: /Export \d+ element/,
@@ -469,9 +486,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.guidesMoreOptionsButton = page.locator(
       'div[class*="grid__advanced-row"] button[class*="show-more-options"]',
     );
-    this.useDefaultGuidesButton = page
-      .getByRole('button')
-      .filter({ hasText: 'Use default' });
+    this.useDefaultGuidesButton = page.getByRole('menuitem', {
+      name: 'Use default',
+    });
 
     // Design panel - Guides section - Advanced Options
     this.guidesAdvancedOptionsSection = page.locator(
@@ -489,6 +506,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.componentMenuButton = this.componentContent.locator(
       'div[class*="component__pill-actions"]',
     );
+    this.componentMenuDropdownItem = page
+      .getByRole('listitem')
+      .and(page.locator('[class*="pill-actions-dropdown-item"]'));
     this.showInAssetsPanelOptionDesign = page
       .getByRole('listitem')
       .filter({ hasText: 'Show in assets panel' });
@@ -690,10 +710,42 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await expect(this.fillTokenColor).toHaveText(value);
   }
 
+  async isStrokeTokenColorSet(tokenName) {
+    await expect(
+      this.strokeSectionContainer.locator('div[class*="color_row__token-name"]'),
+      `Stroke shows the "${tokenName}" token`,
+    ).toHaveText(tokenName);
+  }
+
+  async checkStrokeTokenResolvedValue(value) {
+    await expect(
+      this.strokeSectionContainer.getByLabel(`Resolved value: ${value}`, {
+        exact: true,
+      }),
+      `Stroke token resolved value is "${value}"`,
+    ).toBeVisible();
+  }
+
   async checkFillTokenResolvedValue(value) {
     await expect(
       this.fillSection.getByLabel(`Resolved value: ${value}`, { exact: true }),
       `Fill token resolved value is "${value}"`,
+    ).toBeVisible();
+  }
+
+  /**
+   * @param {string} tokenName - Token name
+   */
+  async isFillTokenNotExistOrDeleted(tokenName) {
+    await expect(
+      this.fillSection.locator('div[class*="error-dot"]'),
+      `Fill error dot for token ${tokenName} is visible`,
+    ).toBeVisible();
+    await expect(
+      this.fillSection
+        .getByLabel(`{${tokenName}} token does not exist or has been deleted.`)
+        .first(),
+      `Fill shows token ${tokenName} as not existing`,
     ).toBeVisible();
   }
 
@@ -733,6 +785,17 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     ).toBeVisible();
   }
 
+  async isColorPickerColorModeSelected() {
+    await expect(
+      this.colorPickerColorButton.getByRole('button'),
+      'Color picker Color mode is selected',
+    ).toHaveAttribute('aria-pressed', 'true');
+    await expect(
+      this.colorPickerTokensButton.getByRole('button'),
+      'Color picker Color tokens mode is not selected',
+    ).toHaveAttribute('aria-pressed', 'false');
+  }
+
   async isSearchByTokenNameInputNotVisible() {
     await expect(
       this.searchByTokenNameInput,
@@ -766,8 +829,53 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.removeFillButton.click();
   }
 
+  async checkFillsCount(count) {
+    await expect(this.fillRows, `Fill section has ${count} fill(s)`).toHaveCount(
+      count,
+    );
+  }
+
+  async clickFillColorIconByIndex(index) {
+    await this.fillRows
+      .nth(index)
+      .locator('div[class*="color-bullet-wrapper"]')
+      .click();
+  }
+
+  async isFillHexCodeSetByIndex(index, value) {
+    await expect(
+      this.fillRows.nth(index).locator('input[class*="color-input"]'),
+    ).toHaveValue(value.replace('#', ''));
+  }
+
+  /**
+   * @param {number} index
+   * @param {'Linear'|'Radial'} type
+   */
+  async isGradientFillSetByIndex(index, type) {
+    await expect(
+      this.fillRows.nth(index).getByText(`${type} gradient`, { exact: true }),
+    ).toBeVisible();
+  }
+
   async clickCanvasBackgroundColorIcon() {
     await this.canvasBackgroundColorIcon.click();
+  }
+
+  async isCanvasBackgroundTokenSet(tokenName) {
+    await expect(
+      this.canvasBackgroundTokenName,
+      `Canvas background shows the "${tokenName}" token`,
+    ).toHaveText(tokenName);
+  }
+
+  async checkCanvasBackgroundTokenResolvedValue(value) {
+    await expect(
+      this.canvasBackgroundSection.getByLabel(`Resolved value: ${value}`, {
+        exact: true,
+      }),
+      `Canvas background token resolved value is "${value}"`,
+    ).toBeVisible();
   }
 
   async clickComponentFillColorIcon() {
@@ -842,6 +950,115 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.waitForChangeIsSaved();
   }
 
+  async getXValue() {
+    return parseFloat(await this.xAxisInput.inputValue());
+  }
+
+  async getYValue() {
+    return parseFloat(await this.yAxisInput.inputValue());
+  }
+
+  async getWidthValue() {
+    return parseFloat(await this.sizeWidthInput.inputValue());
+  }
+
+  async getHeightValue() {
+    return parseFloat(await this.sizeHeightInput.inputValue());
+  }
+
+  async isWidthValue(width) {
+    await expect.poll(() => this.getWidthValue(), `Width is ${width}`).toBe(width);
+  }
+
+  async isHeightValue(height) {
+    await expect
+      .poll(() => this.getHeightValue(), `Height is ${height}`)
+      .toBe(height);
+  }
+
+  async checkWidthHasValueGreaterThan(width) {
+    await expect
+      .poll(() => this.getWidthValue(), `Width is greater than ${width}`)
+      .toBeGreaterThan(width);
+  }
+
+  async checkHeightHasValueGreaterThan(height) {
+    await expect
+      .poll(() => this.getHeightValue(), `Height is greater than ${height}`)
+      .toBeGreaterThan(height);
+  }
+
+  async checkHeightHasValueLessThan(height) {
+    await expect
+      .poll(() => this.getHeightValue(), `Height is less than ${height}`)
+      .toBeLessThan(height);
+  }
+
+  /** Deselects so the next selection's X/Y/W/H inputs render fresh, not stale. */
+  async deselectAndWaitForMeasuresHidden() {
+    await expect(async () => {
+      await this.page.keyboard.press('Escape');
+      await expect(this.xAxisInput).toBeHidden({ timeout: 1000 });
+    }).toPass({ timeout: 10000 });
+  }
+
+  /** Call deselectAndWaitForMeasuresHidden() before selecting the layer. */
+  async getSelectedLayerBounds() {
+    await this.xAxisInput.waitFor({ state: 'visible' });
+    return {
+      x: await this.getXValue(),
+      y: await this.getYValue(),
+      width: await this.getWidthValue(),
+      height: await this.getHeightValue(),
+    };
+  }
+
+  /** @param {{x: number, width: number}[]} layers left to right */
+  async checkEvenHorizontalSpacing(layers) {
+    const gaps = layers
+      .slice(1)
+      .map((layer, i) => layer.x - (layers[i].x + layers[i].width));
+    for (const gap of gaps.slice(1)) {
+      expect(gap, `Horizontal gaps ${gaps.join(', ')} are equal`).toBeCloseTo(
+        gaps[0],
+        0,
+      );
+    }
+  }
+
+  /** @param {{y: number, height: number}[]} layers top to bottom */
+  async checkEvenVerticalSpacing(layers) {
+    const gaps = layers
+      .slice(1)
+      .map((layer, i) => layer.y - (layers[i].y + layers[i].height));
+    for (const gap of gaps.slice(1)) {
+      expect(gap, `Vertical gaps ${gaps.join(', ')} are equal`).toBeCloseTo(
+        gaps[0],
+        0,
+      );
+    }
+  }
+
+  async isWidthAndHeightValue(width, height) {
+    await this.isWidthValue(width);
+    await this.isHeightValue(height);
+  }
+
+  async checkWidthHasValueLessThan(width) {
+    await expect
+      .poll(() => this.getWidthValue(), `Width is less than ${width}`)
+      .toBeLessThan(width);
+  }
+
+  async isWidthAndHeightForLayer(width, height) {
+    await expect(this.sizeWidthInput).toHaveValue(width);
+    await expect(this.sizeHeightInput).toHaveValue(height);
+  }
+
+  async isComponentTypeVisible(type) {
+    await expect(this.rightSidebar.getByText(type, { exact: true })).toBeVisible();
+  }
+
   async changeHeightAndWidthForLayer(height, width) {
     await this.changeWidthForLayer(width);
     await this.changeHeightForLayer(height);
@@ -868,6 +1085,57 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
         await this.alignBottomButton.click();
         break;
     }
+  }
+
+  async clickDistributeHorizontalSpacingButton() {
+    await this.distributeHorizontalSpacingButton.click();
+  }
+
+  /** The tooltip is the button's title. */
+  async checkDistributeHorizontalSpacingTooltip() {
+    await this.distributeHorizontalSpacingButton.hover();
+    await expect(
+      this.distributeHorizontalSpacingButton,
+      'Distribute horizontal spacing tooltip shows its shortcut',
+    ).toHaveAttribute('title', 'Distribute horizontal spacing (Shift+Ctrl+Alt+H)');
+  }
+
+  /** @param {string} hex without # */
+  async typeFillHexCode(hex) {
+    await this.fillColorInput.fill(hex);
+    await this.fillColorInput.press('Enter');
+  }
+
+  /** The dropdown arrow has no role or label, so it's found by class in the Font Size field. */
+  async selectTextFontSizeFromDropdown(size) {
+    await this.designTabpanel
+      .getByTitle('Font Size')
+      .locator('[class*="dropdown-button"]')
+      .click();
+    await this.page.getByRole('listitem').getByText(size, { exact: true }).click();
+  }
+
+  async checkFillMixedIsVisible() {
+    await expect(
+      this.fillSection.getByText('Mixed', { exact: true }),
+      'Fill shows "Mixed"',
+    ).toBeVisible();
+  }
+
+  async checkFontSizeHasMixedValue() {
+    await expect(this.textFontSizeInput, 'Font size is empty').toHaveValue('');
+    await expect(this.textFontSizeInput, 'Font size shows "Mixed"').toHaveAttribute(
+      'placeholder',
+      'Mixed',
+    );
+  }
+
+  /** @param {string} hex without # */
+  async checkSelectedColorIsVisible(hex) {
+    await expect(
+      this.selectedColorInputs.and(this.page.locator(`[value="${hex}" i]`)),
+      `Selected colors include ${hex}`,
+    ).toBeVisible();
   }
 
   async clickAddShadowButton() {
@@ -1054,6 +1322,26 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       default:
         throw new Error(`Unsupported text option: ${value}`);
     }
+  }
+
+  /**
+   * Checks that a horizontal align or grow type button is the active one.
+   * @param {'Left'|'Center'|'Right'|'Justify'|'Fixed'|'Auto width'|'Auto height'} value
+   */
+  async isTextOptionSelected(value) {
+    const buttons = {
+      'Left': this.textAlignLeft,
+      'Center': this.textAlignCenter,
+      'Right': this.textAlignRight,
+      'Justify': this.textAlignJustify,
+      'Fixed': this.textGrowFixed,
+      'Auto width': this.textGrowAutoWidth,
+      'Auto height': this.textGrowAutoHeight,
+    };
+    await expect(
+      buttons[value],
+      `Text option "${value}" is selected`,
+    ).toHaveAttribute('aria-pressed', 'true');
   }
 
   async openTypographyFontDropdown() {
@@ -1458,6 +1746,22 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.removeExportButton.click();
   }
 
+  async isViewModeExportRowVisible(format = 'PNG', scale = '1x') {
+    const sidebar = this.viewModeRightSidebar;
+    await expect(
+      sidebar.getByText(format, { exact: true }),
+      `Export format is ${format}`,
+    ).toBeVisible();
+    await expect(
+      sidebar.getByText(scale, { exact: true }),
+      `Export scale is ${scale}`,
+    ).toBeVisible();
+    await expect(
+      this.viewModeExportSuffixInput,
+      'Export suffix is empty',
+    ).toHaveValue('');
+  }
+
   async isExportElementButtonDisplayed(title) {
     await expect(this.exportElementButton).toHaveText(title);
   }
@@ -1540,11 +1844,25 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async clickOnComponentMenuButton() {
-    await this.componentMenuButton.click();
+    await expect(async () => {
+      await this.componentMenuButton.click();
+      await expect(this.componentMenuDropdownItem.first()).toBeVisible({
+        timeout: 2000,
+      });
+    }).toPass({ timeout: 15000 });
+  }
+
+  async clickComponentMenuOption(optionLocator) {
+    await expect(async () => {
+      if (!(await optionLocator.isVisible())) {
+        await this.componentMenuButton.click();
+      }
+      await optionLocator.click({ timeout: 3000 });
+    }).toPass({ timeout: 15000 });
   }
 
   async clickOnShowInAssetsPanel() {
-    await this.showInAssetsPanelOptionDesign.click();
+    await this.clickComponentMenuOption(this.showInAssetsPanelOptionDesign);
   }
 
   async addAnnotationForComponent(value) {
@@ -1558,7 +1876,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async clickOnCreateAnnotationOption() {
-    await this.createAnnotationOptionDesign.click();
+    await this.clickComponentMenuOption(this.createAnnotationOptionDesign);
     await expect(this.annotationTextArea).toBeVisible();
   }
 
@@ -1633,12 +1951,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async clickOnCreateVariantOption() {
-    await this.createVariantOptionDesign.click();
+    await this.clickComponentMenuOption(this.createVariantOptionDesign);
     await expect(this.variantLabel).toBeVisible();
   }
 
   async clickOnAddNewPropertyOption() {
-    await this.addNewPropertyOptionDesign.click();
+    await this.clickComponentMenuOption(this.addNewPropertyOptionDesign);
   }
 
   async changeXAxisForLayer(newX) {
@@ -1814,16 +2132,20 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       `"${ariaLabel}" field (token pill or input) is visible`,
     ).toBeVisible();
 
-    if (await tokenPill.isVisible()) {
-      await expect(
-        tokenPill,
-        `"${ariaLabel}" token pill shows "${value}"`,
-      ).toHaveText(value);
-    } else {
-      await expect(input, `"${ariaLabel}" input has value "${value}"`).toHaveValue(
-        value,
-      );
-    }
+    // Right after a token is applied the input still shows for a moment before the pill
+    await expect(async () => {
+      if (await tokenPill.isVisible()) {
+        await expect(
+          tokenPill,
+          `"${ariaLabel}" token pill shows "${value}"`,
+        ).toHaveText(value, { timeout: 1000 });
+      } else {
+        await expect(input, `"${ariaLabel}" input has value "${value}"`).toHaveValue(
+          value,
+          { timeout: 1000 },
+        );
+      }
+    }).toPass({ timeout: 15000 });
   }
 
   /**
@@ -1847,12 +2169,87 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.checkTokenField('Radius', value);
   }
 
+  async checkIndividualCorners(topLeft, topRight, bottomLeft, bottomRight) {
+    await this.checkTokenField('Top left', topLeft);
+    await this.checkTokenField('Top right', topRight);
+    await this.checkTokenField('Bottom left', bottomLeft);
+    await this.checkTokenField('Bottom right', bottomRight);
+  }
+
   async checkRotationForLayer(value) {
     await this.checkTokenField('Rotation', value);
   }
 
   async checkStrokeWidth(value) {
     await this.checkTokenField('Stroke width', value);
+  }
+
+  /**
+   * A stroke width field: the main one ("Stroke width") or a side one
+   * ("Top (block start)", "Right (inline end)", "Bottom (block end)",
+   * "Left (inline start)"). Holds either an input or a token pill.
+   * @param {string} label
+   */
+  getStrokeWidthField(label) {
+    return this.strokeSectionContainer
+      .getByTestId('numeric-input-wrapper')
+      .filter({ has: this.page.getByLabel(label, { exact: true }) });
+  }
+
+  async clickStrokePerSideButton() {
+    await this.strokeSectionContainer
+      .getByRole('button', { name: 'Stroke per side' })
+      .click();
+  }
+
+  /** @param {string} label @param {string} value */
+  async setStrokeSideWidth(label, value) {
+    const input = this.getStrokeWidthField(label).getByRole('textbox');
+    await input.fill(value);
+    await input.press('Enter');
+  }
+
+  /** Detach buttons only show on hover. @param {string} label */
+  async detachStrokeWidthToken(label) {
+    const field = this.getStrokeWidthField(label);
+    await field.hover();
+    await field.getByRole('button', { name: 'Detach token' }).click();
+  }
+
+  /** @param {string} label @param {string} value */
+  async checkStrokeSideWidth(label, value) {
+    await expect(
+      this.getStrokeWidthField(label).getByRole('textbox'),
+      `"${label}" is ${value}`,
+    ).toHaveValue(value);
+  }
+
+  /** @param {string} label @param {string} tokenName */
+  async isStrokeWidthTokenPillVisible(label, tokenName) {
+    await expect(
+      this.getStrokeWidthField(label).getByRole('button', {
+        name: tokenName,
+        exact: true,
+      }),
+      `"${label}" shows the "${tokenName}" token pill`,
+    ).toBeVisible();
+  }
+
+  async isStrokeWidthMixed() {
+    const input = this.getStrokeWidthField('Stroke width').getByRole('textbox');
+    await expect(input, 'Stroke width input is empty').toHaveValue('');
+    await expect(input, 'Stroke width input shows "Mixed"').toHaveAttribute(
+      'placeholder',
+      'Mixed',
+    );
+  }
+
+  /** The four side inputs show only while "Stroke per side" is on. */
+  async areStrokeSideFieldsVisible(visible = true) {
+    const top = this.getStrokeWidthField('Top (block start)');
+    visible
+      ? await expect(top, 'Stroke side fields are visible').toBeVisible()
+      : await expect(top, 'Stroke side fields are hidden').toHaveCount(0);
   }
 
   async checkRowGap(value) {
@@ -1973,20 +2370,27 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   }
 
   async enterVariantPropertyValue(propertyName, propertyValue) {
-    const variantString = await this.page.locator(
+    const variantString = this.page.locator(
       `[class*="variant-property-container"]:has([title="${propertyName}"])`,
     );
-    await variantString.getByRole('combobox').fill(propertyValue);
-    await this.clickOnEnter();
+    const combobox = variantString.getByRole('combobox');
+    await expect(async () => {
+      await combobox.clear();
+      await combobox.pressSequentially(propertyValue);
+      await Promise.all([this.waitForUpdateFileRequest(), this.clickOnEnter()]);
+      await expect(combobox).toHaveValue(propertyValue, { timeout: 2000 });
+    }).toPass({ timeout: 15000 });
   }
 
   async checkVariantPropertyValue(propertyName, propertyValue) {
-    const variantString = await this.page.locator(
+    const variantString = this.page.locator(
       `[class*="variant-property-container"]:has([title="${propertyName}"])`,
     );
-    await expect(await variantString.getByRole('combobox')).toHaveValue(
-      propertyValue,
-    );
+    await expect(async () => {
+      await expect(variantString.getByRole('combobox')).toHaveValue(propertyValue, {
+        timeout: 2000,
+      });
+    }).toPass({ timeout: 15000 });
   }
 
   async checkCopyVariantPropertyValue(propertyName, propertyValue) {
@@ -2343,10 +2747,12 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async setStrokeDashValue(value) {
     await this.strokeDashInput.fill(value);
+    await this.strokeDashInput.press('Enter');
   }
 
   async setStrokeGapValue(value) {
     await this.strokeGapInput.fill(value);
+    await this.strokeGapInput.press('Enter');
   }
 
   async hasStrokeDashInputValue(value) {

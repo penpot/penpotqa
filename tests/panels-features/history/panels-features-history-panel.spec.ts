@@ -1,25 +1,19 @@
-import { mainAccountFileTest } from 'fixtures';
-import { MainPage } from '@pages/workspace/main-page';
 import { HistoryPanelPage } from '@pages/workspace/history-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
-import { TeamPage } from '@pages/dashboard/team-page';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { demoAccountFileTest, demoTeamWithInviteeTest } from 'fixtures';
+import { InvitationRole } from 'helpers/teams/invitation-role';
+import { openTeamFile } from 'helpers/teams/open-team-file';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { setupAdminRoleUser } from '../../../helpers/user-flows';
-import { ProfilePage } from '@pages/profile-page';
-import { LoginPage } from '@pages/login-page';
 
 let historyPage: HistoryPanelPage;
 let layersPanelPage: LayersPanelPage;
-let profilePage: ProfilePage;
-let loginPage: LoginPage;
 
-mainAccountFileTest.beforeEach(async ({ page }) => {
+demoAccountFileTest.beforeEach(async ({ page }) => {
   historyPage = new HistoryPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([874], 'Check if the status at header is "Saved"'),
   async ({ mainPage }) => {
     await mainPage.clickCreateEllipseButton();
@@ -29,7 +23,7 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([890], 'Open history panel with recent changes'),
   async ({ mainPage }) => {
     await mainPage.clickCreateBoardButton();
@@ -41,7 +35,7 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([1931], 'Open history version panel (via main menu)'),
   async ({ mainPage }) => {
     await mainPage.clickMainMenuButton();
@@ -51,7 +45,7 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([1930], 'Open history version panel (shortcut Alt+H)'),
   async () => {
     await historyPage.clickShortcutCtrlAltH();
@@ -59,10 +53,10 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest.describe(() => {
+demoAccountFileTest.describe(() => {
   const versionName = 'test version';
 
-  mainAccountFileTest.beforeEach(async () => {
+  demoAccountFileTest.beforeEach(async () => {
     await historyPage.createDefaultRectangleByCoordinates(200, 200);
     await historyPage.waitForChangeIsSaved();
     await historyPage.clickHistoryPanelButton();
@@ -70,13 +64,13 @@ mainAccountFileTest.describe(() => {
     await historyPage.renameVersion(versionName);
   });
 
-  mainAccountFileTest(qase([1929], 'Save version via history panel'), async () => {
+  demoAccountFileTest(qase([1929], 'Save version via history panel'), async () => {
     await historyPage.checkLastVersionName(versionName);
   });
 });
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest.beforeEach(async () => {
+demoAccountFileTest.describe(() => {
+  demoAccountFileTest.beforeEach(async () => {
     await historyPage.createDefaultRectangleByCoordinates(200, 200);
     await historyPage.waitForChangeIsSaved();
     await historyPage.clickHistoryPanelButton();
@@ -84,8 +78,8 @@ mainAccountFileTest.describe(() => {
     await historyPage.clickViewportTwice();
   });
 
-  mainAccountFileTest.describe(() => {
-    mainAccountFileTest.beforeEach(async () => {
+  demoAccountFileTest.describe(() => {
+    demoAccountFileTest.beforeEach(async () => {
       await layersPanelPage.selectLayerByName('Rectangle');
       await historyPage.pressDeleteKeyboardButton();
       await layersPanelPage.isLayerPresentOnLayersTab('Rectangle', false);
@@ -93,15 +87,15 @@ mainAccountFileTest.describe(() => {
       await historyPage.selectVersionOption('Restore');
     });
 
-    mainAccountFileTest.describe(() => {
-      mainAccountFileTest.beforeEach(async () => {
+    demoAccountFileTest.describe(() => {
+      demoAccountFileTest.beforeEach(async () => {
         await historyPage.clickRestoreVersionButton();
         await layersPanelPage.isLayerPresentOnLayersTab('Rectangle', true);
         await historyPage.isHistoryPanelVisible(false);
         await historyPage.clickHistoryPanelButton();
       });
 
-      mainAccountFileTest(
+      demoAccountFileTest(
         qase(
           [1932, 1937],
           'Restore version via history panel' +
@@ -112,7 +106,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      mainAccountFileTest(
+      demoAccountFileTest(
         qase([1943], 'Pin the autosaved version via history panel'),
         async () => {
           const versionName = 'pin version';
@@ -127,7 +121,7 @@ mainAccountFileTest.describe(() => {
     });
   });
 
-  mainAccountFileTest(qase([1934], 'Rename version via history panel'), async () => {
+  demoAccountFileTest(qase([1934], 'Rename version via history panel'), async () => {
     const versionName = 'renamed version';
     await historyPage.selectVersionOption('Rename');
     await historyPage.renameVersion(versionName);
@@ -135,7 +129,7 @@ mainAccountFileTest.describe(() => {
   });
 });
 
-mainAccountFileTest(qase([1935], 'Delete version via history panel'), async () => {
+demoAccountFileTest(qase([1935], 'Delete version via history panel'), async () => {
   await historyPage.clickHistoryPanelButton();
   await historyPage.clickSaveVersionButton();
   await historyPage.clickViewportTwice();
@@ -143,95 +137,77 @@ mainAccountFileTest(qase([1935], 'Delete version via history panel'), async () =
   await historyPage.isVersionListEmpty();
 });
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest.beforeEach(
-    async ({ page, teamPage, dashboardPage, mainPage }) => {
-      historyPage = new HistoryPanelPage(page);
-      layersPanelPage = new LayersPanelPage(page);
-      loginPage = new LoginPage(page);
-      profilePage = new ProfilePage(page);
-      dashboardPage = new DashboardPage(page);
-      teamPage = new TeamPage(page);
-      mainPage = new MainPage(page);
-    },
-  );
+demoTeamWithInviteeTest.describe(() => {
+  demoTeamWithInviteeTest.use({ inviteeRole: InvitationRole.Admin });
 
-  mainAccountFileTest.afterEach(
-    async ({ teamName, teamPage, dashboardPage, mainPage }) => {
-      await mainPage.backToDashboardFromFileEditor();
-      await profilePage.logout();
-      await loginPage.isEmailInputVisible();
-      await loginPage.isLoginPageOpened();
-      await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
-      await loginPage.enterPwd(process.env.LOGIN_PWD);
-      await loginPage.clickLoginButton();
-      await dashboardPage.isDashboardOpenedAfterLogin();
-      await teamPage.switchTeam(teamName);
-      await dashboardPage.openFile();
-    },
-  );
-
-  mainAccountFileTest(
+  demoTeamWithInviteeTest(
     qase(
       [1939, 1940, 1941],
       "Verification of displaying other users' versions in the version list" +
         'Setting "My Versions/ All Versions" filters in the version list',
     ),
-    async ({ page, teamName, dashboardPage }) => {
+    async ({ page, invitee, team }) => {
       const versionName = 'test version';
-      await mainAccountFileTest.slow();
+      demoTeamWithInviteeTest.slow();
 
-      // First user (owner): create a board, save a version, restore it, go back to dashboard
-      await historyPage.createDefaultBoardByCoordinates(200, 200);
-      await historyPage.waitForChangeIsSaved();
-      await historyPage.clickHistoryPanelButton();
-      await historyPage.clickSaveVersionButton();
-      await historyPage.renameVersion(versionName);
-      await layersPanelPage.selectLayerByName('Board');
-      await historyPage.pressDeleteKeyboardButton();
-      await historyPage.clickHistoryPanelButton();
-      await layersPanelPage.isLayerPresentOnLayersTab('Board', false);
-      await historyPage.selectVersionOption('Restore');
-      await historyPage.clickRestoreVersionButton();
-      await layersPanelPage.isLayerPresentOnLayersTab('Board', true);
-      await historyPage.backToDashboardFromFileEditor();
+      historyPage = new HistoryPanelPage(page);
+      layersPanelPage = new LayersPanelPage(page);
+      const adminHistoryPage = new HistoryPanelPage(invitee.page);
+      const adminLayersPanelPage = new LayersPanelPage(invitee.page);
 
-      // Invite and register a second user as Admin into the same team, then open the file
-      const { dashboardPage: adminDashboardPage } = await setupAdminRoleUser(page, {
-        existingTeamName: teamName,
-      });
-      await adminDashboardPage.openFile();
+      await demoTeamWithInviteeTest.step(
+        `Owner: create a board, save version "${versionName}" and restore it`,
+        async () => {
+          await historyPage.createDefaultBoardByCoordinates(200, 200);
+          await historyPage.waitForChangeIsSaved();
+          await historyPage.clickHistoryPanelButton();
+          await historyPage.clickSaveVersionButton();
+          await historyPage.renameVersion(versionName);
+          await layersPanelPage.selectLayerByName('Board');
+          await historyPage.pressDeleteKeyboardButton();
+          await historyPage.clickHistoryPanelButton();
+          await layersPanelPage.isLayerPresentOnLayersTab('Board', false);
+          await historyPage.selectVersionOption('Restore');
+          await historyPage.clickRestoreVersionButton();
+          await layersPanelPage.isLayerPresentOnLayersTab('Board', true);
+          await historyPage.waitForChangeIsSaved();
+        },
+      );
 
-      const adminHistoryPage = new HistoryPanelPage(page);
-      const adminLayersPanelPage = new LayersPanelPage(page);
+      await demoTeamWithInviteeTest.step(
+        `Admin: open the same file, create an ellipse, save version "${versionName}" and restore it`,
+        async () => {
+          await openTeamFile(invitee.page, team.id);
+          await adminHistoryPage.createDefaultEllipseByCoordinates(400, 200);
+          await adminHistoryPage.waitForChangeIsSaved();
+          await adminHistoryPage.clickHistoryPanelButton();
+          await adminHistoryPage.clickSaveVersionButton();
+          await adminHistoryPage.renameVersion(versionName);
+          await adminLayersPanelPage.selectLayerByName('Ellipse');
+          await adminHistoryPage.pressDeleteKeyboardButton();
+          await adminHistoryPage.clickHistoryPanelButton();
+          await adminLayersPanelPage.isLayerPresentOnLayersTab('Ellipse', false);
+          await adminHistoryPage.selectVersionOption('Restore');
+          await adminHistoryPage.clickRestoreVersionButton();
+          await adminLayersPanelPage.isLayerPresentOnLayersTab('Ellipse', true);
+          await adminHistoryPage.isHistoryPanelVisible(false);
+          await adminHistoryPage.clickHistoryPanelButton();
+        },
+      );
 
-      await adminHistoryPage.waitForViewportVisible();
-
-      // Second user (admin): create an ellipse, save a version, restore it
-      await adminHistoryPage.createDefaultEllipseByCoordinates(400, 200);
-      await adminHistoryPage.waitForChangeIsSaved();
-      await adminHistoryPage.clickHistoryPanelButton();
-      await adminHistoryPage.clickSaveVersionButton();
-      await adminHistoryPage.renameVersion(versionName);
-      await adminLayersPanelPage.selectLayerByName('Ellipse');
-      await adminHistoryPage.pressDeleteKeyboardButton();
-      await adminHistoryPage.clickHistoryPanelButton();
-      await adminLayersPanelPage.isLayerPresentOnLayersTab('Ellipse', false);
-      await adminHistoryPage.selectVersionOption('Restore');
-      await adminHistoryPage.clickRestoreVersionButton();
-      await adminLayersPanelPage.isLayerPresentOnLayersTab('Ellipse', true);
-      await adminHistoryPage.isHistoryPanelVisible(false);
-      await adminHistoryPage.clickHistoryPanelButton();
-
-      // Verify version filters
-      await adminHistoryPage.isAutosaveVersionsVisible(true);
-      await adminHistoryPage.isOtherUserVersionVisible(true);
-      await adminHistoryPage.changeVersionFilter('My versions');
-      await adminHistoryPage.isAutosaveVersionsVisible(false);
-      await adminHistoryPage.isOtherUserVersionVisible(false);
-      await adminHistoryPage.changeVersionFilter('All versions');
-      await adminHistoryPage.isAutosaveVersionsVisible(true);
-      await adminHistoryPage.isOtherUserVersionVisible(true);
+      await demoTeamWithInviteeTest.step(
+        'Admin: "My versions" hides the owner\'s versions and "All versions" shows them again',
+        async () => {
+          await adminHistoryPage.isAutosaveVersionsVisible(true);
+          await adminHistoryPage.isOtherUserVersionVisible(true);
+          await adminHistoryPage.changeVersionFilter('My versions');
+          await adminHistoryPage.isAutosaveVersionsVisible(false);
+          await adminHistoryPage.isOtherUserVersionVisible(false);
+          await adminHistoryPage.changeVersionFilter('All versions');
+          await adminHistoryPage.isAutosaveVersionsVisible(true);
+          await adminHistoryPage.isOtherUserVersionVisible(true);
+        },
+      );
     },
   );
 });

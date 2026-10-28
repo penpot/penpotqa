@@ -1,4 +1,4 @@
-import { demoAccountApiFixture, demoAccountFileTest } from 'fixtures';
+import { demoAccountFileTest, demoAccountApiFixture } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { MainPage } from '@pages/workspace/main-page';
 import { PagesPanelPage } from '@pages/workspace/panels-features/pages-panel-page';
@@ -87,7 +87,7 @@ demoAccountFileTest.describe(() => {
         'Check applied token title reflects new name and correct reference',
         async () => {
           const expectedTitle = [
-            `Token: ${fontSizeToken.name}`,
+            `Name: ${fontSizeToken.name}`,
             `Original value: {${renamedBorderRadiusToken.name}}*2`,
             `Resolved value: 20`,
           ].join('\n');
@@ -265,8 +265,6 @@ demoAccountApiFixture(
       name: renamedTokenName,
     };
 
-    await dashboardPage.isHeaderDisplayed('Projects');
-
     await demoAccountApiFixture.step(
       'Import penpot file and open Tokens panel',
       async () => {
@@ -303,7 +301,7 @@ demoAccountApiFixture(
       async () => {
         await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
         const expectedTitle = [
-          'Token: color-primary',
+          'Name: color-primary',
           `Original value: {${renamedTokenName}}`,
           `Resolved value: ${newColorValue}`,
         ].join('\n');
@@ -325,7 +323,7 @@ demoAccountApiFixture(
       async () => {
         await tokensPage.tokensComp.expandTokenByName(TokenClass.Color);
         const expectedTitle = [
-          'Token: color-primary',
+          'Name: color-primary',
           'Original value: {red-500}',
           'Resolved value: #d8274e',
         ].join('\n');

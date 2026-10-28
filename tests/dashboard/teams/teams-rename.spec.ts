@@ -1,6 +1,5 @@
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { TeamPage } from '@pages/dashboard/team-page';
-import { LoginPage } from '@pages/login-page';
 import { ProfilePage } from '@pages/profile-page';
 import { RegisterPage } from '@pages/register-page';
 import { mainTest } from 'fixtures';
@@ -14,14 +13,12 @@ import { random } from 'helpers/string-generator';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 let dashboardPage: DashboardPage;
-let loginPage: LoginPage;
 let profilePage: ProfilePage;
 let registerPage: RegisterPage;
 let teamPage: TeamPage;
 
 mainTest.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
-  loginPage = new LoginPage(page);
   registerPage = new RegisterPage(page);
   dashboardPage = new DashboardPage(page);
   profilePage = new ProfilePage(page);
@@ -66,7 +63,6 @@ mainTest.describe('Rename a team', () => {
         }
 
         await profilePage.logout();
-        await loginPage.isLoginPageOpened();
 
         await page.goto(firstInvite.inviteUrl);
         await registerPage.registerAccount(

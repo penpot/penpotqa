@@ -44,15 +44,14 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step(
         `Apply "${colorToken.name}" token to board fill and verify it is applied`,
         async () => {
-          await tokensPage.tokensComp.clickOnTokenWithName(colorToken.name);
-          await mainPage.waitForChangeIsSaved();
-          await tokensPage.tokensComp.isTokenAppliedWithName(colorToken.name);
+          await tokensPage.tokensComp.applyTokenToSelectedShape(colorToken.name);
           await designPanelPage.isFillTokenColorSetComponent(colorToken.name);
+          await designPanelPage.checkFillTokenResolvedValue(colorToken.value);
         },
       );
 
       await demoAccountFileTest.step(
-        'Verify screenshot and ColorFill menu item is selected',
+        'Verify screenshot and Fill menu item is selected',
         async () => {
           await expect(mainPage.viewport).toHaveScreenshot('board-color-red.png', {
             mask: mainPage.maskViewport(),
@@ -78,6 +77,8 @@ demoAccountFileTest.describe(() => {
           await mainPage.waitForChangeIsSaved();
           await mainPage.waitForResizeHandlerVisible();
           await tokensPage.tokensComp.isTokenAppliedWithName(colorToken.name);
+          await designPanelPage.isStrokeTokenColorSet(colorToken.name);
+          await designPanelPage.checkStrokeTokenResolvedValue(colorToken.value);
         },
       );
 
@@ -139,9 +140,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step(
         `Apply first token:"${colorToken.name}" to board`,
         async () => {
-          await tokensPage.tokensComp.clickOnTokenWithName(colorToken.name);
-          await mainPage.waitForChangeIsSaved();
-          await tokensPage.tokensComp.isTokenAppliedWithName(colorToken.name);
+          await tokensPage.tokensComp.applyTokenToSelectedShape(colorToken.name);
           await designPanelPage.isFillTokenColorSetComponent(colorToken.name);
         },
       );
@@ -211,6 +210,69 @@ demoAccountFileTest.describe(() => {
             1,
             globalColorSetName,
           );
+        },
+      );
+    },
+  );
+});
+
+demoAccountFileTest.describe(() => {
+  const colorToken: MainToken<TokenClass> = {
+    class: TokenClass.Color,
+    name: 'color',
+    value: sampleData.color.redHexCode,
+  };
+  const defaultSetName = 'Global';
+
+  demoAccountFileTest(
+    qase([3806], 'Apply a color token to a canvas background'),
+    async ({ mainPage }) => {
+      await demoAccountFileTest.step(
+        `Create a color token: "${colorToken.name}"`,
+        async () => {
+          await tokensPage.clickTokensTab();
+          await tokensPage.tokensComp.createTokenViaAddButtonAndEnter(colorToken);
+          await tokensPage.tokensComp.isTokenVisibleWithName(colorToken.name);
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Open the Canvas background color picker with nothing selected and verify Color mode is selected by default',
+        async () => {
+          await designPanelPage.clickCanvasBackgroundColorIcon();
+          await designPanelPage.isColorPickerTokensButtonVisible();
+          await designPanelPage.isColorPickerColorModeSelected();
+          await designPanelPage.isSearchByTokenNameInputNotVisible();
+        },
+      );
+
+      await demoAccountFileTest.step(
+        `Switch to Color tokens mode and verify the "${defaultSetName}" set lists "${colorToken.name}"`,
+        async () => {
+          await designPanelPage.clickColorPickerTokensButton();
+          await designPanelPage.isSearchByTokenNameInputVisible();
+          await designPanelPage.isTogglePanelSetButtonsCount(1);
+          await designPanelPage.isTogglePanelSetButtonTextByIndex(0, defaultSetName);
+          await designPanelPage.isColorTokenButtonVisible(colorToken.name);
+        },
+      );
+
+      await demoAccountFileTest.step(
+        `Apply "${colorToken.name}" token and verify it is set as canvas background`,
+        async () => {
+          await designPanelPage.clickColorTokenButton(colorToken.name);
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.isCanvasBackgroundTokenSet(colorToken.name);
+          await designPanelPage.checkCanvasBackgroundTokenResolvedValue(
+            colorToken.value,
+          );
+        },
+      );
+
+      await demoAccountFileTest.step(
+        `Verify "${colorToken.name}" token is not highlighted in the Tokens tab`,
+        async () => {
+          await tokensPage.tokensComp.isTokenAppliedWithName(colorToken.name, false);
         },
       );
     },

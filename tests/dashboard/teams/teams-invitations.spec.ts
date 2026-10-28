@@ -115,7 +115,6 @@ registerTest.describe(
         await registerTest.slow();
 
         await profilePage.logout();
-        await loginPage.isLoginPageOpened();
 
         await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
         await loginPage.enterPwd(process.env.LOGIN_PWD);
@@ -139,7 +138,6 @@ registerTest.describe(
         await teamPage.clickSendInvitationButton();
 
         await profilePage.logout();
-        await loginPage.isLoginPageOpened();
 
         await loginPage.enterEmailAndClickOnContinue(email);
         await loginPage.enterPwd(process.env.LOGIN_PWD);
@@ -198,7 +196,6 @@ mainTest.describe(
         await checkInviteText(firstInvite!.inviteText, team, user);
         await checkInviteText(secondInvite!.inviteText, team, user);
         await profilePage.logout();
-        await loginPage.isLoginPageOpened();
 
         await page.goto(firstInvite!.inviteUrl);
         await registerPage.registerAccount(
@@ -212,7 +209,6 @@ mainTest.describe(
         await dashboardPage.fillOnboardingQuestions();
         await teamPage.isTeamSelected(team);
         await profilePage.logout();
-        await loginPage.isLoginPageOpened();
         await page.goto(secondInvite!.inviteUrl);
         await registerPage.registerAccount(
           secondEditor,

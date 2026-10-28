@@ -122,7 +122,7 @@ test.describe('Create Account form negative cases', () => {
     });
 
     await test.step('Verify validation prevents account creation', async () => {
-      await registerPage.isEmailInputErrorDisplayed('Enter a valid email please');
+      await registerPage.isEmailInputErrorVisible('Enter a valid email please');
       await registerPage.isCreateAccountButtonVisible();
       await registerPage.isCreateAccountButtonDisabled();
     });
@@ -168,7 +168,7 @@ test(qase([36], 'Create demo account'), async () => {
   });
 
   await test.step('Verify the dashboard is opened', async () => {
-    await dashboardPage.isHeaderDisplayed('Projects');
+    await dashboardPage.isHeaderDisplayed('Personal Projects');
   });
 });
 
@@ -180,6 +180,14 @@ test(qase([54], 'Sign up with email of existing user'), async () => {
   });
 
   await test.step('Verify the existing user error is displayed', async () => {
-    await registerPage.isEmailAlreadyUsedErrorDisplayed();
+    await registerPage.isEmailInputErrorVisible('Email already used');
+    await registerPage.isToastNotDisplayed();
+    await registerPage.isCreateAccountButtonDisabled();
+  });
+
+  await test.step('Change the email and verify the error disappears', async () => {
+    await registerPage.enterEmail(`changed.${email}`);
+    await registerPage.isEmailInputErrorNotVisible();
+    await registerPage.isCreateAccountButtonEnabled();
   });
 });

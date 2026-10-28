@@ -17,8 +17,7 @@ exports.BasePage = class BasePage {
       'div[class*="shared_notification_pill__type-toast"]',
     );
     this.warningMessageText = this.teamModalContainer.getByRole('alert');
-    this.importWarningMessageText =
-      this.importModalContainer.getByRole('complementary');
+    this.importWarningMessageText = this.importModalContainer.getByRole('alert');
     this.infoMessage = page.locator('div[class*="main_ui_messages__banner"]');
     this.moveButton = page.getByRole('button', { name: 'Move (V)' });
     this.savedChangesIcon = page.getByTitle('Saved', { exact: true });
@@ -220,6 +219,10 @@ exports.BasePage = class BasePage {
 
   async clickShortcutCtrlZ() {
     await this.page.keyboard.press('Control+Z');
+  }
+
+  async clickShortcutCtrlShiftZ() {
+    await this.page.keyboard.press('Control+Shift+Z');
   }
 
   async clickShortcutCtrlD() {
@@ -515,7 +518,7 @@ exports.BasePage = class BasePage {
   }
 
   async makeBadDashboardUrl(url) {
-    return url.replace(/(\?team-id=).../, '$1555');
+    return url.replace(/(\&team-id=).../, '$1555');
   }
 
   async typeNameForShapeLabel(newName) {
@@ -529,6 +532,11 @@ exports.BasePage = class BasePage {
 
   async clickShortcutCtrlAltC() {
     await this.page.keyboard.press('Control+Alt+C');
+  }
+
+  /** Ctrl+Shift+Alt+V */
+  async pressDistributeVerticalSpacingShortcut() {
+    await this.page.keyboard.press('Control+Shift+Alt+V');
   }
 
   async clickShortcutCtrlAltV() {

@@ -3,7 +3,7 @@ import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { expect } from '@playwright/test';
-import { demoAccountFileTest } from 'fixtures';
+import { mainAccountFileTest } from 'fixtures';
 import { SampleData } from 'helpers/sample-data';
 import { qase } from 'playwright-qase-reporter/playwright';
 
@@ -12,15 +12,15 @@ let colorPalettePage: ColorPalettePage;
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
 
-demoAccountFileTest.beforeEach(async ({ page }) => {
+mainAccountFileTest.beforeEach(async ({ page }) => {
   layersPanelPage = new LayersPanelPage(page);
   designPanelPage = new DesignPanelPage(page);
   colorPalettePage = new ColorPalettePage(page);
   assetsPanelPage = new AssetsPanelPage(page);
 });
 
-demoAccountFileTest(qase([1275], 'Update main component'), async ({ mainPage }) => {
-  await demoAccountFileTest.step(
+mainAccountFileTest(qase([1275], 'Update main component'), async ({ mainPage }) => {
+  await mainAccountFileTest.step(
     'Create rectangle component and duplicate it',
     async () => {
       await mainPage.createDefaultRectangleByCoordinates(200, 300);
@@ -31,7 +31,7 @@ demoAccountFileTest(qase([1275], 'Update main component'), async ({ mainPage }) 
     },
   );
 
-  await demoAccountFileTest.step(
+  await mainAccountFileTest.step(
     'Move copy component and change its fill color',
     async () => {
       await layersPanelPage.clickCopyComponentOnLayersTab();
@@ -44,11 +44,11 @@ demoAccountFileTest(qase([1275], 'Update main component'), async ({ mainPage }) 
     },
   );
 
-  await demoAccountFileTest.step('Update main component from copy', async () => {
+  await mainAccountFileTest.step('Update main component from copy', async () => {
     await layersPanelPage.updateMainComponentViaRightClick();
   });
 
-  await demoAccountFileTest.step(
+  await mainAccountFileTest.step(
     'Verify updated component on canvas and assets tab',
     async () => {
       await expect(
@@ -69,9 +69,9 @@ demoAccountFileTest(qase([1275], 'Update main component'), async ({ mainPage }) 
   );
 });
 
-demoAccountFileTest.describe(() => {
-  demoAccountFileTest.beforeEach(async ({ mainPage }) => {
-    await demoAccountFileTest.slow();
+mainAccountFileTest.describe(() => {
+  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
+    await mainAccountFileTest.slow();
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.createComponentViaRightClickFromLayerByName('Rectangle');
     await mainPage.waitForChangeIsSaved();
@@ -100,10 +100,10 @@ demoAccountFileTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  demoAccountFileTest(
+  mainAccountFileTest(
     qase([1438], 'Create a component and 2 copies of it, change rotation of main'),
     async ({ mainPage }) => {
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Change rotation of main component',
         async () => {
           await layersPanelPage.clickMainComponentOnLayersTab();
@@ -113,7 +113,7 @@ demoAccountFileTest.describe(() => {
         },
       );
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Verify rotation change propagated to copies',
         async () => {
           await expect(
@@ -127,13 +127,13 @@ demoAccountFileTest.describe(() => {
     },
   );
 
-  demoAccountFileTest(
+  mainAccountFileTest(
     qase(
       [1445],
       'Create a component and 2 copies of it, change shadow opacity and color of main',
     ),
     async ({ mainPage }) => {
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Add default shadow to main component',
         async () => {
           await layersPanelPage.clickMainComponentOnLayersTab();
@@ -146,7 +146,7 @@ demoAccountFileTest.describe(() => {
         },
       );
 
-      await demoAccountFileTest.step('Verify default shadow on canvas', async () => {
+      await mainAccountFileTest.step('Verify default shadow on canvas', async () => {
         await expect(
           mainPage.viewport,
           'Viewport should match screenshot with default shadow on main component',
@@ -156,7 +156,7 @@ demoAccountFileTest.describe(() => {
         });
       });
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Change shadow opacity and color of main component',
         async () => {
           await layersPanelPage.clickMainComponentOnLayersTab();
@@ -170,7 +170,7 @@ demoAccountFileTest.describe(() => {
         },
       );
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Verify updated shadow propagated to copies',
         async () => {
           await expect(
@@ -185,10 +185,10 @@ demoAccountFileTest.describe(() => {
     },
   );
 
-  demoAccountFileTest(
+  mainAccountFileTest(
     qase([1446], 'Create a component and 2 copies of it, change blur of main'),
     async ({ mainPage }) => {
-      await demoAccountFileTest.step('Add blur to main component', async () => {
+      await mainAccountFileTest.step('Add blur to main component', async () => {
         await layersPanelPage.clickMainComponentOnLayersTab();
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.clickAddBlurButton();
@@ -198,7 +198,7 @@ demoAccountFileTest.describe(() => {
         await mainPage.clickViewportByCoordinates(1000, 200, 2);
       });
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Verify blur change propagated to copies',
         async () => {
           await expect(
@@ -213,13 +213,13 @@ demoAccountFileTest.describe(() => {
     },
   );
 
-  demoAccountFileTest(
+  mainAccountFileTest(
     qase(
       [3256],
       'Create a component and 2 copies of it, change grid style and size of main',
     ),
     async ({ mainPage }) => {
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Add guides with rows type to main component',
         async () => {
           await layersPanelPage.clickMainComponentOnLayersTab();
@@ -231,7 +231,7 @@ demoAccountFileTest.describe(() => {
         },
       );
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Verify default grid propagated to copies',
         async () => {
           await expect(
@@ -244,14 +244,14 @@ demoAccountFileTest.describe(() => {
         },
       );
 
-      await demoAccountFileTest.step('Change guides size', async () => {
+      await mainAccountFileTest.step('Change guides size', async () => {
         await designPanelPage.changeSizeForGuides('4');
         await designPanelPage.guidesTypeField.click();
         await mainPage.clickViewportTwice();
         await mainPage.waitForChangeIsSaved();
       });
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Verify updated grid size propagated to copies',
         async () => {
           await expect(
@@ -267,9 +267,9 @@ demoAccountFileTest.describe(() => {
   );
 });
 
-demoAccountFileTest.describe('Text', () => {
-  demoAccountFileTest.beforeEach(async ({ dashboardPage, mainPage }) => {
-    await demoAccountFileTest.slow();
+mainAccountFileTest.describe('Text', () => {
+  mainAccountFileTest.beforeEach(async ({ dashboardPage, mainPage }) => {
+    await mainAccountFileTest.slow();
     await mainPage.backToDashboardFromFileEditor();
     await dashboardPage.clickAddProjectButton();
     await dashboardPage.setProjectName('Test Project');
@@ -278,7 +278,7 @@ demoAccountFileTest.describe('Text', () => {
     await dashboardPage.openFileWithName('Propagation of text components I');
   });
 
-  demoAccountFileTest(
+  mainAccountFileTest(
     qase(
       [2261],
       'Propagation of (style and content) changes from a text component to copies (overriding style or content)',
@@ -286,7 +286,7 @@ demoAccountFileTest.describe('Text', () => {
     async ({ mainPage }) => {
       const sampleData = new SampleData();
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Change text style properties of main component child layer',
         async () => {
           await layersPanelPage.clickMainComponentOnLayersTab();
@@ -303,7 +303,7 @@ demoAccountFileTest.describe('Text', () => {
         },
       );
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Edit text content of main component child layer',
         async () => {
           await layersPanelPage.clickMainComponentOnLayersTab();
@@ -314,7 +314,7 @@ demoAccountFileTest.describe('Text', () => {
         },
       );
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Verify style and content propagation to copies',
         async () => {
           await expect(
@@ -329,7 +329,7 @@ demoAccountFileTest.describe('Text', () => {
     },
   );
 
-  demoAccountFileTest(
+  mainAccountFileTest(
     qase(
       [2263],
       'Propagation of (independent) changes from a text component to (all) copies',
@@ -337,7 +337,7 @@ demoAccountFileTest.describe('Text', () => {
     async ({ mainPage }) => {
       const sampleData = new SampleData();
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Apply stroke, rotation and width changes to main component child layer',
         async () => {
           await layersPanelPage.clickMainComponentOnLayersTab();
@@ -359,7 +359,7 @@ demoAccountFileTest.describe('Text', () => {
         },
       );
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Verify independent changes propagated to all copies',
         async () => {
           await expect(
@@ -375,12 +375,12 @@ demoAccountFileTest.describe('Text', () => {
   );
 });
 
-demoAccountFileTest(
+mainAccountFileTest(
   qase([1478], 'Changed direct, not overriden'),
   async ({ mainPage }) => {
     const sampleData = new SampleData();
 
-    await demoAccountFileTest.step(
+    await mainAccountFileTest.step(
       'Create rectangle component and duplicate it',
       async () => {
         await mainPage.createDefaultRectangleByCoordinates(200, 300);
@@ -394,7 +394,7 @@ demoAccountFileTest(
       },
     );
 
-    await demoAccountFileTest.step(
+    await mainAccountFileTest.step(
       `Set main component fill color to "${sampleData.color.blueHexCode}"`,
       async () => {
         await layersPanelPage.clickMainComponentOnLayersTab();
@@ -404,7 +404,7 @@ demoAccountFileTest(
       },
     );
 
-    await demoAccountFileTest.step(
+    await mainAccountFileTest.step(
       'Verify direct color change on canvas',
       async () => {
         await expect(
@@ -418,12 +418,12 @@ demoAccountFileTest(
   },
 );
 
-demoAccountFileTest(
+mainAccountFileTest(
   qase([1479], 'Changed remote, not overriden'),
   async ({ mainPage }) => {
     const sampleData = new SampleData();
 
-    await demoAccountFileTest.step(
+    await mainAccountFileTest.step(
       'Create component with copy and create a second nested component',
       async () => {
         await mainPage.createDefaultRectangleByCoordinates(200, 300);
@@ -443,7 +443,7 @@ demoAccountFileTest(
       },
     );
 
-    await demoAccountFileTest.step(
+    await mainAccountFileTest.step(
       `Set main component fill color to "${sampleData.color.pinkHexCode}"`,
       async () => {
         await layersPanelPage.clickMainComponentOnLayersTab();
@@ -453,7 +453,7 @@ demoAccountFileTest(
       },
     );
 
-    await demoAccountFileTest.step(
+    await mainAccountFileTest.step(
       'Verify remote color change on canvas and assets panel',
       async () => {
         await expect(
@@ -475,12 +475,12 @@ demoAccountFileTest(
   },
 );
 
-demoAccountFileTest(
+mainAccountFileTest(
   qase([1480], 'Changed direct, overriden in copy'),
   async ({ mainPage }) => {
     const sampleData = new SampleData();
 
-    await demoAccountFileTest.step(
+    await mainAccountFileTest.step(
       'Create component with copy and override copy color',
       async () => {
         await mainPage.createDefaultRectangleByCoordinates(200, 300);
@@ -497,7 +497,7 @@ demoAccountFileTest(
       },
     );
 
-    await demoAccountFileTest.step(
+    await mainAccountFileTest.step(
       `Set main component fill color to "${sampleData.color.purpleHexCode}"`,
       async () => {
         await layersPanelPage.clickMainComponentOnLayersTab();
@@ -507,7 +507,7 @@ demoAccountFileTest(
       },
     );
 
-    await demoAccountFileTest.step(
+    await mainAccountFileTest.step(
       'Verify copy color override is preserved while main color is updated',
       async () => {
         await expect(
@@ -529,12 +529,12 @@ demoAccountFileTest(
   },
 );
 
-demoAccountFileTest(
+mainAccountFileTest(
   qase([1482], 'Changed remote, overriden in copy'),
   async ({ mainPage }) => {
     const sampleData = new SampleData();
 
-    await demoAccountFileTest.step(
+    await mainAccountFileTest.step(
       'Create component with copy, create nested component and override copy color',
       async () => {
         await mainPage.createDefaultRectangleByCoordinates(200, 300);
@@ -557,7 +557,7 @@ demoAccountFileTest(
       },
     );
 
-    await demoAccountFileTest.step(
+    await mainAccountFileTest.step(
       `Set main component fill color to "${sampleData.color.pinkHexCode}"`,
       async () => {
         await layersPanelPage.clickMainComponentOnLayersTab();
@@ -567,7 +567,7 @@ demoAccountFileTest(
       },
     );
 
-    await demoAccountFileTest.step(
+    await mainAccountFileTest.step(
       'Verify copy color override is preserved while remote change is applied',
       async () => {
         await expect(

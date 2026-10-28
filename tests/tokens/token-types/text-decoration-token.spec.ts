@@ -105,9 +105,9 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step(
         'Re-apply token and verify underline is restored',
         async () => {
-          await tokensPage.tokensComp.clickOnTokenWithName(decorationToken.name);
-          await mainPage.waitForChangeIsSaved();
-          await tokensPage.tokensComp.isTokenAppliedWithName(decorationToken.name);
+          await tokensPage.tokensComp.applyTokenToSelectedShape(
+            decorationToken.name,
+          );
           await designPanelPage.isTextUnderlineChecked();
         },
       );

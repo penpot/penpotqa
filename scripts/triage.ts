@@ -4,8 +4,13 @@
  * Usage:
  *   npx tsx triage.ts \
  *     --results playwright-report/results.json \
+ *     --results results-enterprise.json \
  *     --state .triage/state.json \
  *     --report-url "https://<bucket>.s3.amazonaws.com/reports/${RUN_ID}/index.html"
+ *
+ * --results is repeatable: every file's failures are merged into one clustering
+ * pass, so e.g. the standard and enterprise suites end up in the same story/tasks
+ * instead of needing two runs (see the enterprise-tag comment on qaseSubjectPrefix()).
  *
  * Env vars:
  *   TAIGA_URL        e.g. https://taiga.yourcompany.com
@@ -41,7 +46,11 @@ function argAll(name: string): string[] {
   return out;
 }
 
-const RESULTS_PATH = arg('results', 'playwright-report/results.json');
+// --results is repeatable so release triage can merge the standard and enterprise
+// suites' results.json into one pass (same story, same clustering) instead of two
+// runs stepping on each other's state — see main()'s resolved-detection comment.
+const RESULTS_PATHS = argAll('results');
+if (RESULTS_PATHS.length === 0) RESULTS_PATHS.push('playwright-report/results.json');
 const STATE_PATH = arg('state', '.triage/state.json');
 const REPORT_URL = arg('report-url', '');
 const RELEASE = arg('release', ''); // e.g. "2.17" -> single story tagged release-2.17 with one task per cluster
@@ -535,13 +544,19 @@ async function main() {
   }
 
   console.log(
-    `[triage] results=${RESULTS_PATH} state=${STATE_PATH}${RELEASE ? ` release=${RELEASE} group-by=${GROUP_BY}` : ' mode=daily'}${RUN_ID ? ` run-id=${RUN_ID}` : ''}${APP_VERSION ? ` app-version=${APP_VERSION}` : ''}${CLOSE_ONLY ? ' close-only=1' : ''}${DRY_RUN ? ' dry-run=1' : ''}`,
+    `[triage] results=${RESULTS_PATHS.join(',')} state=${STATE_PATH}${RELEASE ? ` release=${RELEASE} group-by=${GROUP_BY}` : ' mode=daily'}${RUN_ID ? ` run-id=${RUN_ID}` : ''}${APP_VERSION ? ` app-version=${APP_VERSION}` : ''}${CLOSE_ONLY ? ' close-only=1' : ''}${DRY_RUN ? ' dry-run=1' : ''}`,
   );
 
-  const raw = JSON.parse(fs.readFileSync(RESULTS_PATH, 'utf8'));
   const failures: Failure[] = [];
-  for (const suite of raw.suites ?? [])
-    walkSuites(suite, suite.file ?? '', failures);
+  for (const resultsPath of RESULTS_PATHS) {
+    if (!fs.existsSync(resultsPath)) {
+      console.log(`Results file not found, skipping: ${resultsPath}`);
+      continue;
+    }
+    const raw = JSON.parse(fs.readFileSync(resultsPath, 'utf8'));
+    for (const suite of raw.suites ?? [])
+      walkSuites(suite, suite.file ?? '', failures);
+  }
 
   const hardFailures = failures.filter((f) => !f.flaky);
   const flakyTests = failures.filter((f) => f.flaky);
@@ -1377,7 +1392,15 @@ function qaseList(c: Cluster): string {
  */
 function qaseSubjectPrefix(tests: Failure[]): string {
   const first = tests.map((t) => t.qaseId).find(Boolean);
-  return first ? `Qase ${first} — ` : '';
+  // Release triage merges the enterprise suite's results in alongside the standard
+  // one (see RESULTS_PATHS) — tag tasks made up entirely of enterprise specs so
+  // they're distinguishable from the rest of the release story at a glance.
+  // Playwright reports file paths relative to the root testDir ('./tests'), so an
+  // enterprise spec (testDir './tests/enterprise') shows up as 'enterprise/...',
+  // never 'tests/enterprise/...' — confirmed against a real run's results.json.
+  const enterprise =
+    tests.length > 0 && tests.every((t) => t.file.startsWith('enterprise/'));
+  return `${first ? `Qase ${first} — ` : ''}${enterprise ? '[enterprise] ' : ''}`;
 }
 
 /**

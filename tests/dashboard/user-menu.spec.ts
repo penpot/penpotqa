@@ -10,7 +10,7 @@ let profilePage: ProfilePage;
 demoAccountApiFixture.beforeEach(async ({ page }) => {
   dashboardPage = new DashboardPage(page);
   profilePage = new ProfilePage(page);
-  await dashboardPage.isHeaderDisplayed('Projects');
+  await dashboardPage.isHeaderDisplayed('Personal Projects');
 });
 
 demoAccountApiFixture(

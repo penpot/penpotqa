@@ -60,14 +60,6 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     this.copyComponentChildrenRows =
       this.copyComponentChildrenContainer.getByTestId('layer-row');
 
-    // Layers Search Bar
-    this.searchLayersIcon = this.layersSidebar.getByRole('button', {
-      name: 'Search',
-    });
-    this.searchLayersInput = this.layersSidebar.getByRole('textbox', {
-      name: 'Find…',
-    });
-
     // Find & Replace wrapper
     this.findAndReplaceWrapper = page.locator(
       '.main_ui_workspace_sidebar_layers__replace-wrapper',
@@ -146,6 +138,23 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     await this.getLayerRowsBy(layerName, uncollapsedChildrenOnly).first().click();
   }
 
+  /**
+   * This function clicks on a child layer of the given parent layer, which must be already UNCOLLAPSED.
+   * Useful when several layers share the same name under different parents.
+   *
+   * @param {string} parentLayerName The name of the parent layer
+   * @param {string} childLayerName The name of the child layer to select
+   */
+  async selectChildLayerByName(parentLayerName, childLayerName) {
+    const parentId = await this.page
+      .getByRole('checkbox', { name: parentLayerName, exact: true })
+      .getAttribute('id');
+    await this.page
+      .getByTestId(`children-${parentId}`)
+      .getByRole('checkbox', { name: childLayerName, exact: true })
+      .click();
+  }
+
   async expandGroupOnLayersTab(groupName) {
     const groupToggleContent = this.page
       .getByRole('checkbox', { name: groupName })
@@ -208,6 +217,13 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     ).toBeVisible();
   }
 
+  async isNumLayerNameVisible(name, count) {
+    await expect(
+      this.layersRows.getByText(name, { exact: true }),
+      count > 1 ? `${count} layers are visible` : `${count} layer is visible`,
+    ).toHaveCount(count);
+  }
+
   async isLayerNameNotDisplayed(name) {
     await expect(
       this.layersRows.getByText(name, { exact: true }).first(),
@@ -255,18 +271,6 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
       `//*[text()="${layer}"]//parent::div//div[contains(@class, "icon-shape")]`,
     );
     await iconSel.dblclick();
-  }
-
-  async openLayerSearchBar() {
-    await this.searchLayersIcon.click();
-  }
-
-  async searchLayer(name) {
-    await this.searchLayersInput.fill(name);
-  }
-
-  async clearLayerSearchBar() {
-    await this.searchLayersInput.clear();
   }
 
   async isVerticalFlexIconVisibleOnLayer(condition = true) {
@@ -501,9 +505,29 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
       .click();
   }
 
+  /**
+   * @param {string} layerName The layer name to match.
+   * @param {boolean} exact Whether to match the name exactly (default: false).
+   * @returns A locator for the layer's checkbox while it is selected.
+   */
+  getSelectedLayerCheckboxByName(layerName, exact = false) {
+    return this.page.getByRole('checkbox', {
+      name: layerName,
+      exact,
+      checked: true,
+    });
+  }
+
+  /** Like selectLayerByName(), but won't pick a layer whose name only contains it. */
+  async selectLayerByExactName(layerName) {
+    await this.layersRows.getByText(layerName, { exact: true }).first().click();
+    await expect(this.getSelectedLayerCheckboxByName(layerName, true)).toBeVisible();
+  }
+
   async selectLayerByName(layerName) {
     const layerSel = this.page.locator('#layers').getByText(layerName).first();
     await layerSel.last().click();
+    await expect(this.getSelectedLayerCheckboxByName(layerName)).toBeVisible();
   }
 
   async waitForMainComponentIsSelected() {
@@ -535,12 +559,10 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   }
 
   async isLayerWithNameSelected(name, selected = true) {
-    const layerSel = await this.page.locator(
-      'div[class*="sidebar_layer_item__selected"] [class*="element-name"]',
-    );
+    const layerSel = this.getSelectedLayerCheckboxByName(name, true);
     selected
-      ? await expect(layerSel).toHaveText(name)
-      : await expect(layerSel).not.toHaveText(name);
+      ? await expect(layerSel).toBeVisible()
+      : await expect(layerSel).not.toBeVisible();
   }
 
   async checkVariantLayerCount(expectedCount) {

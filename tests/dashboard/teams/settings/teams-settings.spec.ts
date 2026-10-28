@@ -7,7 +7,6 @@ import { mainTest } from 'fixtures';
 import { createTeamName } from 'helpers/teams/create-team-name';
 import { qase } from 'playwright-qase-reporter/playwright';
 
-const maxDiffPixelRatio = 0.001;
 const team = createTeamName();
 
 let dashboardPage: DashboardPage;
@@ -33,11 +32,9 @@ mainTest(qase([1200], 'Team Settings - upload team profile picture'), async () =
     async () => {
       await teamPage.uploadTeamImage('images/images.png');
       await teamPage.waitInfoMessageHidden();
-      await teamPage.hoverOnTeamName();
-      await expect(teamPage.teamIcon).toHaveScreenshot('team-profile-image.png', {
-        maxDiffPixelRatio,
-        mask: [teamPage.teamNameLabel],
-      });
+      const iconUrl = await teamPage.teamIcon.getAttribute('src');
+      const response = await teamPage.page.request.get(iconUrl!);
+      expect(await response.body()).toMatchSnapshot('team-profile-image.jpg');
     },
   );
 });

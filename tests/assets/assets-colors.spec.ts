@@ -2,7 +2,7 @@ import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { expect } from '@playwright/test';
-import { demoAccountFileTest } from 'fixtures';
+import { mainAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 const hexColor: string = '#ffff00';
@@ -11,17 +11,17 @@ let assetsPanelPage: AssetsPanelPage;
 let colorPalettePopUp: ColorPalettePage;
 let designPanelPage: DesignPanelPage;
 
-demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   assetsPanelPage = new AssetsPanelPage(page);
   colorPalettePopUp = new ColorPalettePage(page);
   designPanelPage = new DesignPanelPage(page);
   await mainPage.clickMoveButton();
 });
 
-demoAccountFileTest(
+mainAccountFileTest(
   qase([932], 'Filter Colors from All Assets drop-down'),
   async () => {
-    await demoAccountFileTest.step(
+    await mainAccountFileTest.step(
       'Open assets tab and filter by Colors',
       async () => {
         await assetsPanelPage.clickAssetsTab();
@@ -29,7 +29,7 @@ demoAccountFileTest(
       },
     );
 
-    await demoAccountFileTest.step(
+    await mainAccountFileTest.step(
       'Verify Colors section shows 0 items',
       async () => {
         await assetsPanelPage.isAssetsSectionNameDisplayed('Colors', '0');
@@ -38,8 +38,8 @@ demoAccountFileTest(
   },
 );
 
-demoAccountFileTest.describe(() => {
-  demoAccountFileTest.beforeEach(async ({ mainPage }) => {
+mainAccountFileTest.describe(() => {
+  mainAccountFileTest.beforeEach(async ({ mainPage }) => {
     await assetsPanelPage.clickAssetsTab();
     await assetsPanelPage.clickAddFileLibraryColorButton();
     await colorPalettePopUp.setHex(hexColor);
@@ -48,8 +48,8 @@ demoAccountFileTest.describe(() => {
     await mainPage.waitForChangeIsSaved();
   });
 
-  demoAccountFileTest(qase([933], 'File library colors - add'), async () => {
-    await demoAccountFileTest.step(
+  mainAccountFileTest(qase([933], 'File library colors - add'), async () => {
+    await mainAccountFileTest.step(
       'Verify color is added to file library',
       async () => {
         await assetsPanelPage.isColorAddedToFileLibraryColors(hexColor);
@@ -57,10 +57,10 @@ demoAccountFileTest.describe(() => {
     );
   });
 
-  demoAccountFileTest(
+  mainAccountFileTest(
     qase([934], 'Edit Color Asset After Applying to Element'),
     async ({ mainPage }) => {
-      await demoAccountFileTest.step('Create shapes and apply color', async () => {
+      await mainAccountFileTest.step('Create shapes and apply color', async () => {
         await mainPage.createDefaultBoardByCoordinates(500, 200);
         await mainPage.waitForChangeIsSaved();
         await assetsPanelPage.clickFileLibraryColorsColorBullet();
@@ -71,7 +71,7 @@ demoAccountFileTest.describe(() => {
         await mainPage.waitForChangeIsSaved();
       });
 
-      await demoAccountFileTest.step('Verify color applied to shapes', async () => {
+      await mainAccountFileTest.step('Verify color applied to shapes', async () => {
         await expect(
           mainPage.viewport,
           'Color should be applied to shapes',
@@ -80,7 +80,7 @@ demoAccountFileTest.describe(() => {
         });
       });
 
-      await demoAccountFileTest.step('Edit color and save', async () => {
+      await mainAccountFileTest.step('Edit color and save', async () => {
         await assetsPanelPage.editFileLibraryColor();
         await colorPalettePopUp.setHex('#00ff00');
         await colorPalettePopUp.clickSaveColorStyleButton();
@@ -88,7 +88,7 @@ demoAccountFileTest.describe(() => {
         await mainPage.waitForChangeIsSaved();
       });
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Verify updated color in library and on shapes',
         async () => {
           await assetsPanelPage.isColorAddedToFileLibraryColors('#ffff00#00ff00');
@@ -103,30 +103,30 @@ demoAccountFileTest.describe(() => {
     },
   );
 
-  demoAccountFileTest(
+  mainAccountFileTest(
     qase([935], 'File library colors - rename'),
     async ({ mainPage }) => {
-      await demoAccountFileTest.step('Rename color and save', async () => {
+      await mainAccountFileTest.step('Rename color and save', async () => {
         await assetsPanelPage.renameFileLibraryColor('test color');
         await mainPage.clickViewportTwice();
         await mainPage.waitForChangeIsSaved();
       });
 
-      await demoAccountFileTest.step('Verify renamed color in library', async () => {
+      await mainAccountFileTest.step('Verify renamed color in library', async () => {
         await assetsPanelPage.isColorAddedToFileLibraryColors('test color#ffff00');
       });
     },
   );
 
-  demoAccountFileTest(
+  mainAccountFileTest(
     qase([936], 'File library colors - delete'),
     async ({ mainPage }) => {
-      await demoAccountFileTest.step('Delete color and save', async () => {
+      await mainAccountFileTest.step('Delete color and save', async () => {
         await assetsPanelPage.deleteFileLibraryColor();
         await mainPage.waitForChangeIsSaved();
       });
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Verify color is removed and Colors shows 0 items',
         async () => {
           await assetsPanelPage.isColorNotAddedToFileLibraryColors();
@@ -137,26 +137,26 @@ demoAccountFileTest.describe(() => {
     },
   );
 
-  demoAccountFileTest(qase([2909], 'File library colors - duplicate'), async () => {
-    await demoAccountFileTest.step('Duplicate color', async () => {
+  mainAccountFileTest(qase([2909], 'File library colors - duplicate'), async () => {
+    await mainAccountFileTest.step('Duplicate color', async () => {
       await assetsPanelPage.duplicateFileLibraryColor();
     });
 
-    await demoAccountFileTest.step('Verify the color is duplicated', async () => {
+    await mainAccountFileTest.step('Verify the color is duplicated', async () => {
       const count: number = 2;
       await assetsPanelPage.checkCountLibraryColorWithName(hexColor, count);
     });
   });
 
-  demoAccountFileTest(
+  mainAccountFileTest(
     qase([937], 'File library colors - create group'),
     async ({ mainPage }) => {
-      await demoAccountFileTest.step('Create group for color', async () => {
+      await mainAccountFileTest.step('Create group for color', async () => {
         await assetsPanelPage.createGroupFileLibraryAssets('Colors', 'Test Group');
         await mainPage.waitForChangeIsSaved();
       });
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Verify group is created and color is not visible',
         async () => {
           await assetsPanelPage.isFileLibraryGroupCreated('Test Group');
@@ -166,17 +166,17 @@ demoAccountFileTest.describe(() => {
     },
   );
 
-  demoAccountFileTest(
+  mainAccountFileTest(
     qase([939], 'File library colors - rename group'),
     async ({ mainPage }) => {
-      await demoAccountFileTest.step('Create and rename group', async () => {
+      await mainAccountFileTest.step('Create and rename group', async () => {
         await assetsPanelPage.createGroupFileLibraryAssets('Colors', 'Test Group');
         await mainPage.waitForChangeIsSaved();
         await assetsPanelPage.renameGroupFileLibrary('New Group');
         await mainPage.waitForChangeIsSaved();
       });
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Verify renamed group and screenshot',
         async () => {
           await assetsPanelPage.isFileLibraryGroupCreated('New Group');
@@ -189,17 +189,17 @@ demoAccountFileTest.describe(() => {
     },
   );
 
-  demoAccountFileTest(
+  mainAccountFileTest(
     qase([942], 'File library colors- ungroup'),
     async ({ mainPage }) => {
-      await demoAccountFileTest.step('Create group and ungroup', async () => {
+      await mainAccountFileTest.step('Create group and ungroup', async () => {
         await assetsPanelPage.createGroupFileLibraryAssets('Colors', 'Test Group');
         await mainPage.waitForChangeIsSaved();
         await assetsPanelPage.ungroupFileLibrary();
         await mainPage.waitForChangeIsSaved();
       });
 
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Verify group is removed and color is restored',
         async () => {
           await assetsPanelPage.isFileLibraryGroupRemoved();
@@ -209,10 +209,10 @@ demoAccountFileTest.describe(() => {
     },
   );
 
-  demoAccountFileTest(
+  mainAccountFileTest(
     qase([1027], 'File library colors - apply to stroke'),
     async ({ mainPage }) => {
-      await demoAccountFileTest.step(
+      await mainAccountFileTest.step(
         'Create board and apply color to stroke',
         async () => {
           await mainPage.clickCreateBoardButton();
@@ -225,7 +225,7 @@ demoAccountFileTest.describe(() => {
         },
       );
 
-      await demoAccountFileTest.step('Verify color applied to stroke', async () => {
+      await mainAccountFileTest.step('Verify color applied to stroke', async () => {
         await expect(
           mainPage.viewport,
           'Color should be applied to board stroke',

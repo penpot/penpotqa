@@ -26,22 +26,22 @@ async function refreshToken(oAuth2Client) {
   return oAuth2Client;
 }
 
+/** Searches both labels as ONE query, so results stay in Gmail's own
+ * newest-first order — two separate per-label queries concatenated
+ * together would not (e.g. a newer message in SPAM could still sort after
+ * an older one in INBOX). */
+async function findMessages(gmail, email) {
+  const res = await gmail.users.messages.list({
+    userId: 'me',
+    q: `to:${email} (in:inbox OR in:spam)`,
+    maxResults: 10,
+  });
+  return res.data.messages || [];
+}
+
 async function listMessages(auth, email) {
   const gmail = google.gmail({ version: 'v1', auth });
-
-  async function searchMessages(label, email) {
-    const res = await gmail.users.messages.list({
-      userId: 'me',
-      q: `to:${email}`,
-      labelIds: [label],
-      maxResults: 10,
-    });
-    return res.data.messages || [];
-  }
-
-  const inboxMessages = await searchMessages('INBOX', email);
-  const spamMessages = await searchMessages('SPAM', email);
-  const messages = [...inboxMessages, ...spamMessages];
+  const messages = await findMessages(gmail, email);
 
   if (messages.length > 0) {
     const msg = await gmail.users.messages.get({
@@ -57,21 +57,7 @@ async function listMessages(auth, email) {
 
 async function messagesCount(auth, email) {
   const gmail = google.gmail({ version: 'v1', auth });
-
-  async function searchMessages(label, email) {
-    const res = await gmail.users.messages.list({
-      userId: 'me',
-      q: `to:${email}`,
-      labelIds: [label],
-      maxResults: 10,
-    });
-    return res.data.messages || [];
-  }
-
-  const inboxMessages = await searchMessages('INBOX', email);
-  const spamMessages = await searchMessages('SPAM', email);
-  const messages = [...inboxMessages, ...spamMessages];
-
+  const messages = await findMessages(gmail, email);
   return messages.length;
 }
 
@@ -114,6 +100,42 @@ async function getRegisterMessage(email) {
     .catch(console.error);
 }
 
+/** The most recent message's Subject header — listMessages() only decodes
+ * the body. */
+async function getMessageSubject(email) {
+  return authorize()
+    .then(async (auth) => {
+      const gmail = google.gmail({ version: 'v1', auth });
+      const messages = await findMessages(gmail, email);
+      if (messages.length === 0) {
+        return null;
+      }
+
+      const msg = await gmail.users.messages.get({
+        userId: 'me',
+        id: messages[0].id,
+        format: 'metadata',
+        metadataHeaders: ['Subject'],
+      });
+      const subjectHeader = (msg.data.payload.headers || []).find(
+        (header) => header.name === 'Subject',
+      );
+      return subjectHeader ? subjectHeader.value : null;
+    })
+    .catch(console.error);
+}
+
+/** Like getRegisterMessage(), but returns the raw body text as-is instead
+ * of requiring a URL in it — needed for emails with no link at all, e.g.
+ * the SSO-activation notice. */
+async function getMessageText(email) {
+  return authorize()
+    .then(async (auth) => {
+      return await listMessages(auth, email);
+    })
+    .catch(console.error);
+}
+
 async function getRequestAccessMessage(email) {
   return authorize()
     .then(async (auth) => {
@@ -146,6 +168,47 @@ async function checkInviteText(text, team, user) {
   expect(text).toContain('The Penpot team.');
 }
 
+/** Same template as checkInviteText, but also names the org — only true
+ * when the invitee is an EXISTING Penpot account; a fresh address gets the
+ * plain team-only wording. No `user` param: the inviter is always a demo
+ * account with a server-generated name. */
+async function checkEnterpriseInviteText(text, team, org) {
+  expect(text).toContain('Hello!');
+  expect(text).toContain(`has invited you to join the team "${team}"`);
+  expect(text).toContain(`part of the organization "${org}"`);
+  expect(text).toContain('Accept invitation using this link:');
+  expect(text).toContain('Enjoy!');
+  expect(text).toContain('The Penpot team.');
+}
+
+/** Unlike the body (checkEnterpriseInviteText), the subject never names
+ * the org, only the team. */
+async function checkEnterpriseInviteSubject(subject, team, org) {
+  expect(subject).toContain(team);
+  expect(subject).not.toContain(org);
+}
+
+/** The subject truncates the org name to a fixed prefix + an ellipsis when
+ * it's long — confirmed live at 25 characters — so this checks a shorter,
+ * always-present prefix instead of the full (possibly truncated) name. */
+async function checkSsoActivatedEmailSubject(subject, orgName) {
+  expect(subject).toContain(orgName.slice(0, 20));
+  expect(subject).toContain('uses single sign-on');
+}
+
+async function checkSsoActivatedEmailText(text, orgName) {
+  const messageText =
+    'Hi,\r\n' +
+    '\r\n' +
+    `"${orgName}" has set up single sign-on (SSO) in Penpot. Access to its teams and files now goes\r\n` +
+    "through your organization's identity provider.\r\n" +
+    '\r\n' +
+    "If you can't get in, your account probably isn't in the directory yet. To get access, contact the organization owner.\r\n" +
+    '\r\n' +
+    'The Penpot team.\r\n';
+  await expect(text).toBe(messageText);
+}
+
 async function checkRegisterText(text, name) {
   const messageText =
     `Hi ${name},\r\n` +
@@ -176,6 +239,19 @@ async function checkRecoveryText(text, name) {
     '\r\n' +
     'Enjoy!\r\n' +
     'The Penpot team.';
+  await expect(text).toBe(messageText);
+}
+
+async function checkPasswordChangedText(text, name) {
+  const messageText =
+    `Hello ${name}!\r\n` +
+    '\r\n' +
+    'Your password has been changed.\r\n' +
+    '\r\n' +
+    'If you did not make this change, please contact support immediately or reset your password.\r\n' +
+    '\r\n' +
+    'Enjoy!\r\n' +
+    'The Penpot team.\r\n';
   await expect(text).toBe(messageText);
 }
 
@@ -350,28 +426,40 @@ async function waitMessage(page, email, timeoutSec = 40) {
   }
 }
 
+/** The common case: waits for an inbox to reach its 2nd message
+ * (registration + one invite). A thin wrapper over waitForMessageCount() —
+ * use that one directly instead when the account already has prior
+ * messages (e.g. registration + an already-accepted org invite) before a
+ * further invite is expected, or when waiting repeatedly against the same
+ * inbox (e.g. once per loop iteration), where a hardcoded `>=2` check would
+ * already be true after the first call and return instantly, letting
+ * waitMessage() return a stale, already-read message. */
 async function waitSecondMessage(page, email, timeoutSec = 40) {
+  return waitForMessageCount(page, email, 2, timeoutSec);
+}
+
+/**
+ * Waits for an inbox to reach at least `count` messages — see
+ * waitSecondMessage() for the common `count = 2` case.
+ */
+async function waitForMessageCount(page, email, count, timeoutSec = 40) {
   const timeout = timeoutSec * 1000;
   const interval = 4000;
   const startTime = Date.now();
-  let count = 0;
+  let actual = 0;
 
   await page.waitForTimeout(interval);
   while (Date.now() - startTime < timeout) {
-    count = await getMessagesCount(email);
-    if (count >= 2) {
-      return 1;
+    actual = await getMessagesCount(email);
+    if (actual >= count) {
+      return actual;
     }
     await page.waitForTimeout(interval);
   }
 
-  if (count < 2) {
-    throw new Error(
-      `Timeout reached: expected at least 2 messages, but got ${count}`,
-    );
-  }
-
-  return 1;
+  throw new Error(
+    `Timeout reached: expected at least ${count} messages for "${email}", got ${actual}`,
+  );
 }
 
 async function waitRequestMessage(page, email, timeoutSec = 40) {
@@ -406,10 +494,17 @@ async function getVerificationMessage(email) {
 
 module.exports = {
   checkInviteText,
+  checkEnterpriseInviteText,
+  checkEnterpriseInviteSubject,
   getRegisterMessage,
+  getMessageSubject,
+  getMessageText,
   getVerificationMessage,
+  checkSsoActivatedEmailSubject,
+  checkSsoActivatedEmailText,
   checkRegisterText,
   checkRecoveryText,
+  checkPasswordChangedText,
   checkNewEmailText,
   checkMessagesCount,
   checkConfirmAccessText,
@@ -419,5 +514,6 @@ module.exports = {
   checkSigningText,
   waitMessage,
   waitSecondMessage,
+  waitForMessageCount,
   waitRequestMessage,
 };

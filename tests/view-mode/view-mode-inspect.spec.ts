@@ -3,7 +3,7 @@ import { InspectPanelPage } from '@pages/workspace/inspect-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { ViewModePage } from '@pages/workspace/view-mode-page';
 import { expect } from '@playwright/test';
-import { demoAccountFileTest, mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 let viewModePage: ViewModePage;
@@ -20,7 +20,7 @@ demoAccountFileTest.beforeEach(async ({ page }) => {
 demoAccountFileTest(qase([706], 'Switch to Inspect view'), async ({ mainPage }) => {
   await demoAccountFileTest.step('Create board and open view mode', async () => {
     await mainPage.createDefaultBoardByCoordinates(300, 300);
-    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.isNumLayerNameVisible('Board', 1);
     const newPage = await viewModePage.clickViewModeShortcut();
     viewModePage = new ViewModePage(newPage);
     await viewModePage.waitForViewerSection(45000);
@@ -77,10 +77,8 @@ demoAccountFileTest(
       'Add export for the element and verify',
       async () => {
         await designPanelPage.clickAddExportButtonForViewMode();
+        await designPanelPage.isViewModeExportRowVisible('PNG', '1x');
         await designPanelPage.isExportElementButtonDisplayed('Export 1 element');
-        await expect(viewModePage.rightSidebar).toHaveScreenshot(
-          'view-mode-export-right-sidebar-image.png',
-        );
       },
     );
 
@@ -90,12 +88,10 @@ demoAccountFileTest(
   },
 );
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([1785], 'Switch between layers from left menu'),
-  async ({ page, mainPage }) => {
-    designPanelPage = new DesignPanelPage(page);
-    await mainAccountFileTest.slow();
-    await mainAccountFileTest.step(
+  async ({ mainPage }) => {
+    await demoAccountFileTest.step(
       'Create board with image, rectangle, ellipse, text and path layers',
       async () => {
         await mainPage.createDefaultBoardByCoordinates(200, 200);
@@ -131,47 +127,50 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step('Open view mode and Inspect tab', async () => {
+    let inspectPanelPage: InspectPanelPage;
+
+    await demoAccountFileTest.step('Open view mode and Inspect tab', async () => {
       const newPage = await viewModePage.clickViewModeShortcut();
       viewModePage = new ViewModePage(newPage);
       await viewModePage.waitForViewerSection(45000);
       layersPanelPage = new LayersPanelPage(newPage);
+      inspectPanelPage = new InspectPanelPage(newPage);
       await viewModePage.openInspectTab();
     });
 
-    await mainAccountFileTest.step('Select Rectangle layer and verify', async () => {
+    await demoAccountFileTest.step('Select Rectangle layer and verify', async () => {
       await layersPanelPage.clickLayerOnLayersTab('Rectangle');
-      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
-        'view-mode-rectangle-selected-image.png',
-      );
+      await inspectPanelPage.checkSelectedLayerName('Rectangle');
+      await inspectPanelPage.checkPropertyRowHasPixelValue('Height');
+      await inspectPanelPage.checkPropertyRowHasPixelValue('Left');
     });
 
-    await mainAccountFileTest.step('Select Ellipse layer and verify', async () => {
+    await demoAccountFileTest.step('Select Ellipse layer and verify', async () => {
       await layersPanelPage.clickLayerOnLayersTab('Ellipse');
-      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
-        'view-mode-ellipse-selected-image.png',
-      );
+      await inspectPanelPage.checkSelectedLayerName('Ellipse');
+      await inspectPanelPage.checkPropertyRowHasPixelValue('Height');
+      await inspectPanelPage.checkPropertyRowHasPixelValue('Left');
     });
 
-    await mainAccountFileTest.step('Select text layer and verify', async () => {
+    await demoAccountFileTest.step('Select text layer and verify', async () => {
       await layersPanelPage.clickLayerOnLayersTab('Hello world!');
-      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
-        'view-mode-test-selected-image.png',
-      );
+      await inspectPanelPage.checkSelectedLayerName('Hello world!');
+      await inspectPanelPage.checkPropertyRowHasPixelValue('Height');
+      await inspectPanelPage.checkPropertyRowHasPixelValue('Left');
     });
 
-    await mainAccountFileTest.step('Select Path layer and verify', async () => {
+    await demoAccountFileTest.step('Select Path layer and verify', async () => {
       await layersPanelPage.clickLayerOnLayersTab('Path');
-      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
-        'view-mode-path-selected-image.png',
-      );
+      await inspectPanelPage.checkSelectedLayerName('Path');
+      await inspectPanelPage.checkPropertyRowHasPixelValue('Height');
+      await inspectPanelPage.checkPropertyRowHasPixelValue('Left');
     });
 
-    await mainAccountFileTest.step('Select image layer and verify', async () => {
+    await demoAccountFileTest.step('Select image layer and verify', async () => {
       await layersPanelPage.clickLayerOnLayersTab('mini_sample');
-      await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
-        'view-mode-image-selected-image.png',
-      );
+      await inspectPanelPage.checkSelectedLayerName('mini_sample');
+      await inspectPanelPage.checkPropertyRowHasPixelValue('Height');
+      await inspectPanelPage.checkPropertyRowHasPixelValue('Left');
     });
   },
 );

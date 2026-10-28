@@ -25,6 +25,9 @@ Prerequisites for local run:
   - `CLIENT_ID` (for email access)
   - `CLIENT_SECRET` (for email access)
   - `STRIPE_SK` (for Stripe API access)
+  - `ENTERPRISE_SSO_ISSUER_URL` (OpenID Connect test tenant issuer URL, for the Organization SSO enterprise tests)
+  - `ENTERPRISE_SSO_CLIENT_ID` (client ID for the same test tenant)
+  - `ENTERPRISE_SSO_CLIENT_SECRET` (client secret for the same test tenant)
 
 **2. Gmail Integration.**
 
@@ -71,13 +74,13 @@ Available scripts:
 The `docker-compose.yml` file accepts the following variables, which can be set in the `.env` file:
 
 - `DOCKER_PLATFORM` - platform used to run the container (default: `linux/amd64`). This default works as-is on Windows and Linux x86_64 (native, no emulation). On an ARM64 host (e.g. Apple Silicon, Windows/Linux ARM), it can be set to `linux/arm64` to run natively instead of emulating amd64, as long as the image tag below has an arm64 build.
-- `PLAYWRIGHT_DOCKER_TAG` - tag of the `mcr.microsoft.com/playwright` image to use (default: `v1.60.0-noble`). It should match the resolved `@playwright/test` version (see `package-lock.json`).
+- `PLAYWRIGHT_DOCKER_TAG` - tag of the `mcr.microsoft.com/playwright` image to use (default: `v1.64.1-noble`). It should match the resolved `@playwright/test` version (see `package-lock.json`).
 
 To use them, add (and uncomment) the following lines to your `.env` file:
 
 ```
 # DOCKER_PLATFORM=linux/arm64
-# PLAYWRIGHT_DOCKER_TAG=v1.60.0-noble
+# PLAYWRIGHT_DOCKER_TAG=v1.64.1-noble
 ```
 
 Notes:
@@ -165,20 +168,20 @@ Some tests log in with a disposable demo Penpot account instead of the fixed `LO
 
 **11. Fixtures usage.**
 
-`fixtures.ts` exports several test fixtures, each wrapping a different login flow. Approximate number of test cases (`<fixture>(...)` calls, not counting `.describe`/`.beforeEach`) currently using each one — recompute anytime with `grep -rhoP "(?<!\.)\b<fixtureName>\(" tests/ | wc -l`:
+`fixtures.ts` exports these fixtures. Test cases = `<fixture>(...)` calls, not counting `.describe`/`.beforeEach`; recompute with `grep -rhoP "(?<![.\w])<fixture>(\.skip|\.fixme|\.only)?\(" tests/ | wc -l`:
 
-| Fixture                   | Login                             | Team created          | Test cases |
-| ------------------------- | --------------------------------- | --------------------- | ---------: |
-| `mainTest`                | Shared `LOGIN_EMAIL` account (UI) | No                    |         35 |
-| `registerTest`            | New account, UI registration flow | No                    |         11 |
-| `demoAccountApiFixture`   | Fresh demo account (API)          | No                    |         51 |
-| `mainAccountFileTest`     | Shared `LOGIN_EMAIL` account      | Yes + blank file      |         49 |
-| `demoAccountFileTest`     | Fresh demo account (API)          | No, just a blank file |        395 |
-| `demoAccountTeamFileTest` | Fresh demo account (API)          | Yes + blank file      |          6 |
+| Fixture                   | Login                                  | Starts on                                                                  | Test cases |
+| ------------------------- | -------------------------------------- | -------------------------------------------------------------------------- | ---------: |
+| `mainTest`                | Shared `LOGIN_EMAIL` account (UI)      | Dashboard                                                                  |         43 |
+| `mainAccountFileTest`     | Shared `LOGIN_EMAIL` account (UI)      | Blank file in a new team                                                   |        154 |
+| `registerTest`            | New account, UI registration flow      | Dashboard                                                                  |         12 |
+| `demoAccountApiFixture`   | Fresh demo account (API, WASM)         | Dashboard. `demoAccountPassword` gives its password                        |         46 |
+| `demoAccountFileTest`     | Fresh demo account (API, WASM)         | Blank Drafts file, or the `penpotFile` imported. `secondUserPage` optional |        304 |
+| `demoTeamWithInviteeTest` | Two demo accounts sharing a team (API) | Blank file in the team, `invitee` on its dashboard                         |          6 |
 
-`tests/your-account/your-account-fixture.ts` adds a few more built on top of the above: `profileTest`/`giveFeedbackTest` (on `mainTest`, 3 and 1 respectively), `passwordTest` (on `demoAccountApiFixture`, 3), and `integrationsTest` (on `demoAccountApiFixture`, 2).
+Built on top of them: `profileTest` (3) and `giveFeedbackTest` (1) on `mainTest`; `passwordTest` (3), `integrationsTest` (2) and `shortcutsTest` (5) on `demoAccountApiFixture` (`tests/your-account/your-account-fixture.ts`); `pathEditorTest` (9) on `demoAccountFileTest`. The enterprise suite has its own fixtures (see `tests/enterprise/README.md`).
 
-Guidance for new tests: prefer a `demoAccount*` fixture — a fresh demo account is faster (API-only login, no UI registration) and isolated by construction, so it doesn't need its own team just to avoid colliding with other tests. Reach for `mainTest`/`mainAccountFileTest` only when a test genuinely needs the shared account's persistent identity/state (e.g. team invitations, role permissions) or has shown demo-account-specific behavior differences (a few path-tool and panel-timing quirks have turned up on fresh demo accounts — when in doubt, verify against the original fixture before trusting a migrated test).
+For new tests, prefer a demo-account fixture: API login, no shared state and no team needed just for isolation. Use `mainTest`/`mainAccountFileTest` only when the test needs the shared account or a real email inbox (see the previous section).
 
 **12. Running tests via GitHub Actions.**
 
@@ -196,6 +199,9 @@ For each environment the appropriate secrets were added:
 - _REFRESH_TOKEN_ (Token for email access)
 - _CLIENT_ID_ (for email access)
 - _CLIENT_SECRET_ (for email access)
+- _ENTERPRISE_SSO_ISSUER_URL_ (OpenID Connect test tenant issuer URL, for the Organization SSO enterprise tests)
+- _ENTERPRISE_SSO_CLIENT_ID_ (client ID for the same test tenant)
+- _ENTERPRISE_SSO_CLIENT_SECRET_ (client secret for the same test tenant)
 
 2 _.yml_ files were added into _.github/workflows_ directory with settings for environments:
 
