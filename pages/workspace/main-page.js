@@ -447,8 +447,8 @@ exports.MainPage = class MainPage extends BasePage {
 
   async isFocusModeOn(on = true) {
     on
-      ? await expect(this.focusModeTag).toBeVisible()
-      : await expect(this.focusModeTag).not.toBeVisible();
+      ? await expect(this.focusModeTag, 'Focus mode is on').toBeVisible()
+      : await expect(this.focusModeTag, 'Focus mode is off').toBeHidden();
   }
 
   async drawCurve(x1, y1, x2, y2) {

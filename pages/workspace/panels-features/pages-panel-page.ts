@@ -127,8 +127,12 @@ export class PagesPanelPage extends MainPage {
 
   async isCurrentPageId(pageId: string, current = true) {
     current
-      ? await expect.poll(() => this.getCurrentPageId()).toBe(pageId)
-      : await expect.poll(() => this.getCurrentPageId()).not.toBe(pageId);
+      ? await expect
+          .poll(() => this.getCurrentPageId(), `Current page id is ${pageId}`)
+          .toBe(pageId)
+      : await expect
+          .poll(() => this.getCurrentPageId(), `Current page id is not ${pageId}`)
+          .not.toBe(pageId);
   }
 
   async isBulkDeleteContextMenuVisible() {
