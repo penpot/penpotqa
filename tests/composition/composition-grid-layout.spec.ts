@@ -139,6 +139,7 @@ mainAccountFileTest.describe(() => {
       await mainAccountFileTest.step(
         'Verify centered alignment on canvas',
         async () => {
+          await mainPage.movePointerToViewportBottomRight();
           await expect(mainPage.viewport).toHaveScreenshot(
             'board-with-grid-alignment-center.png',
             {
@@ -341,6 +342,7 @@ mainAccountFileTest(
         await designPanelPage.checkSizeHeight('200');
         await mainPage.isCornerHandleVisible();
         await mainPage.waitForChangeIsSaved();
+        await mainPage.movePointerToViewportBottomRight();
         await expect(mainPage.viewport).toHaveScreenshot(
           'resized-board-with-rectangle.png',
           {

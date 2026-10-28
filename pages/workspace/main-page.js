@@ -1399,6 +1399,12 @@ exports.MainPage = class MainPage extends BasePage {
       : await expect(this.cornerHandle).not.toBeVisible();
   }
 
+  async movePointerToViewportBottomRight() {
+    await this.viewport.waitFor({ state: 'visible' });
+    const box = await this.viewport.boundingBox();
+    await this.page.mouse.move(box.x + box.width - 10, box.y + box.height - 10);
+  }
+
   maskViewport(
     { gridEditorToolbar = false, usersSection = false, useRulers = false } = {},
     additionalElements = [],
