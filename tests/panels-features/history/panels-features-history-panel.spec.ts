@@ -1,9 +1,9 @@
-import { demoAccountFileTest, demoTeamWithInviteeTest } from 'fixtures';
 import { HistoryPanelPage } from '@pages/workspace/history-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
-import { qase } from 'playwright-qase-reporter/playwright';
+import { demoAccountFileTest, demoTeamWithInviteeTest } from 'fixtures';
 import { InvitationRole } from 'helpers/teams/invitation-role';
 import { openTeamFile } from 'helpers/teams/open-team-file';
+import { qase } from 'playwright-qase-reporter/playwright';
 
 let historyPage: HistoryPanelPage;
 let layersPanelPage: LayersPanelPage;

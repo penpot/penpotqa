@@ -1,8 +1,8 @@
-import { demoAccountFileTest } from 'fixtures';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
-import { qase } from 'playwright-qase-reporter/playwright';
-import { expect } from '@playwright/test';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { expect } from '@playwright/test';
+import { demoAccountFileTest } from 'fixtures';
+import { qase } from 'playwright-qase-reporter/playwright';
 
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
