@@ -82,6 +82,38 @@ mainTest.describe('Drafts management', () => {
     );
   });
 
+  mainTest(qase([1134], 'Delete files (multiselect, in Drafts)'), async () => {
+    const fileNames = ['New File 1', 'New File 2', 'New File 3'];
+
+    await mainTest.step('Create 3 files', async () => {
+      for (let i = 0; i < 3; i++) {
+        await dashboardPage.createFileViaTitlePanel();
+        await mainPage.clickPencilBoxButton();
+      }
+    });
+
+    await mainTest.step(
+      'Go to "Drafts" and multiselect the files by clicking SHIFT',
+      async () => {
+        await dashboardPage.openSidebarItem('Drafts');
+        await dashboardPage.clickShiftAndSelectFilesByName(fileNames);
+      },
+    );
+
+    await mainTest.step(
+      'From context menu, click "Delete 3 files" and confirm → the files are deleted',
+      async () => {
+        await dashboardPage.deleteSelectedFilesViaRightClick(fileNames.length);
+        await dashboardPage.isSuccessMessageDisplayed(
+          'Your files have been deleted successfully',
+        );
+        for (const fileName of fileNames) {
+          await dashboardPage.isFileByNameNotVisible(fileName);
+        }
+      },
+    );
+  });
+
   mainTest(
     qase(1913, 'Download Penpot file (.penpot) (in Drafts) via right click'),
     async () => {
@@ -113,6 +145,36 @@ mainTest.describe('Files management', () => {
       await dashboardPage.checkNumberOfFiles('1 file');
     },
   );
+
+  mainTest(qase([81], 'Open file in a new tab (in project)'), async ({ page }) => {
+    await mainTest.step(
+      'Open "Projects" section → the new file is listed',
+      async () => {
+        await dashboardPage.openSidebarItem('Projects');
+        await dashboardPage.isFilePresentWithName('New File 1');
+      },
+    );
+
+    await mainTest.step(
+      'Right-click the file → "Open file in a new tab" → the file opens in a new tab',
+      async () => {
+        const newPage = await dashboardPage.openFileInNewTabViaRightClick();
+        await new MainPage(newPage).isMainPageLoaded();
+        await newPage.close();
+      },
+    );
+
+    await mainTest.step(
+      'Go back to "Projects", click "Options" → "Open file in a new tab" → the file opens in a new tab',
+      async () => {
+        await page.bringToFront();
+        await dashboardPage.openSidebarItem('Projects');
+        const newPage = await dashboardPage.openFileInNewTabViaOptionsIcon();
+        await new MainPage(newPage).isMainPageLoaded();
+        await newPage.close();
+      },
+    );
+  });
 
   mainTest(qase(1114, 'Rename file in Project'), async () => {
     await dashboardPage.renameFile('New File 1', 'test_panel', false);

@@ -35,6 +35,11 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.fileNameTitle = page.locator('div[class*="item-info"] h3');
     this.deleteFileMenuItem = page.getByTestId('file-delete');
     this.deleteFileButton = page.getByRole('button', { name: 'Delete file' });
+    this.deleteMultipleFilesMenuItem = page.getByTestId('file-delete-multi');
+    this.deleteMultipleFilesButton = page.getByRole('button', {
+      name: 'Delete files',
+    });
+    this.openFileInNewTabMenuItem = page.getByTestId('file-open-new-tab');
     this.deleteFileModalWindow = page.locator(
       '.main_ui_delete_shared__modal-container',
     );
@@ -342,6 +347,34 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.fileOptionsMenuButton.first().click();
     await this.deleteFileMenuItem.click();
     await this.confirmDeleteFile();
+  }
+
+  /**
+   * @param {number} count number of selected files
+   */
+  async deleteSelectedFilesViaRightClick(count) {
+    await this.fileTile.first().click({ button: 'right' });
+    await expect(this.deleteMultipleFilesMenuItem).toHaveText(
+      `Delete ${count} files`,
+    );
+    await this.deleteMultipleFilesMenuItem.click();
+    await this.deleteMultipleFilesButton.click();
+  }
+
+  /** @returns {Promise<import('@playwright/test').Page>} the new tab */
+  async openFileInNewTabViaRightClick() {
+    const newPage = this.page.context().waitForEvent('page');
+    await this.fileTile.first().click({ button: 'right' });
+    await this.openFileInNewTabMenuItem.click();
+    return newPage;
+  }
+
+  /** @returns {Promise<import('@playwright/test').Page>} the new tab */
+  async openFileInNewTabViaOptionsIcon() {
+    const newPage = this.page.context().waitForEvent('page');
+    await this.clickOnFileOptions();
+    await this.openFileInNewTabMenuItem.click();
+    return newPage;
   }
 
   async confirmDeleteFile() {
@@ -981,6 +1014,13 @@ exports.DashboardPage = class DashboardPage extends BasePage {
       elem.first(),
       `File with name ${name} should be visible`,
     ).toBeVisible();
+  }
+
+  async isFileByNameNotVisible(name) {
+    await expect(
+      this.getFileButtonByName(name),
+      `File with name ${name} should not be visible`,
+    ).toHaveCount(0);
   }
 
   async deleteFileWithNameViaRightClick(name) {
