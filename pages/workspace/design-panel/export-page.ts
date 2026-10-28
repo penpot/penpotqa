@@ -29,30 +29,40 @@ export type ExportResult = {
 const EXPORTER_PATH = /\/api\/export/;
 
 /**
- * Export UI of the workspace: the Export section of the Design tab and the
- * "Export selection" dialog it opens for several elements. It works the same
- * for every format; what each format produces is checked on the downloaded
- * file (e.g. ExportedSvgPage).
- *
- * The older export locators and methods still live in DesignPanelPage (inherited
- * here) and MainPage, and move here progressively.
+ * Export UI of the workspace: the Export section of the Design tab (also in
+ * view mode's Inspect tab), the "Export selection" dialog it opens for several
+ * elements, and Main menu > File > Export boards as PDF. It works the same for
+ * every format; what each format produces is checked on the downloaded file
+ * (e.g. ExportedSvgPage).
  */
 export class ExportPage extends DesignPanelPage {
   // pages
   readonly mainPage: MainPage;
 
   // locators
+  readonly exportSection: Locator;
+  readonly addExportButton: Locator;
+  readonly removeExportButton: Locator;
+  /** "Export N element(s)" button under the export rows. */
+  readonly exportElementButton: Locator;
   readonly exportFormatSelect: Locator;
   readonly exportScaleSelect: Locator;
   readonly exportSuffixInput: Locator;
   /** Single row shown for several elements whose exports differ. */
   readonly exportMixedRow: Locator;
   readonly exportSelectionDialogTitle: Locator;
-  readonly exportSelectionDialogExportButton: Locator;
+  readonly exportAsPDFDialogTitle: Locator;
+  /** "Export" button of the Export selection and Export as PDF dialogs. */
+  readonly exportDialogExportButton: Locator;
+  readonly exportCompleteToastText: Locator;
+  readonly exportBoardsAsPDFMenuSubItem: Locator;
   readonly preferencesMainMenuItem: Locator;
   readonly webglRenderingMenuSubItem: Locator;
   /** Canvas the WebGL renderer draws the shapes on; absent with the classic renderer. */
   readonly webglCanvas: Locator;
+  readonly viewModeRightSidebar: Locator;
+  readonly viewModeAddExportButton: Locator;
+  readonly viewModeExportSuffixInput: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -61,6 +71,12 @@ export class ExportPage extends DesignPanelPage {
     this.mainPage = new MainPage(page);
 
     // locators
+    this.exportSection = page.getByText('Export', { exact: true });
+    this.addExportButton = page.getByRole('button', { name: 'Add export' });
+    this.removeExportButton = page.getByRole('button', { name: 'Remove export' });
+    this.exportElementButton = page.getByRole('button', {
+      name: /Export \d+ element/,
+    });
     this.exportFormatSelect = page.getByRole('combobox').filter({
       hasText: new RegExp(`^(${Object.values(ExportFormat).join('|')})$`),
     });
@@ -75,10 +91,17 @@ export class ExportPage extends DesignPanelPage {
     this.exportSelectionDialogTitle = page.getByRole('heading', {
       name: 'Export selection',
     });
-    this.exportSelectionDialogExportButton = page.getByRole('button', {
+    this.exportAsPDFDialogTitle = page.getByRole('heading', {
+      name: 'Export as PDF',
+    });
+    this.exportDialogExportButton = page.getByRole('button', {
       name: 'Export',
       exact: true,
     });
+    this.exportCompleteToastText = page.getByText('Export complete');
+    this.exportBoardsAsPDFMenuSubItem = page
+      .getByRole('menuitem')
+      .filter({ hasText: 'Export boards as PDF' });
     this.preferencesMainMenuItem = page.getByRole('menuitem', {
       name: 'Preferences',
     });
@@ -87,6 +110,52 @@ export class ExportPage extends DesignPanelPage {
       name: /^(Enable|Disable) WebGL rendering \(beta\)$/,
     });
     this.webglCanvas = page.getByTestId('canvas-wasm-shapes');
+    this.viewModeRightSidebar = page.locator(
+      `aside[class*='inspect_right_sidebar']`,
+    );
+    this.viewModeAddExportButton = this.viewModeRightSidebar.getByRole('button', {
+      name: 'Add export',
+    });
+    this.viewModeExportSuffixInput =
+      this.viewModeRightSidebar.getByPlaceholder('Suffix');
+  }
+
+  async clickAddExportButton() {
+    await this.exportSection.waitFor();
+    await this.addExportButton.click();
+  }
+
+  async clickAddExportButtonForViewMode() {
+    await this.exportSection.waitFor();
+    await this.viewModeAddExportButton.click();
+  }
+
+  async clickRemoveExportButton() {
+    await this.removeExportButton.click();
+  }
+
+  async isViewModeExportRowVisible(format = 'PNG', scale = '1x') {
+    const sidebar = this.viewModeRightSidebar;
+    await expect(
+      sidebar.getByText(format, { exact: true }),
+      `Export format is ${format}`,
+    ).toBeVisible();
+    await expect(
+      sidebar.getByText(scale, { exact: true }),
+      `Export scale is ${scale}`,
+    ).toBeVisible();
+    await expect(
+      this.viewModeExportSuffixInput,
+      'Export suffix is empty',
+    ).toHaveValue('');
+  }
+
+  async isExportElementButtonDisplayed(title: string) {
+    await expect(this.exportElementButton).toHaveText(title);
+  }
+
+  async isExportElementButtonNotDisplayed() {
+    await expect(this.exportElementButton).not.toBeVisible();
   }
 
   /** Adds an export row to the selection and sets its format. */
@@ -161,8 +230,21 @@ export class ExportPage extends DesignPanelPage {
         this.exportSelectionDialogTitle,
         'Export selection dialog is visible',
       ).toBeVisible();
-      await this.exportSelectionDialogExportButton.click();
+      await this.exportDialogExportButton.click();
     });
+  }
+
+  /** Clicks Export boards as PDF in the open File menu and exports them all. */
+  async exportBoardsAsPDFViaMenu(numBoards: number) {
+    await this.exportBoardsAsPDFMenuSubItem.click();
+    await expect(this.exportAsPDFDialogTitle).toBeVisible();
+    await expect(this.exportDialogExportButton).toBeVisible();
+    await Promise.all([
+      this.page.waitForEvent('download'),
+      this.exportDialogExportButton.click(),
+    ]);
+    await expect(this.exportCompleteToastText).toBeVisible();
+    await expect(this.page.getByText(`${numBoards} / ${numBoards}`)).toBeVisible();
   }
 
   private async trackExport(
