@@ -114,7 +114,7 @@ export class PagesPanelPage extends MainPage {
   async reloadUntilPageNameDisplayed(name: string) {
     await expect(async () => {
       await this.page.reload();
-      await this.mainPage.waitForViewportVisible();
+      await this.waitForViewportVisible();
       await expect(this.getPageListItemByName(name)).toBeVisible({ timeout: 3000 });
     }, `Page "${name}" should be listed in the Pages panel`).toPass({
       timeout: 60000,
