@@ -119,30 +119,53 @@ mainTest.describe(() => {
   });
 
   mainTest(qase([2447], 'Property recovery'), async () => {
-    await dashboardPage.importAndOpenFile('documents/bulk-less-happy.penpot');
-    await mainPage.isMainPageLoaded();
-    await mainPage.clickMoveButton();
+    const variantLayerName = 'primary, text, default';
+    const invalidVariantName = 'Invalid name';
 
-    await assetsPanelPage.clickAssetsTab();
-    await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-    await assetsPanelPage.combineAsVariantsGroup();
-    await layersPanelPage.openLayersTab();
+    await mainTest.step('Combine the "Form" components as variants', async () => {
+      await dashboardPage.importAndOpenFile('documents/bulk-less-happy.penpot');
+      await mainPage.isMainPageLoaded();
+      await mainPage.clickMoveButton();
 
-    await layersPanelPage.selectLayerByName('primary, text, default');
-    await layersPanelPage.doubleClickLayerOnLayersTab('primary, text, default');
-    await layersPanelPage.typeNameCreatedLayerAndEnter('');
-    await mainPage.waitForChangeIsSaved();
+      await assetsPanelPage.clickAssetsTab();
+      await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+      await assetsPanelPage.combineAsVariantsGroup();
+      await layersPanelPage.openLayersTab();
+    });
 
-    await designPanelPage.checkVariantPropertyValue('Property 1', '');
-    await designPanelPage.checkVariantPropertyValue('Property 2', '');
-    await designPanelPage.checkVariantPropertyValue('Property 3', '');
-    await designPanelPage.checkVariantPropertyValue('Property 4', '');
-    await designPanelPage.checkVariantWarning(
-      'This variant has an invalid name. Try using the following structure:',
+    await mainTest.step(`Delete the name of "${variantLayerName}"`, async () => {
+      await layersPanelPage.selectLayerByName(variantLayerName);
+      await layersPanelPage.doubleClickLayerOnLayersTab(variantLayerName);
+      await layersPanelPage.typeNameCreatedLayerAndEnter('');
+
+      await designPanelPage.checkVariantPropertyValue('Property 1', 'primary');
+      await designPanelPage.checkVariantPropertyValue('Property 2', 'text');
+      await designPanelPage.checkVariantPropertyValue('Property 3', 'default');
+      await designPanelPage.isVariantWarningVisible(false);
+    });
+
+    await mainTest.step(
+      `Rename the variant to "${invalidVariantName}"`,
+      async () => {
+        await layersPanelPage.doubleClickLayerOnLayersTab(variantLayerName);
+        await layersPanelPage.typeNameCreatedLayerAndEnter(invalidVariantName);
+        await mainPage.waitForChangeIsSaved();
+
+        await designPanelPage.checkVariantPropertyValue('Property 1', '');
+        await designPanelPage.checkVariantPropertyValue('Property 2', '');
+        await designPanelPage.checkVariantPropertyValue('Property 3', '');
+        await designPanelPage.checkVariantPropertyValue('Property 4', '');
+        await designPanelPage.checkVariantWarning(
+          'This variant has an invalid name. Try using the following structure:',
+        );
+      },
     );
 
-    await designPanelPage.changeVariantPropertyValue('Property 1', 'primary');
-    await designPanelPage.checkVariantPropertyValue('Property 1', 'primary');
+    await mainTest.step('Set "Property 1" to "primary"', async () => {
+      await designPanelPage.changeVariantPropertyValue('Property 1', 'primary');
+      await designPanelPage.checkVariantPropertyValue('Property 1', 'primary');
+      await designPanelPage.isVariantWarningVisible(false);
+    });
   });
 
   mainTest.describe(() => {
