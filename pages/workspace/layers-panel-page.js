@@ -266,6 +266,20 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     }
   }
 
+  /**
+   * Selects only the given layers, wherever they are in the tree (Shift selects
+   * the whole range between them instead).
+   * @param {string[]} names
+   */
+  async ctrlSelectLayersOnLayersTabByName(names) {
+    for (let i = 0; i < names.length; i++) {
+      const layer = this.layersSidebar.getByText(names[i], { exact: true });
+      i === 0
+        ? await layer.click()
+        : await layer.click({ modifiers: ['ControlOrMeta'] });
+    }
+  }
+
   async doubleClickLayerIconOnLayersTab(layer) {
     const iconSel = this.page.locator(
       `//*[text()="${layer}"]//parent::div//div[contains(@class, "icon-shape")]`,

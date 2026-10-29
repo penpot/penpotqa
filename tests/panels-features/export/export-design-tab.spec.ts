@@ -1,14 +1,14 @@
-import { demoAccountFileTest } from 'fixtures';
-import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import { ExportPage } from '@pages/workspace/design-panel/export-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 const defaultNameBoard = 'Board';
-let designPanelPage: DesignPanelPage;
+let exportPage: ExportPage;
 let layersPanelPage: LayersPanelPage;
 
 demoAccountFileTest.beforeEach(async ({ page }) => {
-  designPanelPage = new DesignPanelPage(page);
+  exportPage = new ExportPage(page);
   layersPanelPage = new LayersPanelPage(page);
 });
 
@@ -18,8 +18,8 @@ demoAccountFileTest(
     await mainPage.clickCreateRectangleButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.clickAddExportButton();
-    await designPanelPage.isExportElementButtonDisplayed('Export 1 element');
+    await exportPage.clickAddExportButton();
+    await exportPage.isExportElementButtonDisplayed('Export 1 element');
   },
 );
 
@@ -29,10 +29,10 @@ demoAccountFileTest(
     await mainPage.clickCreateRectangleButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-    await designPanelPage.clickAddExportButton();
-    await designPanelPage.isExportElementButtonDisplayed('Export 1 element');
-    await designPanelPage.clickRemoveExportButton();
-    await designPanelPage.isExportElementButtonNotDisplayed();
+    await exportPage.clickAddExportButton();
+    await exportPage.isExportElementButtonDisplayed('Export 1 element');
+    await exportPage.clickRemoveExportButton();
+    await exportPage.isExportElementButtonNotDisplayed();
   },
 );
 
@@ -57,7 +57,7 @@ demoAccountFileTest(
     await demoAccountFileTest.step('Export boards as PDF', async () => {
       await mainPage.clickMainMenuButton();
       await mainPage.clickFileMainMenuItem();
-      await mainPage.exportBoardsAsPDFViaMenu(numBoards);
+      await exportPage.exportBoardsAsPDFViaMenu(numBoards);
     });
   },
 );
