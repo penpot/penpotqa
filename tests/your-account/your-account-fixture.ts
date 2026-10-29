@@ -19,7 +19,8 @@ export const profileTest = mainTest.extend<YourAccountFixtures>({
 });
 
 // Open Your Account > Password section
-export const passwordTest = mainTest.extend<YourAccountFixtures>({
+// NOTE: Uses a fresh demo account (via the API); its password is `demoAccountPassword`
+export const passwordTest = demoAccountApiFixture.extend<YourAccountFixtures>({
   profilePage: async ({ page }, use) => {
     const profilePage = new ProfilePage(page);
 

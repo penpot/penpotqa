@@ -3,7 +3,7 @@ import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { PagesPanelPage } from '@pages/workspace/panels-features/pages-panel-page';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 
 let pagesPanelPage: PagesPanelPage;
 let assetsPanelPage: AssetsPanelPage;
@@ -11,7 +11,7 @@ let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
 let colorPalettePage: ColorPalettePage;
 
-mainAccountFileTest.beforeEach(async ({ page, dashboardPage, mainPage }) => {
+demoAccountFileTest.beforeEach(async ({ page, dashboardPage, mainPage }) => {
   pagesPanelPage = new PagesPanelPage(page);
   assetsPanelPage = new AssetsPanelPage(page);
   designPanelPage = new DesignPanelPage(page);

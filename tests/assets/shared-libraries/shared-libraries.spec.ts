@@ -1,14 +1,21 @@
-import { mainAccountFileTest } from 'fixtures';
-import { expect } from 'playwright/test';
-import { AssetsPanelPage } from 'pages/workspace/assets-panel-page';
-import { qase } from 'playwright-qase-reporter/playwright';
-import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { MainPage } from '@pages/workspace/main-page';
+import { expect } from '@playwright/test';
+import { demoAccountApiFixture, mainAccountFileTest } from 'fixtures';
 import { createTeamName } from 'helpers/teams/create-team-name';
+import { qase } from 'playwright-qase-reporter/playwright';
 
 const teamName2 = createTeamName();
 
+let mainPage: MainPage;
+let dashboardPage: DashboardPage;
+let teamPage: TeamPage;
+let teamName: string;
 let assetsPanelPage: AssetsPanelPage;
 let layersPanelPage: LayersPanelPage;
 let designPanelPage: DesignPanelPage;
@@ -115,84 +122,132 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest.beforeEach(async ({ mainPage, dashboardPage }) => {
-    await mainPage.createDefaultRectangleByCoordinates(200, 200);
-    await mainPage.createComponentViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.createDefaultEllipseByCoordinates(200, 300, true);
-    await mainPage.createComponentViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-    await expect(mainPage.viewport).toHaveScreenshot(
-      'component-publish-update-library-1-file.png',
-      {
-        mask: mainPage.maskViewport(),
+demoAccountApiFixture.describe('Library updates after dismissal', () => {
+  demoAccountApiFixture.beforeEach(async ({ page }) => {
+    mainPage = new MainPage(page);
+    dashboardPage = new DashboardPage(page);
+    teamPage = new TeamPage(page);
+    assetsPanelPage = new AssetsPanelPage(page);
+    layersPanelPage = new LayersPanelPage(page);
+    designPanelPage = new DesignPanelPage(page);
+    colorPalettePage = new ColorPalettePage(page);
+    teamName = createTeamName();
+
+    await demoAccountApiFixture.step(
+      `Create team "${teamName}" and open its first file`,
+      async () => {
+        await teamPage.createTeam(teamName);
+        await dashboardPage.createFileViaPlaceholder();
+        await mainPage.isMainPageLoaded();
       },
     );
-    await mainPage.clickPencilBoxButton();
-    await dashboardPage.addFileAsSharedLibraryViaRightclick();
-    await dashboardPage.isSharedLibraryIconDisplayed();
+    await demoAccountApiFixture.step(
+      'Create and publish the source library',
+      async () => {
+        await mainPage.createDefaultRectangleByCoordinates(200, 200);
+        await mainPage.createComponentViaRightClick();
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.createDefaultEllipseByCoordinates(200, 300, true);
+        await mainPage.createComponentViaRightClick();
+        await mainPage.waitForChangeIsSaved();
+        await expect(
+          mainPage.viewport,
+          'Library components should match their expected state',
+        ).toHaveScreenshot('component-publish-update-library-1-file.png', {
+          mask: mainPage.maskViewport(),
+        });
+        await mainPage.clickPencilBoxButton();
+        await dashboardPage.addFileAsSharedLibraryViaRightclick();
+        await dashboardPage.isSharedLibraryIconDisplayed();
+      },
+    );
 
-    await dashboardPage.createFileViaTitlePanel();
-    await assetsPanelPage.clickAssetsTab();
-    await assetsPanelPage.clickLibrariesButton();
-    await assetsPanelPage.isSharedLibraryVisibleByName('New File 1');
-    await assetsPanelPage.clickSharedLibraryImportButton('New File 1');
-    await assetsPanelPage.clickCloseModalButton();
-    await mainPage.clickMoveButton();
-    await assetsPanelPage.clickAssetsTab();
-    await assetsPanelPage.clickLibraryTitleWithName('New File 1');
-    await assetsPanelPage.clickLibraryComponentsTitle();
-    await assetsPanelPage.dragAndDropComponentToViewport('Ellipse');
-    await designPanelPage.changeAxisXAndYForLayer('100', '100');
-    await mainPage.waitForChangeIsSaved();
-    await assetsPanelPage.dragAndDropComponentToViewport('Rectangle');
-    await designPanelPage.changeAxisXAndYForLayer('300', '400');
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.clickPencilBoxButton();
-    await dashboardPage.isHeaderDisplayed('Projects');
-    await dashboardPage.checkNumberOfFiles('2 files');
+    await demoAccountApiFixture.step(
+      'Import the library components into the second file',
+      async () => {
+        await dashboardPage.createFileViaTitlePanel();
+        await assetsPanelPage.clickAssetsTab();
+        await assetsPanelPage.clickLibrariesButton();
+        await assetsPanelPage.isSharedLibraryVisibleByName('New File 1');
+        await assetsPanelPage.clickSharedLibraryImportButton('New File 1');
+        await assetsPanelPage.clickCloseModalButton();
+        await mainPage.clickMoveButton();
+        await assetsPanelPage.clickAssetsTab();
+        await assetsPanelPage.clickLibraryTitleWithName('New File 1');
+        await assetsPanelPage.clickLibraryComponentsTitle();
+        await assetsPanelPage.dragAndDropComponentToViewport('Ellipse');
+        await designPanelPage.changeAxisXAndYForLayer('100', '100');
+        await mainPage.waitForChangeIsSaved();
+        await assetsPanelPage.dragAndDropComponentToViewport('Rectangle');
+        await designPanelPage.changeAxisXAndYForLayer('300', '400');
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.clickPencilBoxButton();
+        await dashboardPage.isHeaderDisplayed('Projects');
+        await dashboardPage.checkNumberOfFiles('2 files');
+      },
+    );
 
-    await dashboardPage.openFileWithName('New File 1');
-    await layersPanelPage.clickMainComponentOnLayersTab();
-    await designPanelPage.changeHeightAndWidthForLayer('100', '150');
-    await designPanelPage.clickFirstColorIcon();
-    await colorPalettePage.setHex('#05143F');
-    await layersPanelPage.clickMainComponentOnLayersTab();
-    await mainPage.waitForChangeIsUnsaved();
-    await mainPage.waitForChangeIsSaved();
+    await demoAccountApiFixture.step(
+      'Update the source component and save the library',
+      async () => {
+        await dashboardPage.openFileWithName('New File 1');
+        // Re-enter with a fresh workspace: the SPA transition can stay on Loading.
+        await mainPage.reloadPage();
+        await mainPage.waitForViewportVisible();
+        await layersPanelPage.clickMainComponentOnLayersTab();
+        await designPanelPage.changeHeightAndWidthForLayer('100', '150');
+        await designPanelPage.clickFirstColorIcon();
+        await colorPalettePage.setHex('#05143F');
+        await layersPanelPage.clickMainComponentOnLayersTab();
+        await mainPage.waitForChangeIsUnsaved();
+        await mainPage.waitForChangeIsSaved();
 
-    await mainPage.clickPencilBoxButton();
-    await dashboardPage.isHeaderDisplayed('Projects');
-    await dashboardPage.checkNumberOfFiles('2 files');
+        await mainPage.clickPencilBoxButton();
+        await dashboardPage.isHeaderDisplayed('Projects');
+        await dashboardPage.checkNumberOfFiles('2 files');
+      },
+    );
   });
 
-  mainAccountFileTest(
+  demoAccountApiFixture(
     qase(
       [1365],
       'Apply updates from Libraries → Updates (after dismissing at the beginning)',
     ),
-    async ({ mainPage, dashboardPage }) => {
-      await dashboardPage.openFileWithName('New File 2');
-      await assetsPanelPage.isWrapperMessageVisible();
-      await assetsPanelPage.clickDismissButton();
-      await mainPage.reloadPage();
-      await mainPage.waitForViewportVisible();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'component-publish-update-file2-1.png',
-        {
-          mask: mainPage.maskViewport(),
+    async () => {
+      await demoAccountApiFixture.step(
+        'Dismiss the library update and check the unchanged components',
+        async () => {
+          await dashboardPage.openFileWithName('New File 2');
+          await mainPage.reloadPage();
+          await mainPage.waitForViewportVisible();
+          await assetsPanelPage.isWrapperMessageVisible();
+          await assetsPanelPage.clickDismissButton();
+          await mainPage.reloadPage();
+          await mainPage.waitForViewportVisible();
+          await expect(
+            mainPage.viewport,
+            'Library components should match their expected state',
+          ).toHaveScreenshot('component-publish-update-file2-1.png', {
+            mask: mainPage.maskViewport(),
+          });
         },
       );
-      await assetsPanelPage.clickAssetsTab();
-      await assetsPanelPage.clickLibrariesButton();
-      await assetsPanelPage.clickUpdatesTab();
-      await assetsPanelPage.clickLibrariesUpdateButton();
-      await assetsPanelPage.clickCloseModalButton();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'component-publish-update-file2-2.png',
-        {
-          mask: mainPage.maskViewport(),
+
+      await demoAccountApiFixture.step(
+        'Apply the library update and check the updated components',
+        async () => {
+          await assetsPanelPage.clickAssetsTab();
+          await assetsPanelPage.clickLibrariesButton();
+          await assetsPanelPage.clickUpdatesTab();
+          await assetsPanelPage.clickLibrariesUpdateButton();
+          await assetsPanelPage.clickCloseModalButton();
+          await expect(
+            mainPage.viewport,
+            'Library components should match their expected state',
+          ).toHaveScreenshot('component-publish-update-file2-2.png', {
+            mask: mainPage.maskViewport(),
+          });
         },
       );
     },

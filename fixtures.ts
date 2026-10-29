@@ -65,12 +65,24 @@ export const registerTest = test.extend<RegisterTestFixtures>({
   },
 });
 
+type DemoAccountFixtures = {
+  demoAccountPassword: string;
+};
+
+// A `page` override can't return the password too, so it's kept per page instead.
+const demoAccountPasswords = new WeakMap<Page, string>();
+
 // Fresh demo account (WASM renderer) created and logged in via the API, landing on
 // the dashboard. Use it for tests that just need a logged-in, isolated user.
-export const demoAccountApiFixture = test.extend({
+// `demoAccountPassword` is the account's current password (e.g. a change-password flow).
+export const demoAccountApiFixture = test.extend<DemoAccountFixtures>({
   page: async ({ page }, use) => {
-    await loginAsDemoAccount(page, { renderer: 'wasm' });
+    const { password } = await loginAsDemoAccount(page, { renderer: 'wasm' });
+    demoAccountPasswords.set(page, password);
     await use(page);
+  },
+  demoAccountPassword: async ({ page }, use) => {
+    await use(demoAccountPasswords.get(page)!);
   },
 });
 

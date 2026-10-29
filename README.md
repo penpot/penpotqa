@@ -166,7 +166,24 @@ Some tests log in with a disposable demo Penpot account instead of the fixed `LO
   { 'skip-onboarding': true, 'expires-in': '10m' }
   ```
 
-**11. Running tests via GitHub Actions.**
+**11. Fixtures usage.**
+
+`fixtures.ts` exports these fixtures. Test cases = `<fixture>(...)` calls, not counting `.describe`/`.beforeEach`; recompute with `grep -rhoP "(?<![.\w])<fixture>(\.skip|\.fixme|\.only)?\(" tests/ | wc -l`:
+
+| Fixture                   | Login                                  | Starts on                                                                  | Test cases |
+| ------------------------- | -------------------------------------- | -------------------------------------------------------------------------- | ---------: |
+| `mainTest`                | Shared `LOGIN_EMAIL` account (UI)      | Dashboard                                                                  |         43 |
+| `mainAccountFileTest`     | Shared `LOGIN_EMAIL` account (UI)      | Blank file in a new team                                                   |        154 |
+| `registerTest`            | New account, UI registration flow      | Dashboard                                                                  |         12 |
+| `demoAccountApiFixture`   | Fresh demo account (API, WASM)         | Dashboard. `demoAccountPassword` gives its password                        |         46 |
+| `demoAccountFileTest`     | Fresh demo account (API, WASM)         | Blank Drafts file, or the `penpotFile` imported. `secondUserPage` optional |        304 |
+| `demoTeamWithInviteeTest` | Two demo accounts sharing a team (API) | Blank file in the team, `invitee` on its dashboard                         |          6 |
+
+Built on top of them: `profileTest` (3) and `giveFeedbackTest` (1) on `mainTest`; `passwordTest` (3), `integrationsTest` (2) and `shortcutsTest` (5) on `demoAccountApiFixture` (`tests/your-account/your-account-fixture.ts`); `pathEditorTest` (9) on `demoAccountFileTest`. The enterprise suite has its own fixtures (see `tests/enterprise/README.md`).
+
+For new tests, prefer a demo-account fixture: API login, no shared state and no team needed just for isolation. Use `mainTest`/`mainAccountFileTest` only when the test needs the shared account or a real email inbox (see the previous section).
+
+**12. Running tests via GitHub Actions.**
 
 On _Settings > Environments_ page 2 environments were created: _PRE_ and _PRO_.
 For each environment the appropriate secrets were added:

@@ -1,21 +1,19 @@
-import { Page } from '@playwright/test';
-import { mainTest } from 'fixtures';
-import { MainPage } from '@pages/workspace/main-page';
+import { DeletedPage } from '@pages/dashboard/dashboard-deleted-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { TeamPage } from '@pages/dashboard/team-page';
-import { DeletedPage } from '@pages/dashboard/dashboard-deleted-page';
-import { qase } from 'playwright-qase-reporter/playwright';
+import { MainPage } from '@pages/workspace/main-page';
+import { Page } from '@playwright/test';
+import { demoAccountApiFixture, mainTest } from 'fixtures';
+import { createTeamName } from 'helpers/teams/create-team-name';
 import {
   setupViewerRoleUser,
   setupEditorRoleUser,
   setupAdminRoleUser,
 } from 'helpers/user-flows';
-import { createTeamName } from 'helpers/teams/create-team-name';
+import { qase } from 'playwright-qase-reporter/playwright';
 
-const teamName = createTeamName();
-
-let teamPage: TeamPage;
 let dashboardPage: DashboardPage;
+let teamPage: TeamPage;
 let mainPage: MainPage;
 let deletedPage: DeletedPage;
 
@@ -23,19 +21,19 @@ let deletedPage: DeletedPage;
  * OWNER
  * ========================================================= */
 
-mainTest.describe('As Owner', () => {
-  mainTest.beforeEach(async ({ page }: { page: Page }) => {
+demoAccountApiFixture.describe('As Owner', () => {
+  demoAccountApiFixture.beforeEach(async ({ page }: { page: Page }) => {
     teamPage = new TeamPage(page);
     dashboardPage = new DashboardPage(page);
     mainPage = new MainPage(page);
     deletedPage = new DeletedPage(page);
 
-    await teamPage.createTeam(teamName);
+    await teamPage.createTeam(createTeamName());
     await dashboardPage.isHeaderDisplayed('Projects');
     await dashboardPage.hideLibrariesAndTemplatesCarrousel();
   });
 
-  mainTest(
+  demoAccountApiFixture(
     qase(
       [2692, 2709, 2687],
       'Restore file from Trash / Search excludes trashed files / Deleted empty state',
@@ -44,18 +42,21 @@ mainTest.describe('As Owner', () => {
       const projectName = 'Test Project';
       const fileName = 'New File 1';
 
-      await mainTest.step('Create project, file and delete it', async () => {
-        await dashboardPage.clickAddProjectButton();
-        await dashboardPage.setProjectName(projectName);
-        await dashboardPage.isProjectByNameDisplayed(projectName);
-        await dashboardPage.createFileViaTitlePanel();
-        await mainPage.clickPencilBoxButton();
-        await dashboardPage.deleteFileViaRightclick();
-        await dashboardPage.isDeletedFileSuccessMessageVisible();
-        await dashboardPage.isDeletedFileSuccessMessageNotVisible();
-      });
+      await demoAccountApiFixture.step(
+        'Create project, file and delete it',
+        async () => {
+          await dashboardPage.clickAddProjectButton();
+          await dashboardPage.setProjectName(projectName);
+          await dashboardPage.isProjectByNameDisplayed(projectName);
+          await dashboardPage.createFileViaTitlePanel();
+          await mainPage.clickPencilBoxButton();
+          await dashboardPage.deleteFileViaRightclick();
+          await dashboardPage.isDeletedFileSuccessMessageVisible();
+          await dashboardPage.isDeletedFileSuccessMessageNotVisible();
+        },
+      );
 
-      await mainTest.step(
+      await demoAccountApiFixture.step(
         '(2709) Search a file that is in Trash: the files are excluded',
         async () => {
           await dashboardPage.fillSearchInput(fileName);
@@ -63,7 +64,7 @@ mainTest.describe('As Owner', () => {
         },
       );
 
-      await mainTest.step(
+      await demoAccountApiFixture.step(
         '(2692 / 2687) Click on Deleted tab, restore deleted file via options icon / Access "Deleted" section from the dashboard navigation - empty state',
         async () => {
           await dashboardPage.openSidebarItem('Projects');
@@ -82,58 +83,64 @@ mainTest.describe('As Owner', () => {
     },
   );
 
-  mainTest(qase([2705, 2713], 'Restore all trash / Clear all trash'), async () => {
-    const projects = [
-      { projectName: 'Test Project 1', fileName: 'New File 1' },
-      { projectName: 'Test Project 2', fileName: 'New File 2' },
-    ];
+  demoAccountApiFixture(
+    qase([2705, 2713], 'Restore all trash / Clear all trash'),
+    async () => {
+      const projects = [
+        { projectName: 'Test Project 1', fileName: 'New File 1' },
+        { projectName: 'Test Project 2', fileName: 'New File 2' },
+      ];
 
-    for (const { projectName } of projects) {
-      await mainTest.step(
-        `Add project "${projectName}", create a file and delete it`,
+      for (const { projectName } of projects) {
+        await demoAccountApiFixture.step(
+          `Add project "${projectName}", create a file and delete it`,
+          async () => {
+            await dashboardPage.clickAddProjectButton();
+            await dashboardPage.setProjectName(projectName);
+            await dashboardPage.isProjectByNameDisplayed(projectName);
+            await dashboardPage.createFileViaTitlePanel();
+            await mainPage.clickPencilBoxButton();
+            await dashboardPage.deleteProjectViaRightclick();
+            await dashboardPage.isDeletedProjectSuccessMessageVisible();
+            await dashboardPage.isDeletedProjectSuccessMessageNotVisible();
+            await dashboardPage.isProjectTitleNotVisible(projectName);
+          },
+        );
+      }
+
+      await demoAccountApiFixture.step(
+        '(2713) Restore all trash (bulk)',
         async () => {
-          await dashboardPage.clickAddProjectButton();
-          await dashboardPage.setProjectName(projectName);
-          await dashboardPage.isProjectByNameDisplayed(projectName);
-          await dashboardPage.createFileViaTitlePanel();
-          await mainPage.clickPencilBoxButton();
-          await dashboardPage.deleteProjectViaRightclick();
-          await dashboardPage.isDeletedProjectSuccessMessageVisible();
-          await dashboardPage.isDeletedProjectSuccessMessageNotVisible();
-          await dashboardPage.isProjectTitleNotVisible(projectName);
+          await dashboardPage.openDeletedTab();
+
+          for (const { projectName } of projects) {
+            await deletedPage.isDeletedProjectVisible(projectName);
+          }
+
+          await deletedPage.restoreAllProjectsAndFiles();
+          await deletedPage.isEmptyTrashMessageVisible();
+
+          await dashboardPage.openSidebarItem('Projects');
+
+          for (const { projectName } of projects) {
+            await dashboardPage.isProjectByNameDisplayed(projectName);
+          }
         },
       );
-    }
 
-    await mainTest.step('(2713) Restore all trash (bulk)', async () => {
-      await dashboardPage.openDeletedTab();
+      await demoAccountApiFixture.step('(2705) Clear all trash (bulk)', async () => {
+        await dashboardPage.deleteProjectsIfExist();
+        await dashboardPage.openDeletedTab();
 
-      for (const { projectName } of projects) {
-        await deletedPage.isDeletedProjectVisible(projectName);
-      }
+        for (const { projectName } of projects) {
+          await deletedPage.isDeletedProjectVisible(projectName);
+        }
 
-      await deletedPage.restoreAllProjectsAndFiles();
-      await deletedPage.isEmptyTrashMessageVisible();
-
-      await dashboardPage.openSidebarItem('Projects');
-
-      for (const { projectName } of projects) {
-        await dashboardPage.isProjectByNameDisplayed(projectName);
-      }
-    });
-
-    await mainTest.step('(2705) Clear all trash (bulk)', async () => {
-      await dashboardPage.deleteProjectsIfExist();
-      await dashboardPage.openDeletedTab();
-
-      for (const { projectName } of projects) {
-        await deletedPage.isDeletedProjectVisible(projectName);
-      }
-
-      await deletedPage.deleteAllProjectsAndFilesForever();
-      await deletedPage.isEmptyTrashMessageVisible();
-    });
-  });
+        await deletedPage.deleteAllProjectsAndFilesForever();
+        await deletedPage.isEmptyTrashMessageVisible();
+      });
+    },
+  );
 });
 
 /* =========================================================
@@ -280,7 +287,7 @@ mainTest.describe('As Viewer', () => {
     await dashboardPage.hideLibrariesAndTemplatesCarrousel();
   });
 
-  mainTest(qase(2697, 'Viewer cannot access trash'), async () => {
+  mainTest(qase([2697], 'Viewer cannot access trash'), async () => {
     await dashboardPage.isDeletedTabNotVisible();
   });
 });

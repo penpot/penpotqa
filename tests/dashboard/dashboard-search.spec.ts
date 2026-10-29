@@ -1,7 +1,7 @@
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase(1148, 'Search file from Drafts'),
   async ({ mainPage, dashboardPage }) => {
     await mainPage.clickPencilBoxButton();
