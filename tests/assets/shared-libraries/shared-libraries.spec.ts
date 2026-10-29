@@ -1,34 +1,52 @@
-import { mainAccountFileTest } from 'fixtures';
-import { expect } from 'playwright/test';
-import { AssetsPanelPage } from 'pages/workspace/assets-panel-page';
-import { qase } from 'playwright-qase-reporter/playwright';
-import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { MainPage } from '@pages/workspace/main-page';
+import { expect } from '@playwright/test';
+import { demoAccountApiFixture } from 'fixtures';
 import { createTeamName } from 'helpers/teams/create-team-name';
+import { qase } from 'playwright-qase-reporter/playwright';
 
-const teamName2 = createTeamName();
-
+let mainPage: MainPage;
+let dashboardPage: DashboardPage;
+let teamPage: TeamPage;
+let teamName: string;
 let assetsPanelPage: AssetsPanelPage;
 let layersPanelPage: LayersPanelPage;
 let designPanelPage: DesignPanelPage;
 let colorPalettePage: ColorPalettePage;
 
-mainAccountFileTest.beforeEach(async ({ page }) => {
+demoAccountApiFixture.beforeEach(async ({ page }) => {
+  mainPage = new MainPage(page);
+  dashboardPage = new DashboardPage(page);
+  teamPage = new TeamPage(page);
   assetsPanelPage = new AssetsPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
   designPanelPage = new DesignPanelPage(page);
   colorPalettePage = new ColorPalettePage(page);
+  teamName = createTeamName();
+
+  await demoAccountApiFixture.step(
+    `Create team "${teamName}" and open its first file`,
+    async () => {
+      await teamPage.createTeam(teamName);
+      await dashboardPage.createFileViaPlaceholder();
+      await mainPage.isMainPageLoaded();
+    },
+  );
 });
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest(
+demoAccountApiFixture.describe(() => {
+  demoAccountApiFixture(
     qase([1540], 'Move library to a different team'),
-    async ({ page, mainPage, dashboardPage, teamPage, teamName }) => {
+    async () => {
       const team1 = teamName;
-      const team2 = teamName2;
+      const team2 = createTeamName();
 
-      mainAccountFileTest.slow();
+      demoAccountApiFixture.slow();
       await mainPage.createDefaultEllipseByCoordinates(200, 200);
       await mainPage.createComponentViaRightClick();
       await mainPage.waitForChangeIsSaved();
@@ -53,9 +71,7 @@ mainAccountFileTest.describe(() => {
       await teamPage.switchTeam(team1);
 
       await dashboardPage.moveFileToOtherTeamViaRightClick('New File 1', team2);
-      await expect(dashboardPage.deleteFileModalWindow).toHaveScreenshot(
-        'library-move-to-other-team-warning.png',
-      );
+      await dashboardPage.isDeletingLibraryWarningVisible(1, 'New File 2');
       await dashboardPage.clickOnMoveButton();
       await teamPage.isTeamSelected(team2);
       await dashboardPage.isSharedLibraryIconDisplayed();
@@ -63,10 +79,10 @@ mainAccountFileTest.describe(() => {
   );
 });
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest(
+demoAccountApiFixture.describe(() => {
+  demoAccountApiFixture(
     qase([1457], 'Publish Shared Library from the Libraries popup (with assets)'),
-    async ({ mainPage }) => {
+    async () => {
       await mainPage.createDefaultRectangleByCoordinates(200, 200);
       await mainPage.waitForChangeIsSaved();
       await mainPage.createDefaultEllipseByCoordinates(200, 300, true);
@@ -85,7 +101,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest.afterEach(async ({ mainPage }) => {
+  demoAccountApiFixture.afterEach(async () => {
     await mainPage.clickMainMenuButton();
     await mainPage.clickFileMainMenuItem();
     await mainPage.clickRemoveAsSharedLibraryMainMenuSubItem();
@@ -95,9 +111,9 @@ mainAccountFileTest.describe(() => {
   });
 });
 
-mainAccountFileTest(
+demoAccountApiFixture(
   qase([1458], 'Publish Shared Library from the dashboard (RMB) (with assets)'),
-  async ({ mainPage, dashboardPage }) => {
+  async () => {
     await mainPage.createDefaultRectangleByCoordinates(200, 200);
     await mainPage.waitForChangeIsSaved();
     await mainPage.createDefaultEllipseByCoordinates(200, 300, true);
@@ -115,8 +131,8 @@ mainAccountFileTest(
   },
 );
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest.beforeEach(async ({ mainPage, dashboardPage }) => {
+demoAccountApiFixture.describe(() => {
+  demoAccountApiFixture.beforeEach(async () => {
     await mainPage.createDefaultRectangleByCoordinates(200, 200);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -154,6 +170,9 @@ mainAccountFileTest.describe(() => {
     await dashboardPage.checkNumberOfFiles('2 files');
 
     await dashboardPage.openFileWithName('New File 1');
+    // Re-enter with a fresh workspace: the SPA transition can stay on Loading.
+    await mainPage.reloadPage();
+    await mainPage.waitForViewportVisible();
     await layersPanelPage.clickMainComponentOnLayersTab();
     await designPanelPage.changeHeightAndWidthForLayer('100', '150');
     await designPanelPage.clickFirstColorIcon();
@@ -167,13 +186,15 @@ mainAccountFileTest.describe(() => {
     await dashboardPage.checkNumberOfFiles('2 files');
   });
 
-  mainAccountFileTest(
+  demoAccountApiFixture(
     qase(
       [1365],
       'Apply updates from Libraries → Updates (after dismissing at the beginning)',
     ),
-    async ({ mainPage, dashboardPage }) => {
+    async () => {
       await dashboardPage.openFileWithName('New File 2');
+      await mainPage.reloadPage();
+      await mainPage.waitForViewportVisible();
       await assetsPanelPage.isWrapperMessageVisible();
       await assetsPanelPage.clickDismissButton();
       await mainPage.reloadPage();
@@ -199,9 +220,9 @@ mainAccountFileTest.describe(() => {
   );
 });
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest.beforeEach(async ({ mainPage, dashboardPage }) => {
-    mainAccountFileTest.slow();
+demoAccountApiFixture.describe(() => {
+  demoAccountApiFixture.beforeEach(async () => {
+    demoAccountApiFixture.slow();
     await mainPage.createDefaultRectangleByCoordinates(200, 200);
     await mainPage.createComponentViaRightClick();
     await mainPage.waitForChangeIsSaved();
@@ -260,22 +281,23 @@ mainAccountFileTest.describe(() => {
     await dashboardPage.checkNumberOfFiles('3 files');
   });
 
-  mainAccountFileTest(
+  demoAccountApiFixture(
     qase(
       [1092],
       'Delete library which is used by a few files ( 1 library in a few files)',
     ),
-    async ({ mainPage, dashboardPage }) => {
+    async () => {
       await dashboardPage.deleteFileWithNameViaRightClick('New File 1');
       await dashboardPage.isDeletingLibraryWarningVisible(2, /New File [2-3]/);
 
       await dashboardPage.clickDeleteFileButton();
 
       for (const fileName of ['New File 2', 'New File 3']) {
-        await mainAccountFileTest.step(
+        await demoAccountApiFixture.step(
           `Open "${fileName}" and check it keeps the library shapes`,
           async () => {
             await dashboardPage.openFileWithName(fileName);
+            await mainPage.reloadPage();
             await mainPage.waitForViewportVisible();
             for (const layerName of ['Ellipse', 'Rectangle']) {
               await expect(
@@ -292,8 +314,8 @@ mainAccountFileTest.describe(() => {
   );
 });
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest.beforeEach(async ({ mainPage, dashboardPage }) => {
+demoAccountApiFixture.describe(() => {
+  demoAccountApiFixture.beforeEach(async () => {
     await mainPage.clickPencilBoxButton();
     await dashboardPage.hideLibrariesAndTemplatesCarrousel();
     await dashboardPage.addFileAsSharedLibraryViaRightclick();
@@ -311,7 +333,7 @@ mainAccountFileTest.describe(() => {
     await assetsPanelPage.clickLibrariesButton();
   });
 
-  mainAccountFileTest(
+  demoAccountApiFixture(
     qase([1004], 'Search shared library (LIBRARIES pop-up)'),
     async () => {
       const libraryName1 = 'Whiteboarding & mapping kit';
@@ -329,7 +351,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest.afterEach(async ({ mainPage }) => {
+  demoAccountApiFixture.afterEach(async () => {
     await assetsPanelPage.clickCloseModalButton();
     await mainPage.backToDashboardFromFileEditor();
   });

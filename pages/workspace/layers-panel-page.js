@@ -105,7 +105,7 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
    *  filter by name if null.
    * @param {boolean} uncollapsedChildrenOnly It will recover just the visible children (already UNCOLLAPSED)
    *  layers (when true), or also include the parent layers (when false).
-   * @returns A locator to recover the layer rows matching the given parameters.
+   * @returns {import('@playwright/test').Locator} A locator to recover the layer rows matching the given parameters.
    */
   getLayerRowsBy(layerName = null, uncollapsedChildrenOnly = false) {
     let composedLocator = this.page;
