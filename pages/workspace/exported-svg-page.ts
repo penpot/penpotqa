@@ -150,22 +150,23 @@ export class ExportedSvgPage {
   }
 
   /**
-   * Checks that every definition (e.g. `alphaMasks`, `clipPaths`)
-   * is used by some `tag` element (any by default) through
-   * `attribute="url(#id)"` (e.g. `mask`, `clip-path`).
+   * Checks that every definition (e.g. `alphaMasks`, `clipPaths`), called
+   * `name` in the report, is used by some `tag` element (any by default)
+   * through `attribute="url(#id)"` (e.g. `mask`, `clip-path`).
    * @returns how many definitions were found
    */
   async checkDefinitionsAreReferenced(
     definitions: Locator,
+    name: string,
     attribute: string,
     tag = '*',
   ): Promise<number> {
     const ids = await definitions.evaluateAll((elements) =>
       elements.map((element) => element.id),
     );
-    expect(ids.length, this.label(`SVG contains ${definitions}`)).toBeGreaterThan(0);
+    expect(ids.length, this.label(`SVG contains ${name}`)).toBeGreaterThan(0);
     for (const id of ids) {
-      expect(id, this.label(`${definitions} has an id`)).toBeTruthy();
+      expect(id, this.label(`Each of the ${name} has an id`)).toBeTruthy();
       await expect(
         this.page.locator(`${tag}[${attribute}="url(#${id})"]`),
         this.label(`A <${tag}> uses #${id} via ${attribute}`),
@@ -176,7 +177,12 @@ export class ExportedSvgPage {
 
   /** Content is clipped by `<clipPath>` definitions applied by `<g clip-path="url(#…)">`. */
   async checkClipPathsWrapContent() {
-    await this.checkDefinitionsAreReferenced(this.clipPaths, 'clip-path', 'g');
+    await this.checkDefinitionsAreReferenced(
+      this.clipPaths,
+      'clip paths',
+      'clip-path',
+      'g',
+    );
   }
 
   async checkGroupWithOpacity(opacity: string) {
@@ -231,6 +237,7 @@ export class ExportedSvgPage {
   async checkAlphaMasksWrapContent(maskShapeTag: string) {
     const masks = await this.checkDefinitionsAreReferenced(
       this.alphaMasks,
+      'alpha masks',
       'mask',
       'g',
     );

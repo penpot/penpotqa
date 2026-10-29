@@ -16,7 +16,7 @@ exportTest(
     [3935],
     'SVG export follows the active renderer when WebGL rendering is toggled',
   ),
-  async ({ exportPage, layersPanelPage, exportedSvgPage }) => {
+  async ({ exportPage, layersPanelPage, rendererPage, exportedSvgPage }) => {
     await exportTest.step(
       `Export "${ExporterLayer.Shadow}" as SVG with WebGL rendering on`,
       async () => {
@@ -38,7 +38,7 @@ exportTest(
     await exportTest.step(
       'Disable "WebGL rendering (beta)" in Main menu > Preferences',
       async () => {
-        await exportPage.toggleWebglRenderingViaMainMenu(false);
+        await rendererPage.toggleWebglRenderingViaMainMenu(false);
       },
     );
 

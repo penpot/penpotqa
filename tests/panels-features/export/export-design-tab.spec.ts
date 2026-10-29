@@ -1,6 +1,6 @@
-import { demoAccountFileTest } from 'fixtures';
 import { ExportPage } from '@pages/workspace/design-panel/export-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 const defaultNameBoard = 'Board';

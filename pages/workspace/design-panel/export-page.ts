@@ -1,5 +1,4 @@
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
-import { MainPage } from '@pages/workspace/main-page';
 import {
   expect,
   type Download,
@@ -36,9 +35,6 @@ const EXPORTER_PATH = /\/api\/export/;
  * (e.g. ExportedSvgPage).
  */
 export class ExportPage extends DesignPanelPage {
-  // pages
-  readonly mainPage: MainPage;
-
   // locators
   readonly exportSection: Locator;
   readonly addExportButton: Locator;
@@ -56,19 +52,12 @@ export class ExportPage extends DesignPanelPage {
   readonly exportDialogExportButton: Locator;
   readonly exportCompleteToastText: Locator;
   readonly exportBoardsAsPDFMenuSubItem: Locator;
-  readonly preferencesMainMenuItem: Locator;
-  readonly webglRenderingMenuSubItem: Locator;
-  /** Canvas the WebGL renderer draws the shapes on; absent with the classic renderer. */
-  readonly webglCanvas: Locator;
   readonly viewModeRightSidebar: Locator;
   readonly viewModeAddExportButton: Locator;
   readonly viewModeExportSuffixInput: Locator;
 
   constructor(page: Page) {
     super(page);
-
-    // pages
-    this.mainPage = new MainPage(page);
 
     // locators
     this.exportSection = page.getByText('Export', { exact: true });
@@ -102,14 +91,6 @@ export class ExportPage extends DesignPanelPage {
     this.exportBoardsAsPDFMenuSubItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Export boards as PDF' });
-    this.preferencesMainMenuItem = page.getByRole('menuitem', {
-      name: 'Preferences',
-    });
-    // Its label says what clicking it does: "Disable…" while WebGL is on
-    this.webglRenderingMenuSubItem = page.getByRole('menuitem', {
-      name: /^(Enable|Disable) WebGL rendering \(beta\)$/,
-    });
-    this.webglCanvas = page.getByTestId('canvas-wasm-shapes');
     this.viewModeRightSidebar = page.locator(
       `aside[class*='inspect_right_sidebar']`,
     );
@@ -151,11 +132,16 @@ export class ExportPage extends DesignPanelPage {
   }
 
   async isExportElementButtonDisplayed(title: string) {
-    await expect(this.exportElementButton).toHaveText(title);
+    await expect(this.exportElementButton, `Button says "${title}"`).toHaveText(
+      title,
+    );
   }
 
   async isExportElementButtonNotDisplayed() {
-    await expect(this.exportElementButton).not.toBeVisible();
+    await expect(
+      this.exportElementButton,
+      'No "Export N elements" button is shown',
+    ).not.toBeVisible();
   }
 
   /** Adds an export row to the selection and sets its format. */
@@ -224,8 +210,9 @@ export class ExportPage extends DesignPanelPage {
   /** Clicks "Export N elements" and confirms the "Export selection" dialog. */
   async exportElementsFromDialog(count: number): Promise<ExportResult> {
     // The button label follows the selection a moment after it changes
-    await expect(this.exportElementButton, `Export ${count} elements`).toHaveText(
-      new RegExp(`^Export ${count} elements$`, 'i'),
+    const label = `Export ${count} element${count === 1 ? '' : 's'}`;
+    await expect(this.exportElementButton, `Button says "${label}"`).toHaveText(
+      new RegExp(`^${label}$`, 'i'),
     );
     return this.trackExport(async () => {
       await this.exportElementButton.click();
@@ -240,14 +227,26 @@ export class ExportPage extends DesignPanelPage {
   /** Clicks Export boards as PDF in the open File menu and exports them all. */
   async exportBoardsAsPDFViaMenu(numBoards: number) {
     await this.exportBoardsAsPDFMenuSubItem.click();
-    await expect(this.exportAsPDFDialogTitle).toBeVisible();
-    await expect(this.exportDialogExportButton).toBeVisible();
+    await expect(
+      this.exportAsPDFDialogTitle,
+      'Export as PDF dialog is visible',
+    ).toBeVisible();
+    await expect(
+      this.exportDialogExportButton,
+      'Export button is visible',
+    ).toBeVisible();
     await Promise.all([
       this.page.waitForEvent('download'),
       this.exportDialogExportButton.click(),
     ]);
-    await expect(this.exportCompleteToastText).toBeVisible();
-    await expect(this.page.getByText(`${numBoards} / ${numBoards}`)).toBeVisible();
+    await expect(
+      this.exportCompleteToastText,
+      'Export complete toast is visible',
+    ).toBeVisible();
+    await expect(
+      this.page.getByText(`${numBoards} / ${numBoards}`),
+      `All ${numBoards} boards were exported`,
+    ).toBeVisible();
   }
 
   private async trackExport(
@@ -270,28 +269,6 @@ export class ExportPage extends DesignPanelPage {
     } finally {
       this.page.off('request', onRequest);
     }
-  }
-
-  /**
-   * Toggles "WebGL rendering (beta)" in Main menu > Preferences. The workspace
-   * reloads with the other renderer and the selection is cleared, so pending
-   * changes are saved first (they would be lost otherwise).
-   */
-  async toggleWebglRenderingViaMainMenu(enabled: boolean) {
-    const action = enabled ? 'Enable' : 'Disable';
-    await this.waitForChangeIsSaved();
-    await this.mainPage.clickMainMenuButton();
-    await this.preferencesMainMenuItem.hover();
-    await expect(
-      this.webglRenderingMenuSubItem,
-      `WebGL rendering can be ${action.toLowerCase()}d`,
-    ).toHaveText(`${action} WebGL rendering (beta)`);
-    await this.webglRenderingMenuSubItem.click();
-    await expect(
-      this.webglCanvas,
-      `Canvas is drawn with the ${enabled ? 'WebGL' : 'classic'} renderer`,
-    ).toHaveCount(enabled ? 1 : 0);
-    await this.mainPage.isMainPageLoaded();
   }
 
   checkDownloadedFileName(download: Download, fileName: string) {
