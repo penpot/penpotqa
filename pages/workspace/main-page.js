@@ -157,9 +157,6 @@ exports.MainPage = class MainPage extends BasePage {
     this.downloadPenpotFileMenuSubItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Download Penpot file (.penpot)' });
-    this.exportBoardsAsPDFFileMenuSubItem = page
-      .getByRole('menuitem')
-      .filter({ hasText: 'Export boards as PDF' });
     this.addAsSharedLibraryFileMenuSubItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Add as Shared Library' });
@@ -185,16 +182,6 @@ exports.MainPage = class MainPage extends BasePage {
     );
     this.downloadFileCloseButton =
       this.downloadFilesModalContainer.getByText('Close');
-
-    // Export as PDF
-    this.exportAsPDFModalTitle = page.getByRole('heading', {
-      name: 'Export as PDF',
-    });
-    this.exportAsPDFModalButton = page.getByRole('button', {
-      name: 'Export',
-      exact: true,
-    });
-    this.exportAsPDFCompleteToastText = page.getByText('Export complete');
 
     //Zoom
     this.zoomButton = page.getByTitle('Zoom', { exact: true });
@@ -769,18 +756,6 @@ exports.MainPage = class MainPage extends BasePage {
     ]);
     await expect(this.downloadFileTickIcon).toBeVisible();
     await this.downloadFileCloseButton.click();
-  }
-
-  async exportBoardsAsPDFViaMenu(numBoards) {
-    await this.exportBoardsAsPDFFileMenuSubItem.click();
-    await expect(this.exportAsPDFModalTitle).toBeVisible();
-    await expect(this.exportAsPDFModalButton).toBeVisible();
-    await Promise.all([
-      this.page.waitForEvent('download'),
-      this.exportAsPDFModalButton.click(),
-    ]);
-    await expect(this.exportAsPDFCompleteToastText).toBeVisible();
-    await expect(this.page.getByText(`${numBoards} / ${numBoards}`)).toBeVisible();
   }
 
   async clickHistoryPanelButton() {

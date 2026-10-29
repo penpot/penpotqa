@@ -106,6 +106,10 @@ export class PagesPanelPage extends MainPage {
       : await expect(this.getPageListItemByName(name)).not.toBeVisible();
   }
 
+  async clickPageByName(name: string) {
+    await this.getPageListItemByName(name).click();
+  }
+
   async shiftClickPageByName(name: string) {
     await this.getPageListItemByName(name).click({ modifiers: ['Shift'] });
   }
