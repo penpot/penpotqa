@@ -326,10 +326,13 @@ demoAccountApiFixture.describe(() => {
             await assetsPanelPage.expandComponentsBlockOnAssetsTab();
             await assetsPanelPage.isComponentVisibleInAssetsTab('Ellipse');
             await assetsPanelPage.isSecondComponentVisibleInAssetsTab('Rectangle');
-            await mainPage.clickPencilBoxButton();
-            await dashboardPage.isHeaderDisplayed('Projects');
           },
         );
+
+        await demoAccountApiFixture.step('Go back to the dashboard', async () => {
+          await mainPage.clickPencilBoxButton();
+          await dashboardPage.isHeaderDisplayed('Projects');
+        });
       }
     },
   );
