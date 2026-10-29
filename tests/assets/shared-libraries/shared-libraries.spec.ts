@@ -173,7 +173,6 @@ demoAccountApiFixture.describe(() => {
     await dashboardPage.checkNumberOfFiles('2 files');
 
     await dashboardPage.openFileWithName('New File 1');
-    // Re-enter with a fresh workspace: the SPA transition can stay on Loading.
     await mainPage.reloadPage();
     await mainPage.waitForViewportVisible();
     await layersPanelPage.clickMainComponentOnLayersTab();
