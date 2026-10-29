@@ -1,4 +1,9 @@
-import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import {
+  STROKE_WIDTH,
+  StrokePerSidePage,
+  StrokeSide,
+  type StrokeSideName,
+} from '@pages/workspace/design-panel/stroke-per-side-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { expect } from '@playwright/test';
@@ -6,22 +11,22 @@ import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 const TEST_FILE = 'documents/tokens/stroke-per-side-test-file.penpot';
-const STROKE_WIDTH = 'Stroke width';
-const TOP = 'Top (block start)';
-const RIGHT = 'Right (inline end)';
-const BOTTOM = 'Bottom (block end)';
-const LEFT = 'Left (inline start)';
-const SIDES = [TOP, RIGHT, BOTTOM, LEFT];
+const { Top: TOP, Right: RIGHT, Bottom: BOTTOM, Left: LEFT } = StrokeSide;
+const SIDES: StrokeSideName[] = Object.values(StrokeSide);
+const WIDTH_FIELDS: (typeof STROKE_WIDTH | StrokeSideName)[] = [
+  STROKE_WIDTH,
+  ...SIDES,
+];
 
 let layersPanelPage: LayersPanelPage;
-let designPanelPage: DesignPanelPage;
+let strokePerSidePage: StrokePerSidePage;
 let tokensPage: TokensPage;
 
 demoAccountFileTest.use({ penpotFile: TEST_FILE });
 
 demoAccountFileTest.beforeEach(async ({ page }) => {
   layersPanelPage = new LayersPanelPage(page);
-  designPanelPage = new DesignPanelPage(page);
+  strokePerSidePage = new StrokePerSidePage(page);
   tokensPage = new TokensPage(page);
 });
 
@@ -35,12 +40,12 @@ demoAccountFileTest(
       'Select "Rectangle" and click "Stroke per side" → sides are 2, 4, 8, 16 and stroke width is "Mixed"',
       async () => {
         await layersPanelPage.selectLayerByExactName('Rectangle');
-        await designPanelPage.clickStrokePerSideButton();
-        await designPanelPage.checkStrokeSideWidth(TOP, '2');
-        await designPanelPage.checkStrokeSideWidth(RIGHT, '4');
-        await designPanelPage.checkStrokeSideWidth(BOTTOM, '8');
-        await designPanelPage.checkStrokeSideWidth(LEFT, '16');
-        await designPanelPage.isStrokeWidthMixed();
+        await strokePerSidePage.clickStrokePerSideButton();
+        await strokePerSidePage.checkStrokeSideWidth(TOP, '2');
+        await strokePerSidePage.checkStrokeSideWidth(RIGHT, '4');
+        await strokePerSidePage.checkStrokeSideWidth(BOTTOM, '8');
+        await strokePerSidePage.checkStrokeSideWidth(LEFT, '16');
+        await strokePerSidePage.isStrokeWidthMixed();
       },
     );
 
@@ -51,8 +56,8 @@ demoAccountFileTest(
         await tokensPage.tokensComp.expandAllTokens();
         await tokensPage.tokensComp.clickOnTokenWithName('sw-3');
         await mainPage.waitForChangeIsSaved();
-        for (const label of [STROKE_WIDTH, ...SIDES]) {
-          await designPanelPage.isStrokeWidthTokenPillVisible(label, 'sw-3');
+        for (const label of WIDTH_FIELDS) {
+          await strokePerSidePage.isStrokeWidthTokenPillVisible(label, 'sw-3');
         }
       },
     );
@@ -60,20 +65,20 @@ demoAccountFileTest(
     await demoAccountFileTest.step(
       'Detach the token from Left → Left shows 3 and stroke width is "Mixed"',
       async () => {
-        await designPanelPage.detachStrokeWidthToken(LEFT);
-        await designPanelPage.checkStrokeSideWidth(LEFT, '3');
-        await designPanelPage.isStrokeWidthMixed();
+        await strokePerSidePage.detachStrokeWidthToken(LEFT);
+        await strokePerSidePage.checkStrokeSideWidth(LEFT, '3');
+        await strokePerSidePage.isStrokeWidthMixed();
       },
     );
 
     await demoAccountFileTest.step(
       'Type 7 in Left → Left is 7 and the other sides keep the "sw-3" pill',
       async () => {
-        await designPanelPage.setStrokeSideWidth(LEFT, '7');
+        await strokePerSidePage.setStrokeSideWidth(LEFT, '7');
         await mainPage.waitForChangeIsSaved();
-        await designPanelPage.checkStrokeSideWidth(LEFT, '7');
+        await strokePerSidePage.checkStrokeSideWidth(LEFT, '7');
         for (const label of [TOP, RIGHT, BOTTOM]) {
-          await designPanelPage.isStrokeWidthTokenPillVisible(label, 'sw-3');
+          await strokePerSidePage.isStrokeWidthTokenPillVisible(label, 'sw-3');
         }
       },
     );
@@ -121,25 +126,25 @@ demoAccountFileTest(
       async () => {
         await tokensPage.tokensComp.selectMenuItem('sw-10', 'Top');
         await mainPage.waitForChangeIsSaved();
-        await designPanelPage.clickStrokePerSideButton();
-        await designPanelPage.isStrokeWidthTokenPillVisible(TOP, 'sw-10');
+        await strokePerSidePage.clickStrokePerSideButton();
+        await strokePerSidePage.isStrokeWidthTokenPillVisible(TOP, 'sw-10');
         for (const label of [RIGHT, BOTTOM, LEFT]) {
-          await designPanelPage.isStrokeWidthTokenPillVisible(label, 'sw-3');
+          await strokePerSidePage.isStrokeWidthTokenPillVisible(label, 'sw-3');
         }
-        await designPanelPage.isStrokeWidthMixed();
+        await strokePerSidePage.isStrokeWidthMixed();
       },
     );
 
     await demoAccountFileTest.step(
       'Hide and show the side inputs → stroke width stays "Mixed" and the side tokens are kept',
       async () => {
-        await designPanelPage.clickStrokePerSideButton();
-        await designPanelPage.areStrokeSideFieldsVisible(false);
-        await designPanelPage.isStrokeWidthMixed();
-        await designPanelPage.clickStrokePerSideButton();
-        await designPanelPage.isStrokeWidthTokenPillVisible(TOP, 'sw-10');
+        await strokePerSidePage.clickStrokePerSideButton();
+        await strokePerSidePage.areStrokeSideFieldsVisible(false);
+        await strokePerSidePage.isStrokeWidthMixed();
+        await strokePerSidePage.clickStrokePerSideButton();
+        await strokePerSidePage.isStrokeWidthTokenPillVisible(TOP, 'sw-10');
         for (const label of [RIGHT, BOTTOM, LEFT]) {
-          await designPanelPage.isStrokeWidthTokenPillVisible(label, 'sw-3');
+          await strokePerSidePage.isStrokeWidthTokenPillVisible(label, 'sw-3');
         }
       },
     );
