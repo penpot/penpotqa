@@ -2,11 +2,14 @@ import { ExportFormat } from '@pages/workspace/design-panel/export-page';
 import type { Rgba } from '@pages/workspace/exported-svg-page';
 import { exportTest } from '@tests/panels-features/export/export-fixture';
 import {
-  ExportQaLayer,
+  ExporterLayer,
+  ExporterPage,
   RED,
   SHADOW_RECT_CENTER,
 } from '@tests/panels-features/export/test-exporter-file';
 import { qase } from 'playwright-qase-reporter/playwright';
+
+exportTest.use({ exporterPage: ExporterPage.Shadows });
 
 exportTest(
   qase(
@@ -15,10 +18,10 @@ exportTest(
   ),
   async ({ exportPage, layersPanelPage, exportedSvgPage }) => {
     await exportTest.step(
-      `Export "${ExportQaLayer.Shadow}" as SVG with WebGL rendering on`,
+      `Export "${ExporterLayer.Shadow}" as SVG with WebGL rendering on`,
       async () => {
-        await layersPanelPage.clickLayerOnLayersTab(ExportQaLayer.Shadow);
-        await layersPanelPage.isLayerWithNameSelected(ExportQaLayer.Shadow);
+        await layersPanelPage.clickLayerOnLayersTab(ExporterLayer.Shadow);
+        await layersPanelPage.isLayerWithNameSelected(ExporterLayer.Shadow);
         await exportPage.addExportWithFormat(ExportFormat.SVG);
         const result = await exportPage.exportElement();
         exportPage.checkExportedInBrowser(result);
@@ -40,10 +43,10 @@ exportTest(
     );
 
     await exportTest.step(
-      `Export "${ExportQaLayer.Shadow}" again with the classic renderer`,
+      `Export "${ExporterLayer.Shadow}" again with the classic renderer`,
       async () => {
-        await layersPanelPage.clickLayerOnLayersTab(ExportQaLayer.Shadow);
-        await layersPanelPage.isLayerWithNameSelected(ExportQaLayer.Shadow);
+        await layersPanelPage.clickLayerOnLayersTab(ExporterLayer.Shadow);
+        await layersPanelPage.isLayerWithNameSelected(ExporterLayer.Shadow);
         const result = await exportPage.exportElement();
         exportPage.checkExportedByBackend(result);
         await exportedSvgPage.open(result.download);

@@ -1,13 +1,16 @@
 import { ExportFormat } from '@pages/workspace/design-panel/export-page';
 import { exportTest } from '@tests/panels-features/export/export-fixture';
 import {
-  ExportQaLayer,
+  ExporterLayer,
+  ExporterPage,
   MASK_FILL,
   MASKED,
   MASKED_SHADOW,
   SOFT_MASK,
 } from '@tests/panels-features/export/test-exporter-file';
 import { qase } from 'playwright-qase-reporter/playwright';
+
+exportTest.use({ exporterPage: ExporterPage.Masks });
 
 exportTest(
   qase(
@@ -16,8 +19,8 @@ exportTest(
   ),
   async ({ exportPage, layersPanelPage, exportedSvgPage }) => {
     await exportTest.step('Export "Masked" as SVG', async () => {
-      await layersPanelPage.clickLayerOnLayersTab(ExportQaLayer.Masked);
-      await layersPanelPage.isLayerWithNameSelected(ExportQaLayer.Masked);
+      await layersPanelPage.clickLayerOnLayersTab(ExporterLayer.Masked);
+      await layersPanelPage.isLayerWithNameSelected(ExporterLayer.Masked);
       await exportPage.addExportWithFormat(ExportFormat.SVG);
       const { download } = await exportPage.exportElement();
       await exportedSvgPage.open(download);
@@ -46,8 +49,8 @@ exportTest(
     });
 
     await exportTest.step('Export "Soft mask" as SVG', async () => {
-      await layersPanelPage.clickLayerOnLayersTab(ExportQaLayer.SoftMask);
-      await layersPanelPage.isLayerWithNameSelected(ExportQaLayer.SoftMask);
+      await layersPanelPage.clickLayerOnLayersTab(ExporterLayer.SoftMask);
+      await layersPanelPage.isLayerWithNameSelected(ExporterLayer.SoftMask);
       await exportPage.addExportWithFormat(ExportFormat.SVG);
       const { download } = await exportPage.exportElement();
       await exportedSvgPage.open(download);
@@ -71,8 +74,8 @@ exportTest(
     });
 
     await exportTest.step('Export "Masked shadow" as SVG', async () => {
-      await layersPanelPage.clickLayerOnLayersTab(ExportQaLayer.MaskedShadow);
-      await layersPanelPage.isLayerWithNameSelected(ExportQaLayer.MaskedShadow);
+      await layersPanelPage.clickLayerOnLayersTab(ExporterLayer.MaskedShadow);
+      await layersPanelPage.isLayerWithNameSelected(ExporterLayer.MaskedShadow);
       await exportPage.addExportWithFormat(ExportFormat.SVG);
       const { download } = await exportPage.exportElement();
       await exportedSvgPage.open(download);

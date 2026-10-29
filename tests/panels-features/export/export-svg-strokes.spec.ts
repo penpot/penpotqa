@@ -1,13 +1,16 @@
 import { ExportFormat } from '@pages/workspace/design-panel/export-page';
 import { exportTest } from '@tests/panels-features/export/export-fixture';
 import {
-  ExportQaLayer,
+  ExporterLayer,
+  ExporterPage,
   ROTATED_OUTER_STROKE,
   STROKE_BLUE,
   STROKES,
   WHITE,
 } from '@tests/panels-features/export/test-exporter-file';
 import { qase } from 'playwright-qase-reporter/playwright';
+
+exportTest.use({ exporterPage: ExporterPage.Strokes });
 
 exportTest(
   qase(
@@ -16,9 +19,9 @@ exportTest(
   ),
   async ({ exportPage, layersPanelPage, exportedSvgPage }) => {
     for (const layer of [
-      ExportQaLayer.Inner,
-      ExportQaLayer.Center,
-      ExportQaLayer.Outer,
+      ExporterLayer.Inner,
+      ExporterLayer.Center,
+      ExporterLayer.Outer,
     ] as const) {
       const { size, stroke, fill } = STROKES[layer];
 
@@ -46,21 +49,21 @@ exportTest(
     }
 
     await exportTest.step(
-      `Rotate the "${ExportQaLayer.Outer}" layer 30°`,
+      `Rotate the "${ExporterLayer.Outer}" layer 30°`,
       async () => {
         await exportPage.changeRotationForLayer(ROTATED_OUTER_STROKE.rotation);
         await exportPage.checkRotationForLayer(ROTATED_OUTER_STROKE.rotation);
       },
     );
 
-    await exportTest.step(`Export "${ExportQaLayer.Outer}" again`, async () => {
+    await exportTest.step(`Export "${ExporterLayer.Outer}" again`, async () => {
       const { download } = await exportPage.exportElement();
       await exportedSvgPage.open(download);
-      exportedSvgPage.checkFileName(`${ExportQaLayer.Outer}.svg`);
+      exportedSvgPage.checkFileName(`${ExporterLayer.Outer}.svg`);
     });
 
     await exportTest.step(
-      `Check the stroke sits outside the rotated rectangle in "${ExportQaLayer.Outer}.svg"`,
+      `Check the stroke sits outside the rotated rectangle in "${ExporterLayer.Outer}.svg"`,
       async () => {
         const { size, outside, stroke, fill } = ROTATED_OUTER_STROKE;
         await exportedSvgPage.checkSize(size.width, size.height);

@@ -171,7 +171,10 @@ export class ExportPage extends DesignPanelPage {
           .getByRole('button', { name: 'Remove export' })
           .click({ timeout: 2000 });
       }
-      await this.addExportButton.click();
+      // A click from a previous try may add its row late: don't add a second one
+      if ((await this.exportFormatSelect.count()) === 0) {
+        await this.addExportButton.click();
+      }
       await expect(
         this.exportFormatSelect,
         'A new PNG export row is added',

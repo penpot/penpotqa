@@ -2,8 +2,8 @@ import { ExportFormat } from '@pages/workspace/design-panel/export-page';
 import { exportTest } from '@tests/panels-features/export/export-fixture';
 import {
   BASIC_BOARD,
-  EXPORT_QA_PAGE,
-  ExportQaLayer,
+  ExporterLayer,
+  ExporterPage,
   RED,
 } from '@tests/panels-features/export/test-exporter-file';
 import { qase } from 'playwright-qase-reporter/playwright';
@@ -15,8 +15,8 @@ exportTest(
   ),
   async ({ exportPage, layersPanelPage, exportedSvgPage }) => {
     await exportTest.step('Export the "Basic" board as SVG', async () => {
-      await layersPanelPage.clickLayerOnLayersTab(ExportQaLayer.Basic);
-      await layersPanelPage.isLayerWithNameSelected(ExportQaLayer.Basic);
+      await layersPanelPage.clickLayerOnLayersTab(ExporterLayer.Basic);
+      await layersPanelPage.isLayerWithNameSelected(ExporterLayer.Basic);
       await exportPage.addExportWithFormat(ExportFormat.SVG);
       const { download } = await exportPage.exportElement();
       await exportedSvgPage.open(download);
@@ -87,7 +87,7 @@ exportTest(
     'Export selection of several elements as SVG downloads a ZIP with one SVG per element',
   ),
   async ({ exportPage, layersPanelPage }) => {
-    const layers = [ExportQaLayer.Rect, ExportQaLayer.Basic, ExportQaLayer.Fills];
+    const layers = [ExporterLayer.Rect, ExporterLayer.Basic, ExporterLayer.Fills];
 
     await exportTest.step(
       'Select the "Rect", "Basic" and "Fills" layers holding Ctrl',
@@ -107,7 +107,10 @@ exportTest(
       'Export the 3 elements from the "Export selection" dialog',
       async () => {
         const result = await exportPage.exportElementsFromDialog(layers.length);
-        exportPage.checkDownloadedFileName(result.download, `${EXPORT_QA_PAGE}.zip`);
+        exportPage.checkDownloadedFileName(
+          result.download,
+          `${ExporterPage.Boards}.zip`,
+        );
         exportPage.checkExportedByBackend(result, '/api/export/jobs');
       },
     );

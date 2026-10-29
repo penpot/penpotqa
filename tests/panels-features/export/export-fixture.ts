@@ -3,27 +3,31 @@ import { ExportedSvgPage } from '@pages/workspace/exported-svg-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { PagesPanelPage } from '@pages/workspace/panels-features/pages-panel-page';
 import {
-  EXPORT_QA_PAGE,
   EXPORTER_FILE,
+  ExporterPage,
+  type ExporterPageName,
 } from '@tests/panels-features/export/test-exporter-file';
 import { demoAccountFileTest } from 'fixtures';
 
 type ExportFixtures = {
+  /** Option: page of the helper file the test starts on. */
+  exporterPage: ExporterPageName;
   exportPage: ExportPage;
   layersPanelPage: LayersPanelPage;
   pagesPanelPage: PagesPanelPage;
   exportedSvgPage: ExportedSvgPage;
-  exporterFileRendered: void;
+  exporterPageOpened: void;
 };
 
 // Fresh demo account (WASM, so WebGL rendering is on) with
 // documents/test_exporter_file.penpot open in the workspace (see
-// ./test-exporter-file.ts). Set `penpotFile: undefined` to start from a blank
-// file instead.
+// ./test-exporter-file.ts), on its `exporterPage` ("Boards" by default). Set
+// `penpotFile: undefined` to start from a blank file instead.
 // `exportedSvgPage` opens exported SVGs in its own browser context, without a
 // Penpot session, as when the downloaded file is opened outside Penpot.
 export const exportTest = demoAccountFileTest.extend<ExportFixtures>({
   penpotFile: EXPORTER_FILE,
+  exporterPage: [ExporterPage.Boards, { option: true }],
   exportPage: async ({ page }, use) => use(new ExportPage(page)),
   layersPanelPage: async ({ page }, use) => use(new LayersPanelPage(page)),
   pagesPanelPage: async ({ page }, use) => use(new PagesPanelPage(page)),
@@ -32,13 +36,14 @@ export const exportTest = demoAccountFileTest.extend<ExportFixtures>({
     await use(new ExportedSvgPage(await context.newPage()));
     await context.close();
   },
-  // The helper file opens on its "Export QA" page, and its first WebGL render
-  // blocks the browser for seconds (longer on CI, which renders WebGL on the
-  // CPU), so wait for it once before the test starts (after mainPage opens it).
-  exporterFileRendered: [
-    async ({ mainPage, penpotFile, pagesPanelPage }, use) => {
+  // The first WebGL render of a page blocks the browser for seconds on CI,
+  // which renders WebGL on the CPU, so open the page and wait for it before the
+  // test starts (after mainPage opens the file).
+  exporterPageOpened: [
+    async ({ mainPage, penpotFile, exporterPage, pagesPanelPage }, use) => {
       if (penpotFile === EXPORTER_FILE) {
-        await pagesPanelPage.isPageNameSelected(EXPORT_QA_PAGE, true, 60000);
+        await pagesPanelPage.clickPageByName(exporterPage);
+        await pagesPanelPage.isPageNameSelected(exporterPage);
       }
       await use();
     },

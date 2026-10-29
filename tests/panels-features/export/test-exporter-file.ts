@@ -1,12 +1,26 @@
 import type { Rgba, SvgPoint } from '@pages/workspace/exported-svg-page';
 
 // Contents of documents/test_exporter_file.penpot, the helper file of the Qase
-// "Export (WebGL)" suites. Its "Export QA" page has one layer per export case.
+// "Export (WebGL)" suites. It has a page per kind of content (it opens on
+// "Boards") and one layer per export case.
 // Sizes and points are in the coordinates of each exported SVG (1 unit = 1px).
 export const EXPORTER_FILE = 'documents/test_exporter_file.penpot';
-export const EXPORT_QA_PAGE = 'Export QA';
 
-export const ExportQaLayer = {
+export const ExporterPage = {
+  Boards: 'Boards',
+  Masks: 'Masks',
+  Shadows: 'Shadows',
+  Strokes: 'Strokes',
+  Blurs: 'Blurs',
+  Images: 'Images',
+  Text: 'Text',
+  PdfPages: 'PDF pages',
+  ManyShapes: 'Many shapes',
+} as const;
+
+export type ExporterPageName = (typeof ExporterPage)[keyof typeof ExporterPage];
+
+export const ExporterLayer = {
   Basic: 'Basic',
   Rect: 'Rect',
   Fills: 'Fills',
@@ -73,17 +87,17 @@ export const MASKED_SHADOW = {
 // stroke of that alignment. Each point pair is the middle of the left stroke
 // and the white fill next to it.
 export const STROKES = {
-  [ExportQaLayer.Inner]: {
+  [ExporterLayer.Inner]: {
     size: { width: 100, height: 80 },
     stroke: { x: 5, y: 40 } as SvgPoint,
     fill: { x: 20, y: 40 } as SvgPoint,
   },
-  [ExportQaLayer.Center]: {
+  [ExporterLayer.Center]: {
     size: { width: 110, height: 90 },
     stroke: { x: 5, y: 45 } as SvgPoint,
     fill: { x: 20, y: 45 } as SvgPoint,
   },
-  [ExportQaLayer.Outer]: {
+  [ExporterLayer.Outer]: {
     size: { width: 120, height: 100 },
     stroke: { x: 5, y: 50 } as SvgPoint,
     fill: { x: 20, y: 50 } as SvgPoint,

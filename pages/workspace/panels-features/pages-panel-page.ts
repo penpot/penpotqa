@@ -76,9 +76,9 @@ export class PagesPanelPage extends MainPage {
     await this.addPageButton.click();
   }
 
-  async isPageNameSelected(name: string, selected = true, timeout?: number) {
+  async isPageNameSelected(name: string, selected = true) {
     selected
-      ? await expect(this.selectedPage.getByTitle(name)).toBeVisible({ timeout })
+      ? await expect(this.selectedPage.getByTitle(name)).toBeVisible()
       : await expect(this.selectedPage.getByTitle(name)).not.toBeVisible();
   }
 
@@ -104,6 +104,10 @@ export class PagesPanelPage extends MainPage {
     displayed
       ? await expect(this.getPageListItemByName(name, 1)).toBeVisible()
       : await expect(this.getPageListItemByName(name)).not.toBeVisible();
+  }
+
+  async clickPageByName(name: string) {
+    await this.getPageListItemByName(name).click();
   }
 
   async shiftClickPageByName(name: string) {
