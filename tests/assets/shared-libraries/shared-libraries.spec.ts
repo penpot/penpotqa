@@ -5,6 +5,7 @@ import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { MainPage } from '@pages/workspace/main-page';
+import { PagesPanelPage } from '@pages/workspace/panels-features/pages-panel-page';
 import { expect } from '@playwright/test';
 import { demoAccountApiFixture } from 'fixtures';
 import { createTeamName } from 'helpers/teams/create-team-name';
@@ -18,6 +19,7 @@ let assetsPanelPage: AssetsPanelPage;
 let layersPanelPage: LayersPanelPage;
 let designPanelPage: DesignPanelPage;
 let colorPalettePage: ColorPalettePage;
+let pagesPanelPage: PagesPanelPage;
 
 demoAccountApiFixture.beforeEach(async ({ page }) => {
   mainPage = new MainPage(page);
@@ -27,6 +29,7 @@ demoAccountApiFixture.beforeEach(async ({ page }) => {
   layersPanelPage = new LayersPanelPage(page);
   designPanelPage = new DesignPanelPage(page);
   colorPalettePage = new ColorPalettePage(page);
+  pagesPanelPage = new PagesPanelPage(page);
   teamName = createTeamName();
 
   await demoAccountApiFixture.step(
@@ -287,24 +290,43 @@ demoAccountApiFixture.describe(() => {
       'Delete library which is used by a few files ( 1 library in a few files)',
     ),
     async () => {
-      await dashboardPage.deleteFileWithNameViaRightClick('New File 1');
-      await dashboardPage.isDeletingLibraryWarningVisible(2, /New File [2-3]/);
+      const libraryName = 'New File 1';
+      const backupPageName = 'Main components';
 
-      await dashboardPage.clickDeleteFileButton();
+      await demoAccountApiFixture.step(
+        `Delete library "${libraryName}"`,
+        async () => {
+          await dashboardPage.deleteFileWithNameViaRightClick(libraryName);
+          await dashboardPage.isDeletingLibraryWarningVisible(2, /New File [2-3]/);
+          await dashboardPage.clickDeleteFileButton();
+        },
+      );
 
       for (const fileName of ['New File 2', 'New File 3']) {
         await demoAccountApiFixture.step(
-          `Open "${fileName}" and check it keeps the library shapes`,
+          `Open "${fileName}" and check the "${backupPageName}" page`,
           async () => {
             await dashboardPage.openFileWithName(fileName);
-            await mainPage.reloadPage();
-            await mainPage.waitForViewportVisible();
-            for (const layerName of ['Ellipse', 'Rectangle']) {
-              await expect(
-                layersPanelPage.getLayerRowsBy(layerName).first(),
-                `Layer "${layerName}" should remain in "${fileName}" after deleting the library`,
-              ).toBeVisible();
-            }
+            await pagesPanelPage.reloadUntilPageNameDisplayed(backupPageName);
+            await pagesPanelPage.clickPageByName(backupPageName);
+            await layersPanelPage.isMainComponentOnLayersTabVisibleWithName(
+              'Ellipse',
+            );
+            await layersPanelPage.isMainComponentOnLayersTabVisibleWithName(
+              'Rectangle',
+            );
+          },
+        );
+
+        await demoAccountApiFixture.step(
+          `Check the Assets tab of "${fileName}"`,
+          async () => {
+            await assetsPanelPage.clickAssetsTab();
+            await assetsPanelPage.checkLibraryTitleVisible('Local library');
+            await assetsPanelPage.checkLibraryTitleVisible(libraryName, false);
+            await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+            await assetsPanelPage.isComponentVisibleInAssetsTab('Ellipse');
+            await assetsPanelPage.isSecondComponentVisibleInAssetsTab('Rectangle');
             await mainPage.clickPencilBoxButton();
             await dashboardPage.isHeaderDisplayed('Projects');
           },
