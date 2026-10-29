@@ -556,6 +556,19 @@ exports.AssetsPanelPage = class AssetsPanelPage extends BasePage {
     await this.libraryComponentsTitle.click();
   }
 
+  async checkLibraryTitleVisible(libraryName, visible = true) {
+    const libTitle = this.libraryTitle.filter({ hasText: libraryName });
+    visible
+      ? await expect(
+          libTitle,
+          `Library "${libraryName}" should be listed in the Assets tab`,
+        ).toBeVisible()
+      : await expect(
+          libTitle,
+          `Library "${libraryName}" should not be listed in the Assets tab`,
+        ).not.toBeVisible();
+  }
+
   async clickLibraryTitleWithName(libraryName) {
     const libTitle = this.page.locator(
       `div[class*="special-title"]:has-text("${libraryName}")`,
