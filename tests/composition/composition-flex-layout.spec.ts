@@ -295,6 +295,85 @@ demoAccountFileTest.describe(() => {
       },
     );
 
+    demoAccountFileTest(qase([614], 'Change wrapping'), async ({ mainPage }) => {
+      await demoAccountFileTest.step(
+        'Click "Wrap" → shapes stay top-left and the "Content" subsection appears',
+        async () => {
+          await designPanelPage.changeLayoutWrap('Wrap');
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.isLayoutContentSectionVisible();
+          await expect(mainPage.viewport).toHaveScreenshot('layout-wrap.png', {
+            mask: mainPage.maskViewport(),
+          });
+        },
+      );
+      await demoAccountFileTest.step(
+        'Click "No wrap" → shapes stay top-left and the "Content" subsection is hidden',
+        async () => {
+          await designPanelPage.changeLayoutWrap('No wrap');
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.isLayoutContentSectionVisible(false);
+          await expect(mainPage.viewport).toHaveScreenshot('layout-no-wrap.png', {
+            mask: mainPage.maskViewport(),
+          });
+        },
+      );
+    });
+
+    demoAccountFileTest(
+      qase([617], 'Change alignment & justification'),
+      async ({ mainPage }) => {
+        await demoAccountFileTest.step(
+          'Click "Align items center" → shapes aligned center, justified left',
+          async () => {
+            await designPanelPage.changeLayoutAlignment('Center');
+            await mainPage.waitForChangeIsSaved();
+            await designPanelPage.isLayoutAlignmentSelected('Center');
+            await expect(mainPage.viewport).toHaveScreenshot(
+              'layout-align-center-justify-start.png',
+              { mask: mainPage.maskViewport() },
+            );
+          },
+        );
+        await demoAccountFileTest.step(
+          'Click "Justify content center" → shapes aligned & justified center',
+          async () => {
+            await designPanelPage.changeLayoutJustification('Center');
+            await mainPage.waitForChangeIsSaved();
+            await designPanelPage.checkLayoutJustification('Center');
+            await expect(mainPage.viewport).toHaveScreenshot(
+              'layout-align-center-justify-center.png',
+              { mask: mainPage.maskViewport() },
+            );
+          },
+        );
+        await demoAccountFileTest.step(
+          'Click "Align items end" → shapes aligned bottom, justified center',
+          async () => {
+            await designPanelPage.changeLayoutAlignment('End');
+            await mainPage.waitForChangeIsSaved();
+            await designPanelPage.isLayoutAlignmentSelected('End');
+            await expect(mainPage.viewport).toHaveScreenshot(
+              'layout-align-end-justify-center.png',
+              { mask: mainPage.maskViewport() },
+            );
+          },
+        );
+        await demoAccountFileTest.step(
+          'Click "Justify content space-around" → shapes justified space-around, aligned bottom',
+          async () => {
+            await designPanelPage.changeLayoutJustification('Space around');
+            await mainPage.waitForChangeIsSaved();
+            await designPanelPage.checkLayoutJustification('Space around');
+            await expect(mainPage.viewport).toHaveScreenshot(
+              'layout-align-end-justify-space-around.png',
+              { mask: mainPage.maskViewport() },
+            );
+          },
+        );
+      },
+    );
+
     demoAccountFileTest(qase([618], 'Change column gap'), async ({ mainPage }) => {
       await demoAccountFileTest.step('Set column gap to 5', async () => {
         await designPanelPage.changeLayoutColumnGap('5');
@@ -700,6 +779,115 @@ demoAccountFileTest.describe(() => {
             'flex-element-position-absolute.png',
             { mask: mainPage.maskViewport() },
           );
+        },
+      );
+    },
+  );
+});
+
+demoAccountFileTest.describe(() => {
+  demoAccountFileTest.beforeEach(async ({ mainPage }) => {
+    await mainPage.isMainPageLoaded();
+    await mainPage.createDefaultBoardByCoordinates(200, 300);
+    await mainPage.clickCreatedBoardTitleOnCanvas();
+    await designPanelPage.addLayoutFromDesignPanel('flex');
+    await mainPage.waitForChangeIsSaved();
+    await layersPanelPage.isVerticalFlexIconVisibleOnLayer();
+  });
+
+  demoAccountFileTest(
+    qase([630], 'Flex elements - set minimum width'),
+    async ({ mainPage }) => {
+      await mainPage.createDefaultRectangleByCoordinates(200, 300, true);
+      await mainPage.waitForChangeIsSaved();
+
+      await demoAccountFileTest.step(
+        'Select the rectangle → "Flex element" section appears',
+        async () => {
+          await layersPanelPage.selectBoardChildLayer('Rectangle');
+          await designPanelPage.isFlexElementSectionOpened();
+        },
+      );
+      await demoAccountFileTest.step(
+        'Click "Width 100%" → rectangle fills the board width and Min/Max width fields appear',
+        async () => {
+          await designPanelPage.clickOnFlexElementWidth100Btn();
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.isWidthValue(100);
+          await designPanelPage.isFlexElementMinMaxVisible('Width');
+        },
+      );
+      await demoAccountFileTest.step(
+        'Type 50 in "Min width" → the value is saved',
+        async () => {
+          await designPanelPage.changeFlexElementMinMax('Width', true, '50');
+          await designPanelPage.checkFlexElementMinMax('Width', true, '50');
+        },
+      );
+      await demoAccountFileTest.step(
+        'Change the board width to 30 → board is 30 wide, rectangle is 50 wide',
+        async () => {
+          await mainPage.clickCreatedBoardTitleOnCanvas();
+          await designPanelPage.changeWidthForLayer('30');
+          await designPanelPage.isWidthValue(30);
+          await layersPanelPage.selectBoardChildLayer('Rectangle');
+          await designPanelPage.isWidthValue(50);
+        },
+      );
+      await demoAccountFileTest.step(
+        'Type 0 in "Min width" → rectangle fits the board width',
+        async () => {
+          await designPanelPage.changeFlexElementMinMax('Width', true, '0');
+          await designPanelPage.isWidthValue(30);
+        },
+      );
+    },
+  );
+
+  demoAccountFileTest(
+    qase([633], 'Flex elements - set maximum height'),
+    async ({ mainPage }) => {
+      await mainPage.createDefaultEllipseByCoordinates(200, 300, true);
+      await mainPage.waitForChangeIsSaved();
+
+      await demoAccountFileTest.step(
+        'Select the ellipse → "Flex element" section appears',
+        async () => {
+          await layersPanelPage.selectBoardChildLayer('Ellipse');
+          await designPanelPage.isFlexElementSectionOpened();
+        },
+      );
+      await demoAccountFileTest.step(
+        'Click "Height 100%" → ellipse fills the board height and Min/Max height fields appear',
+        async () => {
+          await designPanelPage.clickOnFlexElementHeight100Btn();
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.isHeightValue(100);
+          await designPanelPage.isFlexElementMinMaxVisible('Height');
+        },
+      );
+      await demoAccountFileTest.step(
+        'Type 150 in "Max height" → the value is saved',
+        async () => {
+          await designPanelPage.changeFlexElementMinMax('Height', false, '150');
+          await designPanelPage.checkFlexElementMinMax('Height', false, '150');
+        },
+      );
+      await demoAccountFileTest.step(
+        'Change the board height to 200 → board is 200 high, ellipse is 150 high',
+        async () => {
+          await mainPage.clickCreatedBoardTitleOnCanvas();
+          await designPanelPage.changeHeightForLayer('200');
+          await designPanelPage.isHeightValue(200);
+          await layersPanelPage.selectBoardChildLayer('Ellipse');
+          await designPanelPage.isHeightValue(150);
+        },
+      );
+      await demoAccountFileTest.step(
+        'Clear "Max height" → ellipse fits the board height',
+        async () => {
+          await designPanelPage.changeFlexElementMinMax('Height', false, '');
+          await designPanelPage.isHeightValue(200);
         },
       );
     },

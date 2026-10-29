@@ -236,6 +236,15 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'Justify content space-evenly',
       { exact: true },
     );
+    this.layoutWrapBtn = page.getByTitle('Wrap', { exact: true });
+    this.layoutNoWrapBtn = page.getByTitle('No wrap', { exact: true });
+    // "Content" (align-content) subsection, only shown while the layout wraps
+    this.layoutContentSection = this.flexLayoutMenu.locator(
+      'div[class*="align-content-row"]',
+    );
+    this.flexElementSizeConstraintsSection = page.getByRole('region', {
+      name: 'Layout item size constraints',
+    });
     this.layoutColumnGapInput = page.locator('div[aria-label="Column gap"] input');
     this.layoutRowGapInput = page.locator('div[aria-label="Row gap"] input');
     this.layoutVerticalPaddingInput = page.locator(
@@ -1425,6 +1434,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async addLayoutFromDesignPanel(layoutName) {
     await this.layoutAddButton.click();
+    await this.isAddLayoutOptionsVisible();
     layoutName === 'flex'
       ? await this.flexAddLayoutButton.click()
       : await this.gridAddLayoutButton.click();
@@ -1471,6 +1481,37 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
         await this.layoutDirectColumnReverseBtn.click();
         break;
     }
+  }
+
+  /** @param {'Wrap' | 'No wrap'} wrap */
+  async changeLayoutWrap(wrap) {
+    await this.expandFlexLayoutMenu();
+    wrap === 'Wrap'
+      ? await this.layoutWrapBtn.click()
+      : await this.layoutNoWrapBtn.click();
+  }
+
+  async isLayoutContentSectionVisible(visible = true) {
+    visible
+      ? await expect(
+          this.layoutContentSection,
+          'Layout "Content" subsection is visible',
+        ).toBeVisible()
+      : await expect(
+          this.layoutContentSection,
+          'Layout "Content" subsection is hidden',
+        ).toBeHidden();
+  }
+
+  async isAddLayoutOptionsVisible() {
+    await expect(
+      this.flexAddLayoutButton,
+      '"Flex layout" option is visible',
+    ).toBeVisible();
+    await expect(
+      this.gridAddLayoutButton,
+      '"Grid layout" option is visible',
+    ).toBeVisible();
   }
 
   async changeLayoutAlignment(alignment, flex = true) {
@@ -2304,6 +2345,34 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
           ? await this.checkTokenField('Min height', value)
           : await this.checkTokenField('Max height', value);
         break;
+    }
+  }
+
+  /**
+   * Types a value in a flex element "Min/Max width/height" field and presses Enter.
+   * An empty value clears the field.
+   * @param {'Width' | 'Height'} type
+   * @param {boolean} min - true for "Min", false for "Max"
+   * @param {string} value
+   */
+  async changeFlexElementMinMax(type, min, value) {
+    const label = `${min ? 'Min' : 'Max'} ${type.toLowerCase()}`;
+    const input = this.page.getByLabel(label, { exact: true }).locator('input');
+    await input.clear();
+    if (value !== '') {
+      await input.pressSequentially(value);
+    }
+    await this.clickOnEnter();
+    await this.waitForChangeIsSaved();
+  }
+
+  /** @param {'Width' | 'Height'} type */
+  async isFlexElementMinMaxVisible(type) {
+    for (const label of [`Min ${type.toLowerCase()}`, `Max ${type.toLowerCase()}`]) {
+      await expect(
+        this.flexElementSizeConstraintsSection.getByLabel(label, { exact: true }),
+        `"${label}" field is visible`,
+      ).toBeVisible();
     }
   }
 
