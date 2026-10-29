@@ -1,13 +1,8 @@
 import { type Locator, type Page, type Response, expect } from '@playwright/test';
 import { BasePage } from '../base-page';
 
-/**
- * Named user-menu item labels, for typed use with
- * AdminConsolePage.isUserMenuItemVisible()/hoverUserMenuItem() instead of
- * hardcoding text in each test. Two entries (AboutPenpot, VersionNotes) are
- * regexes rather than plain strings — both embed the current Penpot version
- * number (e.g. "About Penpot 2.18.0"), which will drift on every release.
- */
+/** Named user-menu item labels, typed for isUserMenuItemVisible()/
+ * hoverUserMenuItem(). AboutPenpot/VersionNotes are regexes since both embed a version number that drifts every release. */
 export const AdminConsoleUserMenuItem = {
   YourAccount: 'Your account',
   DownloadUsageReport: 'Download usage report',
@@ -20,9 +15,7 @@ export const AdminConsoleUserMenuItem = {
   LearningCenter: 'Learning Center',
   PenpotHub: 'Penpot Hub',
   GiveFeedback: 'Give Feedback',
-  // "Community & Contributions" submenu — Community needs the exact-match
-  // regex since a plain substring also matches its own parent trigger item,
-  // "Community & Contributions".
+  // Community needs the exact-match regex — a plain substring also matches its own parent trigger item.
   GithubRepository: 'Github repository',
   Community: /^Community$/,
   // "About Penpot" submenu
@@ -35,10 +28,8 @@ export type AdminConsoleUserMenuItemName =
   (typeof AdminConsoleUserMenuItem)[keyof typeof AdminConsoleUserMenuItem];
 
 /**
- * Column position (0-indexed) in the Teams tab's table, for typed use with
- * AdminConsolePage's getTeamsTableCell()-based methods instead of a magic
- * number in each test. This table has 7 columns, including a "Last
- * activity" column at the end.
+ * Column position (0-indexed) in the Teams tab's table, for use with
+ * getTeamsTableCell(). Excludes the trailing, unlabeled actions column.
  */
 export enum TeamsTableColumn {
   Team = 0,
@@ -50,11 +41,8 @@ export enum TeamsTableColumn {
   LastActivity = 6,
 }
 
-/**
- * Column position (0-indexed) in the People tab's table, for typed use with
- * AdminConsolePage's getPeopleTableCell()-based methods instead of a magic
- * number in each test.
- */
+/** Column position (0-indexed) in the People tab's table, for use with
+ * getPeopleTableCell(). */
 export enum PeopleTableColumn {
   User = 0,
   DateAdded = 1,
@@ -62,38 +50,16 @@ export enum PeopleTableColumn {
   Actions = 3,
 }
 
-/**
- * Column position (0-indexed) in the Pending tab's table, for typed use
- * with AdminConsolePage's getPendingTableCell()-based methods. The 3rd
- * column has no header text at all — just each row's Cancel button.
- */
+/** Column position (0-indexed) in the Pending tab's table, for use with
+ * getPendingTableCell(). The 3rd column has no header, just the Cancel button. */
 export enum PendingTableColumn {
   User = 0,
   DateAdded = 1,
   Actions = 2,
 }
 
-/**
- * Covers the Admin Console app section itself (/admin-console/...) —
- * organization management once you're already inside it: the welcome/empty
- * state (reachable either by navigating there directly with no org yet, or
- * by landing there after a successful Enterprise checkout), and (as more
- * cases get automated) the People tab (members, pending invites, invite
- * modal), Teams tab, Advanced Permissions, and SSO Config.
- *
- * The dashboard-side entry points into Enterprise (the "+ Create org"
- * sidebar button, the sidebar promo widget, the org switcher dropdown) live
- * in OrganizationPage instead. Note the "Unlock Enterprise features" modal
- * and the "Create organization" naming modal are NOT necessarily shared
- * between the two: the Admin Console's own Enterprise modal
- * is a genuinely different component from the dashboard's (different title
- * capitalization, different CTA text — "Try 14 days for free" here vs "Try
- * it free for 14 days" there — and no activation-code link at all here) —
- * hence its own locators below rather than reusing OrganizationPage's. The
- * naming modal, by contrast, IS the same shared component in both places
- * (confirmed by PENPOT-3235/3236 and this file's own case both working
- * through OrganizationPage.createOrganization() unchanged).
- */
+/** The Admin Console app (/admin-console/...): welcome state, People/Teams
+ * tabs, Advanced Permissions, SSO. Its "Unlock Enterprise" modal is a genuinely different component from OrganizationPage's. */
 export class AdminConsolePage extends BasePage {
   // Welcome / empty state — shown right after a successful Enterprise
   // checkout, before the profile owns any organization yet
@@ -117,24 +83,11 @@ export class AdminConsolePage extends BasePage {
   readonly settingsSavedMessage: Locator;
   readonly settingsModalCloseButton: Locator;
 
-  // Organization logo — same settings modal, its own file input (confirmed
-  // live: no visible text, only an aria-label). The logo
-  // image itself always carries the organization's name as its alt text
-  // once one has been chosen (default placeholder avatar has alt=""), both
-  // for the instant local blob: preview (before Save changes) and the real
-  // uploaded asset URL (after) — same locator serves both checks.
+  // Organization logo — its file input has no visible text, only an
+  // aria-label; the image carries the org name as alt text once chosen.
   readonly orgLogoUploadInput: Locator;
 
-  // "Delete organization" flow — this has TWO different
-  // shapes depending on what's actually at stake: (1) the nav item above
-  // swaps the modal's right-hand content to an explanation panel with its
-  // OWN "Delete organization" button (same text, different button —
-  // disambiguated below by DOM order, nav item first); (2a) for an org with
-  // no teams/files, clicking that button deletes immediately — no further
-  // dialog; (2b) for an org with at least one team/file, it instead opens a
-  // SEPARATE "Are you sure?" overlay with the real affected-counts text and
-  // an expandable "Affected teams" list, whose own "Delete organization"
-  // button is the one that actually deletes.
+  // Delete flow has 2 shapes: no teams/files deletes immediately; a team/file at stake opens a confirm overlay.
   readonly deleteOrgExplanationConfirmButton: Locator;
   readonly deleteOrgConfirmDialog: Locator;
   readonly deleteOrgAffectedCountsText: Locator;
@@ -145,19 +98,14 @@ export class AdminConsolePage extends BasePage {
   readonly pageNotFoundText: Locator;
   readonly backToHomeButton: Locator;
 
-  // Admin Console's own org switcher (top-left, next to the org name) — a
-  // different component from OrganizationPage's dashboard-sidebar switcher:
-  // its items are role="menuitemradio" (with a checkmark for
-  // the current org), not role="menuitem".
+  // Admin Console's own org switcher — a different component from
+  // OrganizationPage's: items are role="menuitemradio", not role="menuitem".
   readonly orgSwitcherButton: Locator;
   readonly orgSwitcherItem: Locator;
   readonly createOrganizationSwitcherItem: Locator;
 
-  // Bottom-left user menu (account/help/logout). No stable testid or class
-  // exists to key off (same generic Tailwind utility classes
-  // as everything else in this design system) — matching its "Demo User ..."
-  // display name is reliable instead, since this suite only ever runs as a
-  // demo profile (see the file's own fixture comment above).
+  // Bottom-left user menu — no stable testid, so matched by its
+  // "Demo User ..." display name instead (this suite only runs as a demo profile).
   readonly userMenuButton: Locator;
   readonly userMenuItem: Locator;
   readonly logoutMenuItem: Locator;
@@ -167,30 +115,24 @@ export class AdminConsolePage extends BasePage {
   readonly advancedPermissionsNavLink: Locator;
 
   // Teams tab (sidebar nav item) — a table listing every team in the org,
-  // one row per team, 7 columns (see TeamsTableColumn).
+  // one row per team (see TeamsTableColumn).
   readonly teamsNavLink: Locator;
   readonly teamsTable: Locator;
   readonly teamsEmptyState: Locator;
 
-  // People tab (sidebar nav item) — where the invitePeopleButton et al.
-  // below actually live; not visible from the Teams tab. Its own table (one
-  // row per org member, 4 columns — see PeopleTableColumn), scoped by its
-  // "People" accessible name (its <caption>) so a stale Teams table
-  // lingering mid-transition can't be mistaken for it, and vice versa.
+  // People tab's own table, scoped by its "People" accessible name so a
+  // stale Teams table mid-transition can't be mistaken for it.
   readonly peopleNavLink: Locator;
   readonly peopleTable: Locator;
 
   // People tab's "invite to the organization" modal — org-level invites,
-  // distinct from a single team's own invite flow (TeamPage's), which
-  // still works once a team belongs to an org — either kind adds the person to both.
+  // distinct from a team's own invite flow (TeamPage's); either adds the person to both.
   readonly invitePeopleButton: Locator;
   readonly invitePeopleEmailInput: Locator;
   readonly sendInviteButton: Locator;
 
-  // Pending tab (People's sibling tab) — a table of not-yet-accepted
-  // invitations, one row per invitee, 3 columns (see PendingTableColumn;
-  // the 3rd has no header text, just each row's Cancel button). Confirmed
-  // live the Cancel button only becomes visible on hovering its row.
+  // Pending tab — not-yet-accepted invitations (see PendingTableColumn).
+  // Cancel button only becomes visible on hovering its row.
   readonly pendingTab: Locator;
   readonly pendingTable: Locator;
 
@@ -226,9 +168,7 @@ export class AdminConsolePage extends BasePage {
     });
 
     this.settingsButton = page.getByRole('button', { name: 'Settings' });
-    // Scoped by its own "Organization info" nav item text — the generic
-    // `[class*="fixed inset-0"]` overlay wrapper this modal uses is shared
-    // by unrelated overlays too, so it's not enough alone.
+    // Scoped by "Organization info" text — the overlay wrapper class alone is shared by unrelated overlays.
     this.settingsModal = page
       .locator('[class*="fixed inset-0"]')
       .filter({ hasText: 'Organization info' });
@@ -244,18 +184,15 @@ export class AdminConsolePage extends BasePage {
       name: 'Save changes',
     });
     this.settingsSavedMessage = page.getByText('Your changes were saved.');
-    // No accessible name at all — the only button in this
-    // modal with neither visible text nor an aria-label (the "Close
-    // notification" button next to the saved-message banner has an
-    // aria-label, so it's excluded by this XPath condition).
+    // The only button here with neither visible text nor an aria-label
+    // (the "Close notification" button has an aria-label, so it's excluded).
     this.settingsModalCloseButton = this.settingsModal.locator(
       'xpath=.//button[not(@aria-label) and not(normalize-space())]',
     );
     this.orgLogoUploadInput = page.getByLabel('Upload avatar');
 
-    // Same "Delete organization" text as deleteOrganizationNavItem above —
-    // `.last()` reliably gets this one since the nav item always precedes
-    // it in DOM order.
+    // Same text as deleteOrganizationNavItem above — `.last()` gets this one
+    // since the nav item always precedes it in DOM order.
     this.deleteOrgExplanationConfirmButton = this.settingsModal
       .getByRole('button', { name: 'Delete organization' })
       .last();
@@ -281,10 +218,7 @@ export class AdminConsolePage extends BasePage {
       exact: true,
     });
 
-    // No accessible name either — there are 2
-    // `[aria-haspopup="true"]` elements on the page (one off-screen at x=0,
-    // presumably an unused/hidden duplicate), and this is reliably the
-    // second/visible one.
+    // 2 `[aria-haspopup="true"]` elements exist (one off-screen, unused) — this is the visible one.
     this.orgSwitcherButton = page.locator('[aria-haspopup="true"]').visible().last();
     this.orgSwitcherItem = page.getByRole('menuitemradio');
     this.createOrganizationSwitcherItem = this.orgSwitcherItem.filter({
@@ -304,20 +238,14 @@ export class AdminConsolePage extends BasePage {
     this.peopleNavLink = page.getByRole('link', { name: 'People' });
     this.peopleTable = page.getByRole('table', { name: 'People' });
 
-    // `.first()` — there are 2 identically-labelled "Invite
-    // people" buttons when the People tab is in its empty state (the toolbar
-    // one, and the empty-state hero's own copy); the toolbar one is always
-    // present regardless of state, the hero one only when there are no
-    // members/pending invites yet.
+    // `.first()` — the empty state shows 2 identically-labelled buttons (toolbar + hero copy).
     this.invitePeopleButton = page
       .getByRole('button', { name: 'Invite people' })
       .first();
     this.invitePeopleEmailInput = page.getByPlaceholder(
       'Emails, separated by a comma',
     );
-    // The label itself changes with the count: "Send invite"
-    // for a single address, "Send N invites" (plural, with the number) for
-    // more than one — one regex covers both rather than two locators.
+    // Label changes with count ("Send invite" vs "Send N invites") — one regex covers both.
     this.sendInviteButton = page.getByRole('button', {
       name: /^Send( \d+)? invites?$/,
     });
@@ -359,12 +287,8 @@ export class AdminConsolePage extends BasePage {
    * Locator helpers
    * ------------------------------------------------- */
 
-  /**
-   * Matches a user-menu item (top-level or, once its parent submenu item has
-   * been hovered, one of its children) by its visible text — same item type
-   * for both, hovering a submenu trigger just adds more
-   * `role="menuitem"` elements to the same flat list, not a nested one.
-   */
+  /** Matches a user-menu item by text — hovering a submenu trigger just adds
+   * more role="menuitem" elements to the same flat list, not a nested one. */
   private getUserMenuItemByName(name: AdminConsoleUserMenuItemName): Locator {
     return this.userMenuItem.filter({ hasText: name });
   }
@@ -410,11 +334,8 @@ export class AdminConsolePage extends BasePage {
     await this.welcomeCreateOrganizationButton.click();
   }
 
-  /** "Go to Files" first renders as a bare link to the dashboard root, and
-   * only gets the org's team-id once the org data loads — clicked before
-   * that, it lands on the personal team, outside any org. Then waits until
-   * the dashboard is inside `orgName` (its name shows in the org/team
-   * switcher), so a team created next isn't created outside the org. */
+  /** Waits for the link to carry the org's team-id, then confirms the
+   * dashboard lands inside `orgName` — clicked too early it lands outside any org. */
   async goToFiles(orgName: string) {
     await expect(
       this.goToFilesLink,
@@ -451,9 +372,8 @@ export class AdminConsolePage extends BasePage {
     ).toBeVisible();
   }
 
-  /** Types one email into the invite modal's input and confirms it with
-   * Enter, adding it to the list of addresses to invite — does not send
-   * anything by itself. Assumes the invite modal is already open. */
+  /** Adds one email to the invite list via Enter — doesn't send.
+   * Assumes the invite modal is already open. */
   async addEmailToInviteList(email: string) {
     await this.invitePeopleEmailInput.fill(email);
     await this.page.keyboard.press('Enter');
@@ -465,9 +385,8 @@ export class AdminConsolePage extends BasePage {
     await this.sendInviteButton.click();
   }
 
-  /** Opens the "Invite people" modal — self-healing (retries the click)
-   * since clicking it right after a fresh navigation can silently no-op if
-   * React's handler hasn't attached yet (same race as openSettings()/acceptCookie()). */
+  /** Self-healing — a click right after a fresh navigation can silently
+   * no-op before React's handler attaches (same race as openSettings()). */
   async openInvitePeopleModal() {
     await expect(async () => {
       await this.invitePeopleButton.click();
@@ -478,9 +397,8 @@ export class AdminConsolePage extends BasePage {
     }).toPass({ timeout: 30000 });
   }
 
-  /** Invites one or more emails to the organization (People tab) — pending
-   * invitations, not existing members. Navigates to the People tab first,
-   * since invitePeopleButton et al. aren't visible from other tabs. */
+  /** Invites emails to the organization (pending, not members) — navigates
+   * to the People tab first, since invitePeopleButton isn't visible elsewhere. */
   async invitePersonToOrganization(emails: string | string[]) {
     await this.openPeopleTab();
     await this.openInvitePeopleModal();
@@ -490,10 +408,8 @@ export class AdminConsolePage extends BasePage {
     await this.sendInvites();
   }
 
-  /** Self-healing — same hydration race as openOrgSwitcher()/openSettings()
-   * when clicked right after openPeopleTab(). Checked via `aria-selected`,
-   * not `pendingTable`'s visibility: that locator is identical to
-   * `peopleTable`, so it stays visible even while Members is still active. */
+  /** Self-healing, same hydration race as openOrgSwitcher(). Checked via
+   * `aria-selected`, not visibility — `pendingTable` is identical to `peopleTable`. */
   async openPendingTab() {
     await expect(async () => {
       if ((await this.pendingTab.getAttribute('aria-selected')) !== 'true') {
@@ -564,10 +480,8 @@ export class AdminConsolePage extends BasePage {
     await expect(this.removeTeamDialog, 'Remove team dialog is closed').toBeHidden();
   }
 
-  /** Opens the confirmation dialog for canceling one pending invitation —
-   * the row's own Cancel button only becomes visible on
-   * hover, and the dialog names the invitee by email. Assumes the Pending
-   * tab is already open. */
+  /** Opens the cancel-invitation dialog — the row's Cancel button only
+   * shows on hover. Assumes the Pending tab is already open. */
   async openCancelPendingInvitationDialog(email: string) {
     const row = this.getPendingTableRow(email);
     await row.hover();
@@ -591,9 +505,7 @@ export class AdminConsolePage extends BasePage {
     ).toBeVisible();
   }
 
-  /** The current profile's display name (e.g. "Demo User <uuid>"), stripped
-   * of the leading avatar-initials text ("DU") userMenuButton's raw text
-   * also includes. */
+  /** The profile's display name, stripped of userMenuButton's leading avatar-initials text ("DU"). */
   async getUserName(): Promise<string> {
     const rawText = (await this.userMenuButton.textContent()) ?? '';
     return rawText.replace(/^\w{2}\n?/, '').trim();
@@ -603,14 +515,8 @@ export class AdminConsolePage extends BasePage {
     await this.tryItFreeButton.click();
   }
 
-  /**
-   * Opens the organization settings modal. Retries the click if the modal
-   * doesn't appear — this is occasionally needed right after
-   * a fresh full-page navigation straight into the Admin Console (e.g. via
-   * page.goto(adminConsoleUrl)): the button is visibly actionable before its
-   * click handler has actually finished attaching, so an isolated click can
-   * silently do nothing once in a while.
-   */
+  /** Retries the click if the modal doesn't appear — needed occasionally
+   * right after a fresh navigation, before the click handler has attached. */
   async openSettings() {
     await expect(async () => {
       await this.settingsButton.click();
@@ -629,12 +535,8 @@ export class AdminConsolePage extends BasePage {
     ).not.toBeVisible();
   }
 
-  /**
-   * Fills the org name field and saves. Leaves the modal open afterward
-   * (showing the "Your changes were saved." message) — the
-   * modal does NOT auto-close on save, call closeSettingsModal() after if
-   * you need to interact with the page behind it.
-   */
+  /** Fills the name and saves. Leaves the modal open afterward — it does
+   * NOT auto-close; call closeSettingsModal() if you need the page behind it. */
   async renameOrganization(newName: string) {
     await this.orgNameInput.fill(newName);
     await this.saveChangesButton.click();
@@ -644,17 +546,13 @@ export class AdminConsolePage extends BasePage {
     ).toBeVisible();
   }
 
-  /** Selects a local image file for the org logo — this
-   * shows an instant local preview (no upload yet, Save changes only
-   * becomes enabled at this point); nothing is actually saved until
-   * saveSettingsChanges() is called separately. */
+  /** Selects a local image for the org logo — shows an instant local
+   * preview only; nothing saves until saveSettingsChanges() is called. */
   async uploadOrgLogo(filePath: string) {
     await this.orgLogoUploadInput.setInputFiles(filePath);
   }
 
-  /** Clicks Save changes and waits for the same "Your changes were saved."
-   * message renameOrganization() uses — this settings modal has one shared
-   * Save changes button/toast for both the name and the logo. */
+  /** One shared Save changes button/toast for both the name and the logo, same as renameOrganization(). */
   async saveSettingsChanges() {
     await this.saveChangesButton.click();
     await expect(
@@ -720,15 +618,8 @@ export class AdminConsolePage extends BasePage {
     ).toBeVisible();
   }
 
-  /**
-   * Clicks the explanation panel's own confirm button. This
-   * does NOT reliably open the "Are you sure?" dialog — for an org with
-   * nothing at stake (no teams/files) it deletes immediately instead, right
-   * here. No assertion on what happens next; callers that need the dialog
-   * (because they know the org has a team/file) should assert
-   * deleteOrgConfirmDialog's visibility themselves, or use
-   * deleteOrganization() which handles either outcome.
-   */
+  /** Doesn't reliably open the "Are you sure?" dialog — an org with
+   * nothing at stake deletes immediately instead. Use deleteOrganization() for either outcome. */
   async clickDeleteOrganizationExplanationConfirm() {
     await this.deleteOrgExplanationConfirmButton.click();
   }
@@ -746,13 +637,8 @@ export class AdminConsolePage extends BasePage {
     ).toBeVisible();
   }
 
-  /**
-   * Full delete flow, handling either shape: nav item → explanation panel's
-   * confirm → (if the org has a team/file) the "Are you sure?" dialog's own
-   * final confirm, otherwise the explanation panel's click already deleted
-   * it. Either way, ends with the deleted toast visible. Assumes the
-   * settings modal is already open (via openSettings()).
-   */
+  /** Full delete flow, handling either shape (see
+   * clickDeleteOrganizationExplanationConfirm()). Assumes the settings modal is already open. */
   async deleteOrganization() {
     await this.openDeleteOrganizationPanel();
     await this.clickDeleteOrganizationExplanationConfirm();
@@ -799,13 +685,8 @@ export class AdminConsolePage extends BasePage {
         ).toHaveCount(0);
   }
 
-  /**
-   * Matches /admin-console/organization/{slug}/{uuid}(/...)? URLs. The
-   * trailing segment is optional — navigating straight to
-   * .../organization/{slug}/{id} with no further path (no /people) is a
-   * valid, real state the app leaves the URL in, not just an
-   * always-redirects-to-/people shape.
-   */
+  /** Matches /admin-console/organization/{slug}/{uuid}(/...)? — the trailing
+   * segment is optional, a valid real state, not just a redirect-to-/people shape. */
   async isOnOrganizationAdminConsole(orgSlug?: string) {
     const pattern = orgSlug
       ? new RegExp(`/admin-console/organization/${orgSlug}/[^/]+(/|$)`)
@@ -818,11 +699,8 @@ export class AdminConsolePage extends BasePage {
     ).toHaveURL(pattern);
   }
 
-  /** Matches the bare /admin-console URL (no organization in the path) —
-   * this is the real state left in the URL bar both for a
-   * profile with no organization yet (the welcome screen) and, more
-   * generally, right after logging back in from a redirect that originated
-   * there. */
+  /** Matches the bare /admin-console URL — real state for a profile with no
+   * org yet, or after logging back in from a redirect that originated there. */
   async isOnAdminConsoleRootUrl() {
     await expect(
       this.page,
@@ -830,19 +708,10 @@ export class AdminConsolePage extends BasePage {
     ).toHaveURL(/\/admin-console\/?$/);
   }
 
-  /**
-   * Checks the org name heading itself rather than the URL — use this when
-   * the URL's slug segment isn't guaranteed to self-correct (confirmed
-   * live: navigating with a deliberately wrong slug but a valid org id
-   * reliably resolves to the right organization's content, but doesn't
-   * always rewrite the URL bar back to the real slug — inconsistent, not a
-   * bug in this helper).
-   */
+  /** Checks the org name heading rather than the URL — the URL's slug
+   * segment isn't guaranteed to self-correct after a wrong-slug navigation. */
   async isDisplayingOrganization(orgName: string) {
-    // Not a semantic heading — it's a styled div, same
-    // pattern as the newer Tailwind components elsewhere (no ARIA role).
-    // Scoped to `main`: right after switching orgs, the closing org
-    // switcher dropdown (rendered outside it) still lists the same name.
+    // Scoped to `main` — the closing org switcher dropdown (outside it) still lists the same name right after switching.
     await expect(
       this.page.getByRole('main').getByText(orgName, { exact: true }),
       `Organization "${orgName}" is the one displayed`,
@@ -1023,9 +892,7 @@ export class AdminConsolePage extends BasePage {
       : await expect(row, `Team "${teamName}" is not listed`).toHaveCount(0);
   }
 
-  /** Checks the Team column shows both an avatar (initials) and the team's
-   * name — the avatar is a styled `aria-hidden` span with the
-   * team's initials, not a real `<img>`. */
+  /** Checks the Team column's avatar — a styled `aria-hidden` span with initials, not a real `<img>`. */
   async isTeamAvatarShownInTeamsTable(teamName: string) {
     const avatar = this.getTeamsTableCell(teamName, TeamsTableColumn.Team).locator(
       'span[aria-hidden="true"]',
@@ -1036,9 +903,7 @@ export class AdminConsolePage extends BasePage {
     ).toBeVisible();
   }
 
-  /** Checks the Created column shows a standard "D Mon YYYY" date (e.g.
-   * "9 Sep 2026"), not asserting the exact date — the team could have been
-   * created moments before the check runs. */
+  /** Checks the Created column's date format (e.g. "9 Sep 2026"), not the exact date. */
   async hasStandardCreatedDateFormat(teamName: string) {
     await expect(
       this.getTeamsTableCell(teamName, TeamsTableColumn.Created),
@@ -1085,19 +950,14 @@ export class AdminConsolePage extends BasePage {
       : await expect(row, `Member "${memberName}" is not listed`).toHaveCount(0);
   }
 
-  /** Clicks the row's "Remove" action (hover to reveal) — self-healing:
-   * clicking right after openPeopleTab() can silently no-op, same
-   * hydration race as openPendingTab()/openSettings(). No team → removed
-   * immediately, verify via `isMemberListedInPeopleTable(name, false)` (no
-   * reliable toast). Belongs to a team → see `isRemoveMemberDialogShown()`. */
+  /** Clicks the row's "Remove" action — self-healing, same hydration race
+   * as openPendingTab(). No team → removed immediately; belongs to a team → see isRemoveMemberDialogShown(). */
   async removeMemberFromPeopleTable(memberName: string) {
     const row = this.getPeopleTableRow(memberName);
     await expect(async () => {
       await row.hover();
       await row.getByRole('button', { name: /remove/i }).click();
-      // Matches isRemoveMemberDialogShown()'s own 15000ms — a shorter wait
-      // here would misread a genuinely slow (but real) dialog render as "no
-      // effect" and re-click, risking a duplicate remove action.
+      // Matches isRemoveMemberDialogShown()'s 15000ms — shorter risks misreading a slow dialog as "no effect" and re-clicking.
       const acted = await Promise.race([
         this.removeMemberConfirmButton
           .waitFor({ state: 'visible', timeout: 15000 })
@@ -1149,11 +1009,8 @@ export class AdminConsolePage extends BasePage {
     ).toHaveText(String(count));
   }
 
-  /** Checks a chosen org logo is shown — matched by alt text (the org's own
-   * name), which the image only carries once a real logo has been chosen;
-   * the untouched default placeholder avatar has alt="". Works both for the
-   * instant local preview (before Save changes) and the real uploaded
-   * image (after) — same alt text either way. */
+  /** Matched by alt text (the org name) — only set once a real logo is
+   * chosen; the default placeholder has alt="". Same either way, before or after saving. */
   async isOrgLogoShown(orgName: string, visible = true) {
     const logo = this.page.getByAltText(orgName, { exact: true }).first();
     visible
@@ -1161,9 +1018,7 @@ export class AdminConsolePage extends BasePage {
       : await expect(logo, `Logo for "${orgName}" is not shown`).not.toBeVisible();
   }
 
-  /** Checks whether an email appears anywhere in the invite modal's own
-   * list of addresses to invite (before sending) — not the Pending tab's
-   * table, which only reflects invitations that have actually been sent. */
+  /** Checks the invite modal's own address list (before sending), not the Pending tab's sent-invites table. */
   async isEmailInInviteList(email: string, listed = true) {
     const item = this.page.getByText(email, { exact: true });
     listed

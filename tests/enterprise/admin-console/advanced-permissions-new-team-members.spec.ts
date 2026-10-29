@@ -324,7 +324,7 @@ enterpriseActivatedPageTest.describe(
           );
 
           await ownerAndInviteeActivatedTest.step(
-            "Setup: owner creates a restricted OrgA and an open OrgB, invites User2 into both — confirmed live that an org must be a membership, not just exist, to appear in someone else's own org picker at all",
+            `Setup: owner creates a restricted ${orgAName} and an open ${orgBName}, invites User2 into both — confirmed live that an org must be a membership, not just exist, to appear in someone else's own org picker at all`,
             async () => {
               await createOrgForLicensedAccount(orgPage, orgAName);
               await adminConsolePage.openAdvancedPermissionsTab();
@@ -366,7 +366,7 @@ enterpriseActivatedPageTest.describe(
           );
 
           await ownerAndInviteeActivatedTest.step(
-            "3576: User2 opens the org picker on their own team → the restricted OrgA is disabled (User3 isn't a member), the open OrgB is enabled",
+            `3576: User2 opens the org picker on their own team → the restricted ${orgAName} is disabled (User3 isn't a member), the open ${orgBName} is enabled`,
             async () => {
               // Accepting the org invites switched User2's active dashboard
               // context to an org — see goToOtherTeam()'s own comment.
@@ -380,7 +380,7 @@ enterpriseActivatedPageTest.describe(
           );
 
           await ownerAndInviteeActivatedTest.step(
-            "3579: Owner restricts OrgB too → no organization qualifies for User2's team (User3 belongs to neither), attempting to add it shows a permission-denied modal instead of the picker",
+            `3579: Owner restricts ${orgBName} too → no organization qualifies for User2's team (User3 belongs to neither), attempting to add it shows a permission-denied modal instead of the picker`,
             async () => {
               await adminConsolePage.page.goto(orgBAdminConsoleUrl);
               await adminConsolePage.openAdvancedPermissionsTab();
