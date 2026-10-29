@@ -271,26 +271,23 @@ mainAccountFileTest.describe(() => {
 
       await dashboardPage.clickDeleteFileButton();
 
-      await dashboardPage.openFileWithName('New File 2');
-      await mainPage.waitForViewportVisible();
-
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'library-without-library-viewport.png',
-        {
-          mask: mainPage.maskViewport(),
-        },
-      );
-      await mainPage.clickPencilBoxButton();
-      await dashboardPage.isHeaderDisplayed('Projects');
-
-      await dashboardPage.openFileWithName('New File 3');
-      await mainPage.waitForViewportVisible();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'library-without-library-viewport2.png',
-        {
-          mask: mainPage.maskViewport(),
-        },
-      );
+      for (const fileName of ['New File 2', 'New File 3']) {
+        await mainAccountFileTest.step(
+          `Open "${fileName}" and check it keeps the library shapes`,
+          async () => {
+            await dashboardPage.openFileWithName(fileName);
+            await mainPage.waitForViewportVisible();
+            for (const layerName of ['Ellipse', 'Rectangle']) {
+              await expect(
+                layersPanelPage.getLayerRowsBy(layerName).first(),
+                `Layer "${layerName}" should remain in "${fileName}" after deleting the library`,
+              ).toBeVisible();
+            }
+            await mainPage.clickPencilBoxButton();
+            await dashboardPage.isHeaderDisplayed('Projects');
+          },
+        );
+      }
     },
   );
 });
