@@ -26,18 +26,21 @@ demoAccountFileTest.beforeEach(async ({ page }) => {
 demoAccountFileTest.describe(() => {
   demoAccountFileTest.use({ penpotFile: FIGURE_FILE });
 
+  demoAccountFileTest.beforeEach(async () => {
+    await assetsPanelPage.clickAssetsTab();
+    await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+    await assetsPanelPage.combineAsVariantsGroup();
+    await assetsPanelPage.waitForChangeIsSaved();
+    await assetsPanelPage.isVariantsAddedToFileLibraryComponents();
+    await layersPanelPage.openLayersTab();
+  });
+
   demoAccountFileTest(
     qase(
       [2441],
       'Component groups are passed to Property when creating a component with variants (several groups)',
     ),
     async () => {
-      await assetsPanelPage.clickAssetsTab();
-      await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-      await assetsPanelPage.combineAsVariantsGroup();
-      await assetsPanelPage.isVariantsAddedToFileLibraryComponents();
-
-      await layersPanelPage.openLayersTab();
       await layersPanelPage.doubleClickLayerOnLayersTab('Rectangle, Blue');
       await layersPanelPage.checkLayerNameInputValue(
         'Property 1=Rectangle, Property 2=Blue',
@@ -50,12 +53,6 @@ demoAccountFileTest.describe(() => {
   demoAccountFileTest(
     qase([2444], 'Changing Property for Child Components'),
     async () => {
-      await assetsPanelPage.clickAssetsTab();
-      await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-      await assetsPanelPage.combineAsVariantsGroup();
-      await assetsPanelPage.isVariantsAddedToFileLibraryComponents();
-      await layersPanelPage.openLayersTab();
-
       await layersPanelPage.selectLayerByName('Ellipse, Green');
       await layersPanelPage.copyElementViaAltDragAndDrop(100, 100);
       await designPanelPage.changeVariantPropertyValue('Property 1', 'Arrow');
@@ -83,69 +80,58 @@ demoAccountFileTest.describe(() => {
     },
   );
 
-  demoAccountFileTest.describe(() => {
-    demoAccountFileTest.beforeEach(async () => {
-      await assetsPanelPage.clickAssetsTab();
-      await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-      await assetsPanelPage.combineAsVariantsGroup();
-      await assetsPanelPage.waitForChangeIsSaved();
-      await assetsPanelPage.isVariantsAddedToFileLibraryComponents();
-      await layersPanelPage.openLayersTab();
-    });
+  demoAccountFileTest(qase([2450], 'Adding New Properties'), async () => {
+    await layersPanelPage.selectLayerByName('Ellipse, Green');
+    await designPanelPage.clickOnComponentMenuButton();
+    await designPanelPage.clickOnAddNewPropertyOption();
+    await assetsPanelPage.waitForChangeIsSaved();
+    await layersPanelPage.selectLayerByName('Arrow, Blue, Value 1');
+    await designPanelPage.checkVariantPropertyValue('Property 3', 'Value 1');
 
-    demoAccountFileTest(qase([2450], 'Adding New Properties'), async () => {
-      await layersPanelPage.selectLayerByName('Ellipse, Green');
-      await designPanelPage.clickOnComponentMenuButton();
-      await designPanelPage.clickOnAddNewPropertyOption();
-      await assetsPanelPage.waitForChangeIsSaved();
-      await layersPanelPage.selectLayerByName('Arrow, Blue, Value 1');
-      await designPanelPage.checkVariantPropertyValue('Property 3', 'Value 1');
+    await layersPanelPage.doubleClickLayerOnLayersTab('Arrow, Blue, Value 1');
+    await layersPanelPage.typeNameCreatedLayerAndEnter(
+      'Property 1=Rectangle, Property 2=Blue, Property 3=Value 1, Test=TestValue',
+    );
+    await assetsPanelPage.waitForChangeIsSaved();
+    await designPanelPage.checkVariantPropertyValue('Test', 'TestValue');
 
-      await layersPanelPage.doubleClickLayerOnLayersTab('Arrow, Blue, Value 1');
-      await layersPanelPage.typeNameCreatedLayerAndEnter(
-        'Property 1=Rectangle, Property 2=Blue, Property 3=Value 1, Test=TestValue',
-      );
-      await assetsPanelPage.waitForChangeIsSaved();
-      await designPanelPage.checkVariantPropertyValue('Test', 'TestValue');
+    await layersPanelPage.selectLayerByName('Ellipse, Green');
+    await designPanelPage.enterVariantPropertyValue('Test', 'TestValue2');
+    await assetsPanelPage.waitForChangeIsSaved();
+    await designPanelPage.checkVariantPropertyValue('Test', 'TestValue2');
+    await layersPanelPage.isLayerWithNameSelected(
+      'Ellipse, Green, Value 1, TestValue2',
+    );
+  });
 
-      await layersPanelPage.selectLayerByName('Ellipse, Green');
-      await designPanelPage.enterVariantPropertyValue('Test', 'TestValue2');
-      await assetsPanelPage.waitForChangeIsSaved();
-      await designPanelPage.checkVariantPropertyValue('Test', 'TestValue2');
-      await layersPanelPage.isLayerWithNameSelected(
-        'Ellipse, Green, Value 1, TestValue2',
-      );
-    });
+  demoAccountFileTest(qase([2452], 'Editing a Property Value'), async () => {
+    await layersPanelPage.selectLayerByName('Ellipse, Yellow');
+    await designPanelPage.enterVariantPropertyValue('Property 1', 'Test');
+    await layersPanelPage.doubleClickLayerOnLayersTab('Test, Yellow');
+    await layersPanelPage.checkLayerNameInputValue(
+      'Property 1=Test, Property 2=Yellow',
+    );
+    await layersPanelPage.typeNameCreatedLayerAndEnter(
+      'Property 1=Test, Property 2=Test2',
+    );
+    await designPanelPage.checkVariantPropertyValue('Property 2', 'Test2');
+  });
 
-    demoAccountFileTest(qase([2452], 'Editing a Property Value'), async () => {
-      await layersPanelPage.selectLayerByName('Ellipse, Yellow');
-      await designPanelPage.enterVariantPropertyValue('Property 1', 'Test');
-      await layersPanelPage.doubleClickLayerOnLayersTab('Test, Yellow');
-      await layersPanelPage.checkLayerNameInputValue(
-        'Property 1=Test, Property 2=Yellow',
-      );
-      await layersPanelPage.typeNameCreatedLayerAndEnter(
-        'Property 1=Test, Property 2=Test2',
-      );
-      await designPanelPage.checkVariantPropertyValue('Property 2', 'Test2');
-    });
+  demoAccountFileTest(qase([2453], 'Delete Property'), async () => {
+    await designPanelPage.clickOnComponentMenuButton();
+    await designPanelPage.clickOnAddNewPropertyOption();
+    await designPanelPage.clickOnEnter();
+    await designPanelPage.waitForChangeIsSaved();
 
-    demoAccountFileTest(qase([2453], 'Delete Property'), async () => {
-      await designPanelPage.clickOnComponentMenuButton();
-      await designPanelPage.clickOnAddNewPropertyOption();
-      await designPanelPage.clickOnEnter();
-      await designPanelPage.waitForChangeIsSaved();
+    await designPanelPage.deleteVariantProperty('Property 3');
+    await designPanelPage.isMainComponentPropertyVisible('Property 3', false);
+    await designPanelPage.isVariantWarningVisible(false);
 
-      await designPanelPage.deleteVariantProperty('Property 3');
-      await designPanelPage.isMainComponentPropertyVisible('Property 3', false);
-      await designPanelPage.isVariantWarningVisible(false);
-
-      await designPanelPage.deleteVariantProperty('Property 2');
-      await designPanelPage.isMainComponentPropertyVisible('Property 2', false);
-      await designPanelPage.checkVariantWarning(
-        'Some variants have identical properties and values',
-      );
-    });
+    await designPanelPage.deleteVariantProperty('Property 2');
+    await designPanelPage.isMainComponentPropertyVisible('Property 2', false);
+    await designPanelPage.checkVariantWarning(
+      'Some variants have identical properties and values',
+    );
   });
 });
 
