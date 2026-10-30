@@ -2,7 +2,6 @@ import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
-import { MainPage } from '@pages/workspace/main-page';
 import { expect } from '@playwright/test';
 import { demoAccountFileTest } from 'fixtures';
 import { SampleData } from 'helpers/sample-data';
@@ -17,13 +16,11 @@ const sampleData = new SampleData();
 let assetsPanelPage: AssetsPanelPage;
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
-let mainPage: MainPage;
 
 demoAccountFileTest.beforeEach(async ({ page }) => {
   assetsPanelPage = new AssetsPanelPage(page);
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
-  mainPage = new MainPage(page);
 });
 
 demoAccountFileTest.describe(() => {
@@ -155,29 +152,32 @@ demoAccountFileTest.describe(() => {
 demoAccountFileTest.describe(() => {
   demoAccountFileTest.use({ penpotFile: SWAP_FILE });
 
-  demoAccountFileTest(qase([2443], 'SWAP panel with variants'), async () => {
-    await layersPanelPage.clickCopyComponentOnLayersTab();
-    await designPanelPage.clickOnSwapComponentButton();
-    await expect(designPanelPage.swapComponentTab).toHaveScreenshot(
-      'swap-component-list.png',
-      {
-        mask: mainPage.maskViewport(),
-      },
-    );
-    await designPanelPage.clickOnSwapGridViewButton();
-    await expect(designPanelPage.swapComponentTab).toHaveScreenshot(
-      'swap-component-grid.png',
-      {
-        mask: mainPage.maskViewport(),
-      },
-    );
-  });
+  demoAccountFileTest(
+    qase([2443], 'SWAP panel with variants'),
+    async ({ mainPage }) => {
+      await layersPanelPage.clickCopyComponentOnLayersTab();
+      await designPanelPage.clickOnSwapComponentButton();
+      await expect(designPanelPage.swapComponentTab).toHaveScreenshot(
+        'swap-component-list.png',
+        {
+          mask: mainPage.maskViewport(),
+        },
+      );
+      await designPanelPage.clickOnSwapGridViewButton();
+      await expect(designPanelPage.swapComponentTab).toHaveScreenshot(
+        'swap-component-grid.png',
+        {
+          mask: mainPage.maskViewport(),
+        },
+      );
+    },
+  );
 });
 
 demoAccountFileTest.describe(() => {
   demoAccountFileTest.use({ penpotFile: BULK_LESS_HAPPY_FILE });
 
-  demoAccountFileTest(qase([2447], 'Property recovery'), async () => {
+  demoAccountFileTest(qase([2447], 'Property recovery'), async ({ mainPage }) => {
     const variantLayerName = 'primary, text, default';
     const invalidVariantName = 'Invalid name';
 
@@ -231,7 +231,7 @@ demoAccountFileTest.describe(() => {
 });
 
 demoAccountFileTest.describe(() => {
-  demoAccountFileTest.beforeEach(async () => {
+  demoAccountFileTest.beforeEach(async ({ mainPage }) => {
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.createComponentViaRightClickFromLayerByName('Rectangle');
     await mainPage.waitForChangeIsSaved();
