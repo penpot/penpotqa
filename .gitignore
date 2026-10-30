@@ -77,7 +77,8 @@ mcp.json
 .ai/
 
 # Claude configuration
-.claude/
+.claude/*
+!.claude/skills/
 
 # VS Code settings
 .vscode/
