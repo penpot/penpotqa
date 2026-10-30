@@ -17,20 +17,6 @@ demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
 });
 
 demoAccountFileTest(
-  qase([816], 'Hide/show rulers via main menu and shortcut CTRL SHIFT R'),
-  async ({ mainPage }) => {
-    await mainPage.pressHideShowRulersShortcut();
-    await expect(mainPage.viewport).toHaveScreenshot('viewport-hidden-rulers.png', {
-      mask: mainPage.maskViewport(),
-    });
-    await mainPage.pressHideShowRulersShortcut();
-    await expect(mainPage.viewport).toHaveScreenshot('viewport-default.png', {
-      mask: mainPage.maskViewport(),
-    });
-  },
-);
-
-demoAccountFileTest(
   qase([819], 'Hide/show color palette - file library check'),
   async ({ mainPage }) => {
     await assetsPanelPage.clickAssetsTab();

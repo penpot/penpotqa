@@ -1,6 +1,10 @@
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { TeamPage } from '@pages/dashboard/team-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { expect } from '@playwright/test';
 import { demoAccountFileTest } from 'fixtures';
+import { openFileInWorkspace } from 'helpers/files/open-file-in-workspace';
+import { createTeamName } from 'helpers/teams/create-team-name';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 let designPanelPage: DesignPanelPage;
@@ -148,7 +152,7 @@ demoAccountFileTest.describe(() => {
           await mainPage.clickShowGuidesMainMenuSubItem();
           await mainPage.waitForChangeIsSaved();
           await expect(mainPage.viewport).toHaveScreenshot(
-            'square-guide-unhide.png',
+            'square-guide-default.png',
             {
               mask: mainPage.maskViewport(),
             },
@@ -515,15 +519,23 @@ demoAccountFileTest.describe(() => {
   );
 
   demoAccountFileTest(
-    qase([2842], 'Clear guides for a given board'),
-    async ({ mainPage }) => {
+    qase(
+      [2842, 763],
+      'Hide/show rulers and guides (shortcut and main menu) and clear board guides',
+    ),
+    async ({ page, mainPage }) => {
       const viewportBox = await mainPage.viewport.boundingBox();
       if (!viewportBox) throw new Error('Could not get bounding box for viewport');
       const dropX = viewportBox.x + viewportBox.width / 2;
       const dropY = viewportBox.y + viewportBox.height / 2;
+      const fileUrl = new URL(page.url());
+      const firstFile = {
+        teamId: fileUrl.searchParams.get('team-id') as string,
+        fileId: fileUrl.searchParams.get('file-id') as string,
+      };
 
       await demoAccountFileTest.step(
-        'Drag ruler guides onto the board',
+        'Drag a horizontal and a vertical guide from the rulers onto the board',
         async () => {
           await mainPage.dragHorizontalGuideFromRuler(dropX, dropY);
           await mainPage.dragVerticalGuideFromRuler(dropX, dropY);
@@ -538,12 +550,71 @@ demoAccountFileTest.describe(() => {
       );
 
       await demoAccountFileTest.step(
+        'Press CTRL+SHIFT+R → rulers and guides are not displayed',
+        async () => {
+          await mainPage.pressHideShowRulersShortcut();
+          await mainPage.isRulersVisible(false);
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'board-with-hidden-rulers-and-guides.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Refresh the browser tab → rulers are still hidden',
+        async () => {
+          await page.reload();
+          await mainPage.isMainPageLoaded();
+          await mainPage.isRulersVisible(false);
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Open a file in another team → rulers are still hidden',
+        async () => {
+          const dashboardPage = new DashboardPage(page);
+          await mainPage.clickPencilBoxButton();
+          await new TeamPage(page).createTeam(createTeamName());
+          await dashboardPage.createFileViaPlaceholder();
+          await mainPage.isMainPageLoaded();
+          await mainPage.isRulersVisible(false);
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Main menu > View > Show rulers → rulers are displayed',
+        async () => {
+          await mainPage.clickOnMainThenViewMenuItem();
+          await mainPage.clickShowRulersMainMenuSubItem();
+          await mainPage.isRulersVisible();
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Open the first file → rulers and guides are displayed',
+        async () => {
+          await openFileInWorkspace(page, firstFile.teamId, firstFile.fileId);
+          await mainPage.isRulersVisible();
+          await mainPage.clickCreatedBoardTitleOnCanvas();
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'board-with-ruler-guides-reopened.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
+        },
+      );
+
+      await demoAccountFileTest.step(
         'Clear board guides via right-click context menu',
         async () => {
           await mainPage.clearBoardGuidesViaRightClick();
           await mainPage.waitForChangeIsSaved();
           await expect(mainPage.viewport).toHaveScreenshot(
-            'board-without-ruler-guides.png',
+            'board-without-guide.png',
             {
               mask: mainPage.maskViewport(),
             },

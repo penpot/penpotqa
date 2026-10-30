@@ -1368,6 +1368,14 @@ exports.MainPage = class MainPage extends BasePage {
     await this.page.keyboard.up('Alt');
   }
 
+  async isRulersVisible(visible = true) {
+    for (const track of [this.horizontalRulerTrack, this.verticalRulerTrack]) {
+      visible
+        ? await expect(track, 'Rulers are visible').toBeVisible()
+        : await expect(track, 'Rulers are hidden').toBeHidden();
+    }
+  }
+
   async isCornerHandleVisible(visible = true) {
     visible
       ? await expect(this.cornerHandle).toBeVisible()
