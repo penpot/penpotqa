@@ -2123,6 +2123,16 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.checkTokenField('Stroke width', value);
   }
 
+  async checkStrokeRowFieldsVisible() {
+    await expect(this.strokeColorBullet, 'Stroke color is visible').toBeVisible();
+    await expect(this.strokeOpacityInput, 'Stroke opacity is visible').toBeVisible();
+    await expect(
+      this.strokeAlignmentField,
+      'Stroke position is visible',
+    ).toBeVisible();
+    await expect(this.strokeTypeField, 'Stroke style is visible').toBeVisible();
+  }
+
   async checkRowGap(value) {
     await this.checkTokenField('Row gap', value);
   }

@@ -37,22 +37,7 @@ demoAccountFileTest(
         await strokePerSidePage.clickAddStrokeButton();
         await mainPage.waitForChangeIsSaved();
         await strokePerSidePage.checkStrokeWidth('1');
-        await expect(
-          strokePerSidePage.strokeColorBullet,
-          'Stroke color is visible',
-        ).toBeVisible();
-        await expect(
-          strokePerSidePage.strokeOpacityInput,
-          'Stroke opacity is visible',
-        ).toBeVisible();
-        await expect(
-          strokePerSidePage.strokeAlignmentField,
-          'Stroke position is visible',
-        ).toBeVisible();
-        await expect(
-          strokePerSidePage.strokeTypeField,
-          'Stroke style is visible',
-        ).toBeVisible();
+        await strokePerSidePage.checkStrokeRowFieldsVisible();
         await strokePerSidePage.checkStrokePerSideTooltip();
       },
     );
