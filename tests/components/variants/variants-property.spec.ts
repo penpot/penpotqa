@@ -14,11 +14,13 @@ const BULK_LESS_HAPPY_FILE = 'documents/bulk-less-happy.penpot';
 const sampleData = new SampleData();
 
 let assetsPanelPage: AssetsPanelPage;
+let colorPalettePage: ColorPalettePage;
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
 
 demoAccountFileTest.beforeEach(async ({ page }) => {
   assetsPanelPage = new AssetsPanelPage(page);
+  colorPalettePage = new ColorPalettePage(page);
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
 });
@@ -311,9 +313,7 @@ demoAccountFileTest.describe(() => {
 
 demoAccountFileTest(
   qase([2615, 2616, 2617], 'Toggle boolean properties from variants'),
-  async ({ page, mainPage }) => {
-    const colorPalettePage = new ColorPalettePage(page);
-
+  async ({ mainPage }) => {
     await demoAccountFileTest.step(
       'Create two component variants, changing fill color to one of them',
       async () => {
