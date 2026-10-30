@@ -1,9 +1,11 @@
+import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import {
-  StrokePerSidePage,
+  type StrokeSectionComponent,
   StrokeSide,
   type StrokeSideName,
-} from '@pages/workspace/design-panel/stroke-per-side-page';
-import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+} from '@pages/workspace/right-sidebar/design-tab/stroke-section-component';
+import { WorkspacePage } from '@pages/workspace/workspace-page';
 import { expect } from '@playwright/test';
 import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
@@ -19,11 +21,13 @@ const TEST_FILE_WIDTHS: Record<StrokeSideName, string> = {
 };
 
 let layersPanelPage: LayersPanelPage;
-let strokePerSidePage: StrokePerSidePage;
+let designPanelPage: DesignPanelPage;
+let strokeSection: StrokeSectionComponent;
 
 demoAccountFileTest.beforeEach(async ({ page }) => {
   layersPanelPage = new LayersPanelPage(page);
-  strokePerSidePage = new StrokePerSidePage(page);
+  designPanelPage = new DesignPanelPage(page);
+  strokeSection = new WorkspacePage(page).rightSidebar.design.stroke;
 });
 
 demoAccountFileTest(
@@ -34,22 +38,22 @@ demoAccountFileTest(
       async () => {
         await mainPage.createDefaultRectangleByCoordinates(200, 300);
         await mainPage.isCreatedLayerVisible();
-        await strokePerSidePage.clickAddStrokeButton();
+        await designPanelPage.clickAddStrokeButton();
         await mainPage.waitForChangeIsSaved();
-        await strokePerSidePage.checkStrokeWidth('1');
-        await strokePerSidePage.checkStrokeRowFieldsVisible();
-        await strokePerSidePage.checkStrokePerSideTooltip();
+        await designPanelPage.checkStrokeWidth('1');
+        await strokeSection.checkStrokeRowFieldsAreVisible();
+        await strokeSection.checkStrokePerSideTooltip();
       },
     );
 
     await demoAccountFileTest.step(
       'Click "Stroke per side" → the four inputs equal the stroke width and show their tooltips',
       async () => {
-        await strokePerSidePage.clickStrokePerSideButton();
-        await strokePerSidePage.checkStrokePerSideButtonPressed();
+        await strokeSection.clickStrokePerSideButton();
+        await strokeSection.checkStrokePerSideButtonPressed();
         for (const side of SIDES) {
-          await strokePerSidePage.checkStrokeSideTooltip(side);
-          await strokePerSidePage.checkStrokeSideWidth(side, '1');
+          await strokeSection.checkStrokeSideTooltip(side);
+          await strokeSection.checkStrokeSideWidth(side, '1');
         }
       },
     );
@@ -57,13 +61,13 @@ demoAccountFileTest(
     await demoAccountFileTest.step(
       'Type 2 in Top → Top is 2, the other sides keep 1 and the stroke width shows "Mixed"',
       async () => {
-        await strokePerSidePage.setStrokeSideWidth(TOP, '2');
+        await strokeSection.setStrokeSideWidth(TOP, '2');
         await mainPage.waitForChangeIsSaved();
-        await strokePerSidePage.checkStrokeSideWidth(TOP, '2');
+        await strokeSection.checkStrokeSideWidth(TOP, '2');
         for (const side of [RIGHT, BOTTOM, LEFT]) {
-          await strokePerSidePage.checkStrokeSideWidth(side, '1');
+          await strokeSection.checkStrokeSideWidth(side, '1');
         }
-        await strokePerSidePage.isStrokeWidthMixed();
+        await strokeSection.checkStrokeWidthIsMixed();
       },
     );
 
@@ -76,10 +80,10 @@ demoAccountFileTest(
           [LEFT, '16'],
         ];
         for (const [side, width] of sideWidths) {
-          await strokePerSidePage.setStrokeSideWidth(side, width);
+          await strokeSection.setStrokeSideWidth(side, width);
           await mainPage.waitForChangeIsSaved();
         }
-        await strokePerSidePage.isStrokeWidthMixed();
+        await strokeSection.checkStrokeWidthIsMixed();
         await mainPage.zoomToFitSelected();
         await mainPage.clickOnESC();
         await expect(mainPage.viewport).toHaveScreenshot(
@@ -103,29 +107,29 @@ demoAccountFileTest.describe(
           'Select "Rectangle" and open "Stroke per side" → sides are 2, 4, 8, 16 and stroke width is "Mixed"',
           async () => {
             await layersPanelPage.selectLayerByExactName('Rectangle');
-            await strokePerSidePage.clickStrokePerSideButton();
-            await strokePerSidePage.checkStrokePerSideButtonPressed();
-            await strokePerSidePage.checkStrokeSideWidths(TEST_FILE_WIDTHS);
-            await strokePerSidePage.isStrokeWidthMixed();
+            await strokeSection.clickStrokePerSideButton();
+            await strokeSection.checkStrokePerSideButtonPressed();
+            await strokeSection.checkStrokeSideWidths(TEST_FILE_WIDTHS);
+            await strokeSection.checkStrokeWidthIsMixed();
           },
         );
 
         await demoAccountFileTest.step(
           'Click "Stroke per side" again → side inputs hide, stroke width stays "Mixed" and the rectangle keeps its widths',
           async () => {
-            await strokePerSidePage.clickStrokePerSideButton();
-            await strokePerSidePage.checkStrokePerSideButtonPressed(false);
-            await strokePerSidePage.areStrokeSideFieldsVisible(false);
-            await strokePerSidePage.isStrokeWidthMixed();
+            await strokeSection.clickStrokePerSideButton();
+            await strokeSection.checkStrokePerSideButtonPressed(false);
+            await strokeSection.checkStrokeSideFieldsAreVisible(false);
+            await strokeSection.checkStrokeWidthIsMixed();
           },
         );
 
         await demoAccountFileTest.step(
           'Click "Stroke per side" again → sides are 2, 4, 8 and 16 again',
           async () => {
-            await strokePerSidePage.clickStrokePerSideButton();
-            await strokePerSidePage.checkStrokePerSideButtonPressed();
-            await strokePerSidePage.checkStrokeSideWidths(TEST_FILE_WIDTHS);
+            await strokeSection.clickStrokePerSideButton();
+            await strokeSection.checkStrokePerSideButtonPressed();
+            await strokeSection.checkStrokeSideWidths(TEST_FILE_WIDTHS);
           },
         );
 
@@ -133,14 +137,14 @@ demoAccountFileTest.describe(
           'Type 5 in every side → stroke width shows 5 and the side inputs stay visible',
           async () => {
             for (const side of SIDES) {
-              await strokePerSidePage.setStrokeSideWidth(side, '5');
+              await strokeSection.setStrokeSideWidth(side, '5');
             }
-            await strokePerSidePage.waitForChangeIsSaved();
-            await strokePerSidePage.checkStrokeWidth('5');
-            await strokePerSidePage.checkStrokePerSideButtonPressed();
-            await strokePerSidePage.areStrokeSideFieldsVisible();
+            await designPanelPage.waitForChangeIsSaved();
+            await designPanelPage.checkStrokeWidth('5');
+            await strokeSection.checkStrokePerSideButtonPressed();
+            await strokeSection.checkStrokeSideFieldsAreVisible();
             for (const side of SIDES) {
-              await strokePerSidePage.checkStrokeSideWidth(side, '5');
+              await strokeSection.checkStrokeSideWidth(side, '5');
             }
           },
         );
@@ -154,9 +158,9 @@ demoAccountFileTest.describe(
           'Select "Rectangle" and open "Stroke per side" → sides are 2, 4, 8 and 16',
           async () => {
             await layersPanelPage.selectLayerByExactName('Rectangle');
-            await strokePerSidePage.clickStrokePerSideButton();
-            await strokePerSidePage.checkStrokePerSideButtonPressed();
-            await strokePerSidePage.checkStrokeSideWidths(TEST_FILE_WIDTHS);
+            await strokeSection.clickStrokePerSideButton();
+            await strokeSection.checkStrokePerSideButtonPressed();
+            await strokeSection.checkStrokeSideWidths(TEST_FILE_WIDTHS);
           },
         );
 
@@ -172,17 +176,17 @@ demoAccountFileTest.describe(
           'Select "Rectangle" again → button is not pressed, side inputs are hidden and stroke width is "Mixed"',
           async () => {
             await layersPanelPage.selectLayerByExactName('Rectangle');
-            await strokePerSidePage.checkStrokePerSideButtonPressed(false);
-            await strokePerSidePage.areStrokeSideFieldsVisible(false);
-            await strokePerSidePage.isStrokeWidthMixed();
+            await strokeSection.checkStrokePerSideButtonPressed(false);
+            await strokeSection.checkStrokeSideFieldsAreVisible(false);
+            await strokeSection.checkStrokeWidthIsMixed();
           },
         );
 
         await demoAccountFileTest.step(
           'Click "Stroke per side" → sides are 2, 4, 8 and 16 again',
           async () => {
-            await strokePerSidePage.clickStrokePerSideButton();
-            await strokePerSidePage.checkStrokeSideWidths(TEST_FILE_WIDTHS);
+            await strokeSection.clickStrokePerSideButton();
+            await strokeSection.checkStrokeSideWidths(TEST_FILE_WIDTHS);
           },
         );
       },
