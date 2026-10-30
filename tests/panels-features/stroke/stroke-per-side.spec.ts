@@ -78,7 +78,7 @@ demoAccountFileTest(
         for (const side of [RIGHT, BOTTOM, LEFT]) {
           await strokePerSidePage.checkStrokeSideWidth(side, '1');
         }
-        await strokePerSidePage.checkStrokeWidthMixed();
+        await strokePerSidePage.isStrokeWidthMixed();
       },
     );
 
@@ -94,7 +94,7 @@ demoAccountFileTest(
           await strokePerSidePage.setStrokeSideWidth(side, width);
           await mainPage.waitForChangeIsSaved();
         }
-        await strokePerSidePage.checkStrokeWidthMixed();
+        await strokePerSidePage.isStrokeWidthMixed();
         await mainPage.zoomToFitSelected();
         await mainPage.clickOnESC();
         await expect(mainPage.viewport).toHaveScreenshot(
@@ -121,7 +121,7 @@ demoAccountFileTest.describe(
             await strokePerSidePage.clickStrokePerSideButton();
             await strokePerSidePage.checkStrokePerSideButtonPressed();
             await strokePerSidePage.checkStrokeSideWidths(TEST_FILE_WIDTHS);
-            await strokePerSidePage.checkStrokeWidthMixed();
+            await strokePerSidePage.isStrokeWidthMixed();
           },
         );
 
@@ -130,8 +130,8 @@ demoAccountFileTest.describe(
           async () => {
             await strokePerSidePage.clickStrokePerSideButton();
             await strokePerSidePage.checkStrokePerSideButtonPressed(false);
-            await strokePerSidePage.checkStrokeSideFieldsVisible(false);
-            await strokePerSidePage.checkStrokeWidthMixed();
+            await strokePerSidePage.areStrokeSideFieldsVisible(false);
+            await strokePerSidePage.isStrokeWidthMixed();
           },
         );
 
@@ -153,7 +153,7 @@ demoAccountFileTest.describe(
             await strokePerSidePage.waitForChangeIsSaved();
             await strokePerSidePage.checkStrokeWidth('5');
             await strokePerSidePage.checkStrokePerSideButtonPressed();
-            await strokePerSidePage.checkStrokeSideFieldsVisible();
+            await strokePerSidePage.areStrokeSideFieldsVisible();
             for (const side of SIDES) {
               await strokePerSidePage.checkStrokeSideWidth(side, '5');
             }
@@ -188,8 +188,8 @@ demoAccountFileTest.describe(
           async () => {
             await layersPanelPage.selectLayerByExactName('Rectangle');
             await strokePerSidePage.checkStrokePerSideButtonPressed(false);
-            await strokePerSidePage.checkStrokeSideFieldsVisible(false);
-            await strokePerSidePage.checkStrokeWidthMixed();
+            await strokePerSidePage.areStrokeSideFieldsVisible(false);
+            await strokePerSidePage.isStrokeWidthMixed();
           },
         );
 
