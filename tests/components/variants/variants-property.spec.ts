@@ -251,9 +251,11 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step(
         '(2568) Conflicting variants with identical properties and values',
         async () => {
-          await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
-            '2-value1-layers-selected.png',
-          );
+          await expect(
+            layersPanelPage.getSelectedLayerCheckboxByName('Value 1', true),
+            'Both duplicated "Value 1" variants should be selected',
+          ).toHaveCount(2);
+          await layersPanelPage.isLayerWithNameSelected('Value 2', false);
 
           await layersPanelPage.selectLayerByName('Value 1');
           await mainPage.pressCopyShortcut();
