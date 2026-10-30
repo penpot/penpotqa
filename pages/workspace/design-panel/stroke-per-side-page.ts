@@ -11,22 +11,21 @@ export const StrokeSide = {
 } as const;
 
 export type StrokeSideName = (typeof StrokeSide)[keyof typeof StrokeSide];
+export type StrokeWidthFieldName = StrokeSideName | typeof STROKE_WIDTH;
 
 export class StrokePerSidePage extends DesignPanelPage {
-  readonly strokeSection: Locator;
   readonly strokePerSideButton: Locator;
 
   constructor(page: Page) {
     super(page);
 
-    this.strokeSection = page.getByRole('region', { name: 'Stroke' });
-    this.strokePerSideButton = this.strokeSection.getByRole('button', {
+    this.strokePerSideButton = this.strokeSectionContainer.getByRole('button', {
       name: 'Stroke per side',
     });
   }
 
-  getStrokeWidthField(label: StrokeSideName | typeof STROKE_WIDTH): Locator {
-    return this.strokeSection
+  getStrokeWidthField(label: StrokeWidthFieldName): Locator {
+    return this.strokeSectionContainer
       .getByTestId('numeric-input-wrapper')
       .filter({ has: this.page.getByLabel(label, { exact: true }) });
   }
@@ -44,7 +43,9 @@ export class StrokePerSidePage extends DesignPanelPage {
 
   async checkStrokePerSideTooltip() {
     await this.page.mouse.move(0, 0);
-    await this.strokeSection.getByLabel('Stroke per side', { exact: true }).hover();
+    await this.strokeSectionContainer
+      .getByLabel('Stroke per side', { exact: true })
+      .hover();
     await expect(
       this.page.getByRole('tooltip').filter({ hasText: 'Stroke per side' }),
       '"Stroke per side" tooltip is shown',
@@ -65,7 +66,7 @@ export class StrokePerSidePage extends DesignPanelPage {
     await input.press('Enter');
   }
 
-  async detachStrokeWidthToken(field: StrokeSideName | typeof STROKE_WIDTH) {
+  async detachStrokeWidthToken(field: StrokeWidthFieldName) {
     const widthField = this.getStrokeWidthField(field);
     await widthField.hover();
     await widthField.getByRole('button', { name: 'Detach token' }).click();
@@ -78,8 +79,14 @@ export class StrokePerSidePage extends DesignPanelPage {
     ).toHaveValue(value);
   }
 
-  async isStrokeWidthTokenPillVisible(
-    field: StrokeSideName | typeof STROKE_WIDTH,
+  async checkStrokeSideWidths(widths: Record<StrokeSideName, string>) {
+    for (const side of Object.values(StrokeSide)) {
+      await this.checkStrokeSideWidth(side, widths[side]);
+    }
+  }
+
+  async checkStrokeWidthTokenPillVisible(
+    field: StrokeWidthFieldName,
     tokenName: string,
   ) {
     await expect(
@@ -91,7 +98,7 @@ export class StrokePerSidePage extends DesignPanelPage {
     ).toBeVisible();
   }
 
-  async isStrokeWidthMixed() {
+  async checkStrokeWidthMixed() {
     const input = this.getStrokeWidthField(STROKE_WIDTH).getByRole('textbox');
     await expect(input, 'Stroke width input is empty').toHaveValue('');
     await expect(input, 'Stroke width input shows "Mixed"').toHaveAttribute(
@@ -100,7 +107,7 @@ export class StrokePerSidePage extends DesignPanelPage {
     );
   }
 
-  async areStrokeSideFieldsVisible(visible = true) {
+  async checkStrokeSideFieldsVisible(visible = true) {
     const top = this.getStrokeWidthField(StrokeSide.Top);
     visible
       ? await expect(top, 'Stroke side fields are visible').toBeVisible()
