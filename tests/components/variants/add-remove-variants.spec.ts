@@ -10,8 +10,6 @@ let designPanelPage: DesignPanelPage;
 demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
-  await mainPage.clickMoveButton();
-
   await mainPage.createDefaultRectangleByCoordinates(200, 300);
   await layersPanelPage.renameLayerViaRightClick('Rectangle', 'Rectangle1');
 

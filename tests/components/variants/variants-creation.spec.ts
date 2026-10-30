@@ -11,12 +11,11 @@ let designPanelPage: DesignPanelPage;
 let colorPalettePage: ColorPalettePage;
 let layersPanelPage: LayersPanelPage;
 
-demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+demoAccountFileTest.beforeEach(async ({ page }) => {
   assetsPanelPage = new AssetsPanelPage(page);
   colorPalettePage = new ColorPalettePage(page);
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
-  await mainPage.clickMoveButton();
 });
 
 demoAccountFileTest(

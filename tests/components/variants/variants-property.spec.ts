@@ -35,8 +35,6 @@ demoAccountFileTest.describe(() => {
       'Component groups are passed to Property when creating a component with variants (several groups)',
     ),
     async () => {
-      await mainPage.clickMoveButton();
-
       await assetsPanelPage.clickAssetsTab();
       await assetsPanelPage.expandComponentsBlockOnAssetsTab();
       await assetsPanelPage.combineAsVariantsGroup();
@@ -55,8 +53,6 @@ demoAccountFileTest.describe(() => {
   demoAccountFileTest(
     qase([2444], 'Changing Property for Child Components'),
     async () => {
-      await mainPage.clickMoveButton();
-
       await assetsPanelPage.clickAssetsTab();
       await assetsPanelPage.expandComponentsBlockOnAssetsTab();
       await assetsPanelPage.combineAsVariantsGroup();
@@ -92,8 +88,6 @@ demoAccountFileTest.describe(() => {
 
   demoAccountFileTest.describe(() => {
     demoAccountFileTest.beforeEach(async () => {
-      await mainPage.clickMoveButton();
-
       await assetsPanelPage.clickAssetsTab();
       await assetsPanelPage.expandComponentsBlockOnAssetsTab();
       await assetsPanelPage.combineAsVariantsGroup();
@@ -162,8 +156,6 @@ demoAccountFileTest.describe(() => {
   demoAccountFileTest.use({ penpotFile: SWAP_FILE });
 
   demoAccountFileTest(qase([2443], 'SWAP panel with variants'), async () => {
-    await mainPage.clickMoveButton();
-
     await layersPanelPage.clickCopyComponentOnLayersTab();
     await designPanelPage.clickOnSwapComponentButton();
     await expect(designPanelPage.swapComponentTab).toHaveScreenshot(
@@ -192,8 +184,6 @@ demoAccountFileTest.describe(() => {
     await demoAccountFileTest.step(
       'Combine the "Form" components as variants',
       async () => {
-        await mainPage.clickMoveButton();
-
         await assetsPanelPage.clickAssetsTab();
         await assetsPanelPage.expandComponentsBlockOnAssetsTab();
         await assetsPanelPage.combineAsVariantsGroup();
@@ -242,8 +232,6 @@ demoAccountFileTest.describe(() => {
 
 demoAccountFileTest.describe(() => {
   demoAccountFileTest.beforeEach(async () => {
-    await mainPage.clickMoveButton();
-
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.createComponentViaRightClickFromLayerByName('Rectangle');
     await mainPage.waitForChangeIsSaved();
@@ -343,8 +331,6 @@ demoAccountFileTest(
     await demoAccountFileTest.step(
       'Create two component variants, changing fill color to one of them',
       async () => {
-        await mainPage.clickMoveButton();
-
         await mainPage.createDefaultEllipseByCoordinates(200, 300);
         await mainPage.createComponentViaShortcut();
         await mainPage.waitForChangeIsSaved();
