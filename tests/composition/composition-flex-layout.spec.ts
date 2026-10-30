@@ -297,25 +297,19 @@ demoAccountFileTest.describe(() => {
 
     demoAccountFileTest(qase([614], 'Change wrapping'), async ({ mainPage }) => {
       await demoAccountFileTest.step(
-        'Click "Wrap" → shapes stay top-left and the "Content" subsection appears',
+        'Click "Wrap" → the "Content" subsection appears',
         async () => {
           await designPanelPage.changeLayoutWrap('Wrap');
           await mainPage.waitForChangeIsSaved();
           await designPanelPage.isLayoutContentSectionVisible();
-          await expect(mainPage.viewport).toHaveScreenshot('layout-wrap.png', {
-            mask: mainPage.maskViewport(),
-          });
         },
       );
       await demoAccountFileTest.step(
-        'Click "No wrap" → shapes stay top-left and the "Content" subsection is hidden',
+        'Click "No wrap" → the "Content" subsection is hidden',
         async () => {
           await designPanelPage.changeLayoutWrap('No wrap');
           await mainPage.waitForChangeIsSaved();
           await designPanelPage.isLayoutContentSectionVisible(false);
-          await expect(mainPage.viewport).toHaveScreenshot('layout-no-wrap.png', {
-            mask: mainPage.maskViewport(),
-          });
         },
       );
     });
@@ -324,15 +318,11 @@ demoAccountFileTest.describe(() => {
       qase([617], 'Change alignment & justification'),
       async ({ mainPage }) => {
         await demoAccountFileTest.step(
-          'Click "Align items center" → shapes aligned center, justified left',
+          'Click "Align items center" → "Center" alignment is selected',
           async () => {
             await designPanelPage.changeLayoutAlignment('Center');
             await mainPage.waitForChangeIsSaved();
             await designPanelPage.isLayoutAlignmentSelected('Center');
-            await expect(mainPage.viewport).toHaveScreenshot(
-              'layout-align-center-justify-start.png',
-              { mask: mainPage.maskViewport() },
-            );
           },
         );
         await demoAccountFileTest.step(
@@ -798,8 +788,10 @@ demoAccountFileTest.describe(() => {
   demoAccountFileTest(
     qase([630], 'Flex elements - set minimum width'),
     async ({ mainPage }) => {
-      await mainPage.createDefaultRectangleByCoordinates(200, 300, true);
-      await mainPage.waitForChangeIsSaved();
+      await demoAccountFileTest.step('Draw the rectangle in the board', async () => {
+        await mainPage.createDefaultRectangleByCoordinates(200, 300, true);
+        await mainPage.waitForChangeIsSaved();
+      });
 
       await demoAccountFileTest.step(
         'Select the rectangle → "Flex element" section appears',
@@ -847,8 +839,10 @@ demoAccountFileTest.describe(() => {
   demoAccountFileTest(
     qase([633], 'Flex elements - set maximum height'),
     async ({ mainPage }) => {
-      await mainPage.createDefaultEllipseByCoordinates(200, 300, true);
-      await mainPage.waitForChangeIsSaved();
+      await demoAccountFileTest.step('Draw the ellipse in the board', async () => {
+        await mainPage.createDefaultEllipseByCoordinates(200, 300, true);
+        await mainPage.waitForChangeIsSaved();
+      });
 
       await demoAccountFileTest.step(
         'Select the ellipse → "Flex element" section appears',

@@ -238,10 +238,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     );
     this.layoutWrapBtn = page.getByTitle('Wrap', { exact: true });
     this.layoutNoWrapBtn = page.getByTitle('No wrap', { exact: true });
-    // "Content" (align-content) subsection, only shown while the layout wraps
-    this.layoutContentSection = this.flexLayoutMenu.locator(
-      'div[class*="align-content-row"]',
-    );
+    // "Content" (align-content) subsection, only shown while the layout wraps;
+    // its first button tells whether the row is there
+    this.layoutContentSection =
+      this.flexLayoutMenu.getByTestId('align-content-start');
     this.flexElementSizeConstraintsSection = page.getByRole('region', {
       name: 'Layout item size constraints',
     });
@@ -2357,7 +2357,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
    */
   async changeFlexElementMinMax(type, min, value) {
     const label = `${min ? 'Min' : 'Max'} ${type.toLowerCase()}`;
-    const input = this.page.getByLabel(label, { exact: true }).locator('input');
+    const input = this.flexElementSizeConstraintsSection
+      .getByLabel(label, { exact: true })
+      .locator('input');
     await input.clear();
     if (value !== '') {
       await input.pressSequentially(value);
