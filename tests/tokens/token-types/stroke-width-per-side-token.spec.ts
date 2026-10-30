@@ -46,7 +46,7 @@ demoAccountFileTest(
         await layersPanelPage.selectLayerByExactName('Rectangle');
         await strokePerSidePage.clickStrokePerSideButton();
         await strokePerSidePage.checkStrokeSideWidths(TEST_FILE_WIDTHS);
-        await strokePerSidePage.checkStrokeWidthMixed();
+        await strokePerSidePage.isStrokeWidthMixed();
       },
     );
 
@@ -58,7 +58,7 @@ demoAccountFileTest(
         await tokensPage.tokensComp.clickOnTokenWithName('sw-3');
         await mainPage.waitForChangeIsSaved();
         for (const label of WIDTH_FIELDS) {
-          await strokePerSidePage.checkStrokeWidthTokenPillVisible(label, 'sw-3');
+          await strokePerSidePage.isStrokeWidthTokenPillVisible(label, 'sw-3');
         }
       },
     );
@@ -68,7 +68,7 @@ demoAccountFileTest(
       async () => {
         await strokePerSidePage.detachStrokeWidthToken(LEFT);
         await strokePerSidePage.checkStrokeSideWidth(LEFT, '3');
-        await strokePerSidePage.checkStrokeWidthMixed();
+        await strokePerSidePage.isStrokeWidthMixed();
       },
     );
 
@@ -79,7 +79,7 @@ demoAccountFileTest(
         await mainPage.waitForChangeIsSaved();
         await strokePerSidePage.checkStrokeSideWidth(LEFT, '7');
         for (const label of [TOP, RIGHT, BOTTOM]) {
-          await strokePerSidePage.checkStrokeWidthTokenPillVisible(label, 'sw-3');
+          await strokePerSidePage.isStrokeWidthTokenPillVisible(label, 'sw-3');
         }
       },
     );
@@ -128,11 +128,11 @@ demoAccountFileTest(
         await tokensPage.tokensComp.selectMenuItem('sw-10', 'Top');
         await mainPage.waitForChangeIsSaved();
         await strokePerSidePage.clickStrokePerSideButton();
-        await strokePerSidePage.checkStrokeWidthTokenPillVisible(TOP, 'sw-10');
+        await strokePerSidePage.isStrokeWidthTokenPillVisible(TOP, 'sw-10');
         for (const label of [RIGHT, BOTTOM, LEFT]) {
-          await strokePerSidePage.checkStrokeWidthTokenPillVisible(label, 'sw-3');
+          await strokePerSidePage.isStrokeWidthTokenPillVisible(label, 'sw-3');
         }
-        await strokePerSidePage.checkStrokeWidthMixed();
+        await strokePerSidePage.isStrokeWidthMixed();
       },
     );
 
@@ -140,12 +140,12 @@ demoAccountFileTest(
       'Hide and show the side inputs → stroke width stays "Mixed" and the side tokens are kept',
       async () => {
         await strokePerSidePage.clickStrokePerSideButton();
-        await strokePerSidePage.checkStrokeSideFieldsVisible(false);
-        await strokePerSidePage.checkStrokeWidthMixed();
+        await strokePerSidePage.areStrokeSideFieldsVisible(false);
+        await strokePerSidePage.isStrokeWidthMixed();
         await strokePerSidePage.clickStrokePerSideButton();
-        await strokePerSidePage.checkStrokeWidthTokenPillVisible(TOP, 'sw-10');
+        await strokePerSidePage.isStrokeWidthTokenPillVisible(TOP, 'sw-10');
         for (const label of [RIGHT, BOTTOM, LEFT]) {
-          await strokePerSidePage.checkStrokeWidthTokenPillVisible(label, 'sw-3');
+          await strokePerSidePage.isStrokeWidthTokenPillVisible(label, 'sw-3');
         }
       },
     );
