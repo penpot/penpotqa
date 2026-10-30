@@ -85,7 +85,7 @@ export class StrokePerSidePage extends DesignPanelPage {
     }
   }
 
-  async checkStrokeWidthTokenPillVisible(
+  async isStrokeWidthTokenPillVisible(
     field: StrokeWidthFieldName,
     tokenName: string,
   ) {
@@ -98,7 +98,7 @@ export class StrokePerSidePage extends DesignPanelPage {
     ).toBeVisible();
   }
 
-  async checkStrokeWidthMixed() {
+  async isStrokeWidthMixed() {
     const input = this.getStrokeWidthField(STROKE_WIDTH).getByRole('textbox');
     await expect(input, 'Stroke width input is empty').toHaveValue('');
     await expect(input, 'Stroke width input shows "Mixed"').toHaveAttribute(
@@ -107,7 +107,7 @@ export class StrokePerSidePage extends DesignPanelPage {
     );
   }
 
-  async checkStrokeSideFieldsVisible(visible = true) {
+  async areStrokeSideFieldsVisible(visible = true) {
     const top = this.getStrokeWidthField(StrokeSide.Top);
     visible
       ? await expect(top, 'Stroke side fields are visible').toBeVisible()
