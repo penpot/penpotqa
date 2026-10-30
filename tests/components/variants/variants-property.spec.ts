@@ -1,47 +1,40 @@
-import { expect } from '@playwright/test';
-import { qase } from 'playwright-qase-reporter/playwright';
-import { mainAccountFileTest, mainTest } from 'fixtures';
-import { MainPage } from '@pages/workspace/main-page';
-import { TeamPage } from '@pages/dashboard/team-page';
-import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
-import { DesignPanelPage } from '@pages/workspace/design-panel-page';
-import { SampleData } from 'helpers/sample-data';
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
-import { createTeamName } from 'helpers/teams/create-team-name';
+import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { MainPage } from '@pages/workspace/main-page';
+import { expect } from '@playwright/test';
+import { demoAccountFileTest } from 'fixtures';
+import { SampleData } from 'helpers/sample-data';
+import { qase } from 'playwright-qase-reporter/playwright';
+
+const FIGURE_FILE = 'documents/figure.penpot';
+const SWAP_FILE = 'documents/swap.penpot';
+const BULK_LESS_HAPPY_FILE = 'documents/bulk-less-happy.penpot';
 
 const sampleData = new SampleData();
 
-mainTest.describe(() => {
-  const teamName = createTeamName();
+let assetsPanelPage: AssetsPanelPage;
+let designPanelPage: DesignPanelPage;
+let layersPanelPage: LayersPanelPage;
+let mainPage: MainPage;
 
-  let teamPage: TeamPage;
-  let dashboardPage: DashboardPage;
-  let mainPage: MainPage;
-  let assetsPanelPage: AssetsPanelPage;
-  let layersPanelPage: LayersPanelPage;
-  let designPanelPage: DesignPanelPage;
+demoAccountFileTest.beforeEach(async ({ page }) => {
+  assetsPanelPage = new AssetsPanelPage(page);
+  designPanelPage = new DesignPanelPage(page);
+  layersPanelPage = new LayersPanelPage(page);
+  mainPage = new MainPage(page);
+});
 
-  mainTest.beforeEach(async ({ page }) => {
-    teamPage = new TeamPage(page);
-    dashboardPage = new DashboardPage(page);
-    mainPage = new MainPage(page);
-    assetsPanelPage = new AssetsPanelPage(page);
-    layersPanelPage = new LayersPanelPage(page);
-    designPanelPage = new DesignPanelPage(page);
+demoAccountFileTest.describe(() => {
+  demoAccountFileTest.use({ penpotFile: FIGURE_FILE });
 
-    await teamPage.createTeam(teamName);
-  });
-
-  mainTest(
+  demoAccountFileTest(
     qase(
       [2441],
       'Component groups are passed to Property when creating a component with variants (several groups)',
     ),
     async () => {
-      await dashboardPage.importAndOpenFile('documents/figure.penpot');
-      await mainPage.isMainPageLoaded();
       await mainPage.clickMoveButton();
 
       await assetsPanelPage.clickAssetsTab();
@@ -59,119 +52,46 @@ mainTest.describe(() => {
     },
   );
 
-  mainTest(qase([2443], 'SWAP panel with variants'), async () => {
-    await dashboardPage.importAndOpenFile('documents/swap.penpot');
-    await mainPage.isMainPageLoaded();
-    await mainPage.clickMoveButton();
-
-    await layersPanelPage.clickCopyComponentOnLayersTab();
-    await designPanelPage.clickOnSwapComponentButton();
-    await expect(designPanelPage.swapComponentTab).toHaveScreenshot(
-      'swap-component-list.png',
-      {
-        mask: mainPage.maskViewport(),
-      },
-    );
-    await designPanelPage.clickOnSwapGridViewButton();
-    await expect(designPanelPage.swapComponentTab).toHaveScreenshot(
-      'swap-component-grid.png',
-      {
-        mask: mainPage.maskViewport(),
-      },
-    );
-  });
-
-  mainTest(qase([2444], 'Changing Property for Child Components'), async () => {
-    await dashboardPage.importAndOpenFile('documents/figure.penpot');
-    await mainPage.isMainPageLoaded();
-    await mainPage.clickMoveButton();
-
-    await assetsPanelPage.clickAssetsTab();
-    await assetsPanelPage.expandComponentsBlockOnAssetsTab();
-    await assetsPanelPage.combineAsVariantsGroup();
-    await assetsPanelPage.isVariantsAddedToFileLibraryComponents();
-    await layersPanelPage.openLayersTab();
-
-    await layersPanelPage.selectLayerByName('Ellipse, Green');
-    await layersPanelPage.copyElementViaAltDragAndDrop(100, 100);
-    await designPanelPage.changeVariantPropertyValue('Property 1', 'Arrow');
-    await designPanelPage.changeVariantPropertyValue('Property 2', 'Blue');
-    await layersPanelPage.copyElementViaAltDragAndDrop(100, 300);
-    await designPanelPage.waitForChangeIsSaved();
-
-    await layersPanelPage.clickFirstCopyComponentOnLayersTab();
-    await designPanelPage.changeVariantPropertyValue('Property 1', 'Ellipse');
-    await designPanelPage.changeVariantPropertyValue('Property 2', 'Green');
-    await designPanelPage.checkCopyVariantPropertyValue('Property 1', 'Ellipse');
-    await designPanelPage.checkCopyVariantPropertyValue('Property 2', 'Green');
-
-    await layersPanelPage.clickCopyComponentOnLayersTab();
-    await designPanelPage.checkCopyVariantPropertyValue('Property 1', 'Arrow');
-    await designPanelPage.checkCopyVariantPropertyValue('Property 2', 'Blue');
-
-    await layersPanelPage.clickFirstCopyComponentOnLayersTab();
-    await designPanelPage.checkCopyVariantPropertyValue('Property 2', 'Green');
-    await designPanelPage.changeVariantPropertyValue('Property 2', 'Yellow');
-    await designPanelPage.checkCopyVariantPropertyValue('Property 2', 'Yellow');
-
-    await layersPanelPage.clickCopyComponentOnLayersTab();
-    await designPanelPage.checkCopyVariantPropertyValue('Property 2', 'Blue');
-  });
-
-  mainTest(qase([2447], 'Property recovery'), async () => {
-    const variantLayerName = 'primary, text, default';
-    const invalidVariantName = 'Invalid name';
-
-    await mainTest.step('Combine the "Form" components as variants', async () => {
-      await dashboardPage.importAndOpenFile('documents/bulk-less-happy.penpot');
-      await mainPage.isMainPageLoaded();
+  demoAccountFileTest(
+    qase([2444], 'Changing Property for Child Components'),
+    async () => {
       await mainPage.clickMoveButton();
 
       await assetsPanelPage.clickAssetsTab();
       await assetsPanelPage.expandComponentsBlockOnAssetsTab();
       await assetsPanelPage.combineAsVariantsGroup();
+      await assetsPanelPage.isVariantsAddedToFileLibraryComponents();
       await layersPanelPage.openLayersTab();
-    });
 
-    await mainTest.step(`Delete the name of "${variantLayerName}"`, async () => {
-      await layersPanelPage.selectLayerByName(variantLayerName);
-      await layersPanelPage.doubleClickLayerOnLayersTab(variantLayerName);
-      await layersPanelPage.typeNameCreatedLayerAndEnter('');
+      await layersPanelPage.selectLayerByName('Ellipse, Green');
+      await layersPanelPage.copyElementViaAltDragAndDrop(100, 100);
+      await designPanelPage.changeVariantPropertyValue('Property 1', 'Arrow');
+      await designPanelPage.changeVariantPropertyValue('Property 2', 'Blue');
+      await layersPanelPage.copyElementViaAltDragAndDrop(100, 300);
+      await designPanelPage.waitForChangeIsSaved();
 
-      await designPanelPage.checkVariantPropertyValue('Property 1', 'primary');
-      await designPanelPage.checkVariantPropertyValue('Property 2', 'text');
-      await designPanelPage.checkVariantPropertyValue('Property 3', 'default');
-      await designPanelPage.isVariantWarningVisible(false);
-    });
+      await layersPanelPage.clickFirstCopyComponentOnLayersTab();
+      await designPanelPage.changeVariantPropertyValue('Property 1', 'Ellipse');
+      await designPanelPage.changeVariantPropertyValue('Property 2', 'Green');
+      await designPanelPage.checkCopyVariantPropertyValue('Property 1', 'Ellipse');
+      await designPanelPage.checkCopyVariantPropertyValue('Property 2', 'Green');
 
-    await mainTest.step(
-      `Rename the variant to "${invalidVariantName}"`,
-      async () => {
-        await layersPanelPage.doubleClickLayerOnLayersTab(variantLayerName);
-        await layersPanelPage.typeNameCreatedLayerAndEnter(invalidVariantName);
-        await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.clickCopyComponentOnLayersTab();
+      await designPanelPage.checkCopyVariantPropertyValue('Property 1', 'Arrow');
+      await designPanelPage.checkCopyVariantPropertyValue('Property 2', 'Blue');
 
-        await designPanelPage.checkVariantPropertyValue('Property 1', '');
-        await designPanelPage.checkVariantPropertyValue('Property 2', '');
-        await designPanelPage.checkVariantPropertyValue('Property 3', '');
-        await designPanelPage.checkVariantPropertyValue('Property 4', '');
-        await designPanelPage.checkVariantWarning(
-          'This variant has an invalid name. Try using the following structure:',
-        );
-      },
-    );
+      await layersPanelPage.clickFirstCopyComponentOnLayersTab();
+      await designPanelPage.checkCopyVariantPropertyValue('Property 2', 'Green');
+      await designPanelPage.changeVariantPropertyValue('Property 2', 'Yellow');
+      await designPanelPage.checkCopyVariantPropertyValue('Property 2', 'Yellow');
 
-    await mainTest.step('Set "Property 1" to "primary"', async () => {
-      await designPanelPage.changeVariantPropertyValue('Property 1', 'primary');
-      await designPanelPage.checkVariantPropertyValue('Property 1', 'primary');
-      await designPanelPage.isVariantWarningVisible(false);
-    });
-  });
+      await layersPanelPage.clickCopyComponentOnLayersTab();
+      await designPanelPage.checkCopyVariantPropertyValue('Property 2', 'Blue');
+    },
+  );
 
-  mainTest.describe(() => {
-    mainTest.beforeEach(async () => {
-      await dashboardPage.importAndOpenFile('documents/figure.penpot');
-      await mainPage.isMainPageLoaded();
+  demoAccountFileTest.describe(() => {
+    demoAccountFileTest.beforeEach(async () => {
       await mainPage.clickMoveButton();
 
       await assetsPanelPage.clickAssetsTab();
@@ -182,7 +102,7 @@ mainTest.describe(() => {
       await layersPanelPage.openLayersTab();
     });
 
-    mainTest(qase([2450], 'Adding New Properties'), async () => {
+    demoAccountFileTest(qase([2450], 'Adding New Properties'), async () => {
       await layersPanelPage.selectLayerByName('Ellipse, Green');
       await designPanelPage.clickOnComponentMenuButton();
       await designPanelPage.clickOnAddNewPropertyOption();
@@ -206,7 +126,7 @@ mainTest.describe(() => {
       );
     });
 
-    mainTest(qase([2452], 'Editing a Property Value'), async () => {
+    demoAccountFileTest(qase([2452], 'Editing a Property Value'), async () => {
       await layersPanelPage.selectLayerByName('Ellipse, Yellow');
       await designPanelPage.enterVariantPropertyValue('Property 1', 'Test');
       await layersPanelPage.doubleClickLayerOnLayersTab('Test, Yellow');
@@ -219,7 +139,7 @@ mainTest.describe(() => {
       await designPanelPage.checkVariantPropertyValue('Property 2', 'Test2');
     });
 
-    mainTest(qase([2453], 'Delete Property'), async () => {
+    demoAccountFileTest(qase([2453], 'Delete Property'), async () => {
       await designPanelPage.clickOnComponentMenuButton();
       await designPanelPage.clickOnAddNewPropertyOption();
       await designPanelPage.clickOnEnter();
@@ -238,14 +158,90 @@ mainTest.describe(() => {
   });
 });
 
-mainAccountFileTest.describe(() => {
-  let layersPanelPage: LayersPanelPage;
-  let designPanelPage: DesignPanelPage;
+demoAccountFileTest.describe(() => {
+  demoAccountFileTest.use({ penpotFile: SWAP_FILE });
 
-  mainAccountFileTest.beforeEach(async ({ page, mainPage }) => {
-    layersPanelPage = new LayersPanelPage(page);
-    designPanelPage = new DesignPanelPage(page);
+  demoAccountFileTest(qase([2443], 'SWAP panel with variants'), async () => {
+    await mainPage.clickMoveButton();
 
+    await layersPanelPage.clickCopyComponentOnLayersTab();
+    await designPanelPage.clickOnSwapComponentButton();
+    await expect(designPanelPage.swapComponentTab).toHaveScreenshot(
+      'swap-component-list.png',
+      {
+        mask: mainPage.maskViewport(),
+      },
+    );
+    await designPanelPage.clickOnSwapGridViewButton();
+    await expect(designPanelPage.swapComponentTab).toHaveScreenshot(
+      'swap-component-grid.png',
+      {
+        mask: mainPage.maskViewport(),
+      },
+    );
+  });
+});
+
+demoAccountFileTest.describe(() => {
+  demoAccountFileTest.use({ penpotFile: BULK_LESS_HAPPY_FILE });
+
+  demoAccountFileTest(qase([2447], 'Property recovery'), async () => {
+    const variantLayerName = 'primary, text, default';
+    const invalidVariantName = 'Invalid name';
+
+    await demoAccountFileTest.step(
+      'Combine the "Form" components as variants',
+      async () => {
+        await mainPage.clickMoveButton();
+
+        await assetsPanelPage.clickAssetsTab();
+        await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+        await assetsPanelPage.combineAsVariantsGroup();
+        await layersPanelPage.openLayersTab();
+      },
+    );
+
+    await demoAccountFileTest.step(
+      `Delete the name of "${variantLayerName}"`,
+      async () => {
+        await layersPanelPage.selectLayerByName(variantLayerName);
+        await layersPanelPage.doubleClickLayerOnLayersTab(variantLayerName);
+        await layersPanelPage.typeNameCreatedLayerAndEnter('');
+
+        await designPanelPage.checkVariantPropertyValue('Property 1', 'primary');
+        await designPanelPage.checkVariantPropertyValue('Property 2', 'text');
+        await designPanelPage.checkVariantPropertyValue('Property 3', 'default');
+        await designPanelPage.isVariantWarningVisible(false);
+      },
+    );
+
+    await demoAccountFileTest.step(
+      `Rename the variant to "${invalidVariantName}"`,
+      async () => {
+        await layersPanelPage.doubleClickLayerOnLayersTab(variantLayerName);
+        await layersPanelPage.typeNameCreatedLayerAndEnter(invalidVariantName);
+        await mainPage.waitForChangeIsSaved();
+
+        await designPanelPage.checkVariantPropertyValue('Property 1', '');
+        await designPanelPage.checkVariantPropertyValue('Property 2', '');
+        await designPanelPage.checkVariantPropertyValue('Property 3', '');
+        await designPanelPage.checkVariantPropertyValue('Property 4', '');
+        await designPanelPage.checkVariantWarning(
+          'This variant has an invalid name. Try using the following structure:',
+        );
+      },
+    );
+
+    await demoAccountFileTest.step('Set "Property 1" to "primary"', async () => {
+      await designPanelPage.changeVariantPropertyValue('Property 1', 'primary');
+      await designPanelPage.checkVariantPropertyValue('Property 1', 'primary');
+      await designPanelPage.isVariantWarningVisible(false);
+    });
+  });
+});
+
+demoAccountFileTest.describe(() => {
+  demoAccountFileTest.beforeEach(async () => {
     await mainPage.clickMoveButton();
 
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
@@ -270,13 +266,13 @@ mainAccountFileTest.describe(() => {
     await designPanelPage.clickOnLocateDuplicatedVariantsButton();
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       [2568, 2569],
       'Conflicting variants with identical properties and values / Changing several conflicting variant copies at once',
     ),
     async ({ mainPage }) => {
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         '(2568) Conflicting variants with identical properties and values',
         async () => {
           await expect(layersPanelPage.layersSidebar).toHaveScreenshot(
@@ -295,7 +291,7 @@ mainAccountFileTest.describe(() => {
         },
       );
 
-      await mainAccountFileTest.step(
+      await demoAccountFileTest.step(
         '(2569) Changing several conflicting variant copies at once',
         async () => {
           await layersPanelPage.selectLayerByName('Value 2');
@@ -339,14 +335,12 @@ mainAccountFileTest.describe(() => {
   );
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([2615, 2616, 2617], 'Toggle boolean properties from variants'),
   async ({ page, mainPage }) => {
-    const layersPanelPage = new LayersPanelPage(page);
-    const designPanelPage = new DesignPanelPage(page);
     const colorPalettePage = new ColorPalettePage(page);
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       'Create two component variants, changing fill color to one of them',
       async () => {
         await mainPage.clickMoveButton();
@@ -366,7 +360,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       '2615 Toggle displayed for true/false properties',
       async () => {
         await updateVariantPropertyValue('Value 2', 'false');
@@ -375,7 +369,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       '2616 Toggle displayed for on/off properties',
       async () => {
         await updateVariantPropertyValue('false', 'off');
@@ -384,7 +378,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       '2617 Toggle displayed for yes/no properties',
       async () => {
         await updateVariantPropertyValue('off', 'no');
