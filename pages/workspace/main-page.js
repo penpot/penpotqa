@@ -332,6 +332,39 @@ exports.MainPage = class MainPage extends BasePage {
     await this.viewport.click();
   }
 
+  /** Clicks an empty spot of the canvas, below the rulers and away from the toolbar. */
+  async clickEmptyViewportArea() {
+    await this.viewport.click({ position: { x: 60, y: 60 } });
+  }
+
+  /** Parks the mouse outside the canvas, so no hover outline or tooltip shows. */
+  async moveMouseOutOfViewport() {
+    await this.page.mouse.move(0, 0);
+  }
+
+  /**
+   * The wasm renderer draws the rulers inside the canvas, so no locator can
+   * mask them. Compares the viewport with the ruler strips cropped out instead.
+   * @param {string} name
+   * @param {import('@playwright/test').Locator[]} [mask]
+   * @param {number} [maxDiffPixelRatio]
+   */
+  async checkViewportScreenshotWithoutRulers(name, mask = [], maxDiffPixelRatio) {
+    // Rulers are 24px wide; the extra 2px leave out the canvas border next to them
+    const rulerSize = 26;
+    const box = await this.viewport.boundingBox();
+    await expect(this.page).toHaveScreenshot(name, {
+      clip: {
+        x: box.x + rulerSize,
+        y: box.y + rulerSize,
+        width: box.width - rulerSize,
+        height: box.height - rulerSize,
+      },
+      mask,
+      maxDiffPixelRatio,
+    });
+  }
+
   async clickViewportTwice() {
     await this.page.waitForTimeout(100);
     await this.viewport.hover();

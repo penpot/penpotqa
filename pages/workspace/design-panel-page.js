@@ -612,6 +612,20 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.addStrokeButton.click();
   }
 
+  async checkStrokeIsAdded() {
+    await expect(this.strokeColorBullet, 'Stroke is added').toBeVisible();
+  }
+
+  /** The sections shown depend on the selected layer, e.g. "Text" for a text layer. */
+  async checkSectionIsVisible(name) {
+    await expect(
+      this.page
+        .getByTestId('right-sidebar')
+        .getByRole('region', { name: `${name} section`, exact: true }),
+      `"${name}" section is visible`,
+    ).toBeVisible();
+  }
+
   async clickStrokeColorBullet() {
     await this.strokeColorBullet.click();
   }
