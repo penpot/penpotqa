@@ -1,161 +1,174 @@
-import { Page } from '@playwright/test';
-import { mainAccountFileTest, mainTest } from 'fixtures';
+import { demoAccountApiFixture, demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { random } from 'helpers/string-generator';
 import { waitMessage } from 'helpers/gmail';
-import { loginAsSecondUser } from 'helpers/user-flows';
 import { LoginPage } from '@pages/login-page';
 import { ProfilePage } from '@pages/profile-page';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { TeamPage } from '@pages/dashboard/team-page';
-import { MainPage } from '@pages/workspace/main-page';
 import { ViewModePage } from '@pages/workspace/view-mode-page';
 import { createTeamName } from 'helpers/teams/create-team-name';
+import { createInviteEmail } from 'helpers/teams/invite-email';
 
-let teamPage: TeamPage;
-let loginPage: LoginPage;
-let profilePage: ProfilePage;
-let dashboardPage: DashboardPage;
-let mainPage: MainPage;
-
-const initPages = async ({ page }: { page: Page }) => {
-  teamPage = new TeamPage(page);
-  loginPage = new LoginPage(page);
-  profilePage = new ProfilePage(page);
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
-};
-
-mainAccountFileTest.describe('Validate bad URL logged as SECOND_EMAIL', () => {
-  let badUrlProfilePage: ProfilePage;
-
-  mainAccountFileTest.beforeEach(async ({ page }) => {
-    badUrlProfilePage = new ProfilePage(page);
-  });
-
-  mainAccountFileTest(
+demoAccountFileTest.describe('Validate bad URL logged as another user', () => {
+  demoAccountFileTest(
     qase(
       1822,
       'Workspace: Navigate to an invalid URL, log in, and display the error page',
     ),
-    async ({ page, mainPage, teamPage }) => {
-      const currentURL = await mainPage.getUrl();
-      const badURL = await mainPage.makeBadUrl(currentURL);
+    async ({ mainPage, secondUserPage }) => {
+      const secondUserTeamPage = new TeamPage(secondUserPage);
+      const badURL = await mainPage.makeBadUrl(await mainPage.getUrl());
 
-      await mainAccountFileTest.step('Logout & login as SECOND_EMAIL', async () => {
-        await mainPage.clickPencilBoxButton();
-        await badUrlProfilePage.logout();
-        await loginAsSecondUser(page);
-      });
-
-      await mainAccountFileTest.step(
-        'Go to bad URL and validate error message',
+      await demoAccountFileTest.step(
+        'Go to bad URL as another user and validate error message',
         async () => {
-          await page.goto(badURL);
-          await teamPage.isInviteMessageDisplayed('Oops!');
-          await teamPage.isErrorMessageDisplayed("This page doesn't exist");
-          await teamPage.isGoToPenpotButtonVisible();
+          await secondUserPage.goto(badURL);
+          await secondUserTeamPage.isInviteMessageDisplayed('Oops!');
+          await secondUserTeamPage.isErrorMessageDisplayed(
+            "This page doesn't exist",
+          );
+          await secondUserTeamPage.isGoToPenpotButtonVisible();
         },
       );
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       1824,
       'View Mode: Navigate to an invalid URL, log in, and display the error page',
     ),
-    async ({ page, mainPage, teamPage }) => {
-      let viewModePage = new ViewModePage(page);
-      const newPage = await viewModePage.clickViewModeShortcut();
+    async ({ page, mainPage, secondUserPage }) => {
+      const secondUserTeamPage = new TeamPage(secondUserPage);
+      let badURL = '';
 
-      viewModePage = new ViewModePage(newPage);
-      await viewModePage.waitForViewerSection(45000);
-
-      const currentURL = await viewModePage.getUrl();
-      const badURL = await viewModePage.makeBadUrl(currentURL);
-
-      await mainAccountFileTest.step('Create a board', async () => {
-        await mainPage.createDefaultBoardByCoordinates(300, 300);
-        await mainPage.waitForChangeIsSaved();
-      });
-
-      await mainAccountFileTest.step('Logout & login as SECOND_EMAIL', async () => {
-        await mainPage.clickPencilBoxButton();
-        await badUrlProfilePage.logout();
-        await loginAsSecondUser(page);
-      });
-
-      await mainAccountFileTest.step(
-        'Go to bad URL and validate error message',
+      await demoAccountFileTest.step(
+        'Create a board and get the bad View Mode URL',
         async () => {
-          // Wait for the specific responses to occur, but don't fail if they don't happen
-          await Promise.all([
-            page.waitForResponse(
-              (response) =>
-                response.url().includes('get-view-only-bundle') &&
-                response.status() === 404,
-            ),
-            page.waitForResponse(
-              (response) =>
-                response.url().includes('get-file-info') &&
-                response.status() === 404,
-            ),
-          ]).catch(() => {});
+          await mainPage.createDefaultBoardByCoordinates(300, 300);
+          await mainPage.waitForChangeIsSaved();
 
-          await page.goto(badURL, { waitUntil: 'networkidle' });
+          const viewerPage = await new ViewModePage(page).clickViewModeShortcut();
+          const viewModePage = new ViewModePage(viewerPage);
+          await viewModePage.waitForViewerSection(45000);
+          badURL = await viewModePage.makeBadUrl(await viewModePage.getUrl());
+        },
+      );
 
-          await teamPage.isInviteMessageDisplayed('Oops!');
-          await teamPage.isErrorMessageDisplayed("This page doesn't exist");
-          await teamPage.isGoToPenpotButtonVisible();
+      await demoAccountFileTest.step(
+        'Go to bad URL as another user and validate error message',
+        async () => {
+          await secondUserPage.goto(badURL, { waitUntil: 'networkidle' });
+          await secondUserTeamPage.isInviteMessageDisplayed('Oops!');
+          await secondUserTeamPage.isErrorMessageDisplayed(
+            "This page doesn't exist",
+          );
+          await secondUserTeamPage.isGoToPenpotButtonVisible();
         },
       );
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       1826,
       'Dashboard: Navigate to an invalid URL while logged in and display the error page',
     ),
-    async ({ page, mainPage, teamPage }) => {
+    async ({ mainPage, secondUserPage }) => {
+      const secondUserTeamPage = new TeamPage(secondUserPage);
+
       await mainPage.clickPencilBoxButton();
+      const badURL = await mainPage.makeBadDashboardUrl(await mainPage.getUrl());
 
-      const currentURL = await mainPage.getUrl();
-      const badURL = await mainPage.makeBadDashboardUrl(currentURL);
-
-      await mainAccountFileTest.step('Logout & login as SECOND_EMAIL', async () => {
-        await badUrlProfilePage.logout();
-        await loginAsSecondUser(page);
-      });
-
-      await mainAccountFileTest.step(
-        'Go to bad URL and validate error message',
+      await demoAccountFileTest.step(
+        'Go to bad URL as another user and validate error message',
         async () => {
-          await page.goto(badURL);
-          await teamPage.isInviteMessageDisplayed('Oops!');
-          await teamPage.isErrorMessageDisplayed("This page doesn't exist");
-          await teamPage.isGoToPenpotButtonVisible();
+          await secondUserPage.goto(badURL);
+          await secondUserTeamPage.isInviteMessageDisplayed('Oops!');
+          await secondUserTeamPage.isErrorMessageDisplayed(
+            "This page doesn't exist",
+          );
+          await secondUserTeamPage.isGoToPenpotButtonVisible();
         },
       );
     },
   );
 });
 
-mainTest(
+demoAccountFileTest.describe('Validate bad URL logged out', () => {
+  demoAccountFileTest(
+    qase(
+      1821,
+      'Workspace: Navigate to invalid URL logged out redirects to login page',
+    ),
+    async ({ page, mainPage }) => {
+      const badURL = await mainPage.makeBadUrl(await mainPage.getUrl());
+
+      await demoAccountFileTest.step('Logout', async () => {
+        await mainPage.clickPencilBoxButton();
+        await new ProfilePage(page).logout();
+      });
+
+      await demoAccountFileTest.step(
+        'Validate bad URL redirects to login',
+        async () => {
+          // The workspace never fires `load` once it redirects to login.
+          await page.goto(badURL, { waitUntil: 'commit' });
+          await new LoginPage(page).isEmailInputVisible();
+        },
+      );
+    },
+  );
+
+  demoAccountFileTest(
+    qase(
+      1823,
+      'View Mode: Navigate to invalid URL logged out redirects to login page',
+    ),
+    async ({ page, mainPage }) => {
+      let badURL = '';
+
+      await demoAccountFileTest.step(
+        'Create a board and get the bad View Mode URL',
+        async () => {
+          await mainPage.createDefaultBoardByCoordinates(300, 300);
+          await mainPage.waitForChangeIsSaved();
+
+          const viewerPage = await new ViewModePage(page).clickViewModeShortcut();
+          const viewModePage = new ViewModePage(viewerPage);
+          await viewModePage.waitForViewerSection(45000);
+          badURL = await viewModePage.makeBadUrl(await viewModePage.getUrl());
+        },
+      );
+
+      await demoAccountFileTest.step('Logout', async () => {
+        await mainPage.clickPencilBoxButton();
+        await new ProfilePage(page).logout();
+      });
+
+      await demoAccountFileTest.step(
+        'Validate bad URL redirects to login',
+        async () => {
+          await page.goto(badURL);
+          await new LoginPage(page).isEmailInputVisible();
+        },
+      );
+    },
+  );
+});
+
+demoAccountApiFixture(
   qase(
     1180,
     'Team Invitation: Access deleted invitation link and display Invite invalid message',
   ),
   async ({ page }) => {
-    await initPages({ page });
-
+    const teamPage = new TeamPage(page);
     const team = createTeamName();
-    const firstAdmin = `${random()}-bad-url-autotest`;
-    const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
+    // The invitee only needs an inbox to read the invite link from, no account.
+    const inviteeEmail = createInviteEmail('admin');
 
-    await mainTest.step(
-      `Create a team, and invite "${firstEmail}" to the team as Admin`,
+    await demoAccountApiFixture.step(
+      `Create a team, and invite "${inviteeEmail}" to the team as Admin`,
       async () => {
         await teamPage.createTeam(team);
 
@@ -164,7 +177,7 @@ mainTest(
 
         await teamPage.isInviteMembersPopUpHeaderVisible();
 
-        await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
+        await teamPage.enterEmailToInviteMembersPopUp(inviteeEmail);
         await teamPage.selectInvitationRoleInPopUp('Admin');
 
         await teamPage.clickSendInvitationButton();
@@ -172,95 +185,25 @@ mainTest(
       },
     );
 
-    await mainTest.step(`Delete invitation for "${firstEmail}"`, async () => {
-      await teamPage.deleteInvitation(firstEmail);
-      await teamPage.isInvitationRecordRemoved();
-    });
-
-    await mainTest.step(
-      `Click on invite received and validate Invite invalid message`,
+    await demoAccountApiFixture.step(
+      `Delete invitation for "${inviteeEmail}"`,
       async () => {
-        const firstInvite = await waitMessage(page, firstEmail, 40);
+        await teamPage.deleteInvitation(inviteeEmail);
+        await teamPage.isInvitationRecordRemoved();
+      },
+    );
 
-        await profilePage.logout();
+    await demoAccountApiFixture.step(
+      'Click on invite received and validate Invite invalid message',
+      async () => {
+        const invite = await waitMessage(page, inviteeEmail, 40);
 
-        await page.goto(firstInvite!.inviteUrl);
+        await new ProfilePage(page).logout();
+
+        await page.goto(invite!.inviteUrl);
 
         await teamPage.isInviteMessageDisplayed('Invite invalid');
       },
     );
-  },
-);
-
-mainTest(
-  qase(
-    1821,
-    'Workspace: Navigate to invalid URL logged out redirects to login page',
-  ),
-  async ({ page }) => {
-    await initPages({ page });
-
-    const team = createTeamName();
-
-    const currentURL = await mainPage.getUrl();
-    const badURL = await mainPage.makeBadUrl(currentURL);
-
-    await mainTest.step(`Create a team and a file`, async () => {
-      await teamPage.createTeam(team);
-
-      await dashboardPage.createFileViaPlaceholder();
-      await mainPage.isMainPageLoaded();
-    });
-
-    await mainTest.step(`Logout`, async () => {
-      await mainPage.clickPencilBoxButton();
-      await profilePage.logout();
-    });
-
-    await mainTest.step(`Validate bad URL redirects to login`, async () => {
-      await page.goto(badURL);
-      await loginPage.isEmailInputVisible();
-    });
-  },
-);
-
-mainTest(
-  qase(
-    1823,
-    'View Mode: Navigate to invalid URL logged out redirects to login page',
-  ),
-  async ({ page }) => {
-    await initPages({ page });
-
-    const team = createTeamName();
-
-    await mainTest.step(`Create a team and a file with a board`, async () => {
-      await teamPage.createTeam(team);
-
-      await dashboardPage.createFileViaPlaceholder();
-      await mainPage.isMainPageLoaded();
-
-      await mainPage.createDefaultBoardByCoordinates(300, 300);
-      await mainPage.waitForChangeIsSaved();
-    });
-
-    let viewModePage = new ViewModePage(page);
-    const newPage = await viewModePage.clickViewModeShortcut();
-
-    viewModePage = new ViewModePage(newPage);
-    await viewModePage.waitForViewerSection(45000);
-
-    const currentURL = await viewModePage.getUrl();
-    const badURL = await viewModePage.makeBadUrl(currentURL);
-
-    await mainTest.step(`Logout`, async () => {
-      await mainPage.clickPencilBoxButton();
-      await profilePage.logout();
-    });
-
-    await mainTest.step(`Validate bad URL redirects to login`, async () => {
-      await page.goto(badURL);
-      await loginPage.isEmailInputVisible();
-    });
   },
 );

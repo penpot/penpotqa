@@ -153,7 +153,7 @@ export const demoAccountFileTest = test.extend<
 type DemoTeamWithInviteeFixtures = {
   dashboardPage: DashboardPage;
   mainPage: MainPage;
-  team: { id: string; projectId: string };
+  team: { id: string; name: string; projectId: string };
   invitee: { page: Page; name: string };
 };
 
@@ -175,8 +175,9 @@ export const demoTeamWithInviteeTest = demoAccountApiFixture.extend<
   team: async ({ page }, use) => {
     const request = page.context().request;
     await setDemoUserName(request, 'QA Tester');
-    const { teamId, projectId } = await createTeam(request);
-    await use({ id: teamId, projectId });
+    const name = createTeamName();
+    const { teamId, projectId } = await createTeam(request, name);
+    await use({ id: teamId, name, projectId });
   },
   invitee: async ({ browser, page, team, inviteeRole }, use) => {
     const session = await createDemoUserSession(browser);

@@ -20,6 +20,7 @@ import {
   checkSigningText,
 } from 'helpers/gmail';
 import { createTeamName } from 'helpers/teams/create-team-name';
+import { registerAndDemoUserTest } from './teams-fixtures';
 
 type SetupTeamAndFileResult = {
   loginPage: LoginPage;
@@ -30,14 +31,10 @@ type SetupTeamAndFileResult = {
   mainPage: MainPage;
 };
 
-let viewModePage: ViewModePage;
-let secondRandomName = random() + 'autotest';
-let secondEmail = `${process.env.GMAIL_NAME}+${secondRandomName}${process.env.GMAIL_DOMAIN}`;
-const loginPassword = process.env.LOGIN_PWD;
-const secondAccountEmail = process.env.SECOND_EMAIL;
+const secondRandomName = random() + 'autotest';
+const secondEmail = `${process.env.GMAIL_NAME}+${secondRandomName}${process.env.GMAIL_DOMAIN}`;
 
 const teamName = createTeamName();
-const userName = 'QA Engineer';
 
 function requireMessage<T>(message: T | undefined, errorMessage: string): T {
   if (!message) {
@@ -66,254 +63,178 @@ async function setupTeamAndFile(
   return { loginPage, registerPage, dashboardPage, teamPage, profilePage, mainPage };
 }
 
-// Setup ONLY a file (for Your Penpot workspace)
-async function setupFileOnly(page: Page): Promise<SetupTeamAndFileResult> {
-  const loginPage = new LoginPage(page);
-  const registerPage = new RegisterPage(page);
-  const dashboardPage = new DashboardPage(page);
-  const profilePage = new ProfilePage(page);
+// Create a file in Personal Projects and open it
+async function setupFileOnly(page: Page): Promise<MainPage> {
   const mainPage = new MainPage(page);
-  const teamPage = new TeamPage(page);
 
-  await dashboardPage.createFileViaPlaceholder();
-  // await mainPage.waitForViewportVisible();
+  await new DashboardPage(page).createFileViaPlaceholder();
   await mainPage.isMainPageLoaded();
 
-  return { loginPage, registerPage, dashboardPage, profilePage, mainPage, teamPage };
+  return mainPage;
 }
 
-// Login as specific user helper
-async function loginAs(
-  {
-    loginPage,
-    dashboardPage,
-  }: Pick<SetupTeamAndFileResult, 'loginPage' | 'dashboardPage'>,
-  email: string,
-) {
-  await loginPage.isEmailInputVisible();
-  await loginPage.enterEmailAndClickOnContinue(email);
-  await loginPage.enterPwd(loginPassword);
-  await loginPage.clickLoginButton();
-  await dashboardPage.isDashboardOpenedAfterLogin();
+// The requester asks for access from the "no access" dialog and goes back home
+async function requestAccess(requesterPage: Page, dialog: 'file' | 'project') {
+  const teamPage = new TeamPage(requesterPage);
+
+  if (dialog === 'file') {
+    await teamPage.isRequestFileAccessDialogVisible();
+  } else {
+    await teamPage.isRequestAccessProjectDialogVisible();
+  }
+  await teamPage.clickOnRequestAccessButton();
+  await teamPage.isRequestAccessButtonVisible(false);
+  await teamPage.checkRequestSentCorrectlyDialog();
+  await teamPage.clickReturnHomeButton();
+  await new DashboardPage(requesterPage).isDashboardOpenedAfterLogin();
 }
 
-registerTest.beforeEach(
-  'Create a new account, login and complete onboarding modal',
-  ({ page }) => {
-    viewModePage = new ViewModePage(page);
-  },
-);
+// The owner receives the request-access email (the 1st one is the registration)
+async function waitForRequestEmail(page: Page, email: string) {
+  await waitSecondMessage(page, email, 40);
+  return requireMessage(
+    await waitRequestMessage(page, email, 40),
+    'Request access message was not received',
+  );
+}
 
-registerTest(
+registerAndDemoUserTest(
   qase(
     [1827],
     "Request access from Workspace URL (Not Personal Projects): 'You don't have access to this file'",
   ),
-  async ({ page, email }) => {
-    // Create a team, a new file and navigate to Dasboard (as owner)
-    const setup = await setupTeamAndFile(page, teamName);
-    const { mainPage, teamPage, profilePage, dashboardPage } = setup;
+  async ({ page, email, demoUser: requester }) => {
+    const { mainPage } = await setupTeamAndFile(page, teamName);
 
-    // Get Workspace URL and navigate to Dashboard
-    const currentURL = await mainPage.getUrl();
-    await mainPage.clickPencilBoxButton();
-
-    // Login as SECOND_EMAIL and navigate to URL
-    await profilePage.logout();
-    await loginAs(setup, secondAccountEmail!);
-    await page.goto(currentURL);
-
-    // Request access as SECOND_EMAIL from dialog and return home
-    await teamPage.isRequestFileAccessDialogVisible();
-    await teamPage.clickOnRequestAccessButton();
-    await teamPage.isRequestAccessButtonVisible(false);
-    await teamPage.checkRequestSentCorrectlyDialog();
-    await teamPage.clickReturnHomeButton();
-    await dashboardPage.isDashboardOpenedAfterLogin();
-    await profilePage.logout();
-
-    // Login with owner email and check request access email
-    await loginAs(setup, email);
-
-    await waitSecondMessage(page, email, 40);
-    const requestMessage = requireMessage(
-      await waitRequestMessage(page, email, 40),
-      'Request access message was not received',
+    await registerAndDemoUserTest.step(
+      'Requester asks for access to the file',
+      async () => {
+        const fileURL = await mainPage.getUrl();
+        await mainPage.clickPencilBoxButton();
+        await requester.page.goto(fileURL);
+        await requestAccess(requester.page, 'file');
+      },
     );
 
-    await checkConfirmAccessText(
-      requestMessage.inviteText,
-      userName,
-      secondAccountEmail,
-      teamName,
+    await registerAndDemoUserTest.step(
+      'Owner receives the request email and opens the file in View mode',
+      async () => {
+        const requestMessage = await waitForRequestEmail(page, email);
+        await checkConfirmAccessText(
+          requestMessage.inviteText,
+          requester.name,
+          requester.email,
+          teamName,
+        );
+
+        await page.goto(requestMessage.inviteUrl[1]);
+        const viewModePage = new ViewModePage(page);
+        await viewModePage.waitForViewerSection();
+        await viewModePage.isShareButtonVisible();
+      },
     );
-
-    // Navigate to invite (view file)
-    await page.goto(requestMessage.inviteUrl[1]);
-
-    // Validate Viewer page
-    await viewModePage.waitForViewerSection();
-    await viewModePage.isShareButtonVisible();
   },
 );
 
-registerTest(
+registerAndDemoUserTest(
   qase(
     [1829],
     "Request access from Dashboard URL (Not Your Penpot): You don't have access to this project",
   ),
-  async ({ page, email }) => {
-    // Create a team, a new file and navigate to Dasboard (as owner)
-    const setup = await setupTeamAndFile(page, teamName);
-    const { mainPage, teamPage, dashboardPage, profilePage } = setup;
+  async ({ page, email, demoUser: requester }) => {
+    const { mainPage } = await setupTeamAndFile(page, teamName);
 
-    // Navigate to Dashboard and get Dashboard URL
-    await mainPage.clickPencilBoxButton();
-    const currentURL = await mainPage.getUrl();
-
-    // Login as SECOND_EMAIL and navigate to Dashboard URL
-    await profilePage.logout();
-    await loginAs(setup, secondAccountEmail!);
-    await page.goto(currentURL);
-
-    // Request access as SECOND_EMAIL from dialog and return home
-    await teamPage.isRequestAccessProjectDialogVisible();
-    await teamPage.clickOnRequestAccessButton();
-    await teamPage.isRequestAccessButtonVisible(false);
-    await teamPage.checkRequestSentCorrectlyDialog();
-    await teamPage.clickReturnHomeButton();
-    await profilePage.logout();
-
-    // Login with owner email and check request access email
-    await loginAs(setup, email);
-
-    await waitSecondMessage(page, email, 40);
-    const requestMessage = requireMessage(
-      await waitRequestMessage(page, email, 40),
-      'Request access message was not received',
+    await registerAndDemoUserTest.step(
+      'Requester asks for access to the project',
+      async () => {
+        await mainPage.clickPencilBoxButton();
+        const dashboardURL = await mainPage.getUrl();
+        await requester.page.goto(dashboardURL);
+        await requestAccess(requester.page, 'project');
+      },
     );
 
-    await checkDashboardConfirmAccessText(
-      requestMessage.inviteText,
-      userName,
-      secondAccountEmail,
-      teamName,
+    await registerAndDemoUserTest.step(
+      'Owner receives the request email',
+      async () => {
+        const requestMessage = await waitForRequestEmail(page, email);
+        await checkDashboardConfirmAccessText(
+          requestMessage.inviteText,
+          requester.name,
+          requester.email,
+          teamName,
+        );
+      },
     );
   },
 );
 
-registerTest(
+registerAndDemoUserTest(
   qase(
     [1830],
     "Request access from Workspace (Personal Projects): 'You don't have access to this file'",
   ),
-  async ({ page, email }) => {
-    // Create a new file in Your Penpot (as owner)
-    const setup = await setupFileOnly(page);
-    const { mainPage, teamPage, profilePage, dashboardPage } = setup;
+  async ({ page, email, demoUser: requester }) => {
+    const mainPage = await setupFileOnly(page);
 
-    // Get Workspace URL and navigate to Dashboard
-    const currentURL = await mainPage.getUrl();
-    await mainPage.clickPencilBoxButton();
-
-    // Login as SECOND_EMAIL
-    await profilePage.logout();
-    await loginAs(setup, secondAccountEmail!);
-
-    // Navigate to Workspace URL
-    await page.goto(currentURL);
-
-    // Request access as SECOND_EMAIL from dialog and return home
-    await teamPage.isRequestFileAccessDialogVisible();
-    await teamPage.clickOnRequestAccessButton();
-    await teamPage.isRequestAccessButtonVisible(false);
-    await teamPage.checkRequestSentCorrectlyDialog();
-    await teamPage.clickReturnHomeButton();
-    await dashboardPage.isDashboardOpenedAfterLogin();
-    await profilePage.logout();
-
-    // Login with owner email and check request access email
-    await loginAs(setup, email);
-
-    await waitSecondMessage(page, email, 40);
-    const requestMessage = requireMessage(
-      await waitRequestMessage(page, email, 40),
-      'Request access message was not received',
+    await registerAndDemoUserTest.step(
+      'Requester asks for access to the file',
+      async () => {
+        const fileURL = await mainPage.getUrl();
+        await mainPage.clickPencilBoxButton();
+        await requester.page.goto(fileURL);
+        await requestAccess(requester.page, 'file');
+      },
     );
 
-    await checkYourPenpotConfirmAccessText(
-      requestMessage.inviteText,
-      userName,
-      secondAccountEmail,
+    await registerAndDemoUserTest.step(
+      'Owner receives the request email',
+      async () => {
+        const requestMessage = await waitForRequestEmail(page, email);
+        await checkYourPenpotConfirmAccessText(
+          requestMessage.inviteText,
+          requester.name,
+          requester.email,
+        );
+      },
     );
   },
 );
 
-registerTest(
+registerAndDemoUserTest(
   qase(
     [1831],
     "Request access from View mode (Personal Projects): 'You don't have access to this file'",
   ),
-  async ({ page, email }) => {
-    // Create a new file in Your Penpot (as owner)
-    const setup = await setupFileOnly(page);
-    const { mainPage, teamPage, profilePage, dashboardPage } = setup;
+  async ({ page, email, demoUser: requester }) => {
+    const mainPage = await setupFileOnly(page);
 
-    await mainPage.createDefaultBoardByCoordinates(300, 300);
-    await mainPage.waitForChangeIsSaved();
+    await registerAndDemoUserTest.step(
+      'Requester asks for access to the file in View mode',
+      async () => {
+        await mainPage.createDefaultBoardByCoordinates(300, 300);
+        await mainPage.waitForChangeIsSaved();
 
-    // Navigate to View Mode
-    const viewerPage = await viewModePage.clickViewModeShortcut();
-    viewModePage = new ViewModePage(viewerPage);
+        const viewerPage = await new ViewModePage(page).clickViewModeShortcut();
+        const viewModePage = new ViewModePage(viewerPage);
+        await viewModePage.waitForViewerSection();
+        const viewModeURL = await viewModePage.getUrl();
 
-    await viewModePage.waitForViewerSection();
-
-    // Get View Mode URL and navigate to Dashboard
-    const currentURL = await viewModePage.getUrl();
-    await mainPage.clickPencilBoxButton();
-    await profilePage.logout();
-
-    // Login as SECOND_EMAIL
-    await loginAs(setup, secondAccountEmail!);
-
-    // Navigate to View Mode URL
-    // Wait for the specific responses to occur, but don't fail if they don't happen
-    await Promise.all([
-      page.waitForResponse(
-        (response) =>
-          response.url().includes('get-view-only-bundle') &&
-          response.status() === 404,
-      ),
-      page.waitForResponse(
-        (response) =>
-          response.url().includes('get-file-info') && response.status() === 404,
-      ),
-    ]).catch(() => {});
-
-    await page.goto(currentURL, { waitUntil: 'networkidle' });
-
-    // Request access as SECOND_EMAIL from dialog and return home
-    await teamPage.isRequestFileAccessDialogVisible();
-    await teamPage.clickOnRequestAccessButton();
-    await teamPage.isRequestAccessButtonVisible(false);
-    await teamPage.checkRequestSentCorrectlyDialog();
-    await teamPage.clickReturnHomeButton();
-    await dashboardPage.isDashboardOpenedAfterLogin();
-    await profilePage.logout();
-
-    // Login with owner email and check request access email
-    await loginAs(setup, email);
-
-    await waitSecondMessage(page, email, 40);
-    const requestMessage = requireMessage(
-      await waitRequestMessage(page, email, 40),
-      'Request access message was not received',
+        await requester.page.goto(viewModeURL, { waitUntil: 'networkidle' });
+        await requestAccess(requester.page, 'file');
+      },
     );
 
-    await checkYourPenpotViewModeConfirmAccessText(
-      requestMessage.inviteText,
-      userName,
-      secondAccountEmail,
+    await registerAndDemoUserTest.step(
+      'Owner receives the request email',
+      async () => {
+        const requestMessage = await waitForRequestEmail(page, email);
+        await checkYourPenpotViewModeConfirmAccessText(
+          requestMessage.inviteText,
+          requester.name,
+          requester.email,
+        );
+      },
     );
   },
 );
@@ -321,6 +242,10 @@ registerTest(
 registerTest(
   qase([1833], 'Auto Join to the team'),
   async ({ page, name, email }) => {
+    // Two UI sign-ups plus three Gmail round-trips: it takes ~80s, right at the
+    // default timeout, so mark it slow.
+    registerTest.slow();
+
     // Set up team and file
     const setup = await setupTeamAndFile(page, teamName);
     const {

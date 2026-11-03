@@ -62,12 +62,9 @@ async function messagesCount(auth, email) {
 }
 
 async function checkMessagesCount(email, count) {
-  return authorize()
-    .then(async (auth) => {
-      const actualCount = await messagesCount(auth, email);
-      expect(actualCount).toEqual(count);
-    })
-    .catch(console.error);
+  const auth = await authorize();
+  const actualCount = await messagesCount(auth, email);
+  expect(actualCount, `Number of emails sent to ${email}`).toEqual(count);
 }
 
 async function getMessagesCount(email) {

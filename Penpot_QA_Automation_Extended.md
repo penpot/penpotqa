@@ -75,7 +75,6 @@ Create an `.env` file in the root directory with the following variables:
 | Variable        | Purpose                                     |
 | --------------- | ------------------------------------------- |
 | `LOGIN_EMAIL`   | Email from your Penpot account              |
-| `SECOND_EMAIL`  | Second email from your Penpot account       |
 | `LOGIN_PWD`     | Password from your Penpot account           |
 | `BASE_URL`      | Penpot URL (e.g., `http://localhost:9001/`) |
 | `GMAIL_NAME`    | Gmail account name for email verification   |
@@ -1010,7 +1009,7 @@ await sendMessage({
 **Required secrets per environment:**
 
 - `BASE_URL`
-- `LOGIN_EMAIL`, `SECOND_EMAIL`, `LOGIN_PWD`
+- `LOGIN_EMAIL`, `LOGIN_PWD`
 - `GMAIL_NAME`, `GMAIL_DOMAIN`, `REFRESH_TOKEN`, `CLIENT_ID`, `CLIENT_SECRET`
 - `STRIPE_SK`
 - `MATTERMOST_WEBHOOK_DAILY_REPORT`, `MATTERMOST_WEBHOOK_PR`

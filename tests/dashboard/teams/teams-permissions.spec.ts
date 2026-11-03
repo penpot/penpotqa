@@ -1,608 +1,283 @@
-import { mainTest } from 'fixtures';
-import { LoginPage } from '@pages/login-page';
-import { RegisterPage } from '@pages/register-page';
-import { ProfilePage } from '@pages/profile-page';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { TeamPage } from '@pages/dashboard/team-page';
-import { MainPage } from '@pages/workspace/main-page';
-import { LayersPanelPage } from '@pages/workspace/layers-panel-page.js';
-import { random } from 'helpers/string-generator';
+import { demoTeamWithMembersTest } from './teams-fixtures';
+import { checkMessagesCount, waitForMessageCount } from 'helpers/gmail';
+import { createTeamInvitations } from 'helpers/teams/create-team-invitations';
+import { InvitationRole } from 'helpers/teams/invitation-role';
+import { createInviteEmail } from 'helpers/teams/invite-email';
 import { qase } from 'playwright-qase-reporter/playwright';
 
-import {
-  getVerificationMessage,
-  checkInviteText,
-  checkMessagesCount,
-  waitMessage,
-  waitSecondMessage,
-} from 'helpers/gmail';
-import { createTeamName } from 'helpers/teams/create-team-name';
+const { Admin, Editor } = InvitationRole;
 
-const team = createTeamName();
+demoTeamWithMembersTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
+  demoTeamWithMembersTest.describe(() => {
+    demoTeamWithMembersTest.use({ memberRoles: [Admin] });
 
-let dashboardPage: DashboardPage;
-let loginPage: LoginPage;
-let profilePage: ProfilePage;
-let registerPage: RegisterPage;
-let teamPage: TeamPage;
-let layersPanelPage: LayersPanelPage;
-let mainPage: MainPage;
+    demoTeamWithMembersTest(
+      qase([1177], 'Team. Invitations - resend invitation via admin'),
+      async ({ members: [admin] }) => {
+        const adminTeamPage = new TeamPage(admin.page);
+        const email = createInviteEmail('admin');
 
-mainTest.beforeEach(async ({ page }) => {
-  teamPage = new TeamPage(page);
-  loginPage = new LoginPage(page);
-  registerPage = new RegisterPage(page);
-  dashboardPage = new DashboardPage(page);
-  layersPanelPage = new LayersPanelPage(page);
-  profilePage = new ProfilePage(page);
-  mainPage = new MainPage(page);
-});
+        await demoTeamWithMembersTest.step('Invite a user as admin', async () => {
+          await adminTeamPage.openInvitationsPageViaOptionsMenu();
+          await adminTeamPage.clickInviteMembersToTeamButton();
+          await adminTeamPage.isInviteMembersPopUpHeaderVisible();
+          await adminTeamPage.enterEmailToInviteMembersPopUp(email);
+          await adminTeamPage.selectInvitationRoleInPopUp('Admin');
+          await adminTeamPage.clickSendInvitationButton();
+          await adminTeamPage.isSuccessMessageDisplayed(
+            'Invitation sent successfully',
+          );
+          await adminTeamPage.isMultipleInvitationRecordDisplayed(
+            email,
+            'Admin',
+            'Pending',
+          );
+        });
 
-mainTest.describe('Roles permissions (Owner, Admin, Editor)', () => {
-  mainTest(
-    qase([1177], 'Team. Invitations - resend invitation via admin'),
-    async ({ page }) => {
-      await mainTest.slow();
-      const mainAdmin = random().concat('autotest');
-      const secondAdmin = random().concat('autotest');
-      const mainEmail = `${process.env.GMAIL_NAME}+${mainAdmin}${process.env.GMAIL_DOMAIN}`;
-      const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}${process.env.GMAIL_DOMAIN}`;
+        await demoTeamWithMembersTest.step('Resend the invitation', async () => {
+          // Wait for the first invite to land, so the count below can't race
+          // Gmail's delivery.
+          await waitForMessageCount(admin.page, email, 1);
+          await adminTeamPage.resendInvitation(email);
+          await adminTeamPage.isSuccessMessageDisplayed(
+            'Invitation sent successfully',
+          );
+          await checkMessagesCount(email, 1);
+        });
+      },
+    );
 
-      await teamPage.createTeam(team);
-      await teamPage.openInvitationsPageViaOptionsMenu();
-      await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.selectInvitationRoleInPopUp('Admin');
-      await teamPage.enterEmailToInviteMembersPopUp(mainEmail);
-      await teamPage.clickSendInvitationButton();
-      const mainInvite = await waitMessage(page, mainEmail, 40);
-      await profilePage.logout();
+    demoTeamWithMembersTest(
+      qase([1190], 'Team. Members - unable to change role of owner via admin'),
+      async ({ members: [admin] }) => {
+        const adminTeamPage = new TeamPage(admin.page);
 
-      await page.goto(mainInvite!.inviteUrl);
-      await registerPage.registerAccount(
-        mainAdmin,
-        mainEmail,
-        process.env.LOGIN_PWD,
-      );
-      await waitSecondMessage(page, mainEmail, 40);
-      const mainVerificationMessage = await getVerificationMessage(mainEmail);
-      await page.goto(mainVerificationMessage.inviteUrl);
-      await dashboardPage.fillOnboardingQuestions();
-      await teamPage.isTeamSelected(team);
+        await adminTeamPage.openMembersPageViaOptionsMenu();
+        await adminTeamPage.isMemberRoleInPopUpNotDisplayed('QA Tester', 'Owner');
+      },
+    );
 
-      await teamPage.openInvitationsPageViaOptionsMenu();
-      await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderVisible();
-      await teamPage.enterEmailToInviteMembersPopUp(secondEmail);
-      await teamPage.selectInvitationRoleInPopUp('Admin');
-      await teamPage.clickSendInvitationButton();
-      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      await teamPage.isMultipleInvitationRecordDisplayed(
-        secondEmail,
-        'Admin',
-        'Pending',
-      );
-      await page.waitForTimeout(5000);
-      await teamPage.resendInvitation(secondEmail);
-      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+    demoTeamWithMembersTest(
+      qase([1192], 'Team. Members - delete team member (as owner)'),
+      async ({ teamPage, members: [admin] }) => {
+        await teamPage.openMembersPageViaOptionsMenu();
+        await teamPage.isMultipleMemberRecordDisplayed(
+          admin.name,
+          admin.email,
+          'Admin',
+        );
+        await teamPage.deleteTeamMember(admin.name);
+      },
+    );
 
-      await checkMessagesCount(secondEmail, 1);
-    },
-  );
+    demoTeamWithMembersTest(
+      qase([1182], 'Team. Invitations - change role in invitation via admin'),
+      async ({ page, team, members: [admin] }) => {
+        const adminTeamPage = new TeamPage(admin.page);
+        const email = createInviteEmail('editor');
 
-  mainTest(
-    qase([1184], 'Team. Members - change role via owner (editor to admin)'),
-    async ({ page }) => {
-      await mainTest.slow();
-      const secondUser = random().concat('autotest');
-      const secondEmail = `${process.env.GMAIL_NAME}+${secondUser}${process.env.GMAIL_DOMAIN}`;
+        await demoTeamWithMembersTest.step(
+          'Owner invites a user as editor',
+          async () => {
+            await createTeamInvitations(
+              page.context().request,
+              team.id,
+              [email],
+              Editor,
+            );
+          },
+        );
 
-      await teamPage.createTeam(team);
-      await teamPage.openInvitationsPageViaOptionsMenu();
-      await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderVisible();
-      await teamPage.enterEmailToInviteMembersPopUp(secondEmail);
-      await teamPage.clickSendInvitationButton();
-      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      const secondInvite = await waitMessage(page, secondEmail, 40);
+        await demoTeamWithMembersTest.step(
+          'Admin changes the invitation role to admin',
+          async () => {
+            await adminTeamPage.openInvitationsPageViaOptionsMenu();
+            await adminTeamPage.isMultipleInvitationRecordDisplayed(
+              email,
+              'Editor',
+              'Pending',
+            );
+            await adminTeamPage.changeInvitationRole(email, 'Admin');
+            await adminTeamPage.openMembersPageViaOptionsMenu();
+            await adminTeamPage.openInvitationsPageViaOptionsMenu();
+            await adminTeamPage.isMultipleInvitationRecordDisplayed(
+              email,
+              'Admin',
+              'Pending',
+            );
+          },
+        );
+      },
+    );
+  });
 
-      await profilePage.logout();
-      await page.goto(secondInvite!.inviteUrl);
-      await registerPage.registerAccount(
-        secondUser,
-        secondEmail,
-        process.env.LOGIN_PWD,
-      );
-      await waitSecondMessage(page, secondEmail, 40);
-      const verificationMessage = await getVerificationMessage(secondEmail);
-      await page.goto(verificationMessage.inviteUrl);
-      await dashboardPage.fillOnboardingQuestions();
-      await teamPage.isTeamSelected(team);
+  demoTeamWithMembersTest.describe(() => {
+    demoTeamWithMembersTest.use({ memberRoles: [Editor] });
 
-      await profilePage.logout();
-      await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
-      await loginPage.enterPwd(process.env.LOGIN_PWD);
-      await loginPage.clickLoginButton();
-      await dashboardPage.isDashboardOpenedAfterLogin();
-      await teamPage.switchTeam(team);
-      await teamPage.isTeamSelected(team);
-      await teamPage.openMembersPageViaOptionsMenu();
-      await teamPage.selectMemberRoleInPopUp(secondUser, 'Admin');
-      await teamPage.isMultipleMemberRecordDisplayed(
-        secondUser,
-        secondEmail,
-        'Admin',
-      );
+    demoTeamWithMembersTest(
+      qase([1184], 'Team. Members - change role via owner (editor to admin)'),
+      async ({ teamPage, members: [member] }) => {
+        const memberTeamPage = new TeamPage(member.page);
 
-      await profilePage.logout();
-      await loginPage.enterEmailAndClickOnContinue(secondEmail);
-      await loginPage.enterPwd(process.env.LOGIN_PWD);
-      await loginPage.clickLoginButton();
-      await dashboardPage.isDashboardOpenedAfterLogin();
-      await teamPage.switchTeam(team);
-      await teamPage.isTeamSelected(team);
-      await teamPage.openMembersPageViaOptionsMenu();
-      await teamPage.isMultipleMemberRecordDisplayed(
-        secondUser,
-        secondEmail,
-        'Admin',
-      );
-    },
-  );
+        await demoTeamWithMembersTest.step(
+          'Owner changes the editor to admin',
+          async () => {
+            await teamPage.openMembersPageViaOptionsMenu();
+            await teamPage.selectMemberRoleInPopUp(member.name, 'Admin');
+            await teamPage.isMultipleMemberRecordDisplayed(
+              member.name,
+              member.email,
+              'Admin',
+            );
+          },
+        );
 
-  mainTest(
-    qase([1187], 'Team. Members - change role via admin(admin to editor)'),
-    async ({ page }) => {
-      await mainTest.slow();
-      const firstAdmin = random().concat('autotest');
-      const secondAdmin = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
-      const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}${process.env.GMAIL_DOMAIN}`;
-      await teamPage.createTeam(team);
-      await teamPage.openInvitationsPageViaOptionsMenu();
-      await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderVisible();
-      await teamPage.enterEmailToInviteMembersPopUp(`${firstEmail}, ${secondEmail}`);
-      await teamPage.selectInvitationRoleInPopUp('Admin');
-      await teamPage.clickSendInvitationButton();
-      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      const firstInvite = await waitMessage(page, firstEmail, 40);
-      const secondInvite = await waitMessage(page, secondEmail, 40);
+        await demoTeamWithMembersTest.step(
+          'Member sees their new admin role',
+          async () => {
+            await member.page.reload();
+            await memberTeamPage.openMembersPageViaOptionsMenu();
+            await memberTeamPage.isMultipleMemberRecordDisplayed(
+              member.name,
+              member.email,
+              'Admin',
+            );
+          },
+        );
+      },
+    );
 
-      await profilePage.logout();
+    demoTeamWithMembersTest(
+      qase(
+        [1183],
+        'Unable to create, edit, resend and delete invitations via editor',
+      ),
+      async ({ page, team, members: [editor] }) => {
+        const editorTeamPage = new TeamPage(editor.page);
+        const email = createInviteEmail('admin');
 
-      await page.goto(firstInvite!.inviteUrl);
-      await registerPage.registerAccount(
-        firstAdmin,
-        firstEmail,
-        process.env.LOGIN_PWD,
-      );
-      await waitSecondMessage(page, firstEmail, 40);
-      const firstVerificationMessage = await getVerificationMessage(firstEmail);
-      await page.goto(firstVerificationMessage.inviteUrl);
-      await dashboardPage.fillOnboardingQuestions();
-      await teamPage.isTeamSelected(team);
-      await profilePage.logout();
-      await page.goto(secondInvite!.inviteUrl);
-      await registerPage.registerAccount(
-        secondAdmin,
-        secondEmail,
-        process.env.LOGIN_PWD,
-      );
-      await waitSecondMessage(page, secondEmail, 40);
-      const secondVerificationMessage = await getVerificationMessage(secondEmail);
-      await page.goto(secondVerificationMessage.inviteUrl);
-      await dashboardPage.fillOnboardingQuestions();
-      await teamPage.isTeamSelected(team);
+        await demoTeamWithMembersTest.step(
+          'Owner invites a user as admin',
+          async () => {
+            await createTeamInvitations(
+              page.context().request,
+              team.id,
+              [email],
+              Admin,
+            );
+          },
+        );
 
-      await teamPage.openMembersPageViaOptionsMenu();
-      await teamPage.isMultipleMemberRecordDisplayed(
-        firstAdmin,
-        firstEmail,
-        'Admin',
-      );
-      await teamPage.isMultipleMemberRecordDisplayed(
-        secondAdmin,
-        secondEmail,
-        'Admin',
-      );
+        await demoTeamWithMembersTest.step(
+          'Editor cannot manage invitations',
+          async () => {
+            await editorTeamPage.openInvitationsPageViaOptionsMenu();
+            await editorTeamPage.isInviteMembersToTeamButtonHidden();
+            await editorTeamPage.isInvitationRecordOptionsDisabled(email);
+            await editorTeamPage.isInvitationRoleInPopUpNotDisplayed(
+              email,
+              'Editor',
+            );
+            await editorTeamPage.isInvitationSelectionDisabled(email);
+          },
+        );
+      },
+    );
+  });
 
-      await teamPage.selectMemberRoleInPopUp(firstAdmin, 'Editor');
-      await teamPage.isMultipleMemberRecordDisplayed(
-        firstAdmin,
-        firstEmail,
-        'Editor',
-      );
+  demoTeamWithMembersTest.describe(() => {
+    demoTeamWithMembersTest.use({ memberRoles: [Admin, Admin] });
 
-      await profilePage.logout();
-      await loginPage.enterEmailAndClickOnContinue(firstEmail);
-      await loginPage.enterPwd(process.env.LOGIN_PWD);
-      await loginPage.clickLoginButton();
-      await dashboardPage.isDashboardOpenedAfterLogin();
-      await teamPage.switchTeam(team);
-      await teamPage.isTeamSelected(team);
-      await teamPage.openMembersPageViaOptionsMenu();
-      await teamPage.isMultipleMemberRecordDisplayed(
-        firstAdmin,
-        firstEmail,
-        'Editor',
-      );
-    },
-  );
+    demoTeamWithMembersTest(
+      qase([1187], 'Team. Members - change role via admin(admin to editor)'),
+      async ({ members: [firstAdmin, secondAdmin] }) => {
+        const firstAdminTeamPage = new TeamPage(firstAdmin.page);
+        const secondAdminTeamPage = new TeamPage(secondAdmin.page);
 
-  mainTest(
-    qase([1191], 'Team. Members - unable to change roles via editor'),
-    async ({ page }) => {
-      await mainTest.slow();
-      const firstAdmin = random().concat('autotest');
-      const secondAdmin = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
-      const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}${process.env.GMAIL_DOMAIN}`;
-      await teamPage.createTeam(team);
-      await teamPage.openInvitationsPageViaOptionsMenu();
-      await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderVisible();
-      await teamPage.enterEmailToInviteMembersPopUp(`${firstEmail}`);
-      await teamPage.selectInvitationRoleInPopUp('Admin');
-      await teamPage.clickSendInvitationButton();
-      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderVisible();
-      await teamPage.enterEmailToInviteMembersPopUp(`${secondEmail}`);
-      await teamPage.selectInvitationRoleInPopUp('Editor');
-      await teamPage.clickSendInvitationButton();
-      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      const firstInvite = await waitMessage(page, firstEmail, 40);
-      const secondInvite = await waitMessage(page, secondEmail, 40);
+        await demoTeamWithMembersTest.step(
+          'Second admin changes the first admin to editor',
+          async () => {
+            await secondAdminTeamPage.openMembersPageViaOptionsMenu();
+            await secondAdminTeamPage.selectMemberRoleInPopUp(
+              firstAdmin.name,
+              'Editor',
+            );
+            await secondAdminTeamPage.isMultipleMemberRecordDisplayed(
+              firstAdmin.name,
+              firstAdmin.email,
+              'Editor',
+            );
+          },
+        );
 
-      await profilePage.logout();
+        await demoTeamWithMembersTest.step(
+          'First admin sees their new editor role',
+          async () => {
+            await firstAdmin.page.reload();
+            await firstAdminTeamPage.openMembersPageViaOptionsMenu();
+            await firstAdminTeamPage.isMultipleMemberRecordDisplayed(
+              firstAdmin.name,
+              firstAdmin.email,
+              'Editor',
+            );
+          },
+        );
+      },
+    );
 
-      await page.goto(firstInvite!.inviteUrl);
-      await registerPage.registerAccount(
-        firstAdmin,
-        firstEmail,
-        process.env.LOGIN_PWD,
-      );
-      await waitSecondMessage(page, firstEmail, 40);
-      const firstVerificationMessage = await getVerificationMessage(firstEmail);
-      await page.goto(firstVerificationMessage.inviteUrl);
-      await dashboardPage.fillOnboardingQuestions();
-      await teamPage.isTeamSelected(team);
-      await profilePage.logout();
-      await page.goto(secondInvite!.inviteUrl);
-      await registerPage.registerAccount(
-        secondAdmin,
-        secondEmail,
-        process.env.LOGIN_PWD,
-      );
-      await waitSecondMessage(page, secondEmail, 40);
-      const secondVerificationMessage = await getVerificationMessage(secondEmail);
-      await page.goto(secondVerificationMessage.inviteUrl);
-      await dashboardPage.fillOnboardingQuestions();
-      await teamPage.isTeamSelected(team);
+    demoTeamWithMembersTest(
+      qase([1193], 'Team. Members - delete team member (as admin)'),
+      async ({ members: [firstAdmin, secondAdmin] }) => {
+        const secondAdminTeamPage = new TeamPage(secondAdmin.page);
 
-      await teamPage.openMembersPageViaOptionsMenu();
-      await teamPage.isMultipleMemberRecordDisplayed(
-        firstAdmin,
-        firstEmail,
-        'Admin',
-      );
-      await teamPage.isMultipleMemberRecordDisplayed(
-        secondAdmin,
-        secondEmail,
-        'Editor',
-      );
-      await teamPage.isMemberRoleInPopUpNotDisplayed(firstAdmin, 'Editor');
-    },
-  );
+        await secondAdminTeamPage.openMembersPageViaOptionsMenu();
+        await secondAdminTeamPage.isMultipleMemberRecordDisplayed(
+          firstAdmin.name,
+          firstAdmin.email,
+          'Admin',
+        );
+        await secondAdminTeamPage.deleteTeamMember(firstAdmin.name);
+      },
+    );
+  });
 
-  mainTest(
-    qase([1190], 'Team. Members - unable to change role of owner via admin'),
-    async ({ page }) => {
-      await mainTest.slow();
-      const firstAdmin = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
-      await teamPage.createTeam(team);
-      await teamPage.openInvitationsPageViaOptionsMenu();
-      await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderVisible();
-      await teamPage.enterEmailToInviteMembersPopUp(`${firstEmail}`);
-      await teamPage.selectInvitationRoleInPopUp('Admin');
-      await teamPage.clickSendInvitationButton();
-      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      await teamPage.clickInviteMembersToTeamButton();
-      const firstInvite = await waitMessage(page, firstEmail, 40);
+  demoTeamWithMembersTest.describe(() => {
+    demoTeamWithMembersTest.use({ memberRoles: [Admin, Editor] });
 
-      await profilePage.logout();
+    demoTeamWithMembersTest(
+      qase([1191], 'Team. Members - unable to change roles via editor'),
+      async ({ members: [admin, editor] }) => {
+        const editorTeamPage = new TeamPage(editor.page);
 
-      await page.goto(firstInvite!.inviteUrl);
-      await registerPage.registerAccount(
-        firstAdmin,
-        firstEmail,
-        process.env.LOGIN_PWD,
-      );
-      await waitSecondMessage(page, firstEmail, 40);
-      const firstVerificationMessage = await getVerificationMessage(firstEmail);
-      await page.goto(firstVerificationMessage.inviteUrl);
-      await dashboardPage.fillOnboardingQuestions();
-      await teamPage.isTeamSelected(team);
+        await editorTeamPage.openMembersPageViaOptionsMenu();
+        await editorTeamPage.isMultipleMemberRecordDisplayed(
+          admin.name,
+          admin.email,
+          'Admin',
+        );
+        await editorTeamPage.isMultipleMemberRecordDisplayed(
+          editor.name,
+          editor.email,
+          'Editor',
+        );
+        await editorTeamPage.isMemberRoleInPopUpNotDisplayed(admin.name, 'Editor');
+      },
+    );
 
-      await teamPage.openMembersPageViaOptionsMenu();
-      const owner = process.env.CI ? 'QA Engineer' : 'QA Engineer';
-      await teamPage.isMemberRoleInPopUpNotDisplayed(owner, 'Owner');
-    },
-  );
+    demoTeamWithMembersTest(
+      qase([1194], 'Team. Members - unable to delete team member (as editor)'),
+      async ({ members: [admin, editor] }) => {
+        const editorTeamPage = new TeamPage(editor.page);
 
-  mainTest(
-    qase([1183], 'Unable to create, edit, resend and delete invitations via editor'),
-    async ({ page }) => {
-      await mainTest.slow();
-      const firstAdmin = random().concat('autotest');
-      const secondAdmin = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
-      const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}${process.env.GMAIL_DOMAIN}`;
-      await teamPage.createTeam(team);
-      await teamPage.openInvitationsPageViaOptionsMenu();
-      await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderVisible();
-      await teamPage.enterEmailToInviteMembersPopUp(`${firstEmail}`);
-      await teamPage.selectInvitationRoleInPopUp('Admin');
-      await teamPage.clickSendInvitationButton();
-      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderVisible();
-      await teamPage.enterEmailToInviteMembersPopUp(`${secondEmail}`);
-      await teamPage.selectInvitationRoleInPopUp('Editor');
-      await teamPage.clickSendInvitationButton();
-      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      await waitMessage(page, firstEmail, 40);
-      const secondInvite = await waitMessage(page, secondEmail, 40);
-
-      await profilePage.logout();
-
-      await page.goto(secondInvite!.inviteUrl);
-      await registerPage.registerAccount(
-        secondAdmin,
-        secondEmail,
-        process.env.LOGIN_PWD,
-      );
-      await waitSecondMessage(page, secondEmail, 40);
-      const secondVerificationMessage = await getVerificationMessage(secondEmail);
-      await page.goto(secondVerificationMessage.inviteUrl);
-      await dashboardPage.fillOnboardingQuestions();
-      await teamPage.isTeamSelected(team);
-
-      await teamPage.openInvitationsPageViaOptionsMenu();
-      await teamPage.isInviteMembersToTeamButtonHidden();
-      await teamPage.isInvitationRecordOptionsDisabled(firstEmail);
-      await teamPage.isInvitationRoleInPopUpNotDisplayed(firstAdmin, 'Editor');
-      await teamPage.isInvitationSelectionDisabled(firstEmail);
-    },
-  );
-
-  mainTest(
-    qase([1192], 'Team. Members - delete team member (as owner)'),
-    async ({ page }) => {
-      await mainTest.slow();
-      const firstAdmin = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
-      await teamPage.createTeam(team);
-      await teamPage.openInvitationsPageViaOptionsMenu();
-      await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderVisible();
-      await teamPage.enterEmailToInviteMembersPopUp(firstEmail);
-      await teamPage.selectInvitationRoleInPopUp('Admin');
-      await teamPage.clickSendInvitationButton();
-      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      const firstInvite = await waitMessage(page, firstEmail, 40);
-
-      await profilePage.logout();
-
-      await page.goto(firstInvite!.inviteUrl);
-      await registerPage.registerAccount(
-        firstAdmin,
-        firstEmail,
-        process.env.LOGIN_PWD,
-      );
-      await waitSecondMessage(page, firstEmail, 40);
-      const firstVerificationMessage = await getVerificationMessage(firstEmail);
-      await page.goto(firstVerificationMessage.inviteUrl);
-      await dashboardPage.fillOnboardingQuestions();
-      await teamPage.isTeamSelected(team);
-
-      await profilePage.logout();
-      await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
-      await loginPage.enterPwd(process.env.LOGIN_PWD);
-      await loginPage.clickLoginButton();
-      await dashboardPage.isDashboardOpenedAfterLogin();
-      await teamPage.switchTeam(team);
-      await teamPage.isTeamSelected(team);
-      await teamPage.openMembersPageViaOptionsMenu();
-      await teamPage.isMultipleMemberRecordDisplayed(
-        firstAdmin,
-        firstEmail,
-        'Admin',
-      );
-      await teamPage.deleteTeamMember(firstAdmin);
-    },
-  );
-
-  mainTest(
-    qase([1193], 'Team. Members - delete team member (as admin)'),
-    async ({ page }) => {
-      await mainTest.slow();
-      const firstAdmin = random().concat('autotest');
-      const secondAdmin = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
-      const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}${process.env.GMAIL_DOMAIN}`;
-      await teamPage.createTeam(team);
-      await teamPage.openInvitationsPageViaOptionsMenu();
-      await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderVisible();
-      await teamPage.enterEmailToInviteMembersPopUp(`${firstEmail}, ${secondEmail}`);
-      await teamPage.selectInvitationRoleInPopUp('Admin');
-      await teamPage.clickSendInvitationButton();
-      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      const firstInvite = await waitMessage(page, firstEmail, 40);
-      const secondInvite = await waitMessage(page, secondEmail, 40);
-
-      await profilePage.logout();
-
-      await page.goto(firstInvite!.inviteUrl);
-      await registerPage.registerAccount(
-        firstAdmin,
-        firstEmail,
-        process.env.LOGIN_PWD,
-      );
-      await waitSecondMessage(page, firstEmail, 40);
-      const firstVerificationMessage = await getVerificationMessage(firstEmail);
-      await page.goto(firstVerificationMessage.inviteUrl);
-      await dashboardPage.fillOnboardingQuestions();
-      await teamPage.isTeamSelected(team);
-      await profilePage.logout();
-      await page.goto(secondInvite!.inviteUrl);
-      await registerPage.registerAccount(
-        secondAdmin,
-        secondEmail,
-        process.env.LOGIN_PWD,
-      );
-      await waitSecondMessage(page, secondEmail, 40);
-      const secondVerificationMessage = await getVerificationMessage(secondEmail);
-      await page.goto(secondVerificationMessage.inviteUrl);
-      await dashboardPage.fillOnboardingQuestions();
-      await teamPage.isTeamSelected(team);
-
-      await teamPage.openMembersPageViaOptionsMenu();
-      await teamPage.isMultipleMemberRecordDisplayed(
-        firstAdmin,
-        firstEmail,
-        'Admin',
-      );
-      await teamPage.isMultipleMemberRecordDisplayed(
-        secondAdmin,
-        secondEmail,
-        'Admin',
-      );
-      await teamPage.deleteTeamMember(firstAdmin);
-    },
-  );
-
-  mainTest(
-    qase([1194], 'Team. Members - unable to delete team member (as editor)'),
-    async ({ page }) => {
-      await mainTest.slow();
-      const firstAdmin = random().concat('autotest');
-      const secondAdmin = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
-      const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}${process.env.GMAIL_DOMAIN}`;
-      await teamPage.createTeam(team);
-      await teamPage.openInvitationsPageViaOptionsMenu();
-      await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderVisible();
-      await teamPage.enterEmailToInviteMembersPopUp(`${firstEmail}`);
-      await teamPage.selectInvitationRoleInPopUp('Admin');
-      await teamPage.clickSendInvitationButton();
-      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderVisible();
-      await teamPage.enterEmailToInviteMembersPopUp(`${secondEmail}`);
-      await teamPage.selectInvitationRoleInPopUp('Editor');
-      await teamPage.clickSendInvitationButton();
-      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      const firstInvite = await waitMessage(page, firstEmail, 40);
-      const secondInvite = await waitMessage(page, secondEmail, 40);
-
-      await profilePage.logout();
-
-      await page.goto(firstInvite!.inviteUrl);
-      await registerPage.registerAccount(
-        firstAdmin,
-        firstEmail,
-        process.env.LOGIN_PWD,
-      );
-      await waitSecondMessage(page, firstEmail, 40);
-      const firstVerificationMessage = await getVerificationMessage(firstEmail);
-      await page.goto(firstVerificationMessage.inviteUrl);
-      await dashboardPage.fillOnboardingQuestions();
-      await teamPage.isTeamSelected(team);
-      await profilePage.logout();
-      await page.goto(secondInvite!.inviteUrl);
-      await registerPage.registerAccount(
-        secondAdmin,
-        secondEmail,
-        process.env.LOGIN_PWD,
-      );
-      await waitSecondMessage(page, secondEmail, 40);
-      const secondVerificationMessage = await getVerificationMessage(secondEmail);
-      await page.goto(secondVerificationMessage.inviteUrl);
-      await dashboardPage.fillOnboardingQuestions();
-      await teamPage.isTeamSelected(team);
-
-      await teamPage.openMembersPageViaOptionsMenu();
-      await teamPage.isMultipleMemberRecordDisplayed(
-        firstAdmin,
-        firstEmail,
-        'Admin',
-      );
-      await teamPage.isMultipleMemberRecordDisplayed(
-        secondAdmin,
-        secondEmail,
-        'Editor',
-      );
-      await teamPage.isDeleteTeamMemberDisabled(firstAdmin);
-    },
-  );
-
-  mainTest(
-    qase([1182], 'Team. Invitations - change role in invitation via admin'),
-    async ({ page }) => {
-      await mainTest.slow();
-      const firstAdmin = random().concat('autotest');
-      const secondAdmin = random().concat('autotest');
-      const firstEmail = `${process.env.GMAIL_NAME}+${firstAdmin}${process.env.GMAIL_DOMAIN}`;
-      const secondEmail = `${process.env.GMAIL_NAME}+${secondAdmin}${process.env.GMAIL_DOMAIN}`;
-      await teamPage.createTeam(team);
-      await teamPage.openInvitationsPageViaOptionsMenu();
-      await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderVisible();
-      await teamPage.enterEmailToInviteMembersPopUp(`${firstEmail}`);
-      await teamPage.selectInvitationRoleInPopUp('Admin');
-      await teamPage.clickSendInvitationButton();
-      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      await teamPage.clickInviteMembersToTeamButton();
-      await teamPage.isInviteMembersPopUpHeaderVisible();
-      await teamPage.enterEmailToInviteMembersPopUp(`${secondEmail}`);
-      await teamPage.selectInvitationRoleInPopUp('Editor');
-      await teamPage.clickSendInvitationButton();
-      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-      const firstInvite = await waitMessage(page, firstEmail, 40);
-
-      await profilePage.logout();
-
-      await page.goto(firstInvite!.inviteUrl);
-      await registerPage.registerAccount(
-        firstAdmin,
-        firstEmail,
-        process.env.LOGIN_PWD,
-      );
-      await waitSecondMessage(page, firstEmail, 40);
-      const firstVerificationMessage = await getVerificationMessage(firstEmail);
-      await page.goto(firstVerificationMessage.inviteUrl);
-      await dashboardPage.fillOnboardingQuestions();
-      await teamPage.isTeamSelected(team);
-      await teamPage.openInvitationsPageViaOptionsMenu();
-      await teamPage.isMultipleInvitationRecordDisplayed(
-        secondEmail,
-        'Editor',
-        'Pending',
-      );
-      await teamPage.changeInvitationRole(secondAdmin, 'Admin');
-      await teamPage.openMembersPageViaOptionsMenu();
-      await teamPage.openInvitationsPageViaOptionsMenu();
-      await teamPage.isMultipleInvitationRecordDisplayed(
-        secondEmail,
-        'Admin',
-        'Pending',
-      );
-    },
-  );
+        await editorTeamPage.openMembersPageViaOptionsMenu();
+        await editorTeamPage.isMultipleMemberRecordDisplayed(
+          admin.name,
+          admin.email,
+          'Admin',
+        );
+        await editorTeamPage.isDeleteTeamMemberDisabled(admin.name);
+      },
+    );
+  });
 });

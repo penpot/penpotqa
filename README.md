@@ -14,7 +14,6 @@ Prerequisites for local run:
 - “Clear” Penpot account (without added files, projects, etc., but with a completed onboarding flow, and the account name must be 'QA Engineer').
 - The _.env_ file added to the root of the project with the following env variables:
   - `LOGIN_EMAIL` (email from your Penpot account)
-  - `SECOND_EMAIL` (email from your Penpot account for tests that use a secondary email to login, needs same password than LOGIN_EMAIL)
   - `LOGIN_PWD` (password from your Penpot account)
   - `SSO_LOGIN_EMAIL` (SSO test email)
   - `SSO_LOGIN_PWD` (SSO test password)
@@ -172,7 +171,6 @@ On _Settings > Environments_ page 2 environments were created: _PRE_ and _PRO_.
 For each environment the appropriate secrets were added:
 
 - _LOGIN_EMAIL_ (email from your Penpot account, which is used for tests)
-- _SECOND_EMAIL_ (secondary email from a secondary Penpot account)
 - _LOGIN_PWD_ (password from your Penpot account, which is used for tests)
 - _SSO_LOGIN_EMAIL_ (SSO test email)
 - _SSO_LOGIN_PWD_ (SSO test password)

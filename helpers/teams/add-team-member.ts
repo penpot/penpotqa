@@ -1,5 +1,6 @@
 import type { APIRequestContext } from '@playwright/test';
 import { callPenpotApi } from 'helpers/api/penpot-api';
+import { createTeamInvitations } from './create-team-invitations';
 import { InvitationRole } from './invitation-role';
 
 /** Adds a user to a team via the API, no email involved: the owner invites them
@@ -11,16 +12,15 @@ export async function addTeamMember(
   teamId: string,
   role: InvitationRole,
 ): Promise<void> {
-  const { invitations } = await callPenpotApi(
+  const [token] = await createTeamInvitations(
     ownerRequest,
-    'create-team-invitations',
-    { teamId, role: role.toLowerCase(), emails: [member.email] },
+    teamId,
+    [member.email],
+    role,
   );
-  const token = invitations?.[0];
   if (!token) {
     throw new Error(
-      `create-team-invitations returned no invitation token for ${member.email}: ` +
-        JSON.stringify(invitations),
+      `create-team-invitations returned no invitation token for ${member.email}`,
     );
   }
   await callPenpotApi(member.request, 'verify-token', { token });
