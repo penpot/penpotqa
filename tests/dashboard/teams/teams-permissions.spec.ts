@@ -1,6 +1,6 @@
 import { TeamPage } from '@pages/dashboard/team-page';
 import { demoTeamWithMembersTest } from './teams-fixtures';
-import { checkMessagesCount } from 'helpers/gmail';
+import { checkMessagesCount, waitForMessageCount } from 'helpers/gmail';
 import { createTeamInvitations } from 'helpers/teams/create-team-invitations';
 import { InvitationRole } from 'helpers/teams/invitation-role';
 import { createInviteEmail } from 'helpers/teams/invite-email';
@@ -36,7 +36,9 @@ demoTeamWithMembersTest.describe('Roles permissions (Owner, Admin, Editor)', () 
         });
 
         await demoTeamWithMembersTest.step('Resend the invitation', async () => {
-          await admin.page.waitForTimeout(5000);
+          // Wait for the first invite to land, so the count below can't race
+          // Gmail's delivery.
+          await waitForMessageCount(admin.page, email, 1);
           await adminTeamPage.resendInvitation(email);
           await adminTeamPage.isSuccessMessageDisplayed(
             'Invitation sent successfully',
