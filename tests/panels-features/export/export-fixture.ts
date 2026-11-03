@@ -1,8 +1,8 @@
-import { ExportPage } from '@pages/workspace/design-panel/export-page';
+import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { ExportedSvgPage } from '@pages/workspace/exported-svg-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
-import { RendererPage } from '@pages/workspace/main-menu/renderer-page';
 import { PagesPanelPage } from '@pages/workspace/panels-features/pages-panel-page';
+import { WorkspacePage } from '@pages/workspace/workspace-page';
 import {
   EXPORTER_FILE,
   ExporterPage,
@@ -13,10 +13,10 @@ import { demoAccountFileTest } from 'fixtures';
 type ExportFixtures = {
   /** Option: page of the helper file the test starts on. */
   exporterPage: ExporterPageName;
-  exportPage: ExportPage;
+  workspacePage: WorkspacePage;
+  designPanelPage: DesignPanelPage;
   layersPanelPage: LayersPanelPage;
   pagesPanelPage: PagesPanelPage;
-  rendererPage: RendererPage;
   exportedSvgPage: ExportedSvgPage;
   exporterPageOpened: void;
 };
@@ -30,10 +30,10 @@ type ExportFixtures = {
 export const exportTest = demoAccountFileTest.extend<ExportFixtures>({
   penpotFile: EXPORTER_FILE,
   exporterPage: [ExporterPage.Boards, { option: true }],
-  exportPage: async ({ page }, use) => use(new ExportPage(page)),
+  workspacePage: async ({ page }, use) => use(new WorkspacePage(page)),
+  designPanelPage: async ({ page }, use) => use(new DesignPanelPage(page)),
   layersPanelPage: async ({ page }, use) => use(new LayersPanelPage(page)),
   pagesPanelPage: async ({ page }, use) => use(new PagesPanelPage(page)),
-  rendererPage: async ({ page }, use) => use(new RendererPage(page)),
   exportedSvgPage: async ({ browser }, use) => {
     const context = await browser.newContext();
     await use(new ExportedSvgPage(await context.newPage()));

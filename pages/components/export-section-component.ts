@@ -1,4 +1,5 @@
-import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import { BaseComponent } from '@pages/base-component';
+import { ExportModalComponent } from '@pages/components/export-modal-component';
 import {
   expect,
   type Download,
@@ -27,16 +28,30 @@ export type ExportResult = {
 
 const EXPORTER_PATH = /\/api\/export/;
 
+// Not scoped: `filter({ has })` matches them inside each candidate, and the
+// component scopes them with `root.locator()`
+const getAddExportButton = (page: Page) =>
+  page.getByRole('button', { name: 'Add export' });
+const getRemoveExportButton = (page: Page) =>
+  page.getByRole('button', { name: 'Remove export' });
+
 /**
- * Export UI of the workspace: the Export section of the Design tab (also in
- * view mode's Inspect tab), the "Export selection" dialog it opens for several
- * elements, and Main menu > File > Export boards as PDF. It works the same for
- * every format; what each format produces is checked on the downloaded file
- * (e.g. ExportedSvgPage).
+ * Root of the Export section inside its parent's `root`. It has no role or
+ * label, so it is matched by class; the filter skips its inner
+ * `element-set-content`.
  */
-export class ExportPage extends DesignPanelPage {
-  // locators
-  readonly exportSection: Locator;
+export function getExportSectionRoot(root: Locator): Locator {
+  return root
+    .locator('[class*="exports__element-set"]')
+    .filter({ has: getAddExportButton(root.page()) });
+}
+
+/**
+ * The Export section, shown in the workspace Design and Inspect tabs and in
+ * view mode's Inspect tab. It works the same for every format; what each
+ * format produces is checked on the downloaded file (e.g. ExportedSvgPage).
+ */
+export class ExportSectionComponent extends BaseComponent {
   readonly addExportButton: Locator;
   readonly removeExportButton: Locator;
   /** "Export N element(s)" button under the export rows. */
@@ -46,116 +61,51 @@ export class ExportPage extends DesignPanelPage {
   readonly exportSuffixInput: Locator;
   /** Single row shown for several elements whose exports differ. */
   readonly exportMixedRow: Locator;
-  readonly exportSelectionDialogTitle: Locator;
-  readonly exportAsPDFDialogTitle: Locator;
-  /** "Export" button of the Export selection and Export as PDF dialogs. */
-  readonly exportDialogExportButton: Locator;
-  readonly exportCompleteToastText: Locator;
-  readonly exportBoardsAsPDFMenuSubItem: Locator;
-  readonly viewModeRightSidebar: Locator;
-  readonly viewModeAddExportButton: Locator;
-  readonly viewModeExportSuffixInput: Locator;
+  readonly exportMixedRowRemoveButton: Locator;
+  /** "Export selection" dialog opened for several elements. */
+  readonly exportModal: ExportModalComponent;
 
-  constructor(page: Page) {
-    super(page);
+  constructor(page: Page, root: Locator) {
+    super(page, root);
 
-    // locators
-    this.exportSection = page.getByText('Export', { exact: true });
-    this.addExportButton = page.getByRole('button', { name: 'Add export' });
-    this.removeExportButton = page.getByRole('button', { name: 'Remove export' });
-    this.exportElementButton = page.getByRole('button', {
+    this.addExportButton = root.locator(getAddExportButton(page));
+    this.removeExportButton = root.locator(getRemoveExportButton(page));
+    this.exportElementButton = root.getByRole('button', {
       name: /Export \d+ element/,
     });
-    this.exportFormatSelect = page.getByRole('combobox').filter({
+    this.exportFormatSelect = root.getByRole('combobox').filter({
       hasText: new RegExp(`^(${Object.values(ExportFormat).join('|')})$`),
     });
-    this.exportScaleSelect = page
+    this.exportScaleSelect = root
       .getByRole('combobox')
       .filter({ hasText: /^\d+(\.\d+)?x$/ });
-    this.exportSuffixInput = page.getByPlaceholder('Suffix');
-    this.exportMixedRow = page
+    this.exportSuffixInput = root.getByPlaceholder('Suffix');
+    this.exportMixedRow = root
       .getByText('Mixed', { exact: true })
       .locator('..')
-      .filter({ has: this.removeExportButton });
-    this.exportSelectionDialogTitle = page.getByRole('heading', {
-      name: 'Export selection',
-    });
-    this.exportAsPDFDialogTitle = page.getByRole('heading', {
-      name: 'Export as PDF',
-    });
-    this.exportDialogExportButton = page.getByRole('button', {
-      name: 'Export',
-      exact: true,
-    });
-    this.exportCompleteToastText = page.getByText('Export complete');
-    this.exportBoardsAsPDFMenuSubItem = page
-      .getByRole('menuitem')
-      .filter({ hasText: 'Export boards as PDF' });
-    this.viewModeRightSidebar = page.locator(
-      `aside[class*='inspect_right_sidebar']`,
+      .filter({ has: getRemoveExportButton(page) });
+    this.exportMixedRowRemoveButton = this.exportMixedRow.locator(
+      getRemoveExportButton(page),
     );
-    this.viewModeAddExportButton = this.viewModeRightSidebar.getByRole('button', {
-      name: 'Add export',
-    });
-    this.viewModeExportSuffixInput =
-      this.viewModeRightSidebar.getByPlaceholder('Suffix');
+    this.exportModal = new ExportModalComponent(page);
   }
 
   async clickAddExportButton() {
-    await this.exportSection.waitFor();
     await this.addExportButton.click();
-  }
-
-  async clickAddExportButtonForViewMode() {
-    await this.exportSection.waitFor();
-    await this.viewModeAddExportButton.click();
   }
 
   async clickRemoveExportButton() {
     await this.removeExportButton.click();
   }
 
-  async isViewModeExportRowVisible(format = 'PNG', scale = '1x') {
-    const sidebar = this.viewModeRightSidebar;
-    await expect(
-      sidebar.getByText(format, { exact: true }),
-      `Export format is ${format}`,
-    ).toBeVisible();
-    await expect(
-      sidebar.getByText(scale, { exact: true }),
-      `Export scale is ${scale}`,
-    ).toBeVisible();
-    await expect(
-      this.viewModeExportSuffixInput,
-      'Export suffix is empty',
-    ).toHaveValue('');
-  }
-
-  async isExportElementButtonDisplayed(title: string) {
-    await expect(this.exportElementButton, `Button says "${title}"`).toHaveText(
-      title,
-    );
-  }
-
-  async isExportElementButtonNotDisplayed() {
-    await expect(
-      this.exportElementButton,
-      'No "Export N elements" button is shown',
-    ).not.toBeVisible();
-  }
-
   /** Adds an export row to the selection and sets its format. */
   async addExportWithFormat(format: ExportFormatName) {
     // The Design tab lags a selection change, so retry until a single PNG row
     // shows.
-    // (clickAddExportButton() hangs on several elements: the title is
-    // "Export selection")
     await expect(async () => {
       // A click on part of the selection leaves a "Mixed" row: clear it first
       if (await this.exportMixedRow.isVisible()) {
-        await this.exportMixedRow
-          .getByRole('button', { name: 'Remove export' })
-          .click({ timeout: 2000 });
+        await this.exportMixedRowRemoveButton.click({ timeout: 2000 });
       }
       // A click from a previous try may add its row late: don't add a second one
       if ((await this.exportFormatSelect.count()) === 0) {
@@ -192,13 +142,6 @@ export class ExportPage extends DesignPanelPage {
     await this.checkExportSuffix(suffix);
   }
 
-  async checkExportSuffix(suffix: string) {
-    await expect(
-      this.exportSuffixInput,
-      suffix ? `Export suffix is "${suffix}"` : 'Export suffix is empty',
-    ).toHaveValue(suffix);
-  }
-
   /**
    * Clicks "Export 1 element" and waits for the file. A failed export produces
    * no download, so this also fails on export errors.
@@ -216,37 +159,8 @@ export class ExportPage extends DesignPanelPage {
     );
     return this.trackExport(async () => {
       await this.exportElementButton.click();
-      await expect(
-        this.exportSelectionDialogTitle,
-        'Export selection dialog is visible',
-      ).toBeVisible();
-      await this.exportDialogExportButton.click();
+      await this.exportModal.exportSelection();
     });
-  }
-
-  /** Clicks Export boards as PDF in the open File menu and exports them all. */
-  async exportBoardsAsPDFViaMenu(numBoards: number) {
-    await this.exportBoardsAsPDFMenuSubItem.click();
-    await expect(
-      this.exportAsPDFDialogTitle,
-      'Export as PDF dialog is visible',
-    ).toBeVisible();
-    await expect(
-      this.exportDialogExportButton,
-      'Export button is visible',
-    ).toBeVisible();
-    await Promise.all([
-      this.page.waitForEvent('download'),
-      this.exportDialogExportButton.click(),
-    ]);
-    await expect(
-      this.exportCompleteToastText,
-      'Export complete toast is visible',
-    ).toBeVisible();
-    await expect(
-      this.page.getByText(`${numBoards} / ${numBoards}`),
-      `All ${numBoards} boards were exported`,
-    ).toBeVisible();
   }
 
   private async trackExport(
@@ -269,6 +183,36 @@ export class ExportPage extends DesignPanelPage {
     } finally {
       this.page.off('request', onRequest);
     }
+  }
+
+  async checkExportRow(format: ExportFormatName = ExportFormat.PNG, scale = '1x') {
+    await expect(this.exportFormatSelect, `Export format is ${format}`).toHaveText(
+      format,
+    );
+    await expect(this.exportScaleSelect, `Export scale is ${scale}`).toHaveText(
+      scale,
+    );
+    await this.checkExportSuffix('');
+  }
+
+  async checkExportSuffix(suffix: string) {
+    await expect(
+      this.exportSuffixInput,
+      suffix ? `Export suffix is "${suffix}"` : 'Export suffix is empty',
+    ).toHaveValue(suffix);
+  }
+
+  async checkExportElementButton(title: string) {
+    await expect(this.exportElementButton, `Button says "${title}"`).toHaveText(
+      title,
+    );
+  }
+
+  async checkExportElementButtonIsHidden() {
+    await expect(
+      this.exportElementButton,
+      'No "Export N elements" button is shown',
+    ).not.toBeVisible();
   }
 
   checkDownloadedFileName(download: Download, fileName: string) {
