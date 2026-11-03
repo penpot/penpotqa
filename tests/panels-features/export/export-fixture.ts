@@ -46,7 +46,6 @@ export const exportTest = demoAccountFileTest.extend<ExportFixtures>({
     async ({ mainPage, penpotFile, exporterPage, pagesPanelPage }, use) => {
       if (penpotFile === EXPORTER_FILE) {
         await pagesPanelPage.clickPageByName(exporterPage);
-        await pagesPanelPage.isPageNameSelected(exporterPage);
       }
       await use();
     },

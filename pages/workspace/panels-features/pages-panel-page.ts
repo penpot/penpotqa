@@ -108,6 +108,17 @@ export class PagesPanelPage extends MainPage {
 
   async clickPageByName(name: string) {
     await this.getPageListItemByName(name).click();
+    await this.isPageNameSelected(name);
+  }
+
+  async reloadUntilPageNameDisplayed(name: string) {
+    await expect(async () => {
+      await this.page.reload();
+      await this.waitForViewportVisible();
+      await expect(this.getPageListItemByName(name)).toBeVisible({ timeout: 3000 });
+    }, `Page "${name}" should be listed in the Pages panel`).toPass({
+      timeout: 60000,
+    });
   }
 
   async shiftClickPageByName(name: string) {
@@ -186,9 +197,7 @@ export class PagesPanelPage extends MainPage {
   }
 
   async clickOnPageOnLayersPanel(pageNumber = 1) {
-    await this.pagesList
-      .filter({ hasText: new RegExp(`^Page ${pageNumber}$`) })
-      .click();
+    await this.clickPageByName(`Page ${pageNumber}`);
   }
 
   async clickCollapseExpandPagesButton() {

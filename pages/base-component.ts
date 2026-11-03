@@ -2,14 +2,17 @@ import { type Locator, type Page, expect } from '@playwright/test';
 
 export class BaseComponent {
   readonly page: Page;
+  readonly root: Locator;
   readonly modalCancelButton: Locator;
   readonly modalSaveButton: Locator;
   readonly modalCloseButton: Locator;
   readonly deleteOption: Locator;
   readonly duplicateOption: Locator;
 
-  constructor(page: Page) {
+  /** `root` is the UI region the component lives in; its locators start from it. */
+  constructor(page: Page, root?: Locator) {
     this.page = page;
+    this.root = root ?? page.locator('body');
     this.deleteOption = page.getByRole('listitem').filter({ hasText: 'Delete' });
     this.duplicateOption = page
       .getByRole('listitem')

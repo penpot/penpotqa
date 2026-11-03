@@ -233,6 +233,15 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'Justify content space-evenly',
       { exact: true },
     );
+    this.layoutWrapBtn = page.getByTitle('Wrap', { exact: true });
+    this.layoutNoWrapBtn = page.getByTitle('No wrap', { exact: true });
+    // "Content" (align-content) subsection, only shown while the layout wraps;
+    // its first button tells whether the row is there
+    this.layoutContentSection =
+      this.flexLayoutMenu.getByTestId('align-content-start');
+    this.flexElementSizeConstraintsSection = page.getByRole('region', {
+      name: 'Layout item size constraints',
+    });
     this.layoutColumnGapInput = page.locator('div[aria-label="Column gap"] input');
     this.layoutRowGapInput = page.locator('div[aria-label="Row gap"] input');
     this.layoutVerticalPaddingInput = page.locator(
@@ -1409,6 +1418,7 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async addLayoutFromDesignPanel(layoutName) {
     await this.layoutAddButton.click();
+    await this.isAddLayoutOptionsVisible();
     layoutName === 'flex'
       ? await this.flexAddLayoutButton.click()
       : await this.gridAddLayoutButton.click();
@@ -1455,6 +1465,37 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
         await this.layoutDirectColumnReverseBtn.click();
         break;
     }
+  }
+
+  /** @param {'Wrap' | 'No wrap'} wrap */
+  async changeLayoutWrap(wrap) {
+    await this.expandFlexLayoutMenu();
+    wrap === 'Wrap'
+      ? await this.layoutWrapBtn.click()
+      : await this.layoutNoWrapBtn.click();
+  }
+
+  async isLayoutContentSectionVisible(visible = true) {
+    visible
+      ? await expect(
+          this.layoutContentSection,
+          'Layout "Content" subsection is visible',
+        ).toBeVisible()
+      : await expect(
+          this.layoutContentSection,
+          'Layout "Content" subsection is hidden',
+        ).toBeHidden();
+  }
+
+  async isAddLayoutOptionsVisible() {
+    await expect(
+      this.flexAddLayoutButton,
+      '"Flex layout" option is visible',
+    ).toBeVisible();
+    await expect(
+      this.gridAddLayoutButton,
+      '"Grid layout" option is visible',
+    ).toBeVisible();
   }
 
   async changeLayoutAlignment(alignment, flex = true) {
@@ -2123,74 +2164,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.checkTokenField('Stroke width', value);
   }
 
-  /**
-   * A stroke width field: the main one ("Stroke width") or a side one
-   * ("Top (block start)", "Right (inline end)", "Bottom (block end)",
-   * "Left (inline start)"). Holds either an input or a token pill.
-   * @param {string} label
-   */
-  getStrokeWidthField(label) {
-    return this.strokeSectionContainer
-      .getByTestId('numeric-input-wrapper')
-      .filter({ has: this.page.getByLabel(label, { exact: true }) });
-  }
-
-  async clickStrokePerSideButton() {
-    await this.strokeSectionContainer
-      .getByRole('button', { name: 'Stroke per side' })
-      .click();
-  }
-
-  /** @param {string} label @param {string} value */
-  async setStrokeSideWidth(label, value) {
-    const input = this.getStrokeWidthField(label).getByRole('textbox');
-    await input.fill(value);
-    await input.press('Enter');
-  }
-
-  /** Detach buttons only show on hover. @param {string} label */
-  async detachStrokeWidthToken(label) {
-    const field = this.getStrokeWidthField(label);
-    await field.hover();
-    await field.getByRole('button', { name: 'Detach token' }).click();
-  }
-
-  /** @param {string} label @param {string} value */
-  async checkStrokeSideWidth(label, value) {
-    await expect(
-      this.getStrokeWidthField(label).getByRole('textbox'),
-      `"${label}" is ${value}`,
-    ).toHaveValue(value);
-  }
-
-  /** @param {string} label @param {string} tokenName */
-  async isStrokeWidthTokenPillVisible(label, tokenName) {
-    await expect(
-      this.getStrokeWidthField(label).getByRole('button', {
-        name: tokenName,
-        exact: true,
-      }),
-      `"${label}" shows the "${tokenName}" token pill`,
-    ).toBeVisible();
-  }
-
-  async isStrokeWidthMixed() {
-    const input = this.getStrokeWidthField('Stroke width').getByRole('textbox');
-    await expect(input, 'Stroke width input is empty').toHaveValue('');
-    await expect(input, 'Stroke width input shows "Mixed"').toHaveAttribute(
-      'placeholder',
-      'Mixed',
-    );
-  }
-
-  /** The four side inputs show only while "Stroke per side" is on. */
-  async areStrokeSideFieldsVisible(visible = true) {
-    const top = this.getStrokeWidthField('Top (block start)');
-    visible
-      ? await expect(top, 'Stroke side fields are visible').toBeVisible()
-      : await expect(top, 'Stroke side fields are hidden').toHaveCount(0);
-  }
-
   async checkRowGap(value) {
     await this.checkTokenField('Row gap', value);
   }
@@ -2243,6 +2216,36 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
           ? await this.checkTokenField('Min height', value)
           : await this.checkTokenField('Max height', value);
         break;
+    }
+  }
+
+  /**
+   * Types a value in a flex element "Min/Max width/height" field and presses Enter.
+   * An empty value clears the field.
+   * @param {'Width' | 'Height'} type
+   * @param {boolean} min - true for "Min", false for "Max"
+   * @param {string} value
+   */
+  async changeFlexElementMinMax(type, min, value) {
+    const label = `${min ? 'Min' : 'Max'} ${type.toLowerCase()}`;
+    const input = this.flexElementSizeConstraintsSection
+      .getByLabel(label, { exact: true })
+      .locator('input');
+    await input.clear();
+    if (value !== '') {
+      await input.pressSequentially(value);
+    }
+    await this.clickOnEnter();
+    await this.waitForChangeIsSaved();
+  }
+
+  /** @param {'Width' | 'Height'} type */
+  async isFlexElementMinMaxVisible(type) {
+    for (const label of [`Min ${type.toLowerCase()}`, `Max ${type.toLowerCase()}`]) {
+      await expect(
+        this.flexElementSizeConstraintsSection.getByLabel(label, { exact: true }),
+        `"${label}" field is visible`,
+      ).toBeVisible();
     }
   }
 
