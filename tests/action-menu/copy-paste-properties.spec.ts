@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { mainAccountFileTest, mainTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { InspectPanelPage } from '@pages/workspace/inspect-panel-page';
@@ -8,13 +8,10 @@ import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 import { PagesPanelPage } from '@pages/workspace/panels-features/pages-panel-page';
 import { MainPage } from '@pages/workspace/main-page';
-import { TeamPage } from '@pages/dashboard/team-page';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
 import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
 import { TypographyToken } from '@pages/workspace/tokens/token-components/typography-tokens-component';
-import { createTeamName } from 'helpers/teams/create-team-name';
 import { SampleData } from 'helpers/sample-data';
 
 const sampleData: SampleData = new SampleData();
@@ -26,7 +23,7 @@ let assetsPanelPage: AssetsPanelPage;
 let inspectPanelPage: InspectPanelPage;
 let pagesPanelPage: PagesPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page }) => {
+demoAccountFileTest.beforeEach(async ({ page }) => {
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
   colorPalettePage = new ColorPalettePage(page);
@@ -35,9 +32,9 @@ mainAccountFileTest.beforeEach(async ({ page }) => {
   pagesPanelPage = new PagesPanelPage(page);
 });
 
-mainAccountFileTest.describe(() => {
-  mainAccountFileTest.describe(() => {
-    mainAccountFileTest.beforeEach(async ({ mainPage }) => {
+demoAccountFileTest.describe(() => {
+  demoAccountFileTest.describe(() => {
+    demoAccountFileTest.beforeEach(async ({ mainPage }) => {
       await mainPage.createDefaultRectangleByCoordinates(100, 100);
       await designPanelPage.clickAddFillButton();
       await mainPage.waitForChangeIsSaved();
@@ -60,7 +57,7 @@ mainAccountFileTest.describe(() => {
       await layersPanelPage.selectLayerByName('Rectangle');
     });
 
-    mainAccountFileTest(
+    demoAccountFileTest(
       qase([1964], 'Copy paste properties from rectangle to ellipse'),
       async ({ mainPage }) => {
         await mainPage.copyLayerPropertyViaRightClick();
@@ -77,7 +74,7 @@ mainAccountFileTest.describe(() => {
       },
     );
 
-    mainAccountFileTest(
+    demoAccountFileTest(
       qase([1973], 'Copy paste properties into 3 different layers'),
       async ({ mainPage }) => {
         await mainPage.copyLayerPropertyViaRightClick();
@@ -116,7 +113,7 @@ mainAccountFileTest.describe(() => {
     );
   });
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([1975], 'Copy paste Properties on Main component 1 to Copy component 2'),
     async ({ mainPage }) => {
       await mainPage.createDefaultRectangleByCoordinates(100, 100);
@@ -150,7 +147,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([1976], 'Copy paste properties of Flex layout to another Board'),
     async ({ mainPage }) => {
       await mainPage.createDefaultBoardByCoordinates(100, 100);
@@ -173,7 +170,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([1978], 'Copy paste typography property'),
     async ({ mainPage }) => {
       await mainPage.createDefaultTextLayerByCoordinates(100, 100);
@@ -190,7 +187,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       [2020],
       'Compare copied CSS properties with CSS properties in "Inspect" tab',
@@ -208,7 +205,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase(
       [2256],
       'Compare "Copy as SVG" code with the SVG code on the "Inspect" panel',
@@ -225,7 +222,7 @@ mainAccountFileTest.describe(() => {
     },
   );
 
-  mainAccountFileTest(
+  demoAccountFileTest(
     qase([2257], '"Copy as SVG" a simple path, pasting the code on Penpot'),
     async ({ mainPage }) => {
       await mainPage.createDefaultOpenPath();
@@ -242,60 +239,52 @@ mainAccountFileTest.describe(() => {
   );
 });
 
-mainTest.describe(() => {
-  let teamPage: TeamPage;
-  let dashboardPage: DashboardPage;
+demoAccountFileTest.describe(() => {
   let mainPage: MainPage;
   let tokensPage: TokensPage;
   let designPanelPage: DesignPanelPage;
   let layersPanelPage: LayersPanelPage;
 
-  const fileName = 'copy/paste properties';
+  demoAccountFileTest.use({
+    penpotFile: 'documents/copy_paste_token_properties_layout.penpot',
+  });
 
-  mainTest.beforeEach(async ({ page }) => {
-    teamPage = new TeamPage(page);
-    dashboardPage = new DashboardPage(page);
-    mainPage = new MainPage(page);
+  demoAccountFileTest.beforeEach(async ({ page, mainPage: filePage }) => {
+    mainPage = filePage;
     tokensPage = new TokensPage(page);
     designPanelPage = new DesignPanelPage(page);
     layersPanelPage = new LayersPanelPage(page);
 
-    await teamPage.createTeam(createTeamName());
-    await dashboardPage.isHeaderDisplayed('Projects');
-    await dashboardPage.openSidebarItem('Drafts');
-    await dashboardPage.importFileFromProjectPage(
-      'documents/copy_paste_token_properties_layout.penpot',
-    );
-    await dashboardPage.isFilePresentWithName(fileName);
-    await dashboardPage.openFileWithName(fileName);
-    await mainPage.isMainPageLoaded();
     await mainPage.clickMoveButton();
   });
 
-  mainTest(
+  demoAccountFileTest(
     qase(
       [3679, 3680],
       'Paste properties preserves token references on boards and text',
     ),
     async () => {
-      await mainTest.step(
+      await demoAccountFileTest.step(
         '3679, Paste properties preserves gap, padding, fill and border tokens on a flex layout board',
         async () => {
-          await mainTest.step('Copy Board 1 properties', async () => {
+          await demoAccountFileTest.step('Copy Board 1 properties', async () => {
             await layersPanelPage.selectLayerByName('Board 1');
             await mainPage.clickShortcutCtrlAltC();
           });
 
-          await mainTest.step('Paste properties onto Board 2', async () => {
-            await layersPanelPage.selectLayerByName('Board 2');
-            await Promise.all([
-              mainPage.waitForUpdateFileRequest(),
-              mainPage.clickShortcutCtrlAltV(),
-            ]);
-            await mainPage.waitForChangeIsSaved();
-          });
+          await demoAccountFileTest.step(
+            'Paste properties onto Board 2',
+            async () => {
+              await layersPanelPage.selectLayerByName('Board 2');
+              await Promise.all([
+                mainPage.waitForUpdateFileRequest(),
+                mainPage.clickShortcutCtrlAltV(),
+              ]);
+              await mainPage.waitForChangeIsSaved();
+            },
+          );
 
-          await mainTest.step(
+          await demoAccountFileTest.step(
             'Verify gap, padding, fill and stroke are pasted as token references',
             async () => {
               await designPanelPage.checkFieldTokenName('Row gap', '30px');
@@ -312,7 +301,7 @@ mainTest.describe(() => {
             },
           );
 
-          await mainTest.step(
+          await demoAccountFileTest.step(
             'Change the "red" color token value and verify Board 2 fill updates too',
             async () => {
               await tokensPage.clickTokensTab();
@@ -335,25 +324,28 @@ mainTest.describe(() => {
         },
       );
 
-      await mainTest.step(
+      await demoAccountFileTest.step(
         '3680, Paste properties preserves color and typography tokens on a text layer',
         async () => {
-          await mainTest.step('Copy Text 1 properties', async () => {
+          await demoAccountFileTest.step('Copy Text 1 properties', async () => {
             await layersPanelPage.openLayersTab();
             await layersPanelPage.selectLayerByName('Text 1');
             await mainPage.clickShortcutCtrlAltC();
           });
 
-          await mainTest.step('Paste properties onto Text 2', async () => {
-            await layersPanelPage.selectLayerByName('Text 2');
-            await Promise.all([
-              mainPage.waitForUpdateFileRequest(),
-              mainPage.clickShortcutCtrlAltV(),
-            ]);
-            await mainPage.waitForChangeIsSaved();
-          });
+          await demoAccountFileTest.step(
+            'Paste properties onto Text 2',
+            async () => {
+              await layersPanelPage.selectLayerByName('Text 2');
+              await Promise.all([
+                mainPage.waitForUpdateFileRequest(),
+                mainPage.clickShortcutCtrlAltV(),
+              ]);
+              await mainPage.waitForChangeIsSaved();
+            },
+          );
 
-          await mainTest.step(
+          await demoAccountFileTest.step(
             'Verify text color and typography are pasted as token references',
             async () => {
               await designPanelPage.checkFieldTokenName('Fill section', 'gray');
@@ -367,7 +359,7 @@ mainTest.describe(() => {
             },
           );
 
-          await mainTest.step(
+          await demoAccountFileTest.step(
             'Change the typography token value and verify Text 2 updates too',
             async () => {
               await tokensPage.clickTokensTab();
