@@ -82,11 +82,12 @@ export class ShortcutsPage extends BasePage {
       .locator(`li[aria-label="${action}"]`);
   }
 
-  /** The key chips of a row, without the " or " separators between
-   * alternative combinations. */
+  /** The key chips of a row, in order, without the " or " separators between
+   * alternative combinations. Matched by the `__key` class, not by nesting:
+   * chips sit inside `__keys` > `__key-group` wrappers. */
   private getShortcutKeys(shortcut: ShortcutRef): Locator {
     return this.getShortcutRow(shortcut).locator(
-      '[class*="shortcuts__keys"] > span:not([class*="__space"])',
+      '[class*="shortcuts__key"]:not([class*="__keys"]):not([class*="__key-group"])',
     );
   }
 
