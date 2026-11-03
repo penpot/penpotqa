@@ -9,15 +9,21 @@ interface ImportedFile {
   fileId: string;
 }
 
-/** Imports a `.penpot` file into the profile's Drafts via the API, skipping the UI. */
+/** Imports a `.penpot` file via the API, skipping the UI, into the given team project
+ * or, by default, the profile's Drafts. */
 export async function importDraftFile(
   request: APIRequestContext,
   filePath: string,
+  { project }: { project?: { teamId: string; projectId: string } } = {},
 ): Promise<ImportedFile> {
-  const { defaultTeamId: teamId, defaultProjectId: projectId } = await callPenpotApi(
-    request,
-    'get-profile',
-  );
+  let teamId: string, projectId: string;
+  if (project) {
+    ({ teamId, projectId } = project);
+  } else {
+    const profile = await callPenpotApi(request, 'get-profile');
+    teamId = profile.defaultTeamId;
+    projectId = profile.defaultProjectId;
+  }
   const res = await request.post(penpotApiPath('import-binfile'), {
     multipart: {
       'name': path.basename(filePath, '.penpot'),

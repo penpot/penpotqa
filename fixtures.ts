@@ -11,7 +11,7 @@ import { registerNewAccount } from './helpers/accounts/register-new-account';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { MainPage } from '@pages/workspace/main-page';
 import { createTeamName } from 'helpers/teams/create-team-name';
-import { callPenpotApi } from 'helpers/api/penpot-api';
+import { createTeam } from 'helpers/teams/create-team';
 import { setDemoUserName } from 'helpers/accounts/set-demo-user-name';
 import { createDemoUserSession } from 'helpers/accounts/create-demo-user-session';
 import { InvitationRole } from 'helpers/teams/invitation-role';
@@ -112,17 +112,21 @@ type DemoWorkspaceFixtures = {
 
 type DemoWorkspaceOptions = {
   penpotFile: string | undefined;
+  inNewTeam: boolean;
 };
 
 // Fresh demo account (WASM) with a blank Drafts file open in the editor, all set up
 // via the API. Faster and more isolated than mainAccountFileTest.
 // Set the `penpotFile` option to open that imported file instead of a blank one.
+// Set `inNewTeam` to put the file in a new team instead of the personal one, which
+// hides some UI (e.g. the workspace header's Share button).
 // `secondUserPage` is another demo account in its own browser context, on its
 // dashboard (e.g. to open a share link as another user); only created when used.
 export const demoAccountFileTest = test.extend<
   DemoWorkspaceFixtures & DemoWorkspaceOptions
 >({
   penpotFile: [undefined, { option: true }],
+  inNewTeam: [false, { option: true }],
   dashboardPage: async ({ page }, use) => {
     await use(new DashboardPage(page));
   },
@@ -133,12 +137,13 @@ export const demoAccountFileTest = test.extend<
   },
   // `auto: true`: open the file even if the test doesn't destructure mainPage.
   mainPage: [
-    async ({ page, penpotFile }, use) => {
+    async ({ page, penpotFile, inNewTeam }, use) => {
       const request = page.context().request;
       await createDemoUser(request, { renderer: 'wasm' });
+      const project = inNewTeam ? await createTeam(request) : undefined;
       const { teamId, fileId } = penpotFile
-        ? await importDraftFile(request, penpotFile)
-        : await createFile(request);
+        ? await importDraftFile(request, penpotFile, { project })
+        : await createFile(request, { project });
       await use(await openFileInWorkspace(page, teamId, fileId));
     },
     { auto: true },
@@ -170,10 +175,8 @@ export const demoTeamWithInviteeTest = demoAccountApiFixture.extend<
   team: async ({ page }, use) => {
     const request = page.context().request;
     await setDemoUserName(request, 'QA Tester');
-    const { id, defaultProjectId } = await callPenpotApi(request, 'create-team', {
-      name: createTeamName(),
-    });
-    await use({ id, projectId: defaultProjectId });
+    const { teamId, projectId } = await createTeam(request);
+    await use({ id: teamId, projectId });
   },
   invitee: async ({ browser, page, team, inviteeRole }, use) => {
     const session = await createDemoUserSession(browser);
