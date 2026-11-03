@@ -332,6 +332,11 @@ exports.MainPage = class MainPage extends BasePage {
     await this.viewport.click();
   }
 
+  /** Parks the mouse outside the canvas, so no hover outline or tooltip shows. */
+  async moveMouseOutOfViewport() {
+    await this.page.mouse.move(0, 0);
+  }
+
   async clickViewportTwice() {
     await this.page.waitForTimeout(100);
     await this.viewport.hover();
