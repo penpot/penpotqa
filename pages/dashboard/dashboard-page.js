@@ -1294,6 +1294,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await optionSelector.click();
   }
 
+  async checkOnboardingContinueWithoutTeamButtonVisible() {
+    await expect(this.onboardingContinueWithoutTeamBtn).toBeVisible();
+  }
+
   async clickOnOnboardingContinueWithoutTeamButton() {
     if (await this.onboardingContinueWithoutTeamBtn.isVisible()) {
       await this.onboardingContinueWithoutTeamBtn.click();

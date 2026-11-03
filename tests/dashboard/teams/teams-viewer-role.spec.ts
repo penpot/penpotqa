@@ -121,6 +121,21 @@ demoTeamWithInviteeTest.describe('Viewer Role', () => {
           await editorMainPage.isDesignTabVisible(true);
         },
       );
+
+      await demoTeamWithInviteeTest.step('Change editor role to admin', async () => {
+        await teamPage.goToTeamDashboard(team.id);
+        await teamPage.isTeamSelected(team.name);
+        await teamPage.openMembersPageViaOptionsMenu();
+        await teamPage.selectMemberRoleInPopUp(invitee.name, 'Admin');
+      });
+
+      await demoTeamWithInviteeTest.step(
+        'Verify admin rights for the invited user',
+        async () => {
+          const adminMainPage = await openTeamFile(invitee.page, team.id);
+          await adminMainPage.isDesignTabVisible(true);
+        },
+      );
     },
   );
 });

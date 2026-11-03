@@ -1,6 +1,5 @@
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { TeamPage } from '@pages/dashboard/team-page';
-import { expect } from '@playwright/test';
 import { setInvitedUserOnboarding } from 'helpers/accounts/set-invited-user-onboarding';
 import { InvitationRole } from 'helpers/teams/invitation-role';
 import { qase } from 'playwright-qase-reporter/playwright';
@@ -39,9 +38,7 @@ for (const { role, qaseId } of roles) {
         });
 
         await demoTeamWithMembersTest.step('Confirm onboarding flow', async () => {
-          await expect(
-            memberDashboardPage.onboardingContinueWithoutTeamBtn,
-          ).toBeVisible();
+          await memberDashboardPage.checkOnboardingContinueWithoutTeamButtonVisible();
           await memberDashboardPage.clickOnOnboardingContinueWithoutTeamButton();
         });
       },

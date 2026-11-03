@@ -1,12 +1,12 @@
 import { demoAccountApiFixture, demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { random } from 'helpers/string-generator';
 import { waitMessage } from 'helpers/gmail';
 import { LoginPage } from '@pages/login-page';
 import { ProfilePage } from '@pages/profile-page';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { ViewModePage } from '@pages/workspace/view-mode-page';
 import { createTeamName } from 'helpers/teams/create-team-name';
+import { createInviteEmail } from 'helpers/teams/invite-email';
 
 demoAccountFileTest.describe('Validate bad URL logged as another user', () => {
   demoAccountFileTest(
@@ -165,7 +165,7 @@ demoAccountApiFixture(
     const teamPage = new TeamPage(page);
     const team = createTeamName();
     // The invitee only needs an inbox to read the invite link from, no account.
-    const inviteeEmail = `${process.env.GMAIL_NAME}+${random()}-bad-url-autotest${process.env.GMAIL_DOMAIN}`;
+    const inviteeEmail = createInviteEmail('admin');
 
     await demoAccountApiFixture.step(
       `Create a team, and invite "${inviteeEmail}" to the team as Admin`,
