@@ -6,6 +6,7 @@ export type PenpotApiMethod =
   | 'login-with-password'
   | 'get-profile'
   | 'update-profile'
+  | 'update-profile-props'
   | 'create-file'
   | 'create-team'
   | 'create-team-invitations'

@@ -1,7 +1,7 @@
 import { Page } from '@playwright/test';
-import { demoAccountApiFixture, mainTest, registerTest } from 'fixtures';
+import { demoAccountApiFixture } from 'fixtures';
+import { callPenpotApi } from 'helpers/api/penpot-api';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { LoginPage } from 'pages/login-page';
 import { RegisterPage } from 'pages/register-page';
 import { ProfilePage } from 'pages/profile-page';
 import { DashboardPage } from 'pages/dashboard/dashboard-page';
@@ -15,186 +15,250 @@ import {
 } from 'helpers/gmail';
 import { createInviteEmail } from 'helpers/teams/invite-email';
 import { createTeamName } from 'helpers/teams/create-team-name';
+import { setDemoUserName } from 'helpers/accounts/set-demo-user-name';
+import { registerAndDemoUserTest } from './teams-fixtures';
 
 let teamPage: TeamPage;
-let loginPage: LoginPage;
 let registerPage: RegisterPage;
 let dashboardPage: DashboardPage;
 let profilePage: ProfilePage;
 
 const team = createTeamName();
 
-mainTest.beforeEach(async ({ page }: { page: Page }) => {
+const initPages = (page: Page) => {
   teamPage = new TeamPage(page);
-  loginPage = new LoginPage(page);
   registerPage = new RegisterPage(page);
   dashboardPage = new DashboardPage(page);
   profilePage = new ProfilePage(page);
-});
+};
 
-mainTest(qase(1164, 'Open the form via Invitations tab'), async () => {
-  await teamPage.createTeam(team);
-  await teamPage.openInvitationsPageViaOptionsMenu();
-  await teamPage.clickInviteMembersToTeamButton();
-  await teamPage.isInviteMembersPopUpHeaderVisible();
-  await teamPage.deleteTeam(team);
-});
-
-demoAccountApiFixture(
-  qase(1165, 'Open the form via Team Hero ("Invite members" button)'),
-  async () => {
+demoAccountApiFixture.describe('As Owner - Invitations (demo account)', () => {
+  demoAccountApiFixture.beforeEach(async ({ page }) => {
+    initPages(page);
     await teamPage.createTeam(team);
-    await teamPage.clickInviteMembersTeamHeroButton();
-    await teamPage.isInviteMembersPopUpHeaderVisible();
-    await teamPage.deleteTeam(team);
-  },
-);
+  });
 
-mainTest(qase(1166, 'Invite via owner (single invitation, editor)'), async () => {
-  const email = createInviteEmail('editor');
-
-  await teamPage.createTeam(team);
-  await teamPage.openInvitationsPageViaOptionsMenu();
-  await teamPage.clickInviteMembersToTeamButton();
-  await teamPage.isInviteMembersPopUpHeaderVisible();
-  await teamPage.enterEmailToInviteMembersPopUp(email);
-  await teamPage.clickSendInvitationButton();
-  await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-
-  await teamPage.isInvitationRecordDisplayed([
-    { email: email, role: 'Editor', status: 'Pending' },
-  ]);
-
-  await teamPage.deleteTeam(team);
-});
-
-mainTest(qase(1167, 'Invite via owner (single invitation, admin)'), async () => {
-  const email = createInviteEmail('admin');
-
-  await teamPage.createTeam(team);
-  await teamPage.openInvitationsPageViaOptionsMenu();
-  await teamPage.clickInviteMembersToTeamButton();
-  await teamPage.isInviteMembersPopUpHeaderVisible();
-
-  await teamPage.selectInvitationRoleInPopUp('Admin');
-  await teamPage.enterEmailToInviteMembersPopUp(email);
-
-  await teamPage.clickSendInvitationButton();
-  await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-
-  await teamPage.isInvitationRecordDisplayed([
-    { email: email, role: 'Admin', status: 'Pending' },
-  ]);
-
-  await teamPage.deleteTeam(team);
-});
-
-mainTest(qase(1175, 'Fail to send invitation to existing team member'), async () => {
-  await teamPage.createTeam(team);
-  await teamPage.openInvitationsPageViaOptionsMenu();
-  await teamPage.clickInviteMembersToTeamButton();
-
-  await teamPage.isInviteMembersPopUpHeaderVisible();
-
-  await teamPage.enterEmailToInviteMembersPopUp(process.env.LOGIN_EMAIL);
-  await teamPage.isSendInvitationBtnDisabled();
-
-  await teamPage.isSendInvitationWarningExist(
-    "Some members are already on the team. We'll invite the rest.",
+  demoAccountApiFixture(
+    qase(1164, 'Open the form via Invitations tab'),
+    async () => {
+      await teamPage.openInvitationsPageViaOptionsMenu();
+      await teamPage.clickInviteMembersToTeamButton();
+      await teamPage.isInviteMembersPopUpHeaderVisible();
+    },
   );
 
-  await teamPage.deleteTeam(team);
+  demoAccountApiFixture(
+    qase(1165, 'Open the form via Team Hero ("Invite members" button)'),
+    async () => {
+      await teamPage.clickInviteMembersTeamHeroButton();
+      await teamPage.isInviteMembersPopUpHeaderVisible();
+    },
+  );
+
+  demoAccountApiFixture(
+    qase(1166, 'Invite via owner (single invitation, editor)'),
+    async () => {
+      const email = createInviteEmail('editor');
+
+      await teamPage.openInvitationsPageViaOptionsMenu();
+      await teamPage.clickInviteMembersToTeamButton();
+      await teamPage.isInviteMembersPopUpHeaderVisible();
+      await teamPage.enterEmailToInviteMembersPopUp(email);
+      await teamPage.clickSendInvitationButton();
+      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+
+      await teamPage.isInvitationRecordDisplayed([
+        { email: email, role: 'Editor', status: 'Pending' },
+      ]);
+    },
+  );
+
+  demoAccountApiFixture(
+    qase(1167, 'Invite via owner (single invitation, admin)'),
+    async () => {
+      const email = createInviteEmail('admin');
+
+      await teamPage.openInvitationsPageViaOptionsMenu();
+      await teamPage.clickInviteMembersToTeamButton();
+      await teamPage.isInviteMembersPopUpHeaderVisible();
+
+      await teamPage.selectInvitationRoleInPopUp('Admin');
+      await teamPage.enterEmailToInviteMembersPopUp(email);
+
+      await teamPage.clickSendInvitationButton();
+      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+
+      await teamPage.isInvitationRecordDisplayed([
+        { email: email, role: 'Admin', status: 'Pending' },
+      ]);
+    },
+  );
+
+  demoAccountApiFixture(
+    qase(1175, 'Fail to send invitation to existing team member'),
+    async ({ page }) => {
+      const { email } = await callPenpotApi(page.context().request, 'get-profile');
+
+      await teamPage.openInvitationsPageViaOptionsMenu();
+      await teamPage.clickInviteMembersToTeamButton();
+
+      await teamPage.isInviteMembersPopUpHeaderVisible();
+
+      await teamPage.enterEmailToInviteMembersPopUp(email);
+      await teamPage.isSendInvitationBtnDisabled();
+
+      await teamPage.isSendInvitationWarningExist(
+        "Some members are already on the team. We'll invite the rest.",
+      );
+    },
+  );
+
+  demoAccountApiFixture(
+    qase(1176, 'Resend multiple invitations via owner'),
+    async () => {
+      const email1 = createInviteEmail('editor', 'editor1');
+      const email2 = createInviteEmail('editor', 'editor2');
+      const email3 = createInviteEmail('editor', 'editor3');
+
+      await teamPage.openInvitationsPageViaOptionsMenu();
+      await teamPage.clickInviteMembersToTeamButton();
+      await teamPage.isInviteMembersPopUpHeaderVisible();
+      await teamPage.enterEmailToInviteMembersPopUp([email1, email2, email3]);
+      await teamPage.clickSendInvitationButton();
+      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+      await teamPage.isInvitationRecordDisplayed([
+        { email: email1, role: 'Editor', status: 'Pending' },
+        { email: email2, role: 'Editor', status: 'Pending' },
+        { email: email3, role: 'Editor', status: 'Pending' },
+      ]);
+      await teamPage.resendInvitation([email1, email2, email3]);
+      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+    },
+  );
+
+  demoAccountApiFixture(
+    qase(1178, 'Delete multiple invitations via owner'),
+    async () => {
+      const email1 = createInviteEmail('editor', 'editor1');
+      const email2 = createInviteEmail('editor', 'editor2');
+      const email3 = createInviteEmail('editor', 'editor3');
+
+      await teamPage.openInvitationsPageViaOptionsMenu();
+      await teamPage.clickInviteMembersToTeamButton();
+      await teamPage.isInviteMembersPopUpHeaderVisible();
+      await teamPage.enterEmailToInviteMembersPopUp([email1, email2, email3]);
+      await teamPage.clickSendInvitationButton();
+      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+      await teamPage.isInvitationRecordDisplayed([
+        { email: email1, role: 'Editor', status: 'Pending' },
+        { email: email2, role: 'Editor', status: 'Pending' },
+        { email: email3, role: 'Editor', status: 'Pending' },
+      ]);
+      await teamPage.deleteInvitation([email1, email2, email3]);
+      await teamPage.isInvitationRecordRemoved([email1, email2, email3]);
+    },
+  );
+
+  demoAccountApiFixture(
+    qase(1181, 'Change role in invitation via owner'),
+    async () => {
+      const email = createInviteEmail('editor', 'role');
+
+      await teamPage.openInvitationsPageViaOptionsMenu();
+      await teamPage.clickInviteMembersToTeamButton();
+      await teamPage.isInviteMembersPopUpHeaderVisible();
+      await teamPage.enterEmailToInviteMembersPopUp(email);
+      await teamPage.clickSendInvitationButton();
+      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+      await teamPage.isInvitationRecordDisplayed([
+        { email: email, role: 'Editor', status: 'Pending' },
+      ]);
+      await teamPage.selectInvitationRoleInInvitationRecord('Admin');
+      await teamPage.isInvitationRecordDisplayed([
+        { email: email, role: 'Admin', status: 'Pending' },
+      ]);
+    },
+  );
 });
 
-registerTest.describe(
-  'As Owner - Invite Members - Send invite (registered but not team member)',
-  () => {
-    registerTest.beforeEach(
-      'Create new account, logout, login with main account, create team and open invitations page',
+registerAndDemoUserTest(
+  qase(1174, 'Invite to a registered user (not a team member)'),
+  async ({ page, email, demoUser: owner }) => {
+    const ownerTeamPage = new TeamPage(owner.page);
+    const inviteeTeamPage = new TeamPage(page);
+
+    await registerAndDemoUserTest.step(
+      'Owner invites the registered user as admin',
       async () => {
-        await registerTest.slow();
-
-        await profilePage.logout();
-
-        await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
-        await loginPage.enterPwd(process.env.LOGIN_PWD);
-        await loginPage.clickLoginButton();
-
-        await dashboardPage.isDashboardOpenedAfterLogin();
-
-        await teamPage.createTeam(team);
-
-        await teamPage.openInvitationsPageViaOptionsMenu();
-        await teamPage.clickInviteMembersToTeamButton();
+        await ownerTeamPage.createTeam(team);
+        await ownerTeamPage.openInvitationsPageViaOptionsMenu();
+        await ownerTeamPage.clickInviteMembersToTeamButton();
+        await ownerTeamPage.selectInvitationRoleInPopUp('Admin');
+        await ownerTeamPage.enterEmailToInviteMembersPopUp(email);
+        await ownerTeamPage.clickSendInvitationButton();
+        await ownerTeamPage.isSuccessMessageDisplayed(
+          'Invitation sent successfully',
+        );
       },
     );
 
-    registerTest(
-      qase(1174, 'Invite to a registered user (not a team member)'),
-      async ({ page, email }: { page: Page; email: string }) => {
-        await teamPage.selectInvitationRoleInPopUp('Admin');
-        await teamPage.enterEmailToInviteMembersPopUp(email);
-
-        await teamPage.clickSendInvitationButton();
-
-        await profilePage.logout();
-
-        await loginPage.enterEmailAndClickOnContinue(email);
-        await loginPage.enterPwd(process.env.LOGIN_PWD);
-
-        await loginPage.clickLoginButton();
-
-        await dashboardPage.isDashboardOpenedAfterLogin();
-
+    await registerAndDemoUserTest.step(
+      'Invitee accepts the invite from the email',
+      async () => {
+        // 2nd message = the invite; the 1st one is the registration email.
         await waitSecondMessage(page, email, 40);
-
         const invite = await getVerificationMessage(email);
-
         await page.goto(invite!.inviteUrl);
-
-        await teamPage.switchTeam(team);
-        await teamPage.isTeamSelected(team);
+        await inviteeTeamPage.switchTeam(team);
+        await inviteeTeamPage.isTeamSelected(team);
       },
     );
   },
 );
 
-mainTest.describe(
-  'As Owner - Invite Members - Send multiple invites (Editor role)',
-  () => {
+demoAccountApiFixture(
+  qase(1168, 'Invite via owner (multiple invitations, editor)'),
+  async ({ page }) => {
+    initPages(page);
     const firstEditor = random().concat('autotest');
     const secondEditor = random().concat('autotest');
+    const firstEmail = createInviteEmail('editor', firstEditor);
+    const secondEmail = createInviteEmail('editor', secondEditor);
+    const owner = 'QA Engineer';
 
-    mainTest(
-      qase(1168, 'Invite via owner (multiple invitations, editor)'),
-      async ({ page }) => {
-        const firstEmail = createInviteEmail('editor', firstEditor);
-        const secondEmail = createInviteEmail('editor', secondEditor);
+    await demoAccountApiFixture.step('Owner invites two editors', async () => {
+      await setDemoUserName(page.context().request, owner);
+      await page.reload();
+      await teamPage.createTeam(team);
+      await teamPage.openInvitationsPageViaOptionsMenu();
+      await teamPage.clickInviteMembersToTeamButton();
+      await teamPage.isInviteMembersPopUpHeaderVisible();
+      await teamPage.enterEmailToInviteMembersPopUp(`${firstEmail}, ${secondEmail}`);
+      await teamPage.clickSendInvitationButton();
+      await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
+      await teamPage.isMultipleInvitationRecordDisplayed(
+        firstEmail,
+        'Editor',
+        'Pending',
+      );
+      await teamPage.isMultipleInvitationRecordDisplayed(
+        secondEmail,
+        'Editor',
+        'Pending',
+      );
+    });
 
-        await teamPage.createTeam(team);
-        await teamPage.openInvitationsPageViaOptionsMenu();
-        await teamPage.clickInviteMembersToTeamButton();
-        await teamPage.isInviteMembersPopUpHeaderVisible();
-        await teamPage.enterEmailToInviteMembersPopUp(
-          `${firstEmail}, ${secondEmail}`,
-        );
-        await teamPage.clickSendInvitationButton();
-        await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-        await teamPage.isMultipleInvitationRecordDisplayed(
-          firstEmail,
-          'Editor',
-          'Pending',
-        );
-        await teamPage.isMultipleInvitationRecordDisplayed(
-          secondEmail,
-          'Editor',
-          'Pending',
-        );
-        const firstInvite = await waitMessage(page, firstEmail, 40);
-        const secondInvite = await waitMessage(page, secondEmail, 40);
-        const user = process.env.CI ? 'QA Engineer' : 'QA Engineer';
-        await checkInviteText(firstInvite!.inviteText, team, user);
-        await checkInviteText(secondInvite!.inviteText, team, user);
+    const firstInvite = await waitMessage(page, firstEmail, 40);
+    const secondInvite = await waitMessage(page, secondEmail, 40);
+
+    await demoAccountApiFixture.step('Check the invite emails', async () => {
+      await checkInviteText(firstInvite!.inviteText, team, owner);
+      await checkInviteText(secondInvite!.inviteText, team, owner);
+    });
+
+    await demoAccountApiFixture.step(
+      'Both editors sign up from their invites',
+      async () => {
         await profilePage.logout();
 
         await page.goto(firstInvite!.inviteUrl);
@@ -209,6 +273,7 @@ mainTest.describe(
         await dashboardPage.fillOnboardingQuestions();
         await teamPage.isTeamSelected(team);
         await profilePage.logout();
+
         await page.goto(secondInvite!.inviteUrl);
         await registerPage.registerAccount(
           secondEditor,
@@ -220,83 +285,21 @@ mainTest.describe(
         await page.goto(secondVerificationMessage!.inviteUrl);
         await dashboardPage.fillOnboardingQuestions();
         await teamPage.isTeamSelected(team);
-
-        await teamPage.openMembersPageViaOptionsMenu();
-        await teamPage.isMultipleMemberRecordDisplayed(
-          firstEditor,
-          firstEmail,
-          'Editor',
-        );
-        await teamPage.isMultipleMemberRecordDisplayed(
-          secondEditor,
-          secondEmail,
-          'Editor',
-        );
       },
     );
+
+    await demoAccountApiFixture.step('Both editors are team members', async () => {
+      await teamPage.openMembersPageViaOptionsMenu();
+      await teamPage.isMultipleMemberRecordDisplayed(
+        firstEditor,
+        firstEmail,
+        'Editor',
+      );
+      await teamPage.isMultipleMemberRecordDisplayed(
+        secondEditor,
+        secondEmail,
+        'Editor',
+      );
+    });
   },
 );
-
-mainTest(qase(1176, 'Resend multiple invitations via owner'), async () => {
-  const email1 = createInviteEmail('editor', 'editor1');
-  const email2 = createInviteEmail('editor', 'editor2');
-  const email3 = createInviteEmail('editor', 'editor3');
-
-  await teamPage.createTeam(team);
-  await teamPage.openInvitationsPageViaOptionsMenu();
-  await teamPage.clickInviteMembersToTeamButton();
-  await teamPage.isInviteMembersPopUpHeaderVisible();
-  await teamPage.enterEmailToInviteMembersPopUp([email1, email2, email3]);
-  await teamPage.clickSendInvitationButton();
-  await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-  await teamPage.isInvitationRecordDisplayed([
-    { email: email1, role: 'Editor', status: 'Pending' },
-    { email: email2, role: 'Editor', status: 'Pending' },
-    { email: email3, role: 'Editor', status: 'Pending' },
-  ]);
-  await teamPage.resendInvitation([email1, email2, email3]);
-  await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-  await teamPage.deleteTeam(team);
-});
-
-mainTest(qase(1178, 'Delete multiple invitations via owner'), async () => {
-  const email1 = createInviteEmail('editor', 'editor1');
-  const email2 = createInviteEmail('editor', 'editor2');
-  const email3 = createInviteEmail('editor', 'editor3');
-
-  await teamPage.createTeam(team);
-  await teamPage.openInvitationsPageViaOptionsMenu();
-  await teamPage.clickInviteMembersToTeamButton();
-  await teamPage.isInviteMembersPopUpHeaderVisible();
-  await teamPage.enterEmailToInviteMembersPopUp([email1, email2, email3]);
-  await teamPage.clickSendInvitationButton();
-  await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-  await teamPage.isInvitationRecordDisplayed([
-    { email: email1, role: 'Editor', status: 'Pending' },
-    { email: email2, role: 'Editor', status: 'Pending' },
-    { email: email3, role: 'Editor', status: 'Pending' },
-  ]);
-  await teamPage.deleteInvitation([email1, email2, email3]);
-  await teamPage.isInvitationRecordRemoved([email1, email2, email3]);
-  await teamPage.deleteTeam(team);
-});
-
-mainTest(qase(1181, 'Change role in invitation via owner'), async () => {
-  const email = createInviteEmail('editor', 'role');
-
-  await teamPage.createTeam(team);
-  await teamPage.openInvitationsPageViaOptionsMenu();
-  await teamPage.clickInviteMembersToTeamButton();
-  await teamPage.isInviteMembersPopUpHeaderVisible();
-  await teamPage.enterEmailToInviteMembersPopUp(email);
-  await teamPage.clickSendInvitationButton();
-  await teamPage.isSuccessMessageDisplayed('Invitation sent successfully');
-  await teamPage.isInvitationRecordDisplayed([
-    { email: email, role: 'Editor', status: 'Pending' },
-  ]);
-  await teamPage.selectInvitationRoleInInvitationRecord('Admin');
-  await teamPage.isInvitationRecordDisplayed([
-    { email: email, role: 'Admin', status: 'Pending' },
-  ]);
-  await teamPage.deleteTeam(team);
-});
