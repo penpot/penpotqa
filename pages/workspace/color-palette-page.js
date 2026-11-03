@@ -62,6 +62,11 @@ exports.ColorPalettePage = class ColorPalettePage extends BasePage {
     return this.colorsSection.getByRole('button', { name: color });
   }
 
+  async closeColorPicker() {
+    await this.page.keyboard.press('Escape');
+    await expect(this.colorPicker, 'Color picker is closed').toBeHidden();
+  }
+
   async setHex(value) {
     await this.hexInput.clear();
     await this.hexInput.fill(value);
