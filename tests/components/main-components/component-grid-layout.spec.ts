@@ -194,14 +194,11 @@ demoAccountFileTest.describe(() => {
           await assetsPanelPage.clickLibraryComponentsTitle();
           await assetsPanelPage.dragAndDropComponentToViewport('Board');
           await mainPage.waitForChangeIsSaved();
-          await mainPage.clickEmptyViewportArea();
-          await mainPage.moveMouseOutOfViewport();
-          // After the drop, the canvas view can settle 1px off (up to ~1700px of diff)
-          await mainPage.checkViewportScreenshotWithoutRulers(
-            'board-from-library-file.png',
-            mainPage.maskViewport(),
-            0.002,
-          );
+          await layersPanelPage.openLayersTab();
+          await layersPanelPage.isCopyComponentOnLayersTabVisibleWithName('Board');
+          await layersPanelPage.selectLayerByName('Board');
+          await designPanelPage.isComponentTypeCopy();
+          await designPanelPage.checkGridLayoutIsAdded();
         },
       );
     },

@@ -1418,6 +1418,11 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.openTextMoreOptionsBlock();
   }
 
+  /** "Edit grid" only shows for a layer with a grid layout. */
+  async checkGridLayoutIsAdded() {
+    await expect(this.gridEditButton, 'Grid layout is added').toBeVisible();
+  }
+
   async isLayoutRemoveButtonExists(condition = true) {
     if (condition === true) {
       await expect(this.layoutRemoveButton).toBeVisible();
