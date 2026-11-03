@@ -1,16 +1,22 @@
-import { demoAccountApiFixture, mainTest } from 'fixtures';
+import { test } from '@playwright/test';
+import { demoAccountApiFixture } from 'fixtures';
 import { ProfilePage } from '@pages/profile-page';
 import { ShortcutsPage } from '@pages/shortcuts-page';
+import { loginAsDemoAccount } from 'helpers/accounts/login-as-demo-account';
+import { setDemoUserName } from 'helpers/accounts/set-demo-user-name';
 
 type YourAccountFixtures = {
   profilePage: ProfilePage;
 };
 
-// Open Your Account > Profile section
-export const profileTest = mainTest.extend<YourAccountFixtures>({
+// Open Your Account > Profile section, as a fresh demo account named "QA Engineer"
+// (a fixed name keeps the avatar screenshots stable)
+export const profileTest = demoAccountApiFixture.extend<YourAccountFixtures>({
   profilePage: async ({ page }, use) => {
     const profilePage = new ProfilePage(page);
 
+    await setDemoUserName(page.context().request, 'QA Engineer');
+    await page.reload();
     await profilePage.openYourAccountPage();
     await profilePage.isHeaderDisplayed('Your account');
 
@@ -18,9 +24,18 @@ export const profileTest = mainTest.extend<YourAccountFixtures>({
   },
 });
 
-// Open Your Account > Password section
-export const passwordTest = mainTest.extend<YourAccountFixtures>({
-  profilePage: async ({ page }, use) => {
+type PasswordFixtures = YourAccountFixtures & {
+  currentPassword: string;
+};
+
+// Open Your Account > Password section, as a fresh demo account. Logs in directly
+// (not through demoAccountApiFixture) to expose its password as `currentPassword`.
+export const passwordTest = test.extend<PasswordFixtures>({
+  currentPassword: async ({ page }, use) => {
+    const { password } = await loginAsDemoAccount(page, { renderer: 'wasm' });
+    await use(password);
+  },
+  profilePage: async ({ page, currentPassword: _currentPassword }, use) => {
     const profilePage = new ProfilePage(page);
 
     await profilePage.openYourAccountPage();
@@ -44,7 +59,7 @@ export const integrationsTest = demoAccountApiFixture.extend<YourAccountFixtures
 });
 
 // Open Your Account > Give Feedback section
-export const giveFeedbackTest = mainTest.extend<YourAccountFixtures>({
+export const giveFeedbackTest = demoAccountApiFixture.extend<YourAccountFixtures>({
   profilePage: async ({ page }, use) => {
     const profilePage = new ProfilePage(page);
 
