@@ -11,7 +11,7 @@ import { registerNewAccount } from './helpers/accounts/register-new-account';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { MainPage } from '@pages/workspace/main-page';
 import { createTeamName } from 'helpers/teams/create-team-name';
-import { callPenpotApi } from 'helpers/api/penpot-api';
+import { createTeam } from 'helpers/teams/create-team';
 import { setDemoUserName } from 'helpers/accounts/set-demo-user-name';
 import { createDemoUserSession } from 'helpers/accounts/create-demo-user-session';
 import { InvitationRole } from 'helpers/teams/invitation-role';
@@ -140,17 +140,7 @@ export const demoAccountFileTest = test.extend<
     async ({ page, penpotFile, inNewTeam }, use) => {
       const request = page.context().request;
       await createDemoUser(request, { renderer: 'wasm' });
-      let project: { teamId: string; projectId: string } | undefined;
-      if (inNewTeam) {
-        const { id, defaultProjectId } = await callPenpotApi(
-          request,
-          'create-team',
-          {
-            name: createTeamName(),
-          },
-        );
-        project = { teamId: id, projectId: defaultProjectId };
-      }
+      const project = inNewTeam ? await createTeam(request) : undefined;
       const { teamId, fileId } = penpotFile
         ? await importDraftFile(request, penpotFile, { project })
         : await createFile(request, { project });
@@ -185,10 +175,8 @@ export const demoTeamWithInviteeTest = demoAccountApiFixture.extend<
   team: async ({ page }, use) => {
     const request = page.context().request;
     await setDemoUserName(request, 'QA Tester');
-    const { id, defaultProjectId } = await callPenpotApi(request, 'create-team', {
-      name: createTeamName(),
-    });
-    await use({ id, projectId: defaultProjectId });
+    const { teamId, projectId } = await createTeam(request);
+    await use({ id: teamId, projectId });
   },
   invitee: async ({ browser, page, team, inviteeRole }, use) => {
     const session = await createDemoUserSession(browser);
