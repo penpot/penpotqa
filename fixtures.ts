@@ -112,17 +112,21 @@ type DemoWorkspaceFixtures = {
 
 type DemoWorkspaceOptions = {
   penpotFile: string | undefined;
+  inNewTeam: boolean;
 };
 
 // Fresh demo account (WASM) with a blank Drafts file open in the editor, all set up
 // via the API. Faster and more isolated than mainAccountFileTest.
 // Set the `penpotFile` option to open that imported file instead of a blank one.
+// Set `inNewTeam` to put the file in a new team instead of the personal one, which
+// hides some UI (e.g. the workspace header's Share button).
 // `secondUserPage` is another demo account in its own browser context, on its
 // dashboard (e.g. to open a share link as another user); only created when used.
 export const demoAccountFileTest = test.extend<
   DemoWorkspaceFixtures & DemoWorkspaceOptions
 >({
   penpotFile: [undefined, { option: true }],
+  inNewTeam: [false, { option: true }],
   dashboardPage: async ({ page }, use) => {
     await use(new DashboardPage(page));
   },
@@ -133,12 +137,23 @@ export const demoAccountFileTest = test.extend<
   },
   // `auto: true`: open the file even if the test doesn't destructure mainPage.
   mainPage: [
-    async ({ page, penpotFile }, use) => {
+    async ({ page, penpotFile, inNewTeam }, use) => {
       const request = page.context().request;
       await createDemoUser(request, { renderer: 'wasm' });
+      let project: { teamId: string; projectId: string } | undefined;
+      if (inNewTeam) {
+        const { id, defaultProjectId } = await callPenpotApi(
+          request,
+          'create-team',
+          {
+            name: createTeamName(),
+          },
+        );
+        project = { teamId: id, projectId: defaultProjectId };
+      }
       const { teamId, fileId } = penpotFile
-        ? await importDraftFile(request, penpotFile)
-        : await createFile(request);
+        ? await importDraftFile(request, penpotFile, { project })
+        : await createFile(request, { project });
       await use(await openFileInWorkspace(page, teamId, fileId));
     },
     { auto: true },
