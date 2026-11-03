@@ -1,19 +1,19 @@
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { expect } from '@playwright/test';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 let layersPanelPage: LayersPanelPage;
 let designPanelPage: DesignPanelPage;
 
-mainAccountFileTest.beforeEach(async ({ page }) => {
+demoAccountFileTest.beforeEach(async ({ page }) => {
   layersPanelPage = new LayersPanelPage(page);
   designPanelPage = new DesignPanelPage(page);
 });
 
-mainAccountFileTest(qase(1496, 'Undo deleted component'), async ({ mainPage }) => {
-  await mainAccountFileTest.step('Create rectangle and copy component', async () => {
+demoAccountFileTest(qase(1496, 'Undo deleted component'), async ({ mainPage }) => {
+  await demoAccountFileTest.step('Create rectangle and copy component', async () => {
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.createComponentViaRightClick();
     await mainPage.duplicateLayerViaRightClick();
@@ -21,36 +21,31 @@ mainAccountFileTest(qase(1496, 'Undo deleted component'), async ({ mainPage }) =
     await designPanelPage.changeAxisXAndYForLayer('400', '300');
   });
 
-  await mainAccountFileTest.step('Delete copy component', async () => {
-    await mainPage.pressDeleteKeyboardButton();
-    await mainPage.waitForChangeIsUnsaved();
-    await mainPage.waitForChangeIsSaved();
-  });
-
-  await mainAccountFileTest.step('Verify copy component is deleted', async () => {
-    await expect(
-      mainPage.viewport,
-      'Viewport should match screenshot after deleting copy component',
-    ).toHaveScreenshot('rectangle-copy-component-delete.png', {
-      mask: mainPage.maskViewport(),
-    });
-  });
-
-  await mainAccountFileTest.step('Undo deletion', async () => {
-    await mainPage.clickShortcutCtrlZ();
-    await mainPage.waitForChangeIsUnsaved();
-    await mainPage.waitForChangeIsSaved();
-  });
-
-  await mainAccountFileTest.step(
-    'Verify copy component is restored after undo',
+  await demoAccountFileTest.step(
+    'Delete copy component and verify copy component is deleted',
     async () => {
-      await expect(
-        mainPage.viewport,
-        'Viewport should match screenshot after undoing deletion',
-      ).toHaveScreenshot('rectangle-copy-component-delete-undo.png', {
-        mask: mainPage.maskViewport(),
-      });
+      await mainPage.pressDeleteKeyboardButton();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'rectangle-copy-component-delete.png',
+        {
+          mask: mainPage.maskViewport(),
+        },
+      );
+    },
+  );
+
+  await demoAccountFileTest.step(
+    'Undo deletion and verify copy component is restored after undo',
+    async () => {
+      await mainPage.clickShortcutCtrlZ();
+      await mainPage.waitForChangeIsSaved();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'rectangle-copy-component-delete-undo.png',
+        {
+          mask: mainPage.maskViewport(),
+        },
+      );
     },
   );
 });
