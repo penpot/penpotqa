@@ -91,7 +91,6 @@ Snapshots are stored at `tests/{dir}/{file}-snapshots/`. Comparison threshold fo
 - `angle.js` — Angle calculation utilities
 - `rect.js` — Rectangle geometry utilities
 - `get-platform.js` — Platform detection helper
-- `user-flows.js` — Reusable multi-step user flows shared across tests
 - `mattermost.helper.js` — Mattermost integration helpers
 
 ## Key Conventions
@@ -105,6 +104,6 @@ Snapshots are stored at `tests/{dir}/{file}-snapshots/`. Comparison threshold fo
 
 ## Environment
 
-Requires `.env` file (see `.env.example`). Key variables: `LOGIN_EMAIL`, `LOGIN_PWD`, `SECOND_EMAIL`, `BASE_URL`. Gmail and Stripe credentials needed only for registration and payment tests.
+Requires `.env` file (see `.env.example`). Key variables: `LOGIN_EMAIL`, `LOGIN_PWD`, `BASE_URL`. Gmail and Stripe credentials needed only for registration and payment tests.
 
 Node.js version is pinned in `.nvmrc` (v25.2.1).
