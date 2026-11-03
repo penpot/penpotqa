@@ -573,8 +573,14 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async hideLibrariesAndTemplatesCarrousel() {
+    // Wait for the carousel to render first: a fresh account starts with it open,
+    // and checking too early would skip the click and leave it blocking the grid.
+    await expect(
+      this.librariesHideButton.or(this.librariesShowButton),
+    ).toBeVisible();
     if (await this.librariesHideButton.isVisible()) {
       await this.librariesHideButton.click();
+      await expect(this.librariesShowButton).toBeVisible();
     }
   }
 

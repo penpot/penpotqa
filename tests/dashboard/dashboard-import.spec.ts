@@ -1,7 +1,7 @@
 import { MainPage } from '@pages/workspace/main-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { TeamPage } from '@pages/dashboard/team-page';
-import { mainTest } from 'fixtures';
+import { demoAccountApiFixture } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { createTeamName } from 'helpers/teams/create-team-name';
 
@@ -11,7 +11,7 @@ let teamPage: TeamPage;
 let dashboardPage: DashboardPage;
 let mainPage: MainPage;
 
-mainTest.beforeEach(async ({ page }) => {
+demoAccountApiFixture.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
   mainPage = new MainPage(page);
@@ -21,46 +21,58 @@ mainTest.beforeEach(async ({ page }) => {
   await dashboardPage.hideLibrariesAndTemplatesCarrousel();
 });
 
-mainTest(qase(71, 'Import file to Drafts .penpot'), async () => {
+demoAccountApiFixture(qase(71, 'Import file to Drafts .penpot'), async () => {
   await dashboardPage.openSidebarItem('Drafts');
   await dashboardPage.importFileFromProjectPage('documents/QA test file v1.penpot');
   await dashboardPage.isFilePresentWithName('QA test file v1');
 });
 
-mainTest(qase(1145, 'Import file to project - fail invalid format'), async () => {
-  await dashboardPage.openSidebarItem('Drafts');
-  await dashboardPage.importFileWithInvalidFormat('images/images.png');
-});
+demoAccountApiFixture(
+  qase(1145, 'Import file to project - fail invalid format'),
+  async () => {
+    await dashboardPage.openSidebarItem('Drafts');
+    await dashboardPage.importFileWithInvalidFormat('images/images.png');
+  },
+);
 
-mainTest(qase(1919, 'Import file to project - new .penpot format'), async () => {
-  await dashboardPage.clickAddProjectButton();
-  await dashboardPage.setProjectName('Test Project');
-  await dashboardPage.isProjectTitleDisplayed('Test Project');
-  await dashboardPage.importFile('documents/QA new test file.penpot');
-  await dashboardPage.isFilePresentWithName('QA new test file');
-});
+demoAccountApiFixture(
+  qase(1919, 'Import file to project - new .penpot format'),
+  async () => {
+    await dashboardPage.clickAddProjectButton();
+    await dashboardPage.setProjectName('Test Project');
+    await dashboardPage.isProjectTitleDisplayed('Test Project');
+    await dashboardPage.importFile('documents/QA new test file.penpot');
+    await dashboardPage.isFilePresentWithName('QA new test file');
+  },
+);
 
-mainTest(qase(2091, 'Import library from the web (by URL)'), async () => {
-  const penpotFilesURL = 'https://penpot.github.io/penpot-files/';
-  const useLibraryInPenpotURL = 'https://design.penpot.dev/#?template=';
-  const libraryFileName = 'tutorial-for-beginners v.2.0.penpot';
+demoAccountApiFixture(
+  qase(2091, 'Import library from the web (by URL)'),
+  async () => {
+    const penpotFilesURL = 'https://penpot.github.io/penpot-files/';
+    const useLibraryInPenpotURL = 'https://design.penpot.dev/#?template=';
+    const libraryFileName = 'tutorial-for-beginners v.2.0.penpot';
 
-  await dashboardPage.gotoLink(
-    useLibraryInPenpotURL + penpotFilesURL + libraryFileName,
-  );
-  await dashboardPage.confirmFileImport();
-  await dashboardPage.isFilePresentWithName('tutorial-for-beginners v.2.0');
-});
+    await dashboardPage.gotoLink(
+      useLibraryInPenpotURL + penpotFilesURL + libraryFileName,
+    );
+    await dashboardPage.confirmFileImport();
+    await dashboardPage.isFilePresentWithName('tutorial-for-beginners v.2.0');
+  },
+);
 
-mainTest(qase(2239, 'Import file to project - file upload error'), async () => {
-  await dashboardPage.clickAddProjectButton();
-  await dashboardPage.setProjectName('Test Project');
-  await dashboardPage.isProjectTitleDisplayed('Test Project');
-  await dashboardPage.importFileWithInvalidFile(
-    'documents/hand-made-icons-by-cocomaterial.penpot',
-  );
-  await dashboardPage.isImportErrorDisplayed(
-    "The following files have errors:Hand-Made Icons by cocomaterialWe couldn't verify this file.Files with errors will not be uploaded.",
-  );
-  await dashboardPage.clickOnModalAcceptButton();
-});
+demoAccountApiFixture(
+  qase(2239, 'Import file to project - file upload error'),
+  async () => {
+    await dashboardPage.clickAddProjectButton();
+    await dashboardPage.setProjectName('Test Project');
+    await dashboardPage.isProjectTitleDisplayed('Test Project');
+    await dashboardPage.importFileWithInvalidFile(
+      'documents/hand-made-icons-by-cocomaterial.penpot',
+    );
+    await dashboardPage.isImportErrorDisplayed(
+      "The following files have errors:Hand-Made Icons by cocomaterialWe couldn't verify this file.Files with errors will not be uploaded.",
+    );
+    await dashboardPage.clickOnModalAcceptButton();
+  },
+);

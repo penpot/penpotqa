@@ -282,8 +282,8 @@ demoTeamWithMembersTest.describe('As Viewer', () => {
   demoTeamWithMembersTest.beforeEach(async ({ members: [member] }) => {
     dashboardPage = new DashboardPage(member.page);
 
+    // No Libraries & Templates carousel to hide: viewers don't get it.
     await dashboardPage.isHeaderDisplayed('Projects');
-    await dashboardPage.hideLibrariesAndTemplatesCarrousel();
   });
 
   demoTeamWithMembersTest(qase(2697, 'Viewer cannot access trash'), async () => {
