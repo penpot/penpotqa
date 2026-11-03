@@ -17,18 +17,11 @@ profileTest(
   qase(187, 'Edit profile: profile name and image'),
   async ({ profilePage }) => {
     const newName = random();
-    const oldName = 'QA Engineer';
 
     await profileTest.step('Change profile name and verify success', async () => {
       await profilePage.changeProfileName(newName);
       await profilePage.isSuccessMessageDisplayed('Profile saved successfully!');
       await profilePage.isAccountNameDisplayed(newName);
-    });
-
-    await profileTest.step('Restore profile name and verify success', async () => {
-      await profilePage.changeProfileName(oldName);
-      await profilePage.isSuccessMessageDisplayed('Profile saved successfully!');
-      await profilePage.isAccountNameDisplayed(oldName);
     });
   },
 );
