@@ -13,7 +13,7 @@ demoAccountFileTest.beforeEach(async ({ page }) => {
 });
 
 demoAccountFileTest(
-  qase([3742], 'Stroke to path on a basic rectangle with a single solid stroke'),
+  qase([3472], 'Stroke to path on a basic rectangle with a single solid stroke'),
   async ({ mainPage }) => {
     await demoAccountFileTest.step('Create a rectangle', async () => {
       await mainPage.pressKeyboardShortcut('R');
@@ -42,6 +42,23 @@ demoAccountFileTest(
             mask: mainPage.maskViewport(),
           },
         );
+      },
+    );
+
+    await demoAccountFileTest.step(
+      'Check the stroke is now a separate path in the Layers panel',
+      async () => {
+        await layersPanelPage.isLayerNameDisplayed('Rectangle (stroke)');
+        await layersPanelPage.isLayerWithNameSelected('Rectangle (stroke)');
+      },
+    );
+
+    await demoAccountFileTest.step(
+      'Check the rectangle keeps its fill and has no stroke',
+      async () => {
+        await layersPanelPage.selectLayerByExactName('Rectangle');
+        await designPanelPage.isFillHexCodeSet('#B1B2B5');
+        await designPanelPage.checkStrokeIsAdded(false);
       },
     );
   },
