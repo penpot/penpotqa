@@ -1,4 +1,8 @@
 import { BaseComponent } from '@pages/base-component';
+import {
+  ExportSectionComponent,
+  getExportSectionRoot,
+} from '@pages/components/export-section-component';
 import { type Locator, type Page, expect } from '@playwright/test';
 
 /** Inspect content of the right sidebar: what viewers get instead of the Design tab. */
@@ -6,7 +10,7 @@ export class InspectTabComponent extends BaseComponent {
   readonly colorSpaceSelect: Locator;
   readonly inspectTabSelect: Locator;
   readonly stylesRegion: Locator;
-  readonly addExportButton: Locator;
+  readonly export: ExportSectionComponent;
 
   constructor(page: Page, root: Locator) {
     super(page, root);
@@ -17,7 +21,7 @@ export class InspectTabComponent extends BaseComponent {
       name: 'Switch inspect tab',
     });
     this.stylesRegion = root.getByRole('region', { name: 'Styles' });
-    this.addExportButton = root.getByRole('button', { name: 'Add export' });
+    this.export = new ExportSectionComponent(page, getExportSectionRoot(root));
   }
 
   /** The panel of the Styles view whose header reads `title`, e.g. "Size and position". */
@@ -59,17 +63,6 @@ export class InspectTabComponent extends BaseComponent {
       panel.getByRole('definition'),
       `Size and position shows width ${width} and height ${height}`,
     ).toHaveText([width, height]);
-  }
-
-  async checkExportSectionVisible() {
-    await expect(
-      this.root.getByText('Export', { exact: true }),
-      'Inspect shows the Export section',
-    ).toBeVisible();
-    await expect(
-      this.addExportButton,
-      'Export section has the "Add export" button',
-    ).toBeVisible();
   }
 
   /** Nothing in the sidebar can be typed into: values are shown, not edited. */

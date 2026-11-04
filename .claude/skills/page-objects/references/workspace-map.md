@@ -21,7 +21,7 @@ WorkspacePage
     ├── prototype    Prototype tab
     └── inspect      Inspect tab
 
-Shared (pages/components/): ContextMenu, Modal, ColorPicker, ScrollableList
+Shared (pages/components/): ContextMenu, Modal, ExportSection, ExportModal, ColorPicker, ScrollableList
 ```
 
 ## Target folder tree
@@ -33,6 +33,8 @@ pages/
   components/                      # shared across pages
     context-menu-component.ts
     modal-component.ts
+    export-section-component.ts    # Design and Inspect tabs, view mode Inspect tab
+    export-modal-component.ts      # Export selection / Export as PDF dialogs
     color-picker-component.ts
     scrollable-list-component.ts   # moved from workspace/left-sidebar/
   workspace/
@@ -55,6 +57,7 @@ pages/
       typography-palette-component.ts
     right-sidebar/
       right-sidebar-component.ts
+      export-progress-component.ts # export progress in the right sidebar header
       design-tab/
         design-tab-component.ts
         measures-section-component.ts
@@ -62,7 +65,6 @@ pages/
         stroke-section-component.ts
         layout-section-component.ts
         text-section-component.ts
-        export-section-component.ts
       prototype-tab-component.ts
       inspect-tab-component.ts
   view-mode/
@@ -89,6 +91,9 @@ pages/
 | `workspace/prototype-panel-page.js`                       | `right-sidebar/prototype-tab-component.ts`                                                                                                                                            |
 | `workspace/inspect-panel-page.js`                         | `right-sidebar/inspect-tab-component.ts`                                                                                                                                              |
 | `workspace/view-mode-page.js`                             | `pages/view-mode/view-mode-page.ts`                                                                                                                                                   |
+| `workspace/design-panel/export-page.ts`                   | Export section → `components/export-section-component.ts`; Export selection / Export as PDF dialogs → `components/export-modal-component.ts`                                          |
+| `workspace/main-menu/main-menu-page.ts`                   | `left-sidebar/main-menu-component.ts` (the menu renders inside the left sidebar, even where it overlaps the viewport)                                                                 |
+| `workspace/main-menu/renderer-page.ts`                    | Menu items → `left-sidebar/main-menu-component.ts`; `toggleWebglRenderingViaMainMenu` → `workspace-page.ts` (spans main menu and canvas)                                              |
 
 ## Not decided yet
 

@@ -1,4 +1,4 @@
-import { ExportFormat } from '@pages/workspace/design-panel/export-page';
+import { ExportFormat } from '@pages/components/export-section-component';
 import { exportTest } from '@tests/panels-features/export/export-fixture';
 import {
   BASIC_BOARD,
@@ -13,12 +13,14 @@ exportTest(
     [3933],
     'SVG export of a board keeps clipping, group opacity and blend mode, and extends bounds when unclipped',
   ),
-  async ({ exportPage, layersPanelPage, exportedSvgPage }) => {
+  async ({ workspacePage, designPanelPage, layersPanelPage, exportedSvgPage }) => {
+    const exportSection = workspacePage.rightSidebar.design.export;
+
     await exportTest.step('Export the "Basic" board as SVG', async () => {
       await layersPanelPage.clickLayerOnLayersTab(ExporterLayer.Basic);
       await layersPanelPage.isLayerWithNameSelected(ExporterLayer.Basic);
-      await exportPage.addExportWithFormat(ExportFormat.SVG);
-      const { download } = await exportPage.exportElement();
+      await exportSection.addExportWithFormat(ExportFormat.SVG);
+      const { download } = await exportSection.exportElement();
       await exportedSvgPage.open(download);
       exportedSvgPage.checkFileName('Basic.svg');
     });
@@ -57,8 +59,8 @@ exportTest(
     await exportTest.step(
       'Disable "Clip content" for the "Basic" board and export it again',
       async () => {
-        await exportPage.clickOnClipContentButton();
-        const { download } = await exportPage.exportElement();
+        await designPanelPage.clickOnClipContentButton();
+        const { download } = await exportSection.exportElement();
         await exportedSvgPage.open(download);
         exportedSvgPage.checkFileName('Basic.svg');
       },
@@ -86,7 +88,9 @@ exportTest(
     [3934],
     'Export selection of several elements as SVG downloads a ZIP with one SVG per element',
   ),
-  async ({ exportPage, layersPanelPage }) => {
+  async ({ workspacePage, layersPanelPage }) => {
+    const exportSection = workspacePage.rightSidebar.design.export;
+
     const layers = [ExporterLayer.Rect, ExporterLayer.Basic, ExporterLayer.Fills];
 
     await exportTest.step(
@@ -100,18 +104,18 @@ exportTest(
     );
 
     await exportTest.step('Add an SVG export to the selection', async () => {
-      await exportPage.addExportWithFormat(ExportFormat.SVG);
+      await exportSection.addExportWithFormat(ExportFormat.SVG);
     });
 
     await exportTest.step(
       'Export the 3 elements from the "Export selection" dialog',
       async () => {
-        const result = await exportPage.exportElementsFromDialog(layers.length);
-        exportPage.checkDownloadedFileName(
+        const result = await exportSection.exportElementsFromDialog(layers.length);
+        exportSection.checkDownloadedFileName(
           result.download,
           `${ExporterPage.Boards}.zip`,
         );
-        exportPage.checkExportedByBackend(result, '/api/export/jobs');
+        exportSection.checkExportedByBackend(result, '/api/export/jobs');
       },
     );
   },
