@@ -38,7 +38,8 @@ export class PagesPanelPage extends MainPage {
       if (index !== null) {
         return this.pagesList.nth(index);
       }
-      return this.pagesList.filter({ hasText: new RegExp(`^${name}$`) });
+      const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      return this.pagesList.filter({ hasText: new RegExp(`^${escapedName}$`) });
     };
     this.secondPageListItem = this.pagesList.filter({ hasText: /^Page 2$/ });
     this.selectedPage = page.locator('.main_ui_workspace_sidebar_sitemap__selected');
