@@ -326,21 +326,24 @@ demoAccountFileTest.describe(() => {
     },
   );
 
-  demoAccountFileTest(qase([743], 'Remove columns guides'), async ({ mainPage }) => {
-    await demoAccountFileTest.step('Remove columns guides', async () => {
-      await designPanelPage.clickAddGuidesButton();
-      await designPanelPage.selectGuidesType('Columns');
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.clickRemoveGuidesButton();
-      await mainPage.waitForChangeIsSaved();
-    });
-
-    await demoAccountFileTest.step('Verify board without guides', async () => {
-      await expect(mainPage.viewport).toHaveScreenshot('board-without-guide.png', {
-        mask: mainPage.maskViewport(),
+  demoAccountFileTest(
+    qase([3271], 'Remove columns guides'),
+    async ({ mainPage }) => {
+      await demoAccountFileTest.step('Remove columns guides', async () => {
+        await designPanelPage.clickAddGuidesButton();
+        await designPanelPage.selectGuidesType('Columns');
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.clickRemoveGuidesButton();
+        await mainPage.waitForChangeIsSaved();
       });
-    });
-  });
+
+      await demoAccountFileTest.step('Verify board without guides', async () => {
+        await expect(mainPage.viewport).toHaveScreenshot('board-without-guide.png', {
+          mask: mainPage.maskViewport(),
+        });
+      });
+    },
+  );
 
   demoAccountFileTest(qase([3272], 'Set rows guides'), async ({ mainPage }) => {
     await demoAccountFileTest.step('Add rows guides', async () => {
