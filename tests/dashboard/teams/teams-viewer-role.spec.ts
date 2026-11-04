@@ -27,21 +27,21 @@ demoTeamWithInviteeTest.describe('Viewer Role', () => {
       const layersPanelPage = new LayersPanelPage(invitee.page);
       const pagesPanelPage = new PagesPanelPage(invitee.page);
       const viewerMainPage = await openTeamFile(invitee.page, team.id);
-      const { inspectTabComponent } = invitee.workspacePage.rightSidebar;
+      const { viewerInspectComponent } = invitee.workspacePage.rightSidebar;
 
       await demoTeamWithInviteeTest.step(
         '(1870) Viewer cannot edit layers',
         async () => {
           await viewerMainPage.isDesignTabVisible(false);
           await layersPanelPage.clickMainComponentOnLayersTab();
-          await inspectTabComponent.checkLayerInfo('Rectangle', 'Main component');
-          await inspectTabComponent.checkSelectedViews('HEX', 'Styles');
-          await inspectTabComponent.checkSizeAndPosition({
+          await viewerInspectComponent.checkLayerInfo('Rectangle', 'Main component');
+          await viewerInspectComponent.checkSelectedViews('HEX', 'Styles');
+          await viewerInspectComponent.checkSizeAndPosition({
             width: '100px',
             height: '100px',
           });
-          await inspectTabComponent.checkExportSectionVisible();
-          await inspectTabComponent.checkReadOnly();
+          await viewerInspectComponent.checkExportSectionVisible();
+          await viewerInspectComponent.checkReadOnly();
         },
       );
 
