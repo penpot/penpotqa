@@ -1,13 +1,11 @@
 import { TeamPage } from '@pages/dashboard/team-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { PagesPanelPage } from '@pages/workspace/panels-features/pages-panel-page';
-import { expect } from '@playwright/test';
+import { WorkspacePage } from '@pages/workspace/workspace-page';
 import { demoTeamWithInviteeTest } from 'fixtures';
 import { InvitationRole } from 'helpers/teams/invitation-role';
 import { openTeamFile } from 'helpers/teams/open-team-file';
 import { qase } from 'playwright-qase-reporter/playwright';
-
-const maxDiffPixelRatio = 0.001;
 
 demoTeamWithInviteeTest.describe('Viewer Role', () => {
   demoTeamWithInviteeTest.use({ inviteeRole: InvitationRole.Viewer });
@@ -18,9 +16,6 @@ demoTeamWithInviteeTest.describe('Viewer Role', () => {
       await mainPage.createDefaultRectangleByCoordinates(200, 300);
       await mainPage.createComponentViaRightClick();
       await mainPage.waitForChangeIsSaved();
-      // Leave the file so the viewer is its only user: a second avatar widens the
-      // masked users section and pushes the screenshot past its tolerance.
-      await mainPage.clickPencilBoxButton();
     },
   );
 
@@ -33,19 +28,18 @@ demoTeamWithInviteeTest.describe('Viewer Role', () => {
       const layersPanelPage = new LayersPanelPage(invitee.page);
       const pagesPanelPage = new PagesPanelPage(invitee.page);
       const viewerMainPage = await openTeamFile(invitee.page, team.id);
+      const { inspect } = new WorkspacePage(invitee.page).rightSidebar;
 
       await demoTeamWithInviteeTest.step(
         '(1870) Viewer cannot edit layers',
         async () => {
           await viewerMainPage.isDesignTabVisible(false);
           await layersPanelPage.clickMainComponentOnLayersTab();
-          await expect(viewerMainPage.fileRightSidebarAside).toHaveScreenshot(
-            'right-sidebar-image.png',
-            {
-              maxDiffPixelRatio,
-              mask: [viewerMainPage.usersSection],
-            },
-          );
+          await inspect.checkLayerInfo('Rectangle', 'Main component');
+          await inspect.checkSelectedViews('HEX', 'Styles');
+          await inspect.checkSizeAndPosition({ width: '100px', height: '100px' });
+          await inspect.checkExportSectionVisible();
+          await inspect.checkReadOnly();
         },
       );
 
