@@ -1,17 +1,17 @@
 import { PluginsPage } from '@pages/workspace/plugins-page';
-import { mainAccountFileTest } from 'fixtures';
+import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 let pluginsPage: PluginsPage;
 
-mainAccountFileTest.beforeEach(async ({ page }) => {
+demoAccountFileTest.beforeEach(async ({ page }) => {
   pluginsPage = new PluginsPage(page);
 });
 
-mainAccountFileTest(
+demoAccountFileTest(
   qase([1837, 1839, 1844], 'Install, open and delete a plugin'),
   async () => {
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       '1837, Install a plugin by URL (via plugin icon in toolbar)',
       async () => {
         await pluginsPage.clickPluginsButton();
@@ -26,7 +26,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       '1844, Open a plugin (via Main menu 3 dots > Plugins > plugin name)',
       async () => {
         await pluginsPage.clickMainMenuButton();
@@ -36,7 +36,7 @@ mainAccountFileTest(
       },
     );
 
-    await mainAccountFileTest.step(
+    await demoAccountFileTest.step(
       '1839, Delete a plugin from the "Plugins Manager" modal (via delete icon button)',
       async () => {
         await pluginsPage.clickMainMenuButton();
