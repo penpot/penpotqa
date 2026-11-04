@@ -36,3 +36,38 @@ demoAccountFileTest(qase([3403], 'Create Arrow (Toolbar)'), async ({ mainPage })
     },
   );
 });
+
+demoAccountFileTest(
+  qase(
+    [3412],
+    'Draw an arrow with a single click and no drag creates a default arrow',
+  ),
+  async ({ mainPage }) => {
+    await demoAccountFileTest.step('Select the Arrow tool', async () => {
+      await mainPage.clickCreateArrowButton();
+      await mainPage.isShapeToolActive('arrow');
+    });
+
+    await demoAccountFileTest.step(
+      'Click once on the canvas without dragging',
+      async () => {
+        await mainPage.clickViewportByCoordinates(400, 400);
+        await mainPage.waitForChangeIsSaved();
+      },
+    );
+
+    await demoAccountFileTest.step(
+      'Verify a default 100px horizontal arrow is created',
+      async () => {
+        await layersPanelPage.isVisibleLayersCount(1);
+        await layersPanelPage.isLayerNameDisplayed('Path');
+        await mainPage.clickOnDesignTab();
+        await designPanelPage.checkSizeWidth('100');
+        await designPanelPage.checkSizeHeight('0.01');
+        await designPanelPage.checkStrokeWidth('1');
+        await expect(designPanelPage.strokeCapStartDropdown).toHaveText('None');
+        await expect(designPanelPage.strokeCapEndDropdown).toHaveText('Triangle');
+      },
+    );
+  },
+);

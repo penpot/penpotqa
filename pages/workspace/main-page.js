@@ -1159,6 +1159,18 @@ exports.MainPage = class MainPage extends BasePage {
     await cellLocator.click();
   }
 
+  /** @param {string} tool The shape tool shown in the toolbar, e.g. 'arrow'. */
+  async isShapeToolActive(tool) {
+    await expect(this.shapeToolButton, `${tool} tool is active`).toHaveAttribute(
+      'data-tool',
+      tool,
+    );
+    await expect(this.shapeToolButton, `${tool} tool is active`).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+  }
+
   async isToolBarVisible(visible = true) {
     visible
       ? await expect(this.toolBarWindow).toBeVisible()
