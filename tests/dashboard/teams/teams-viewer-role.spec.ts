@@ -40,7 +40,7 @@ demoTeamWithInviteeTest.describe('Viewer Role', () => {
             width: '100px',
             height: '100px',
           });
-          await viewerInspectComponent.checkExportSectionVisible();
+          await viewerInspectComponent.export.checkIsVisible();
           await viewerInspectComponent.checkReadOnly();
         },
       );

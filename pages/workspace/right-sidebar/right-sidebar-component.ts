@@ -4,7 +4,6 @@ import { DesignTabComponent } from '@pages/workspace/right-sidebar/design-tab/de
 import { ExportProgressComponent } from '@pages/workspace/right-sidebar/export-progress-component';
 import { InspectTabComponent } from '@pages/workspace/right-sidebar/inspect-tab-component';
 
-
 export class RightSidebarComponent extends BaseComponent {
   readonly design: DesignTabComponent;
   readonly inspectTabComponent: InspectTabComponent;

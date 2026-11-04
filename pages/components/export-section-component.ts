@@ -208,6 +208,17 @@ export class ExportSectionComponent extends BaseComponent {
     );
   }
 
+  async checkIsVisible() {
+    await expect(
+      this.root.getByText('Export', { exact: true }),
+      'Export section is shown',
+    ).toBeVisible();
+    await expect(
+      this.addExportButton,
+      'Export section has the "Add export" button',
+    ).toBeVisible();
+  }
+
   async checkExportElementButtonIsHidden() {
     await expect(
       this.exportElementButton,
