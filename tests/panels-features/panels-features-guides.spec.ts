@@ -523,7 +523,7 @@ demoAccountFileTest.describe(() => {
 
   demoAccountFileTest(
     qase(
-      [2842, 763],
+      [2842, 763, 816],
       'Hide/show rulers and guides (shortcut and main menu) and clear board guides',
     ),
     async ({ page, mainPage }) => {
