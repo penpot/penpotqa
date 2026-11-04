@@ -312,25 +312,40 @@ demoAccountFileTest.describe(() => {
   );
 
   demoAccountFileTest(
-    qase([431], 'Change text color and opacity by typing color code'),
+    qase(
+      [431, 1753],
+      'Change text color and opacity by typing color code and check it in Inspect',
+    ),
     async ({ mainPage }) => {
-      await designPanelPage.clickFillColorIcon();
-      await colorPalettePage.setHex('#304d6a');
-      await designPanelPage.changeOpacityForFill('50');
-      await mainPage.clickMoveButton();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.focusLayerViaShortcut();
-      await mainPage.clickOnLayerOnCanvas();
-      await expect(mainPage.viewport).toHaveScreenshot('text-fill-opacity.png', {
-        mask: mainPage.maskViewport(),
-      });
-      await mainPage.focusLayerViaShortcut();
-      await inspectPanelPage.openInspectTab();
-      await inspectPanelPage.openComputedTab();
-      await expect(inspectPanelPage.textBlockOnInspect).toHaveScreenshot(
-        'inspect-text-block-color.png',
-        {
-          mask: mainPage.maskViewport(),
+      await demoAccountFileTest.step(
+        '431 Change text color and opacity by typing color code',
+        async () => {
+          await designPanelPage.clickFillColorIcon();
+          await colorPalettePage.setHex('#304d6a');
+          await designPanelPage.changeOpacityForFill('50');
+          await mainPage.clickMoveButton();
+          await mainPage.waitForChangeIsSaved();
+          await mainPage.focusLayerViaShortcut();
+          await mainPage.clickOnLayerOnCanvas();
+          await expect(mainPage.viewport).toHaveScreenshot('text-fill-opacity.png', {
+            mask: mainPage.maskViewport(),
+          });
+          await mainPage.focusLayerViaShortcut();
+        },
+      );
+
+      await demoAccountFileTest.step(
+        '1753 Check text color in inspect mode',
+        async () => {
+          await inspectPanelPage.openInspectTab();
+          await inspectPanelPage.openComputedTab();
+          await inspectPanelPage.checkTextColor('#304d6a');
+          await expect(inspectPanelPage.textBlockOnInspect).toHaveScreenshot(
+            'inspect-text-block-color.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
         },
       );
     },
