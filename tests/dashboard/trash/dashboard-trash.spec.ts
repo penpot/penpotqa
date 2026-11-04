@@ -283,7 +283,6 @@ demoTeamWithMembersTest.describe('As Viewer', () => {
     dashboardPage = new DashboardPage(member.page);
 
     await dashboardPage.isHeaderDisplayed('Projects');
-    await dashboardPage.hideLibrariesAndTemplatesCarrousel();
   });
 
   demoTeamWithMembersTest(qase(2697, 'Viewer cannot access trash'), async () => {
