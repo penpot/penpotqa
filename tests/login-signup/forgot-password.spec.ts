@@ -1,7 +1,6 @@
-import { expect, test } from '@playwright/test';
 import {
   checkRecoveryText,
-  getMessageSubject,
+  checkLastMessageSubject,
   getVerificationMessage,
   waitForMessageCount,
   waitSecondMessage,
@@ -13,12 +12,13 @@ import { ProfilePage } from '@pages/profile-page';
 import { RegisterPage } from '@pages/register-page';
 import { registerTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
+import { demoCredentialsTest } from './login-signup-fixtures';
 
 let forgotPasswordPage: ForgotPasswordPage;
 let loginPage: LoginPage;
 
-test.describe('Forgot password form validations', () => {
-  test.beforeEach(async ({ page }) => {
+demoCredentialsTest.describe('Forgot password form validations', () => {
+  demoCredentialsTest.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page);
     forgotPasswordPage = new ForgotPasswordPage(page);
 
@@ -26,12 +26,18 @@ test.describe('Forgot password form validations', () => {
     await loginPage.clickOnForgotPassword();
   });
 
-  test(qase([50], 'Forgot password flow with invalid email'), async () => {
-    await test.step('Verify invalid email prevents password recovery', async () => {
-      await forgotPasswordPage.enterEmail('xxx');
-      await forgotPasswordPage.isRecoverPasswordButtonDisabled();
-    });
-  });
+  demoCredentialsTest(
+    qase([50], 'Forgot password flow with invalid email'),
+    async () => {
+      await demoCredentialsTest.step(
+        'Verify invalid email prevents password recovery',
+        async () => {
+          await forgotPasswordPage.enterEmail('xxx');
+          await forgotPasswordPage.isRecoverPasswordButtonDisabled();
+        },
+      );
+    },
+  );
 });
 
 registerTest.describe(() => {
@@ -72,33 +78,33 @@ registerTest.describe(() => {
   );
 
   registerTest(qase([49], 'Forgot password flow'), async ({ page, email }) => {
-    await test.step('Verify "Password changed" email is received', async () => {
-      await waitForMessageCount(page, email, 3, 60);
-      const subject = await getMessageSubject(email);
-      expect(subject, 'Last email subject should be "Password changed"').toContain(
-        'Password changed',
-      );
-    });
+    await registerTest.step(
+      'Verify "Password changed" email is received',
+      async () => {
+        await waitForMessageCount(page, email, 3, 60);
+        await checkLastMessageSubject(email, 'Password changed');
+      },
+    );
 
-    await test.step('Login with new password after recovery', async () => {
+    await registerTest.step('Login with new password after recovery', async () => {
       await loginPage.enterEmailAndClickOnContinue(email);
       await loginPage.enterPwd(newPwd);
       await loginPage.clickLoginButton();
     });
 
-    await test.step('Verify successful login to dashboard', async () => {
+    await registerTest.step('Verify successful login to dashboard', async () => {
       await dashboardPage.isDashboardOpenedAfterLogin();
     });
   });
 
   registerTest(qase([52], 'Login with old password'), async ({ email }) => {
-    await test.step('Attempt to login with old password', async () => {
+    await registerTest.step('Attempt to login with old password', async () => {
       await loginPage.enterEmailAndClickOnContinue(email);
       await loginPage.enterPwd(process.env.LOGIN_PWD);
       await loginPage.clickLoginButton();
     });
 
-    await test.step('Verify login fails with old password', async () => {
+    await registerTest.step('Verify login fails with old password', async () => {
       await loginPage.isLoginErrorMessageDisplayed(
         'Email or password is incorrect.',
       );

@@ -1,11 +1,10 @@
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { LoginPage } from '@pages/login-page';
 import { ProfilePage } from '@pages/profile-page';
-import { expect } from '@playwright/test';
 import { registerTest } from 'fixtures';
 import {
   checkPasswordChangedText,
-  getMessageSubject,
+  checkLastMessageSubject,
   getMessageText,
   waitForMessageCount,
 } from 'helpers/gmail';
@@ -70,10 +69,7 @@ registerTest(
     await registerTest.step('A "Password changed" email is received', async () => {
       // The first email is the registration one.
       await waitForMessageCount(page, email, 2, 60);
-      const subject = await getMessageSubject(email);
-      expect(subject, 'Last email subject should be "Password changed"').toContain(
-        'Password changed',
-      );
+      await checkLastMessageSubject(email, 'Password changed');
       await checkPasswordChangedText(await getMessageText(email), name);
     });
 
