@@ -10,6 +10,7 @@ import { importDraftFile } from 'helpers/files/import-draft-file';
 import { registerNewAccount } from './helpers/accounts/register-new-account';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { MainPage } from '@pages/workspace/main-page';
+import { WorkspacePage } from '@pages/workspace/workspace-page';
 import { createTeamName } from 'helpers/teams/create-team-name';
 import { createTeam } from 'helpers/teams/create-team';
 import { setDemoUserName } from 'helpers/accounts/set-demo-user-name';
@@ -154,7 +155,7 @@ type DemoTeamWithInviteeFixtures = {
   dashboardPage: DashboardPage;
   mainPage: MainPage;
   team: { id: string; name: string; projectId: string };
-  invitee: { page: Page; name: string };
+  invitee: { page: Page; name: string; workspacePage: WorkspacePage };
 };
 
 type DemoTeamWithInviteeOptions = {
@@ -163,7 +164,8 @@ type DemoTeamWithInviteeOptions = {
 
 // Two demo accounts sharing a team, all set up via the API: the owner (`page`, named
 // "QA Tester") with a blank file of the team open in the editor, and `invitee`
-// (named "QA <role>") already a member, in its own browser context, on its dashboard.
+// (named "QA <role>") already a member, in its own browser context, on its dashboard;
+// its `workspacePage` drives the workspace once it opens a file there.
 // Set the `inviteeRole` option to change the invitee's role.
 export const demoTeamWithInviteeTest = demoAccountApiFixture.extend<
   DemoTeamWithInviteeFixtures & DemoTeamWithInviteeOptions
@@ -190,7 +192,11 @@ export const demoTeamWithInviteeTest = demoAccountApiFixture.extend<
       team.id,
       inviteeRole,
     );
-    await use({ page: session.page, name });
+    await use({
+      page: session.page,
+      name,
+      workspacePage: new WorkspacePage(session.page),
+    });
     await session.close();
   },
   // `auto: true`: open the file even if the test doesn't destructure mainPage.

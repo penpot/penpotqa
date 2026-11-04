@@ -5,7 +5,7 @@ import { InspectTabComponent } from '@pages/workspace/right-sidebar/inspect-tab-
 
 export class RightSidebarComponent extends BaseComponent {
   readonly design: DesignTabComponent;
-  readonly inspect: InspectTabComponent;
+  readonly inspectTabComponent: InspectTabComponent;
 
   constructor(page: Page, root: Locator) {
     super(page, root);
@@ -14,6 +14,6 @@ export class RightSidebarComponent extends BaseComponent {
       root.getByRole('tabpanel', { name: 'design' }),
     );
     // Viewers get the inspect content straight in the sidebar, with no tab panel.
-    this.inspect = new InspectTabComponent(page, root);
+    this.inspectTabComponent = new InspectTabComponent(page, root);
   }
 }

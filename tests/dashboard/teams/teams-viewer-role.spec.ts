@@ -1,7 +1,6 @@
 import { TeamPage } from '@pages/dashboard/team-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { PagesPanelPage } from '@pages/workspace/panels-features/pages-panel-page';
-import { WorkspacePage } from '@pages/workspace/workspace-page';
 import { demoTeamWithInviteeTest } from 'fixtures';
 import { InvitationRole } from 'helpers/teams/invitation-role';
 import { openTeamFile } from 'helpers/teams/open-team-file';
@@ -28,18 +27,21 @@ demoTeamWithInviteeTest.describe('Viewer Role', () => {
       const layersPanelPage = new LayersPanelPage(invitee.page);
       const pagesPanelPage = new PagesPanelPage(invitee.page);
       const viewerMainPage = await openTeamFile(invitee.page, team.id);
-      const { inspect } = new WorkspacePage(invitee.page).rightSidebar;
+      const { inspectTabComponent } = invitee.workspacePage.rightSidebar;
 
       await demoTeamWithInviteeTest.step(
         '(1870) Viewer cannot edit layers',
         async () => {
           await viewerMainPage.isDesignTabVisible(false);
           await layersPanelPage.clickMainComponentOnLayersTab();
-          await inspect.checkLayerInfo('Rectangle', 'Main component');
-          await inspect.checkSelectedViews('HEX', 'Styles');
-          await inspect.checkSizeAndPosition({ width: '100px', height: '100px' });
-          await inspect.checkExportSectionVisible();
-          await inspect.checkReadOnly();
+          await inspectTabComponent.checkLayerInfo('Rectangle', 'Main component');
+          await inspectTabComponent.checkSelectedViews('HEX', 'Styles');
+          await inspectTabComponent.checkSizeAndPosition({
+            width: '100px',
+            height: '100px',
+          });
+          await inspectTabComponent.checkExportSectionVisible();
+          await inspectTabComponent.checkReadOnly();
         },
       );
 
