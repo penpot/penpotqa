@@ -1,14 +1,17 @@
-import { ExportPage } from '@pages/workspace/design-panel/export-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import type { ExportSectionComponent } from '@pages/components/export-section-component';
+import { WorkspacePage } from '@pages/workspace/workspace-page';
 import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 const defaultNameBoard = 'Board';
-let exportPage: ExportPage;
+let workspacePage: WorkspacePage;
+let exportSection: ExportSectionComponent;
 let layersPanelPage: LayersPanelPage;
 
 demoAccountFileTest.beforeEach(async ({ page }) => {
-  exportPage = new ExportPage(page);
+  workspacePage = new WorkspacePage(page);
+  exportSection = workspacePage.rightSidebar.design.export;
   layersPanelPage = new LayersPanelPage(page);
 });
 
@@ -18,8 +21,8 @@ demoAccountFileTest(
     await mainPage.clickCreateRectangleButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-    await exportPage.clickAddExportButton();
-    await exportPage.isExportElementButtonDisplayed('Export 1 element');
+    await exportSection.clickAddExportButton();
+    await exportSection.checkExportElementButton('Export 1 element');
   },
 );
 
@@ -29,10 +32,10 @@ demoAccountFileTest(
     await mainPage.clickCreateRectangleButton();
     await mainPage.clickViewportTwice();
     await mainPage.waitForChangeIsSaved();
-    await exportPage.clickAddExportButton();
-    await exportPage.isExportElementButtonDisplayed('Export 1 element');
-    await exportPage.clickRemoveExportButton();
-    await exportPage.isExportElementButtonNotDisplayed();
+    await exportSection.clickAddExportButton();
+    await exportSection.checkExportElementButton('Export 1 element');
+    await exportSection.clickRemoveExportButton();
+    await exportSection.checkExportElementButtonIsHidden();
   },
 );
 
@@ -40,6 +43,7 @@ demoAccountFileTest(
   qase([905], 'Export boards to PDF (via main menu)'),
   async ({ mainPage }) => {
     const numBoards: number = 2;
+    const { mainMenu } = workspacePage.leftSidebar;
 
     await demoAccountFileTest.step('Create two boards', async () => {
       await mainPage.createDefaultBoardByCoordinates(100, 150);
@@ -49,15 +53,15 @@ demoAccountFileTest(
     });
 
     await demoAccountFileTest.step('Select created boards', async () => {
-      await mainPage.clickMainMenuButton();
-      await mainPage.clickEditMainMenuItem();
-      await mainPage.clickSelectAllMainMenuSubItem();
+      await mainMenu.selectAll();
     });
 
     await demoAccountFileTest.step('Export boards as PDF', async () => {
-      await mainPage.clickMainMenuButton();
-      await mainPage.clickFileMainMenuItem();
-      await exportPage.exportBoardsAsPDFViaMenu(numBoards);
+      await mainMenu.clickMainMenuButton();
+      await mainMenu.clickFileMainMenuItem();
+      await mainMenu.clickExportBoardsAsPDFMenuSubItem();
+      await workspacePage.exportModal.exportBoardsAsPDF();
+      await workspacePage.rightSidebar.exportProgress.checkExportComplete(numBoards);
     });
   },
 );

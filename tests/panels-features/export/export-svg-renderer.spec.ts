@@ -1,4 +1,4 @@
-import { ExportFormat } from '@pages/workspace/design-panel/export-page';
+import { ExportFormat } from '@pages/components/export-section-component';
 import type { Rgba } from '@pages/workspace/exported-svg-page';
 import { exportTest } from '@tests/panels-features/export/export-fixture';
 import {
@@ -16,15 +16,17 @@ exportTest(
     [3935],
     'SVG export follows the active renderer when WebGL rendering is toggled',
   ),
-  async ({ exportPage, layersPanelPage, rendererPage, exportedSvgPage }) => {
+  async ({ workspacePage, layersPanelPage, exportedSvgPage }) => {
+    const exportSection = workspacePage.rightSidebar.design.export;
+
     await exportTest.step(
       `Export "${ExporterLayer.Shadow}" as SVG with WebGL rendering on`,
       async () => {
         await layersPanelPage.clickLayerOnLayersTab(ExporterLayer.Shadow);
         await layersPanelPage.isLayerWithNameSelected(ExporterLayer.Shadow);
-        await exportPage.addExportWithFormat(ExportFormat.SVG);
-        const result = await exportPage.exportElement();
-        exportPage.checkExportedInBrowser(result);
+        await exportSection.addExportWithFormat(ExportFormat.SVG);
+        const result = await exportSection.exportElement();
+        exportSection.checkExportedInBrowser(result);
         await exportedSvgPage.open(result.download);
         exportedSvgPage.checkFileName('Shadow.svg');
         await exportedSvgPage.checkPixel(
@@ -38,7 +40,7 @@ exportTest(
     await exportTest.step(
       'Disable "WebGL rendering (beta)" in Main menu > Preferences',
       async () => {
-        await rendererPage.toggleWebglRenderingViaMainMenu(false);
+        await workspacePage.toggleWebglRenderingViaMainMenu(false);
       },
     );
 
@@ -47,8 +49,8 @@ exportTest(
       async () => {
         await layersPanelPage.clickLayerOnLayersTab(ExporterLayer.Shadow);
         await layersPanelPage.isLayerWithNameSelected(ExporterLayer.Shadow);
-        const result = await exportPage.exportElement();
-        exportPage.checkExportedByBackend(result);
+        const result = await exportSection.exportElement();
+        exportSection.checkExportedByBackend(result);
         await exportedSvgPage.open(result.download);
         exportedSvgPage.checkFileName('Shadow.svg');
         await exportedSvgPage.checkPixel(
@@ -70,20 +72,22 @@ exportTest.describe('From a blank file', () => {
 
   exportTest(
     qase([348], 'Export ellipse (SVG) with and without suffix'),
-    async ({ mainPage, exportPage, layersPanelPage, exportedSvgPage }) => {
+    async ({ mainPage, workspacePage, layersPanelPage, exportedSvgPage }) => {
+      const exportSection = workspacePage.rightSidebar.design.export;
+
       await exportTest.step('Create a default ellipse and select it', async () => {
         await mainPage.createDefaultEllipseByCoordinates(200, 300);
         await layersPanelPage.isLayerWithNameSelected(ellipseName);
       });
 
       await exportTest.step('Add an SVG export without suffix', async () => {
-        await exportPage.addExportWithFormat(ExportFormat.SVG);
-        await exportPage.checkExportSuffix('');
+        await exportSection.addExportWithFormat(ExportFormat.SVG);
+        await exportSection.checkExportSuffix('');
       });
 
       await exportTest.step('Export the ellipse', async () => {
-        const result = await exportPage.exportElement();
-        exportPage.checkExportedInBrowser(result);
+        const result = await exportSection.exportElement();
+        exportSection.checkExportedInBrowser(result);
         await exportedSvgPage.open(result.download);
         exportedSvgPage.checkFileName(`${ellipseName}.svg`);
       });
@@ -123,8 +127,8 @@ exportTest.describe('From a blank file', () => {
       await exportTest.step(
         'Export the ellipse with the "testSVG" suffix',
         async () => {
-          await exportPage.fillExportSuffix('testSVG');
-          const { download } = await exportPage.exportElement();
+          await exportSection.fillExportSuffix('testSVG');
+          const { download } = await exportSection.exportElement();
           await exportedSvgPage.open(download);
           exportedSvgPage.checkFileName(`${ellipseName}testSVG.svg`);
           await exportedSvgPage.checkSingleEllipse(

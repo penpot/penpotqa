@@ -1,5 +1,9 @@
 const { BasePage } = require('../base-page');
 const { expect } = require('@playwright/test');
+const {
+  ExportSectionComponent,
+  getExportSectionRoot,
+} = require('../components/export-section-component');
 
 exports.ViewModePage = class ViewModePage extends BasePage {
   /**
@@ -13,6 +17,11 @@ exports.ViewModePage = class ViewModePage extends BasePage {
     this.viewerLayoutSection = page.locator('#viewer-layout');
     this.inspectButton = page.getByRole('button', { name: 'Inspect' });
     this.rightSidebar = page.locator(`aside[class*='inspect_right_sidebar']`);
+    // Inspect tab shows the same Export section as the workspace Design tab
+    this.exportSection = new ExportSectionComponent(
+      page,
+      getExportSectionRoot(this.rightSidebar),
+    );
     this.fullScreenButton = page.getByTitle('Full Screen', { exact: true });
     this.fullScreenSection = page.locator(
       `section[class*="main_ui_viewer__fullscreen"]`,

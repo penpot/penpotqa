@@ -1,4 +1,4 @@
-import { ExportFormat } from '@pages/workspace/design-panel/export-page';
+import { ExportFormat } from '@pages/components/export-section-component';
 import { exportTest } from '@tests/panels-features/export/export-fixture';
 import {
   ExporterLayer,
@@ -17,7 +17,9 @@ exportTest(
     [3942],
     'SVG export of inner, center and outer solid strokes keeps stroke alignment',
   ),
-  async ({ exportPage, layersPanelPage, exportedSvgPage }) => {
+  async ({ workspacePage, designPanelPage, layersPanelPage, exportedSvgPage }) => {
+    const exportSection = workspacePage.rightSidebar.design.export;
+
     for (const layer of [
       ExporterLayer.Inner,
       ExporterLayer.Center,
@@ -28,8 +30,8 @@ exportTest(
       await exportTest.step(`Export "${layer}" as SVG`, async () => {
         await layersPanelPage.clickLayerOnLayersTab(layer);
         await layersPanelPage.isLayerWithNameSelected(layer);
-        await exportPage.addExportWithFormat(ExportFormat.SVG);
-        const { download } = await exportPage.exportElement();
+        await exportSection.addExportWithFormat(ExportFormat.SVG);
+        const { download } = await exportSection.exportElement();
         await exportedSvgPage.open(download);
         exportedSvgPage.checkFileName(`${layer}.svg`);
       });
@@ -51,13 +53,13 @@ exportTest(
     await exportTest.step(
       `Rotate the "${ExporterLayer.Outer}" layer 30°`,
       async () => {
-        await exportPage.changeRotationForLayer(ROTATED_OUTER_STROKE.rotation);
-        await exportPage.checkRotationForLayer(ROTATED_OUTER_STROKE.rotation);
+        await designPanelPage.changeRotationForLayer(ROTATED_OUTER_STROKE.rotation);
+        await designPanelPage.checkRotationForLayer(ROTATED_OUTER_STROKE.rotation);
       },
     );
 
     await exportTest.step(`Export "${ExporterLayer.Outer}" again`, async () => {
-      const { download } = await exportPage.exportElement();
+      const { download } = await exportSection.exportElement();
       await exportedSvgPage.open(download);
       exportedSvgPage.checkFileName(`${ExporterLayer.Outer}.svg`);
     });

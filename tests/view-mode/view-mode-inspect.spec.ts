@@ -1,5 +1,4 @@
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
-import { ExportPage } from '@pages/workspace/design-panel/export-page';
 import { InspectPanelPage } from '@pages/workspace/inspect-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { ViewModePage } from '@pages/workspace/view-mode-page';
@@ -46,7 +45,6 @@ demoAccountFileTest(
   qase([717], 'Inspect functionality - Export'),
   async ({ mainPage }) => {
     let inspectPanelPage: InspectPanelPage;
-    let exportPage: ExportPage;
 
     await demoAccountFileTest.step(
       'Create board with a rectangle inside it',
@@ -68,7 +66,6 @@ demoAccountFileTest(
         const newPage = await viewModePage.clickViewModeShortcut();
         viewModePage = new ViewModePage(newPage);
         await viewModePage.waitForViewerSection(45000);
-        exportPage = new ExportPage(newPage);
         await viewModePage.openInspectTab();
         inspectPanelPage = new InspectPanelPage(newPage);
         await inspectPanelPage.openComputedTab();
@@ -78,14 +75,16 @@ demoAccountFileTest(
     await demoAccountFileTest.step(
       'Add export for the element and verify',
       async () => {
-        await exportPage.clickAddExportButtonForViewMode();
-        await exportPage.isViewModeExportRowVisible('PNG', '1x');
-        await exportPage.isExportElementButtonDisplayed('Export 1 element');
+        await viewModePage.exportSection.clickAddExportButton();
+        await viewModePage.exportSection.checkExportRow('PNG', '1x');
+        await viewModePage.exportSection.checkExportElementButton(
+          'Export 1 element',
+        );
       },
     );
 
     await demoAccountFileTest.step('Export the element', async () => {
-      await exportPage.exportElement();
+      await viewModePage.exportSection.exportElement();
     });
   },
 );

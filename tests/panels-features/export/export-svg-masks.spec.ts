@@ -1,4 +1,4 @@
-import { ExportFormat } from '@pages/workspace/design-panel/export-page';
+import { ExportFormat } from '@pages/components/export-section-component';
 import { exportTest } from '@tests/panels-features/export/export-fixture';
 import {
   ExporterLayer,
@@ -17,12 +17,14 @@ exportTest(
     [3937],
     'SVG export of masked groups uses alpha masks, including soft masks and masks with shadows',
   ),
-  async ({ exportPage, layersPanelPage, exportedSvgPage }) => {
+  async ({ workspacePage, layersPanelPage, exportedSvgPage }) => {
+    const exportSection = workspacePage.rightSidebar.design.export;
+
     await exportTest.step('Export "Masked" as SVG', async () => {
       await layersPanelPage.clickLayerOnLayersTab(ExporterLayer.Masked);
       await layersPanelPage.isLayerWithNameSelected(ExporterLayer.Masked);
-      await exportPage.addExportWithFormat(ExportFormat.SVG);
-      const { download } = await exportPage.exportElement();
+      await exportSection.addExportWithFormat(ExportFormat.SVG);
+      const { download } = await exportSection.exportElement();
       await exportedSvgPage.open(download);
       exportedSvgPage.checkFileName('Masked.svg');
     });
@@ -51,8 +53,8 @@ exportTest(
     await exportTest.step('Export "Soft mask" as SVG', async () => {
       await layersPanelPage.clickLayerOnLayersTab(ExporterLayer.SoftMask);
       await layersPanelPage.isLayerWithNameSelected(ExporterLayer.SoftMask);
-      await exportPage.addExportWithFormat(ExportFormat.SVG);
-      const { download } = await exportPage.exportElement();
+      await exportSection.addExportWithFormat(ExportFormat.SVG);
+      const { download } = await exportSection.exportElement();
       await exportedSvgPage.open(download);
       exportedSvgPage.checkFileName('Soft mask.svg');
     });
@@ -76,8 +78,8 @@ exportTest(
     await exportTest.step('Export "Masked shadow" as SVG', async () => {
       await layersPanelPage.clickLayerOnLayersTab(ExporterLayer.MaskedShadow);
       await layersPanelPage.isLayerWithNameSelected(ExporterLayer.MaskedShadow);
-      await exportPage.addExportWithFormat(ExportFormat.SVG);
-      const { download } = await exportPage.exportElement();
+      await exportSection.addExportWithFormat(ExportFormat.SVG);
+      const { download } = await exportSection.exportElement();
       await exportedSvgPage.open(download);
       exportedSvgPage.checkFileName('Masked shadow.svg');
     });

@@ -60,7 +60,9 @@ put them in `helpers/`.
 5. **TypeScript only** for new and moved files. Name each file after the
    class it exports.
 6. **Prefer `getByRole` / `getByTestId` / `getByText`** over CSS selectors,
-   per CLAUDE.md.
+   per CLAUDE.md. A section with no role or label (Export, Shadow, Guides) may
+   be rooted on its class-matched container; if several parents compose it,
+   export that root from one function (e.g. `getExportSectionRoot()`).
 
 ## `BaseComponent` root
 
