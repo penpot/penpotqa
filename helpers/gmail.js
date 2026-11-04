@@ -122,6 +122,14 @@ async function getMessageSubject(email) {
     .catch(console.error);
 }
 
+/** The most recent message's Subject contains `expected` (e.g. "Password
+ * changed"). Call it once the message has arrived, e.g. after
+ * waitForMessageCount(). */
+async function checkLastMessageSubject(email, expected) {
+  const subject = await getMessageSubject(email);
+  expect(subject, `Last email subject for ${email}`).toContain(expected);
+}
+
 /** Like getRegisterMessage(), but returns the raw body text as-is instead
  * of requiring a URL in it — needed for emails with no link at all, e.g.
  * the SSO-activation notice. */
@@ -495,6 +503,7 @@ module.exports = {
   checkEnterpriseInviteSubject,
   getRegisterMessage,
   getMessageSubject,
+  checkLastMessageSubject,
   getMessageText,
   getVerificationMessage,
   checkSsoActivatedEmailSubject,

@@ -11,11 +11,13 @@ export interface DemoUserOptions {
   renderer?: 'svg' | 'wasm';
   /** How long until the backend expires the profile, in hours (e.g. `72h`). */
   expiresIn?: string;
+  /** Skip the onboarding survey/team step (default). Pass `false` to get it. */
+  skipOnboarding?: boolean;
 }
 
 /**
  * Creates a demo Penpot profile via the API and logs in with it, skipping
- * onboarding.
+ * onboarding unless `skipOnboarding: false`.
  *
  * Pass `page.context().request` (not the standalone `request` fixture) —
  * Playwright then stores the login's session cookies straight into the
@@ -23,17 +25,18 @@ export interface DemoUserOptions {
  *
  * @param options.renderer - optional render engine (`svg` | `wasm`).
  * @param options.expiresIn - profile lifetime, defaults to `72h`.
+ * @param options.skipOnboarding - defaults to `true`; `false` keeps the survey.
  * @returns email + password — password only matters for tests that log back
  * in through the UI after logging out (e.g. PENPOT-3094).
  */
 export async function createDemoUser(
   request: APIRequestContext,
-  { renderer, expiresIn = '72h' }: DemoUserOptions = {},
+  { renderer, expiresIn = '72h', skipOnboarding = true }: DemoUserOptions = {},
 ) {
   const { email, password } = await callPenpotApi<DemoProfile>(
     request,
     'create-demo-profile',
-    { skipOnboarding: true, expiresIn, ...(renderer && { renderer }) },
+    { skipOnboarding, expiresIn, ...(renderer && { renderer }) },
   );
   await callPenpotApi(request, 'login-with-password', { email, password });
 
