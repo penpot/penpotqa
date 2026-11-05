@@ -25,6 +25,8 @@ demoAccountFileTest(
     await demoAccountFileTest.step('Add a stroke', async () => {
       await designPanelPage.clickAddStrokeButton();
       await designPanelPage.setStrokeWidth('4');
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.checkStrokeWidth('4');
     });
 
     await demoAccountFileTest.step(
@@ -59,6 +61,23 @@ demoAccountFileTest(
         await layersPanelPage.selectLayerByExactName('Rectangle');
         await designPanelPage.isFillHexCodeSet('#B1B2B5');
         await designPanelPage.checkStrokeIsAdded(false);
+      },
+    );
+
+    await demoAccountFileTest.step(
+      'Click the stroke on the canvas → the stroke path is selected',
+      async () => {
+        const viewportBox = await mainPage.viewport.boundingBox();
+        if (!viewportBox) throw new Error('Could not get bounding box for viewport');
+        // The stroke path is on top of the rectangle, so a click on the shape selects it
+        const rectangle = await mainPage.getSelectionBox();
+        await mainPage.clickOnESC();
+        await mainPage.clickViewportByCoordinates(
+          rectangle.x - viewportBox.x + 1,
+          rectangle.y - viewportBox.y + rectangle.height / 2,
+        );
+        await layersPanelPage.isLayerWithNameSelected('Rectangle (stroke)');
+        await layersPanelPage.isLayerWithNameSelected('Rectangle', false);
       },
     );
   },
