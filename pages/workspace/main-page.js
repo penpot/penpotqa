@@ -1231,11 +1231,18 @@ exports.MainPage = class MainPage extends BasePage {
     return svgString.replace(/\s+/g, '').replace(/[\r\n]+/g, '');
   }
 
+  /**
+   * Copies the selected board as an image from its right-click menu (Copy/Paste as… → Copy as image)
+   * and waits for the "Image copied to clipboard" toast.
+   */
   async copyBoardAsImageViaRightClick() {
     await this.rightClickOnElement();
     await this.copyPasteAsMenuItem.hover();
     await this.copyAsImageMenuItem.click();
-    await expect(this.imageCopiedToClipboardMessage).toBeVisible();
+    await expect(
+      this.imageCopiedToClipboardMessage,
+      '"Image copied to clipboard" toast is visible',
+    ).toBeVisible();
   }
 
   async copyLayerLinkViaRightClick() {

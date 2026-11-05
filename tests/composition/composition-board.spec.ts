@@ -925,13 +925,15 @@ demoAccountFileTest(
     'Create board with a default size preset allow to change frame orientation (Toolbar)',
   ),
   async ({ mainPage }) => {
-    await mainPage.clickCreateBoardButton();
-
     await demoAccountFileTest.step(
-      'Select Expanded preset and change to vertical orientation',
+      '2390 Create a board with a landscape preset switched to portrait',
       async () => {
+        await mainPage.clickCreateBoardButton();
+        await designPanelPage.checkSizePresetsDropdownVisible();
         await designPanelPage.selectSizePresetsOption('Expanded');
+        await designPanelPage.isHorizontalOrientationButtonChecked();
         await designPanelPage.clickOnVerticalOrientationButton();
+        await designPanelPage.isVerticalOrientationButtonChecked();
         await mainPage.clickViewportByCoordinates(100, 150);
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.isVerticalOrientationButtonChecked();
@@ -941,25 +943,28 @@ demoAccountFileTest(
     );
 
     await demoAccountFileTest.step(
-      'Select iPhone 16 preset and change to horizontal orientation',
+      '2390 Create a board with a portrait preset switched to landscape',
       async () => {
+        await mainPage.clickCreateBoardButton();
+        await designPanelPage.checkSizePresetsDropdownVisible();
         await designPanelPage.selectSizePresetsOption('iPhone 16 ');
-        await mainPage.waitForChangeIsSaved();
         await designPanelPage.isVerticalOrientationButtonChecked();
-        await designPanelPage.checkSizeWidth('393');
-        await designPanelPage.checkSizeHeight('852');
         await designPanelPage.clickOnHorizontalOrientationButton();
+        await designPanelPage.isHorizontalOrientationButtonChecked();
+        await mainPage.clickViewportByCoordinates(1000, 150);
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.isHorizontalOrientationButtonChecked();
         await designPanelPage.checkSizeWidth('852');
         await designPanelPage.checkSizeHeight('393');
+        await layersPanelPage.isVisibleLayersCount(2);
       },
     );
 
     await demoAccountFileTest.step(
-      'Change to custom dimensions after preset',
+      '2389 Resize the board to custom dimensions',
       async () => {
         await designPanelPage.changeHeightAndWidthForLayer('500', '750');
+        await mainPage.waitForChangeIsSaved();
         await designPanelPage.checkSizeWidth('750');
         await designPanelPage.checkSizeHeight('500');
       },
