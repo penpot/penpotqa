@@ -2,6 +2,14 @@ import { BaseComponent } from '@pages/base-component';
 import { expect, type Locator, type Page } from '@playwright/test';
 
 /**
+ * Titles of a layer's lock button: they name the action, so a locked layer shows "Unlock".
+ */
+export const LayerLockTitle = {
+  Locked: 'Unlock',
+  Unlocked: 'Lock',
+} as const;
+
+/**
  * Layers panel of the left sidebar (the layer tree).
  *
  * Most of its locators and methods still live in LayersPanelPage and move here
@@ -26,15 +34,15 @@ export class LayersPanelComponent extends BaseComponent {
   }
 
   /**
-   * Returns the lock button of a layer row.
-   * Its only accessible name is its `title`: "Lock" while unlocked, "Unlock" while locked.
+   * Returns the lock button of a layer row, found by its `title` (its only accessible name, see LayerLockTitle).
    * @param name Layer name exactly as shown in the panel.
    * @param locked Whether the layer is currently locked.
    */
   getLayerLockButton(name: string, locked: boolean): Locator {
-    return this.getLayerRow(name).getByTitle(locked ? 'Unlock' : 'Lock', {
-      exact: true,
-    });
+    return this.getLayerRow(name).getByTitle(
+      locked ? LayerLockTitle.Locked : LayerLockTitle.Unlocked,
+      { exact: true },
+    );
   }
 
   /**
