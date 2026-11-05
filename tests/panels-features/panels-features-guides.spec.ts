@@ -28,6 +28,8 @@ demoAccountFileTest.describe(() => {
     await demoAccountFileTest.step('Add square guides', async () => {
       await designPanelPage.clickAddGuidesButton();
       await mainPage.waitForChangeIsSaved();
+      await designPanelPage.checkGuideType('Square');
+      await designPanelPage.checkGuideFieldValue('Size', '16');
     });
 
     await demoAccountFileTest.step(
@@ -52,6 +54,7 @@ demoAccountFileTest.describe(() => {
         await designPanelPage.changeSizeForGuides('8');
         await mainPage.clickViewportTwice();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkGuideFieldValue('Size', '8');
       });
 
       await demoAccountFileTest.step(
@@ -78,6 +81,7 @@ demoAccountFileTest.describe(() => {
         await designPanelPage.changeOpacityForGuides('70');
         await mainPage.clickViewportTwice();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkGuideFieldValue('Opacity', '70');
       });
 
       await demoAccountFileTest.step(
@@ -108,6 +112,7 @@ demoAccountFileTest.describe(() => {
           await designPanelPage.clickGuidesActionsButton();
           await designPanelPage.clickUseDefaultGuidesButton();
           await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkGuideFieldValue('Size', '16');
         },
       );
 
@@ -171,6 +176,7 @@ demoAccountFileTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await designPanelPage.clickRemoveGuidesButton();
       await mainPage.waitForChangeIsSaved();
+      await designPanelPage.checkGuideAdded(false);
     });
 
     await demoAccountFileTest.step('Verify board without guides', async () => {
@@ -185,6 +191,8 @@ demoAccountFileTest.describe(() => {
       await designPanelPage.clickAddGuidesButton();
       await designPanelPage.selectGuidesType('Columns');
       await mainPage.waitForChangeIsSaved();
+      await designPanelPage.checkGuideType('Columns');
+      await designPanelPage.checkGuideFieldValue('Columns/Rows', '12');
     });
 
     await demoAccountFileTest.step(
@@ -210,6 +218,7 @@ demoAccountFileTest.describe(() => {
         await designPanelPage.changeColumnsOrRowsNumberForGuides('8');
         await mainPage.clickViewportTwice();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkGuideFieldValue('Columns/Rows', '8');
       });
 
       await demoAccountFileTest.step(
@@ -239,6 +248,8 @@ demoAccountFileTest.describe(() => {
         await designPanelPage.changeWidthForGuides('10');
         await mainPage.clickViewportTwice();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkGuideFieldValue('Columns/Rows', '3');
+        await designPanelPage.checkGuideFieldValue('Width', '10');
       });
 
       await demoAccountFileTest.step(
@@ -274,6 +285,7 @@ demoAccountFileTest.describe(() => {
           await designPanelPage.changeOpacityForGuides('50');
           await mainPage.clickViewportTwice();
           await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkGuideFieldValue('Opacity', '50');
         },
       );
 
@@ -289,6 +301,7 @@ demoAccountFileTest.describe(() => {
           await designPanelPage.changeOpacityForGuides('100');
           await mainPage.clickViewportTwice();
           await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkGuideFieldValue('Opacity', '100');
           await expect(mainPage.viewport).toHaveScreenshot(
             'columns-guide-opacity-100.png',
             { mask: mainPage.maskViewport() },
@@ -312,6 +325,7 @@ demoAccountFileTest.describe(() => {
           await designPanelPage.clickUseDefaultGuidesButton();
           await mainPage.clickViewportTwice();
           await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkGuideFieldValue('Columns/Rows', '12');
         },
       );
 
@@ -338,6 +352,7 @@ demoAccountFileTest.describe(() => {
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.clickRemoveGuidesButton();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkGuideAdded(false);
       });
 
       await demoAccountFileTest.step('Verify board without guides', async () => {
@@ -353,6 +368,8 @@ demoAccountFileTest.describe(() => {
       await designPanelPage.clickAddGuidesButton();
       await designPanelPage.selectGuidesType('Rows');
       await mainPage.waitForChangeIsSaved();
+      await designPanelPage.checkGuideType('Rows');
+      await designPanelPage.checkGuideFieldValue('Columns/Rows', '12');
     });
 
     await demoAccountFileTest.step(
@@ -372,9 +389,10 @@ demoAccountFileTest.describe(() => {
         await designPanelPage.clickAddGuidesButton();
         await designPanelPage.selectGuidesType('Rows');
         await mainPage.waitForChangeIsSaved();
-        await designPanelPage.changeColumnsOrRowsNumberForGuides('12');
+        await designPanelPage.changeColumnsOrRowsNumberForGuides('8');
         await mainPage.clickViewportTwice();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkGuideFieldValue('Columns/Rows', '8');
       });
 
       await demoAccountFileTest.step(
@@ -404,6 +422,8 @@ demoAccountFileTest.describe(() => {
         await designPanelPage.changeHeightForGuides('20');
         await mainPage.clickViewportTwice();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkGuideFieldValue('Columns/Rows', '3');
+        await designPanelPage.checkGuideFieldValue('Height', '20');
       });
 
       await demoAccountFileTest.step(
@@ -439,6 +459,7 @@ demoAccountFileTest.describe(() => {
           await designPanelPage.changeOpacityForGuides('50');
           await mainPage.clickViewportTwice();
           await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkGuideFieldValue('Opacity', '50');
         },
       );
 
@@ -454,6 +475,7 @@ demoAccountFileTest.describe(() => {
           await designPanelPage.changeOpacityForGuides('100');
           await mainPage.clickViewportTwice();
           await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkGuideFieldValue('Opacity', '100');
           await expect(mainPage.viewport).toHaveScreenshot(
             'rows-guide-opacity-100.png',
             {
@@ -479,6 +501,7 @@ demoAccountFileTest.describe(() => {
           await designPanelPage.clickUseDefaultGuidesButton();
           await mainPage.clickViewportTwice();
           await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkGuideFieldValue('Columns/Rows', '12');
         },
       );
 
@@ -507,6 +530,7 @@ demoAccountFileTest.describe(() => {
           await mainPage.clickShortcutCtrlD();
           await mainPage.waitForChangeIsUnsaved();
           await mainPage.waitForChangeIsSaved();
+          await layersPanelPage.isVisibleLayersCount(2);
         },
       );
 
