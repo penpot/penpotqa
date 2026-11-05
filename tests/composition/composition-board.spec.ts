@@ -41,16 +41,6 @@ demoAccountFileTest.describe(() => {
   });
 
   demoAccountFileTest(
-    qase([217], 'Create board without a default size preset (Toolbar)'),
-    async ({ mainPage }) => {
-      await mainPage.isCreatedLayerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('board.png', {
-        mask: mainPage.maskViewport(),
-      });
-    },
-  );
-
-  demoAccountFileTest(
     qase(
       [219],
       'Rename board on the Layers Panel (by double clicking) with valid name',
@@ -686,6 +676,33 @@ demoAccountFileTest.describe(() => {
     },
   );
 });
+
+demoAccountFileTest(
+  qase([217], 'Create board without a default size preset (Toolbar)'),
+  async ({ mainPage }) => {
+    await demoAccountFileTest.step(
+      'Click the Board tool and verify Size presets dropdown appears',
+      async () => {
+        await mainPage.clickCreateBoardButton();
+        await designPanelPage.checkSizePresetsDropdownVisible();
+      },
+    );
+
+    await demoAccountFileTest.step(
+      'Click on canvas and verify board with default size is created',
+      async () => {
+        await mainPage.clickViewportTwice();
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.isCreatedLayerVisible();
+        await designPanelPage.checkSizeWidth('100');
+        await designPanelPage.checkSizeHeight('100');
+        await expect(mainPage.viewport).toHaveScreenshot('board.png', {
+          mask: mainPage.maskViewport(),
+        });
+      },
+    );
+  },
+);
 
 demoAccountFileTest(
   qase([218], 'Create a board without a default size preset (Shortcut B)'),
