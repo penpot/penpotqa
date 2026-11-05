@@ -3,12 +3,14 @@ import { BasePage } from '@pages/base-page';
 import { ExportModalComponent } from '@pages/components/export-modal-component';
 import { LeftSidebarComponent } from '@pages/workspace/left-sidebar/left-sidebar-component';
 import { RightSidebarComponent } from '@pages/workspace/right-sidebar/right-sidebar-component';
+import { PrototypeOverlayComponent } from '@pages/workspace/viewport/prototype-overlay-component';
 
 /** The file workspace. Exposes one component per UI region. */
 export class WorkspacePage extends BasePage {
   readonly leftSidebar: LeftSidebarComponent;
   readonly rightSidebar: RightSidebarComponent;
   readonly exportModal: ExportModalComponent;
+  readonly prototypeOverlay: PrototypeOverlayComponent;
   /** Canvas the WebGL renderer draws the shapes on; absent with the classic renderer. */
   readonly webglCanvas: Locator;
 
@@ -23,6 +25,10 @@ export class WorkspacePage extends BasePage {
       page.getByTestId('right-sidebar'),
     );
     this.exportModal = new ExportModalComponent(page);
+    this.prototypeOverlay = new PrototypeOverlayComponent(
+      page,
+      page.getByTestId('viewport'),
+    );
     this.webglCanvas = page.getByTestId('canvas-wasm-shapes');
   }
 

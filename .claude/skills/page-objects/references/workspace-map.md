@@ -52,6 +52,7 @@ pages/
     viewport/
       viewport-component.ts
       path-overlay-component.ts    # nodes/segments drawn while editing a path
+      prototype-overlay-component.ts # interaction arrows drawn in the Prototype tab
     palettes/
       color-palette-component.ts
       typography-palette-component.ts
@@ -65,7 +66,7 @@ pages/
         stroke-section-component.ts
         layout-section-component.ts
         text-section-component.ts
-      prototype-tab-component.ts
+      prototype-tab/               # prototype tab + flow / interactions sections
       inspect-tab-component.ts
   view-mode/
     view-mode-page.ts              # own route, so a page
@@ -88,7 +89,7 @@ pages/
 | `workspace/toolbar/path-editor/path-overlay-component.ts` | `viewport/path-overlay-component.ts` (extends `BaseComponent`)                                                                                                                        |
 | `workspace/toolbar/path-editor/path-geometry.ts`          | `helpers/path-geometry.ts`                                                                                                                                                            |
 | `workspace/color-palette-page.js`                         | `palettes/color-palette-component.ts`                                                                                                                                                 |
-| `workspace/prototype-panel-page.js`                       | `right-sidebar/prototype-tab-component.ts`                                                                                                                                            |
+| `workspace/prototype-panel-page.js` (done)                | Tab → `right-sidebar/prototype-tab/` (`PrototypeTabComponent` + Flow / Interactions sections); canvas arrows → `viewport/prototype-overlay-component.ts`                              |
 | `workspace/inspect-panel-page.js`                         | `right-sidebar/inspect-tab-component.ts`                                                                                                                                              |
 | `workspace/view-mode-page.js`                             | `pages/view-mode/view-mode-page.ts`                                                                                                                                                   |
 | `workspace/design-panel/export-page.ts`                   | Export section → `components/export-section-component.ts`; Export selection / Export as PDF dialogs → `components/export-modal-component.ts`                                          |

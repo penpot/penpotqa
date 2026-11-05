@@ -47,6 +47,7 @@ on:
           - tests/panels-features/stroke
           - tests/panels-features/text
           - tests/panels-features/export
+          - tests/panels-features/prototype
           - tests/plugins
           - tests/your-account
           - tests/your-account/integrations
