@@ -388,8 +388,13 @@ demoAccountFileTest.describe(() => {
         'Plugin icon400 x 400',
         'Plugin cover1390 x 724',
       ];
-      await mainPage.isCreatedLayerVisible();
-      await designPanelPage.checkSizePresetsOptions(sizePresetsOptions);
+      await demoAccountFileTest.step(
+        'Open the Size presets dropdown and verify its options',
+        async () => {
+          await mainPage.isCreatedLayerVisible();
+          await designPanelPage.checkSizePresetsOptions(sizePresetsOptions);
+        },
+      );
 
       await demoAccountFileTest.step('Select iPhone 13/14 preset', async () => {
         await designPanelPage.selectSizePresetsOption('iPhone 13/14 ');
@@ -412,6 +417,7 @@ demoAccountFileTest.describe(() => {
         await designPanelPage.checkSizeHeight('1024');
         await designPanelPage.clickOnHorizontalOrientationButton();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isHorizontalOrientationButtonChecked();
         await designPanelPage.checkSizeWidth('1024');
         await designPanelPage.checkSizeHeight('768');
       });
@@ -424,6 +430,7 @@ demoAccountFileTest.describe(() => {
         await designPanelPage.checkSizeHeight('640');
         await designPanelPage.clickOnHorizontalOrientationButton();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isHorizontalOrientationButtonChecked();
         await designPanelPage.checkSizeWidth('640');
         await designPanelPage.checkSizeHeight('360');
       });

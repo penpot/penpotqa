@@ -2387,13 +2387,19 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.horizontalOrientationButton.click();
   }
 
+  /**
+   * Checks whether the board's horizontal (landscape) orientation button is checked.
+   * @param {boolean} [checked=true] Expected state.
+   * @param {number} [timeout=10000] Max time in ms to wait for the state.
+   */
   async isHorizontalOrientationButtonChecked(checked = true, timeout = 10000) {
+    const message = `Horizontal orientation button is ${checked ? '' : 'not '}checked`;
     await expect(async () => {
       const buttonClass =
         await this.horizontalOrientationButton.getAttribute('class');
       checked
-        ? expect(buttonClass).toContain('radio_buttons__checked')
-        : expect(buttonClass).not.toContain('radio_buttons__checked');
+        ? expect(buttonClass, message).toContain('radio_buttons__checked')
+        : expect(buttonClass, message).not.toContain('radio_buttons__checked');
     }).toPass({ timeout });
   }
 
@@ -2401,12 +2407,18 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.verticalOrientationButton.click();
   }
 
+  /**
+   * Checks whether the board's vertical (portrait) orientation button is checked.
+   * @param {boolean} [checked=true] Expected state.
+   * @param {number} [timeout=10000] Max time in ms to wait for the state.
+   */
   async isVerticalOrientationButtonChecked(checked = true, timeout = 10000) {
+    const message = `Vertical orientation button is ${checked ? '' : 'not '}checked`;
     await expect(async () => {
       const buttonClass = await this.verticalOrientationButton.getAttribute('class');
       checked
-        ? expect(buttonClass).toContain('radio_buttons__checked')
-        : expect(buttonClass).not.toContain('radio_buttons__checked');
+        ? expect(buttonClass, message).toContain('radio_buttons__checked')
+        : expect(buttonClass, message).not.toContain('radio_buttons__checked');
     }).toPass({ timeout });
   }
 
