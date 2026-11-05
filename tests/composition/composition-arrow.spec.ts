@@ -13,10 +13,16 @@ demoAccountFileTest.beforeEach(async ({ page }) => {
 });
 
 demoAccountFileTest(qase([3403], 'Create Arrow (Toolbar)'), async ({ mainPage }) => {
+  await demoAccountFileTest.step('Select the Arrow tool', async () => {
+    await mainPage.clickCreateArrowButton();
+    await mainPage.isShapeToolActive('arrow');
+  });
+
   await demoAccountFileTest.step(
     'Draw an arrow line via toolbar and verify layer created',
     async () => {
-      await mainPage.createArrowByCoordinates(400, 400, 400, 600);
+      await mainPage.dragOnViewport(400, 400, 400, 600);
+      await mainPage.waitForChangeIsSaved();
       await mainPage.isCreatedLayerVisible();
       await layersPanelPage.isLayerNameDisplayed('Path');
     },
