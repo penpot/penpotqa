@@ -1,6 +1,6 @@
 import { ViewModePage } from '@pages/workspace/view-mode-page';
 import { expect } from '@playwright/test';
-import { prototypeTest } from '@tests/panels-features/prototype-fixture';
+import { prototypeTest } from '@tests/panels-features/prototype/prototype-fixture';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 const defaultNameBoard = 'Board';
