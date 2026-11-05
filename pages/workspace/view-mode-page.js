@@ -365,6 +365,37 @@ exports.ViewModePage = class ViewModePage extends BasePage {
     await expect(this.boardCounter).toBeVisible();
   }
 
+  /**
+   * The viewer animates the board container with the Web Animations API. A
+   * Slide only moves the incoming board in (`left` -100px → 0px); Push also
+   * moves the old board out (0px → 100px) and Dissolve animates `opacity`.
+   * Only catchable while it runs, so give the interaction a long duration.
+   */
+  async checkSlideAnimationRunning() {
+    await expect
+      .poll(
+        () =>
+          this.page.evaluate(() => {
+            const transitions = document
+              .getAnimations()
+              .filter((animation) => animation.playState === 'running')
+              .map((animation) => animation.effect)
+              .filter((effect) =>
+                String(effect.target?.className).includes('viewport-container'),
+              )
+              .map((effect) =>
+                effect
+                  .getKeyframes()
+                  .map(({ left, opacity }) => `left:${left} opacity:${opacity}`)
+                  .join(' → '),
+              );
+            return [...new Set(transitions)];
+          }),
+        { message: 'Viewer slides the next board in' },
+      )
+      .toEqual(['left:-100px opacity:undefined → left:0px opacity:undefined']);
+  }
+
   /** @param {string} text e.g. "2 / 2" */
   async checkBoardCounter(text) {
     await expect(this.boardCounter, `Viewer shows board ${text}`).toHaveText(text);

@@ -7,6 +7,7 @@ export class InteractionsSectionComponent extends BaseComponent {
   readonly interactionItems: Locator;
   readonly destinationSearchbox: Locator;
   readonly animationCombobox: Locator;
+  readonly animationDurationInput: Locator;
 
   constructor(page: Page, root: Locator) {
     super(page, root);
@@ -22,6 +23,7 @@ export class InteractionsSectionComponent extends BaseComponent {
       .locator('[class*="interaction-row"]')
       .filter({ hasText: 'Animation' })
       .getByRole('combobox');
+    this.animationDurationInput = root.getByRole('textbox', { name: 'ms' });
   }
 
   async addInteraction() {
@@ -52,6 +54,11 @@ export class InteractionsSectionComponent extends BaseComponent {
   async selectAnimation(animation: string) {
     await this.animationCombobox.click();
     await this.root.getByRole('option', { name: animation, exact: true }).click();
+  }
+
+  async setAnimationDuration(ms: number) {
+    await this.animationDurationInput.fill(String(ms));
+    await this.clickOnEnter();
   }
 
   async checkAnimation(animation: string) {

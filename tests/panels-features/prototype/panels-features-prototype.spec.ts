@@ -145,12 +145,14 @@ prototypeTest.describe(() => {
       await prototypeTest.step('Set Slide animation on interaction', async () => {
         await prototypeTab.interactions.openInteractionOptions(0);
         await prototypeTab.interactions.selectAnimation('Slide');
+        // Long enough to catch the slide while it runs in view mode.
+        await prototypeTab.interactions.setAnimationDuration(3000);
         await mainPage.waitForChangeIsSaved();
         await prototypeTab.interactions.checkAnimation('Slide');
       });
 
       await prototypeTest.step(
-        'Click board in view mode and verify it navigates to the destination',
+        'Click board in view mode and verify it slides to the destination',
         async () => {
           const viewer = new ViewModePage(
             await viewModePage.clickViewModeShortcut(),
@@ -158,6 +160,7 @@ prototypeTest.describe(() => {
           await viewer.waitForViewerSection(45000);
           await viewer.checkBoardCounter('1 / 2');
           await viewer.clickOnViewSection();
+          await viewer.checkSlideAnimationRunning();
           await viewer.checkBoardCounter('2 / 2');
         },
       );
