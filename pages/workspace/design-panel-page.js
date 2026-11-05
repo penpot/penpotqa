@@ -1259,6 +1259,19 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     }
   }
 
+  /** Clicking the selected text case again resets it, so all of them can be unchecked. */
+  async isTextCaseSelected(value, selected = true) {
+    const icons = {
+      Upper: this.textUpperCaseIcon,
+      Lower: this.textLowerCaseIcon,
+      Title: this.textTitleCaseIcon,
+    };
+    const checkbox = icons[value].locator('input');
+    selected
+      ? await expect(checkbox, `${value} case is selected`).toBeChecked()
+      : await expect(checkbox, `${value} case is not selected`).not.toBeChecked();
+  }
+
   async openTextMoreOptionsBlock() {
     if (!(await this.textVerticalOptionsBlock.isVisible())) {
       await this.textMoreOptionsIcon.click({ force: true });
@@ -2416,6 +2429,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async checkLetterSpacing(value) {
     await expect(await this.textLetterSpacingInput).toHaveValue(value);
+  }
+
+  async checkLineHeight(value) {
+    await expect(this.textLineHeightInput).toHaveValue(value);
   }
 
   async checkTextLineHeight(value) {
