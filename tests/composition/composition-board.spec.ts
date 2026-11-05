@@ -1,6 +1,8 @@
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import { type LayersPanelComponent } from '@pages/workspace/left-sidebar/layers-panel-component';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { WorkspacePage } from '@pages/workspace/workspace-page';
 import { expect } from '@playwright/test';
 import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
@@ -8,6 +10,7 @@ import { qase } from 'playwright-qase-reporter/playwright';
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
 let colorPalettePage: ColorPalettePage;
+let layersPanel: LayersPanelComponent;
 
 // The header snapshots need the Share button, hidden in the personal team
 demoAccountFileTest.use({ inNewTeam: true });
@@ -16,6 +19,7 @@ demoAccountFileTest.beforeEach(async ({ page }) => {
   colorPalettePage = new ColorPalettePage(page);
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
+  layersPanel = new WorkspacePage(page).leftSidebar.layers;
 });
 
 demoAccountFileTest(qase([216], 'Change color background'), async ({ mainPage }) => {
@@ -67,6 +71,13 @@ demoAccountFileTest.describe(() => {
         100,
       );
       await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.isBoardNameDisplayed(renamedName);
+      // A locked layer can't be renamed (penpot/penpot#5845)
+      await layersPanel.toggleLayerLock(renamedName);
+      await mainPage.waitForChangeIsSaved();
+      await layersPanel.checkLayerLocked(renamedName);
+      await layersPanelPage.doubleClickLayerOnLayersTab(renamedName);
+      await layersPanel.checkLayerNameInputVisible(false);
       await layersPanelPage.isBoardNameDisplayed(renamedName);
     },
   );

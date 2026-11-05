@@ -1,6 +1,9 @@
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
-import { type StrokeSectionComponent } from '@pages/workspace/right-sidebar/design-tab/stroke-section-component';
+import {
+  StrokeCap,
+  type StrokeSectionComponent,
+} from '@pages/workspace/right-sidebar/design-tab/stroke-section-component';
 import { WorkspacePage } from '@pages/workspace/workspace-page';
 import { expect } from '@playwright/test';
 import { demoAccountFileTest } from 'fixtures';
@@ -42,7 +45,7 @@ demoAccountFileTest(
         await designPanelPage.checkSizeHeight('200');
         await designPanelPage.checkStrokeWidth('1');
         await strokeSection.checkStrokeHexCode('#000000');
-        await strokeSection.checkStrokeCaps('None', 'None');
+        await strokeSection.checkStrokeCaps(StrokeCap.None, StrokeCap.None);
         await expect(mainPage.viewport).toHaveScreenshot('line.png', {
           mask: mainPage.maskViewport(),
         });
