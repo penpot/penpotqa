@@ -552,46 +552,82 @@ demoAccountFileTest.describe(() => {
     async ({ mainPage }) => {
       const board1 = 'Board #1';
       const board2 = 'Board #2';
-      await layersPanelPage.doubleClickLayerIconOnLayersTab(board1);
-      await expect(mainPage.viewport).toHaveScreenshot('board-first-zoom.png', {
-        mask: mainPage.maskViewport(),
-      });
-      await layersPanelPage.doubleClickLayerIconOnLayersTab(board2);
-      await expect(mainPage.viewport).toHaveScreenshot('board-second-zoom.png', {
-        mask: mainPage.maskViewport(),
-      });
+
+      await demoAccountFileTest.step(
+        'Zoom to the first board by double clicking its icon on the Layers panel',
+        async () => {
+          await layersPanelPage.doubleClickLayerIconOnLayersTab(board1);
+          await expect(mainPage.viewport).toHaveScreenshot('board-first-zoom.png', {
+            mask: mainPage.maskViewport(),
+          });
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Zoom to the second board by double clicking its icon on the Layers panel',
+        async () => {
+          await layersPanelPage.doubleClickLayerIconOnLayersTab(board2);
+          await expect(mainPage.viewport).toHaveScreenshot('board-second-zoom.png', {
+            mask: mainPage.maskViewport(),
+          });
+        },
+      );
     },
   );
 
   demoAccountFileTest(
     qase([249], 'Hide and show board (From rightclick and icons)'),
-    async ({ page, mainPage }) => {
+    async ({ mainPage }) => {
       const board1 = 'Board #1';
       const board2 = 'Board #2';
-      await layersPanelPage.hideUnhideLayerByIconOnLayersTab(board1);
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('board-first-hide.png', {
-        mask: mainPage.maskViewport(),
-      });
-      await mainPage.hideLayerViaRightClickOnLayersTab(board2);
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('board-second-hide.png', {
-        mask: mainPage.maskViewport(),
-      });
-      await layersPanelPage.unHideLayerViaRightClickOnLayersTab(board1);
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('board-first-show.png', {
-        mask: mainPage.maskViewport(),
-      });
-      await layersPanelPage.hideUnhideLayerByIconOnLayersTab(board2, false);
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('board-second-show.png', {
-        mask: mainPage.maskViewport(),
-      });
+
+      await demoAccountFileTest.step(
+        'Hide the first board with its eye icon on the Layers panel',
+        async () => {
+          await layersPanelPage.hideUnhideLayerByIconOnLayersTab(board1);
+          await mainPage.waitForChangeIsUnsaved();
+          await mainPage.waitForChangeIsSaved();
+          await expect(mainPage.viewport).toHaveScreenshot('board-first-hide.png', {
+            mask: mainPage.maskViewport(),
+          });
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Hide the second board from its right-click menu on the Layers panel',
+        async () => {
+          await mainPage.hideLayerViaRightClickOnLayersTab(board2);
+          await mainPage.waitForChangeIsUnsaved();
+          await mainPage.waitForChangeIsSaved();
+          await expect(mainPage.viewport).toHaveScreenshot('board-second-hide.png', {
+            mask: mainPage.maskViewport(),
+          });
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Show the first board from its right-click menu on the Layers panel',
+        async () => {
+          await layersPanelPage.unHideLayerViaRightClickOnLayersTab(board1);
+          await mainPage.waitForChangeIsUnsaved();
+          await mainPage.waitForChangeIsSaved();
+          await expect(mainPage.viewport).toHaveScreenshot('board-first-show.png', {
+            mask: mainPage.maskViewport(),
+          });
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Show the second board with its eye icon on the Layers panel',
+        async () => {
+          await layersPanelPage.hideUnhideLayerByIconOnLayersTab(board2, false);
+          await mainPage.waitForChangeIsUnsaved();
+          await mainPage.waitForChangeIsSaved();
+          await expect(mainPage.viewport).toHaveScreenshot('board-second-show.png', {
+            mask: mainPage.maskViewport(),
+          });
+        },
+      );
     },
   );
 
@@ -600,33 +636,63 @@ demoAccountFileTest.describe(() => {
     async ({ mainPage }) => {
       const board1 = 'Board #1';
       const board2 = 'Board #2';
-      await mainPage.focusBoardViaRightClickOnCanvas(board2);
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isLayerPresentOnLayersTab(board1, false);
-      await layersPanelPage.isLayerPresentOnLayersTab(board2, true);
-      await layersPanelPage.isFocusModeOn();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('board-second-focus-on.png', {
-        mask: mainPage.maskViewport(),
-      });
-      await layersPanelPage.clickOnFocusModeLabel();
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isLayerPresentOnLayersTab(board1, true);
-      await layersPanelPage.isLayerPresentOnLayersTab(board2, true);
-      await layersPanelPage.isFocusModeOff();
-      await mainPage.focusLayerViaRightClickOnLayersTab(board1);
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isLayerPresentOnLayersTab(board1, true);
-      await layersPanelPage.isLayerPresentOnLayersTab(board2, false);
-      await layersPanelPage.isFocusModeOn();
-      await expect(mainPage.viewport).toHaveScreenshot('board-first-focus-on.png', {
-        mask: mainPage.maskViewport(),
-      });
-      await layersPanelPage.clickOnFocusModeLabel();
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isLayerPresentOnLayersTab(board1, true);
-      await layersPanelPage.isLayerPresentOnLayersTab(board2, true);
-      await layersPanelPage.isFocusModeOff();
+
+      await demoAccountFileTest.step(
+        'Focus on the second board from its right-click menu on the viewport',
+        async () => {
+          await mainPage.focusBoardViaRightClickOnCanvas(board2);
+          await mainPage.waitForChangeIsSaved();
+          await layersPanelPage.isLayerPresentOnLayersTab(board1, false);
+          await layersPanelPage.isLayerPresentOnLayersTab(board2, true);
+          await layersPanelPage.isFocusModeOn();
+          await mainPage.waitForChangeIsSaved();
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'board-second-focus-on.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Exit focus mode from the Focus mode label',
+        async () => {
+          await layersPanelPage.clickOnFocusModeLabel();
+          await mainPage.waitForChangeIsSaved();
+          await layersPanelPage.isLayerPresentOnLayersTab(board1, true);
+          await layersPanelPage.isLayerPresentOnLayersTab(board2, true);
+          await layersPanelPage.isFocusModeOff();
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Focus on the first board from its right-click menu on the Layers panel',
+        async () => {
+          await mainPage.focusLayerViaRightClickOnLayersTab(board1);
+          await mainPage.waitForChangeIsSaved();
+          await layersPanelPage.isLayerPresentOnLayersTab(board1, true);
+          await layersPanelPage.isLayerPresentOnLayersTab(board2, false);
+          await layersPanelPage.isFocusModeOn();
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'board-first-focus-on.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Exit focus mode and verify both boards are back on the Layers panel',
+        async () => {
+          await layersPanelPage.clickOnFocusModeLabel();
+          await mainPage.waitForChangeIsSaved();
+          await layersPanelPage.isLayerPresentOnLayersTab(board1, true);
+          await layersPanelPage.isLayerPresentOnLayersTab(board2, true);
+          await layersPanelPage.isFocusModeOff();
+        },
+      );
     },
   );
 
@@ -722,15 +788,32 @@ demoAccountFileTest.describe(() => {
   demoAccountFileTest(
     qase([2040], 'Resize board to fit 2 elements'),
     async ({ mainPage }) => {
-      await mainPage.createDefaultRectangleByCoordinates(320, 210, true);
-      await mainPage.clickViewportOnce();
-      await mainPage.clickCreatedBoardTitleOnCanvas();
-      await designPanelPage.clickOnResizeBoardToFitButton();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'resize-board-to-fit-2-elements.png',
-        {
-          mask: mainPage.maskViewport(),
+      await demoAccountFileTest.step(
+        'Create a rectangle inside the board',
+        async () => {
+          await mainPage.createDefaultRectangleByCoordinates(320, 210, true);
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Select the board and click Resize to fit content',
+        async () => {
+          await mainPage.clickViewportOnce();
+          await mainPage.clickCreatedBoardTitleOnCanvas();
+          await designPanelPage.clickOnResizeBoardToFitButton();
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Verify the board fits the ellipse and the rectangle',
+        async () => {
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'resize-board-to-fit-2-elements.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
         },
       );
     },
@@ -742,15 +825,32 @@ demoAccountFileTest.describe(() => {
       'Resize board to fit content that goes partially outside of the board',
     ),
     async ({ mainPage }) => {
-      await mainPage.createDefaultRectangleByCoordinates(180, 350, true);
-      await mainPage.clickViewportOnce();
-      await mainPage.clickCreatedBoardTitleOnCanvas();
-      await designPanelPage.clickOnResizeBoardToFitButton();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'resize-board-to-fit-partially-outside.png',
-        {
-          mask: mainPage.maskViewport(),
+      await demoAccountFileTest.step(
+        'Create a rectangle partially outside the board',
+        async () => {
+          await mainPage.createDefaultRectangleByCoordinates(180, 350, true);
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Select the board and click Resize to fit content',
+        async () => {
+          await mainPage.clickViewportOnce();
+          await mainPage.clickCreatedBoardTitleOnCanvas();
+          await designPanelPage.clickOnResizeBoardToFitButton();
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Verify the board fits its content',
+        async () => {
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'resize-board-to-fit-partially-outside.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
         },
       );
     },
