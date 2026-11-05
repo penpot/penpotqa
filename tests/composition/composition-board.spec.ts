@@ -725,7 +725,7 @@ demoAccountFileTest.describe(() => {
           const board1 = 'Board #1';
           await mainPage.duplicateLayerViaRightClickOnCanvas(board1);
           await mainPage.waitForChangeIsSaved();
-          await expect(layersPanelPage.sidebarLayerItem).toHaveCount(4);
+          await layersPanelPage.isVisibleLayersCount(4);
         },
       );
 
@@ -735,7 +735,7 @@ demoAccountFileTest.describe(() => {
           const board2 = 'Board #2';
           await mainPage.duplicateLayerViaLayersTab(board2);
           await mainPage.waitForChangeIsSaved();
-          await expect(layersPanelPage.sidebarLayerItem).toHaveCount(5);
+          await layersPanelPage.isVisibleLayersCount(5);
         },
       );
 
@@ -746,7 +746,7 @@ demoAccountFileTest.describe(() => {
           await layersPanelPage.selectLayerByName(board3);
           await mainPage.clickShortcutCtrlD();
           await mainPage.waitForChangeIsSaved();
-          await expect(layersPanelPage.sidebarLayerItem).toHaveCount(6);
+          await layersPanelPage.isVisibleLayersCount(6);
         },
       );
     },

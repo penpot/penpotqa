@@ -643,6 +643,10 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     }
   }
 
+  /**
+   * Checks how many layer rows the Layers panel shows (children of collapsed layers aren't shown).
+   * @param {number} count Expected number of rows.
+   */
   async isVisibleLayersCount(count) {
     await expect(
       this.layersRows,
