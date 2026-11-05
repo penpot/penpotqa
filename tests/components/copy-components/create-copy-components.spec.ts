@@ -1,12 +1,15 @@
+import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { PagesPanelPage } from '@pages/workspace/panels-features/pages-panel-page';
 import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
+let assetsPanelPage: AssetsPanelPage;
 let layersPanelPage: LayersPanelPage;
 let pagesPanelPage: PagesPanelPage;
 
 demoAccountFileTest.beforeEach(async ({ page }) => {
+  assetsPanelPage = new AssetsPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
   pagesPanelPage = new PagesPanelPage(page);
 });
@@ -23,6 +26,16 @@ demoAccountFileTest(qase([1289], 'Duplicate component'), async ({ mainPage }) =>
         'Rectangle',
         false,
       );
+    },
+  );
+
+  await demoAccountFileTest.step(
+    'Verify the component is shown in Assets > Components',
+    async () => {
+      await assetsPanelPage.clickAssetsTab();
+      await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+      await assetsPanelPage.isComponentVisibleInAssetsTab('Rectangle');
+      await layersPanelPage.openLayersTab();
     },
   );
 
