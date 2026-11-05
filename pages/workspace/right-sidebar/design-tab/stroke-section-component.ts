@@ -11,6 +11,20 @@ export const StrokeSide = {
 } as const;
 
 export type StrokeSideName = (typeof StrokeSide)[keyof typeof StrokeSide];
+
+/** Stroke caps as the cap start/end dropdowns show them. */
+export const StrokeCap = {
+  None: 'None',
+  Arrow: 'Arrow',
+  Triangle: 'Triangle',
+  Rectangle: 'Rectangle',
+  Circle: 'Circle',
+  Diamond: 'Diamond',
+  Round: 'Round',
+  Square: 'Square',
+} as const;
+
+export type StrokeCapName = (typeof StrokeCap)[keyof typeof StrokeCap];
 export type StrokeWidthFieldName = StrokeSideName | typeof STROKE_WIDTH;
 
 /** The Stroke section of the Design tab. */
@@ -155,10 +169,10 @@ export class StrokeSectionComponent extends BaseComponent {
 
   /**
    * Checks the start and end caps of the selected path's stroke.
-   * @param start Expected start cap as shown in its dropdown (e.g. 'None').
-   * @param end Expected end cap as shown in its dropdown (e.g. 'Triangle').
+   * @param start Expected start cap (e.g. StrokeCap.None).
+   * @param end Expected end cap (e.g. StrokeCap.Triangle).
    */
-  async checkStrokeCaps(start: string, end: string) {
+  async checkStrokeCaps(start: StrokeCapName, end: StrokeCapName) {
     await expect(
       this.strokeCapStartDropdown,
       `Stroke start cap is ${start}`,
