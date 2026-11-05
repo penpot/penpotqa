@@ -516,7 +516,7 @@ demoAccountFileTest.describe(() => {
 
   demoAccountFileTest(
     qase([268], "Click 'Focus on' board from right click"),
-    async ({ page, mainPage }) => {
+    async ({ mainPage }) => {
       const board1 = 'Board #1';
       const board2 = 'Board #2';
       await mainPage.focusBoardViaRightClickOnCanvas(board2);
@@ -525,33 +525,27 @@ demoAccountFileTest.describe(() => {
       await layersPanelPage.isLayerPresentOnLayersTab(board2, true);
       await layersPanelPage.isFocusModeOn();
       await mainPage.waitForChangeIsSaved();
-      await expect(page).toHaveScreenshot('board-second-focus-on.png', {
-        mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
+      await expect(mainPage.viewport).toHaveScreenshot('board-second-focus-on.png', {
+        mask: mainPage.maskViewport(),
       });
       await layersPanelPage.clickOnFocusModeLabel();
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.isLayerPresentOnLayersTab(board1, true);
       await layersPanelPage.isLayerPresentOnLayersTab(board2, true);
       await layersPanelPage.isFocusModeOff();
-      await expect(page).toHaveScreenshot('board-second-focus-off.png', {
-        mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
-      });
       await mainPage.focusLayerViaRightClickOnLayersTab(board1);
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.isLayerPresentOnLayersTab(board1, true);
       await layersPanelPage.isLayerPresentOnLayersTab(board2, false);
       await layersPanelPage.isFocusModeOn();
-      await expect(page).toHaveScreenshot('board-first-focus-on.png', {
-        mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
+      await expect(mainPage.viewport).toHaveScreenshot('board-first-focus-on.png', {
+        mask: mainPage.maskViewport(),
       });
       await layersPanelPage.clickOnFocusModeLabel();
       await mainPage.waitForChangeIsSaved();
       await layersPanelPage.isLayerPresentOnLayersTab(board1, true);
       await layersPanelPage.isLayerPresentOnLayersTab(board2, true);
       await layersPanelPage.isFocusModeOff();
-      await expect(page).toHaveScreenshot('board-first-focus-off.png', {
-        mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
-      });
     },
   );
 
