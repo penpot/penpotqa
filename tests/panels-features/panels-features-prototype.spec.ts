@@ -1,177 +1,181 @@
-import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
-import { PrototypePanelPage } from '@pages/workspace/prototype-panel-page';
+import { ViewModePage } from '@pages/workspace/view-mode-page';
 import { expect } from '@playwright/test';
-import { demoAccountFileTest } from 'fixtures';
+import { prototypeTest } from '@tests/panels-features/prototype-fixture';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 const defaultNameBoard = 'Board';
-let prototypePanelPage: PrototypePanelPage;
-let layersPanelPage: LayersPanelPage;
+const screenshotMask = { usersSection: true };
 
-demoAccountFileTest.beforeEach(async ({ page }) => {
-  prototypePanelPage = new PrototypePanelPage(page);
-  layersPanelPage = new LayersPanelPage(page);
-});
+prototypeTest.describe(() => {
+  prototypeTest.beforeEach(
+    async ({ mainPage, workspacePage, prototypeOverlay, layersPanelPage }) => {
+      await mainPage.createDefaultBoardByCoordinates(900, 100);
+      await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 1);
+      await mainPage.createDefaultBoardByCoordinates(500, 200);
+      await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 2);
+      await workspacePage.rightSidebar.clickTab('prototype');
+      await prototypeOverlay.dragNewConnectorTo(900, 100);
+      await mainPage.waitForChangeIsSaved();
+    },
+  );
 
-demoAccountFileTest.describe(() => {
-  demoAccountFileTest.beforeEach(async ({ mainPage }) => {
-    await mainPage.createDefaultBoardByCoordinates(900, 100);
-    await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 1);
-    await mainPage.createDefaultBoardByCoordinates(500, 200);
-    await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 2);
-    await prototypePanelPage.clickPrototypeTab();
-    await prototypePanelPage.dragAndDropPrototypeArrowConnector(900, 100);
-    await mainPage.waitForChangeIsSaved();
-  });
-
-  demoAccountFileTest(
-    qase([857], 'Add connector between 2 boards via mouse drag'),
-    async ({ page, mainPage }) => {
-      await demoAccountFileTest.step(
+  prototypeTest(
+    qase([857, 863], 'Add and remove connector via mouse drag'),
+    async ({ page, mainPage, prototypeTab, prototypeOverlay }) => {
+      await prototypeTest.step(
         'Verify flow name and connection screenshot',
         async () => {
-          await prototypePanelPage.isFlowNameDisplayedOnPrototypePanel('Flow 1');
+          await prototypeTab.flow.checkFlowName('Flow 1');
+          await prototypeOverlay.checkSelectedConnectorCount(1);
+          await mainPage.moveMouseOutOfViewport();
           await expect(page).toHaveScreenshot(
             'connector-between-board2-and-board1.png',
-            {
-              mask: [
-                mainPage.usersSection,
-                mainPage.guides,
-                mainPage.guidesFragment,
-                mainPage.toolBarWindow,
-              ],
-            },
+            { mask: mainPage.maskViewport(screenshotMask) },
           );
+        },
+      );
+
+      await prototypeTest.step(
+        'Drag connector out to empty space and verify interaction is removed',
+        async () => {
+          await prototypeOverlay.dragConnectorEndTo(0, 900, 600);
+          await mainPage.waitForChangeIsSaved();
+          await prototypeTab.interactions.checkInteractionCount(0);
+          await prototypeOverlay.checkSelectedConnectorCount(0);
         },
       );
     },
   );
 
-  demoAccountFileTest(
-    qase([861], 'Add Interaction via Prototype panel'),
-    async ({ mainPage }) => {
-      await demoAccountFileTest.step('Add interaction', async () => {
-        await prototypePanelPage.clickAddInteractionButton();
-        await mainPage.waitForChangeIsUnsaved();
-        await mainPage.waitForChangeIsSaved();
-      });
-
-      await demoAccountFileTest.step(
-        'Verify second connector and screenshot',
+  prototypeTest(
+    qase([861, 862], 'Add and remove interaction via Prototype panel'),
+    async ({ page, mainPage, prototypeTab, prototypeOverlay }) => {
+      await prototypeTest.step(
+        'Add interaction and verify second connector screenshot',
         async () => {
-          await prototypePanelPage.isPrototypeArrowSecondConnectorDisplayed();
-          await prototypePanelPage.checkNumberOfInteractions(2);
+          await prototypeTab.interactions.addInteraction();
+          await mainPage.waitForChangeIsSaved();
+          await prototypeOverlay.checkSelectedConnectorCount(2);
           await mainPage.hideRulersViaMainMenu();
           await expect(mainPage.viewport).toHaveScreenshot('add-interaction.png', {
             mask: mainPage.maskViewport(),
           });
         },
       );
-    },
-  );
 
-  demoAccountFileTest(
-    qase([862], 'Remove Interaction via Prototype panel'),
-    async ({ page, mainPage }) => {
-      await demoAccountFileTest.step('Add then remove interaction', async () => {
-        await prototypePanelPage.clickAddInteractionButton();
-        await mainPage.waitForChangeIsSaved();
-        await prototypePanelPage.isPrototypeArrowSecondConnectorDisplayed();
-        await prototypePanelPage.clickRemoveInteractionByIndex(2);
-        await mainPage.waitForChangeIsUnsaved();
-        await mainPage.waitForChangeIsSaved();
-      });
-
-      await demoAccountFileTest.step(
-        'Verify interaction removed screenshot',
+      await prototypeTest.step(
+        'Remove interaction and verify removed screenshot',
         async () => {
-          await prototypePanelPage.isPrototypeArrowSecondConnectorNotDisplayed();
+          // The removed screenshot is the one taken with rulers shown.
+          await mainPage.pressHideShowRulersShortcut();
+          await mainPage.isRulersVisible(true);
+          await prototypeTab.interactions.removeInteraction(1);
+          await mainPage.waitForChangeIsSaved();
+          await prototypeTab.interactions.checkInteractionCount(1);
+          await prototypeOverlay.checkSelectedConnectorCount(1);
+          await mainPage.moveMouseOutOfViewport();
           await expect(page).toHaveScreenshot(
             'connector-between-board2-and-board1.png',
-            {
-              mask: [
-                mainPage.usersSection,
-                mainPage.guides,
-                mainPage.guidesFragment,
-                mainPage.toolBarWindow,
-              ],
-            },
+            { mask: mainPage.maskViewport(screenshotMask) },
           );
         },
       );
     },
   );
 
-  demoAccountFileTest(qase([870], 'Add 2nd Flow'), async ({ page, mainPage }) => {
-    await demoAccountFileTest.step(
-      'Create third board and connect to first',
-      async () => {
-        await mainPage.createDefaultBoardByCoordinates(200, 600);
-        await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 3);
-        await mainPage.clickViewportByCoordinates(200, 600);
-        await prototypePanelPage.dragAndDropPrototypeArrowConnector(900, 100);
+  prototypeTest(
+    qase([870], 'Add 2nd Flow'),
+    async ({ page, mainPage, prototypeTab, prototypeOverlay, layersPanelPage }) => {
+      await prototypeTest.step(
+        'Create third board and connect to first',
+        async () => {
+          await mainPage.createDefaultBoardByCoordinates(200, 600);
+          await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 3);
+          await mainPage.clickViewportByCoordinates(200, 600);
+          await prototypeOverlay.dragNewConnectorTo(900, 100);
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
+
+      await prototypeTest.step('Verify second flow and screenshot', async () => {
+        await prototypeTab.flow.checkFlowName('Flow 2');
+        await mainPage.clickViewportByCoordinates(300, 700);
+        await mainPage.moveMouseOutOfViewport();
+        await expect(page).toHaveScreenshot('add-2nd-flow.png', {
+          mask: mainPage.maskViewport(screenshotMask),
+        });
+      });
+    },
+  );
+
+  prototypeTest(
+    qase([872, 873], 'Rename and delete flow'),
+    async ({ page, mainPage, prototypeTab }) => {
+      await prototypeTest.step(
+        'Rename flow to qa and verify renamed flow screenshot',
+        async () => {
+          await prototypeTab.flow.renameFlow('qa');
+          await mainPage.waitForChangeIsSaved();
+          await prototypeTab.flow.checkFlowName('qa');
+          await mainPage.moveMouseOutOfViewport();
+          await expect(page).toHaveScreenshot('rename-flow.png', {
+            mask: mainPage.maskViewport(screenshotMask),
+          });
+        },
+      );
+
+      await prototypeTest.step(
+        'Delete flow and verify flow deleted screenshot',
+        async () => {
+          await prototypeTab.flow.removeFlow();
+          await mainPage.waitForChangeIsSaved();
+          await prototypeTab.flow.checkNoFlow();
+          await mainPage.moveMouseOutOfViewport();
+          await expect(page).toHaveScreenshot('delete-flow.png', {
+            mask: mainPage.maskViewport(screenshotMask),
+          });
+        },
+      );
+    },
+  );
+
+  prototypeTest(
+    qase([868], 'Add animation via Prototype panel'),
+    async ({ mainPage, prototypeTab, viewModePage }) => {
+      await prototypeTest.step('Set Slide animation on interaction', async () => {
+        await prototypeTab.interactions.openInteractionOptions(0);
+        await prototypeTab.interactions.selectAnimation('Slide');
         await mainPage.waitForChangeIsSaved();
-      },
-    );
-
-    await demoAccountFileTest.step('Verify second flow and screenshot', async () => {
-      await prototypePanelPage.isFlowNameDisplayedOnPrototypePanel('Flow 2');
-      await mainPage.clickViewportByCoordinates(300, 700);
-      await expect(page).toHaveScreenshot('add-2nd-flow.png', {
-        mask: [
-          mainPage.usersSection,
-          mainPage.guides,
-          mainPage.guidesFragment,
-          mainPage.toolBarWindow,
-        ],
+        await prototypeTab.interactions.checkAnimation('Slide');
       });
-    });
-  });
 
-  demoAccountFileTest(qase([872], 'Rename flow'), async ({ page, mainPage }) => {
-    await demoAccountFileTest.step('Rename flow to qa', async () => {
-      await prototypePanelPage.renameFlow('qa');
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
-    });
-
-    await demoAccountFileTest.step('Verify renamed flow screenshot', async () => {
-      await prototypePanelPage.isFlowNameDisplayedOnPrototypePanel('qa');
-      await expect(page).toHaveScreenshot('rename-flow.png', {
-        mask: [
-          mainPage.usersSection,
-          mainPage.guides,
-          mainPage.guidesFragment,
-          mainPage.toolBarWindow,
-        ],
-      });
-    });
-  });
-
-  demoAccountFileTest(qase([873], 'Delete flow'), async ({ page, mainPage }) => {
-    await demoAccountFileTest.step('Delete flow', async () => {
-      await prototypePanelPage.clickRemoveFlowByIndex(0);
-      await mainPage.waitForChangeIsSaved();
-    });
-
-    await demoAccountFileTest.step('Verify flow deleted screenshot', async () => {
-      await prototypePanelPage.isFlowNameNotDisplayedOnPrototypePanel();
-      await expect(page).toHaveScreenshot('delete-flow.png', {
-        mask: [
-          mainPage.usersSection,
-          mainPage.guides,
-          mainPage.guidesFragment,
-          mainPage.toolBarWindow,
-        ],
-      });
-    });
-  });
+      await prototypeTest.step(
+        'Click board in view mode and verify it navigates to the destination',
+        async () => {
+          const viewer = new ViewModePage(
+            await viewModePage.clickViewModeShortcut(),
+          );
+          await viewer.waitForViewerSection(45000);
+          await viewer.checkBoardCounter('1 / 2');
+          await viewer.clickOnViewSection();
+          await viewer.checkBoardCounter('2 / 2');
+        },
+      );
+    },
+  );
 });
 
-demoAccountFileTest(
+prototypeTest(
   qase([865], 'Change destination via Prototype panel'),
-  async ({ page, mainPage }) => {
-    await demoAccountFileTest.step(
+  async ({
+    page,
+    mainPage,
+    workspacePage,
+    prototypeTab,
+    prototypeOverlay,
+    layersPanelPage,
+  }) => {
+    await prototypeTest.step(
       'Create boards and connect board2 to board1',
       async () => {
         await mainPage.createDefaultBoardByCoordinates(900, 100);
@@ -180,32 +184,26 @@ demoAccountFileTest(
         await mainPage.createDefaultBoardByCoordinates(500, 200);
         await layersPanelPage.doubleClickLayerOnLayersTab('Board');
         await layersPanelPage.typeNameCreatedLayerAndEnter('Board #2');
-        await prototypePanelPage.clickPrototypeTab();
-        await prototypePanelPage.dragAndDropPrototypeArrowConnector(900, 100);
+        await workspacePage.rightSidebar.clickTab('prototype');
+        await prototypeOverlay.dragNewConnectorTo(900, 100);
         await mainPage.waitForChangeIsSaved();
       },
     );
 
-    await demoAccountFileTest.step(
+    await prototypeTest.step(
       'Change destination to Board #3 and verify screenshot',
       async () => {
         await mainPage.createDefaultBoardByCoordinates(200, 600);
         await layersPanelPage.doubleClickLayerOnLayersTab('Board');
         await layersPanelPage.typeNameCreatedLayerAndEnter('Board #3');
         await mainPage.clickViewportByCoordinates(500, 200);
-        await prototypePanelPage.openInteractionsOptionsByIndex(0);
-        await prototypePanelPage.selectInteractionDestination('Board #3');
+        await prototypeTab.interactions.openInteractionOptions(0);
+        await prototypeTab.interactions.selectDestination('Board #3');
         await mainPage.waitForChangeIsSaved();
+        await mainPage.moveMouseOutOfViewport();
         await expect(page).toHaveScreenshot(
           'connector-between-board2-and-board3.png',
-          {
-            mask: [
-              mainPage.usersSection,
-              mainPage.guides,
-              mainPage.guidesFragment,
-              mainPage.toolBarWindow,
-            ],
-          },
+          { mask: mainPage.maskViewport(screenshotMask) },
         );
       },
     );

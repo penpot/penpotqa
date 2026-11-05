@@ -3,9 +3,11 @@ import { type Locator, type Page } from '@playwright/test';
 import { DesignTabComponent } from '@pages/workspace/right-sidebar/design-tab/design-tab-component';
 import { ExportProgressComponent } from '@pages/workspace/right-sidebar/export-progress-component';
 import { InspectTabComponent } from '@pages/workspace/right-sidebar/inspect-tab-component';
+import { PrototypeTabComponent } from '@pages/workspace/right-sidebar/prototype-tab/prototype-tab-component';
 
 export class RightSidebarComponent extends BaseComponent {
   readonly design: DesignTabComponent;
+  readonly prototype: PrototypeTabComponent;
   readonly inspectTabComponent: InspectTabComponent;
   readonly exportProgress: ExportProgressComponent;
   readonly viewerInspectComponent: InspectTabComponent;
@@ -15,6 +17,10 @@ export class RightSidebarComponent extends BaseComponent {
     this.design = new DesignTabComponent(
       page,
       root.getByRole('tabpanel', { name: 'design' }),
+    );
+    this.prototype = new PrototypeTabComponent(
+      page,
+      root.getByRole('tabpanel', { name: 'prototype' }),
     );
     // Editors: the Inspect tab's panel.
     this.inspectTabComponent = new InspectTabComponent(
@@ -27,5 +33,9 @@ export class RightSidebarComponent extends BaseComponent {
     );
     // Viewers have no tab switcher: the inspect content is the sidebar itself.
     this.viewerInspectComponent = new InspectTabComponent(page, root);
+  }
+
+  async clickTab(name: 'design' | 'prototype' | 'inspect') {
+    await this.root.getByRole('tab', { name }).click();
   }
 }

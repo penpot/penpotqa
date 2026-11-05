@@ -364,4 +364,9 @@ exports.ViewModePage = class ViewModePage extends BasePage {
   async isBoardCounterVisible() {
     await expect(this.boardCounter).toBeVisible();
   }
+
+  /** @param {string} text e.g. "2 / 2" */
+  async checkBoardCounter(text) {
+    await expect(this.boardCounter, `Viewer shows board ${text}`).toHaveText(text);
+  }
 };
