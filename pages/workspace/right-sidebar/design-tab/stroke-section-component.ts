@@ -17,10 +17,13 @@ export type StrokeWidthFieldName = StrokeSideName | typeof STROKE_WIDTH;
 export class StrokeSectionComponent extends BaseComponent {
   readonly strokeRow: Locator;
   readonly strokeColorBullet: Locator;
+  readonly strokeColorInput: Locator;
   readonly strokeOpacityInput: Locator;
   readonly strokeAlignmentField: Locator;
   readonly strokeTypeField: Locator;
   readonly strokePerSideButton: Locator;
+  readonly strokeCapStartDropdown: Locator;
+  readonly strokeCapEndDropdown: Locator;
 
   constructor(page: Page, root: Locator) {
     super(page, root);
@@ -29,12 +32,16 @@ export class StrokeSectionComponent extends BaseComponent {
     this.strokeColorBullet = this.strokeRow
       .locator('div[class*="color-bullet-wrapper"]')
       .last();
+    // The hex input has no label or test id, and the opacity input is a textbox too
+    this.strokeColorInput = this.strokeRow.locator('input[class*="color-input"]');
     this.strokeOpacityInput = this.strokeRow.getByTestId('opacity-input');
     this.strokeAlignmentField = root.getByTestId('stroke.alignment');
     this.strokeTypeField = root.getByTestId('stroke.style');
     this.strokePerSideButton = root.getByRole('button', {
       name: 'Stroke per side',
     });
+    this.strokeCapStartDropdown = root.getByTestId('stroke.cap-start');
+    this.strokeCapEndDropdown = root.getByTestId('stroke.cap-end');
   }
 
   getStrokeWidthField(label: StrokeWidthFieldName): Locator {
@@ -134,5 +141,30 @@ export class StrokeSectionComponent extends BaseComponent {
     visible
       ? await expect(top, 'Stroke side fields are visible').toBeVisible()
       : await expect(top, 'Stroke side fields are hidden').toHaveCount(0);
+  }
+
+  /**
+   * Checks the color of the selected layer's (last) stroke.
+   * @param hex Expected color with the leading `#` (e.g. '#000000').
+   */
+  async checkStrokeHexCode(hex: string) {
+    await expect(this.strokeColorInput, `Stroke color is ${hex}`).toHaveValue(
+      hex.slice(1),
+    );
+  }
+
+  /**
+   * Checks the start and end caps of the selected path's stroke.
+   * @param start Expected start cap as shown in its dropdown (e.g. 'None').
+   * @param end Expected end cap as shown in its dropdown (e.g. 'Triangle').
+   */
+  async checkStrokeCaps(start: string, end: string) {
+    await expect(
+      this.strokeCapStartDropdown,
+      `Stroke start cap is ${start}`,
+    ).toHaveText(start);
+    await expect(this.strokeCapEndDropdown, `Stroke end cap is ${end}`).toHaveText(
+      end,
+    );
   }
 }
