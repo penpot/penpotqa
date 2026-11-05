@@ -59,7 +59,7 @@ demoAccountFileTest.describe('PNG image', () => {
         '481 Cut image (From rightclick and Shortcut Ctrl+X)',
         async () => {
           await demoAccountFileTest.step(
-            'Cut and paste image from context menu',
+            'Cut and paste image from the Layers panel context menu',
             async () => {
               await layersPanelPage.clickOnLayerOptionViaRightClickForLayer(
                 'images',
@@ -80,6 +80,17 @@ demoAccountFileTest.describe('PNG image', () => {
               await layersPanelPage.isVisibleLayersCount(2);
               await mainPage.clickViewportByCoordinates(800, 300);
               await layersPanelPage.pressPasteShortcut();
+              await mainPage.waitForChangeIsSaved();
+              await layersPanelPage.isVisibleLayersCount(3);
+            },
+          );
+          await demoAccountFileTest.step(
+            'Cut and paste image from the canvas context menu',
+            async () => {
+              await mainPage.cutLayerViaRightClick();
+              await layersPanelPage.isVisibleLayersCount(2);
+              await mainPage.clickViewportByCoordinates(600, 300);
+              await layersPanelPage.pasteLayerViaRightClick();
               await mainPage.waitForChangeIsSaved();
               await layersPanelPage.isVisibleLayersCount(3);
             },
