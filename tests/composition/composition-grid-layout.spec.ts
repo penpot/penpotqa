@@ -60,11 +60,9 @@ demoAccountFileTest.describe(() => {
               mask: mainPage.maskViewport({ gridEditorToolbar: true }),
             },
           );
-          await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
-            'grid-edit-right-sidebar-image.png',
-            {
-              mask: [mainPage.usersSection],
-            },
+          await designPanelPage.checkGridEditModePanel(
+            ['1fr', '1fr'],
+            ['1fr', '1fr'],
           );
         },
       );

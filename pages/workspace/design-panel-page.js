@@ -178,6 +178,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.gridAddLayoutButton = page.getByRole('button', { name: 'Grid layout' });
     this.gridEditButton = page.getByRole('button', { name: 'Edit grid' });
     this.gridDoneButton = page.getByRole('button', { name: 'Done' });
+    this.gridEditExitButton = this.designTabpanel.getByRole('button', {
+      name: 'Exit',
+    });
+    this.gridTrackTitle = this.designTabpanel.locator('div[class*="track-title"]');
     this.gridLocateButton = page.getByRole('button', {
       name: 'Locate',
       exact: true,
@@ -1461,6 +1465,32 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   async openGridEditModeFromDesignPanel() {
     await this.gridEditButton.click();
   }
+
+  /**
+   * Checks the Design tab in grid edit mode: the Exit button and the column and
+   * row tracks with their values.
+   * @param {string[]} columns Expected column track values (e.g. ['1fr', '1fr']).
+   * @param {string[]} rows Expected row track values (e.g. ['1fr', '1fr']).
+   */
+  async checkGridEditModePanel(columns, rows) {
+    await expect(
+      this.gridEditExitButton,
+      'Grid edit mode Exit button',
+    ).toBeVisible();
+    for (const [name, values] of [
+      [`Columns ${columns.length}`, columns],
+      [`Rows ${rows.length}`, rows],
+    ]) {
+      const track = this.gridTrackTitle.filter({
+        has: this.page.getByTitle(name, { exact: true }),
+      });
+      await expect(
+        track.getByTitle(values.join(', '), { exact: true }),
+        `Grid track "${name}" should be ${values.join(', ')}`,
+      ).toBeVisible();
+    }
+  }
+
   async clickGridDoneButton() {
     await this.gridDoneButton.click();
   }
