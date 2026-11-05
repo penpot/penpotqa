@@ -10,6 +10,14 @@ export const LayerLockTitle = {
 } as const;
 
 /**
+ * Titles of a layer's eye button: they name the action, so a hidden layer shows "Show".
+ */
+export const LayerVisibilityTitle = {
+  Hidden: 'Show',
+  Visible: 'Hide',
+} as const;
+
+/**
  * Layers panel of the left sidebar (the layer tree).
  *
  * Most of its locators and methods still live in LayersPanelPage and move here
@@ -76,5 +84,29 @@ export class LayersPanelComponent extends BaseComponent {
       this.layerRows.getByRole('textbox'),
       editing ? 'A layer name is being edited' : 'No layer name is being edited',
     ).toHaveCount(editing ? 1 : 0);
+  }
+
+  /**
+   * Returns the eye button of a layer row, found by its `title` (its only accessible name, see LayerVisibilityTitle).
+   * @param name Layer name exactly as shown in the panel.
+   * @param hidden Whether the layer is currently hidden.
+   */
+  getLayerVisibilityButton(name: string, hidden: boolean): Locator {
+    return this.getLayerRow(name).getByTitle(
+      hidden ? LayerVisibilityTitle.Hidden : LayerVisibilityTitle.Visible,
+      { exact: true },
+    );
+  }
+
+  /**
+   * Checks whether a layer is hidden, from its row's eye button.
+   * @param name Layer name exactly as shown in the panel.
+   * @param hidden Expected state.
+   */
+  async checkLayerHidden(name: string, hidden = true) {
+    await expect(
+      this.getLayerVisibilityButton(name, hidden),
+      `Layer "${name}" is ${hidden ? 'hidden' : 'shown'}`,
+    ).toBeAttached();
   }
 }

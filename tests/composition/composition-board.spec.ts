@@ -594,6 +594,7 @@ demoAccountFileTest.describe(() => {
           await layersPanelPage.hideUnhideLayerByIconOnLayersTab(board1);
           await mainPage.waitForChangeIsUnsaved();
           await mainPage.waitForChangeIsSaved();
+          await layersPanel.checkLayerHidden(board1);
           await expect(mainPage.viewport).toHaveScreenshot('board-first-hide.png', {
             mask: mainPage.maskViewport(),
           });
@@ -606,6 +607,7 @@ demoAccountFileTest.describe(() => {
           await mainPage.hideLayerViaRightClickOnLayersTab(board2);
           await mainPage.waitForChangeIsUnsaved();
           await mainPage.waitForChangeIsSaved();
+          await layersPanel.checkLayerHidden(board2);
           await expect(mainPage.viewport).toHaveScreenshot('board-second-hide.png', {
             mask: mainPage.maskViewport(),
           });
@@ -618,6 +620,7 @@ demoAccountFileTest.describe(() => {
           await layersPanelPage.unHideLayerViaRightClickOnLayersTab(board1);
           await mainPage.waitForChangeIsUnsaved();
           await mainPage.waitForChangeIsSaved();
+          await layersPanel.checkLayerHidden(board1, false);
           await expect(mainPage.viewport).toHaveScreenshot('board-first-show.png', {
             mask: mainPage.maskViewport(),
           });
@@ -630,6 +633,7 @@ demoAccountFileTest.describe(() => {
           await layersPanelPage.hideUnhideLayerByIconOnLayersTab(board2, false);
           await mainPage.waitForChangeIsUnsaved();
           await mainPage.waitForChangeIsSaved();
+          await layersPanel.checkLayerHidden(board2, false);
           await expect(mainPage.viewport).toHaveScreenshot('board-second-show.png', {
             mask: mainPage.maskViewport(),
           });
