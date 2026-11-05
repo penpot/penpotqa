@@ -983,6 +983,21 @@ exports.MainPage = class MainPage extends BasePage {
     );
   }
 
+  /**
+   * Gets the on-screen box of the current selection on the canvas.
+   *
+   * @returns {Promise<{x: number, y: number, width: number, height: number}>} The
+   *   selection box in page pixels
+   * @throws {Error} When nothing is selected on the canvas
+   */
+  async getSelectionBox() {
+    const box = await this.page
+      .locator('div[class*="viewport"] .main.viewport-selrect')
+      .boundingBox();
+    if (!box) throw new Error('Nothing is selected on the canvas');
+    return box;
+  }
+
   async dragFromBoxCenter(box, dx, dy) {
     const x = box.x + box.width / 2;
     const y = box.y + box.height / 2;
