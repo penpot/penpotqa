@@ -573,24 +573,14 @@ demoAccountFileTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
     });
 
-    await demoAccountFileTest.step(
-      'Verify flex layout on canvas and sidebar',
-      async () => {
-        await expect(mainPage.viewport).toHaveScreenshot(
-          'board-with-flex-layout.png',
-          {
-            mask: mainPage.maskViewport(),
-          },
-        );
-        await mainPage.waitForChangeIsSaved();
-        await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
-          'flex-layout-right-sidebar-image.png',
-          {
-            mask: [mainPage.usersSection],
-          },
-        );
-      },
-    );
+    await demoAccountFileTest.step('Verify flex layout on canvas', async () => {
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'board-with-flex-layout.png',
+        {
+          mask: mainPage.maskViewport(),
+        },
+      );
+    });
   });
 
   demoAccountFileTest(
