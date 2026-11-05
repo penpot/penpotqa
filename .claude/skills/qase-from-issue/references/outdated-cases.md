@@ -46,8 +46,9 @@ caught up yet".
 
 For every affected case:
 
-- Add the current release (the release that brings the change — the issue's
-  milestone) to **Penpot Release**, keeping the releases already there.
+- Add the current release (the release that brings the change — see Penpot
+  Release in step 6 of `SKILL.md`) to **Penpot Release**, keeping the releases
+  already there.
 
 If the case is automated, also:
 
