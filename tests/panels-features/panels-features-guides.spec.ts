@@ -618,21 +618,23 @@ demoAccountFileTest.describe(() => {
     async ({ mainPage }) => {
       const viewportBox = await mainPage.viewport.boundingBox();
       if (!viewportBox) throw new Error('Could not get bounding box for viewport');
-      const firstBoard = {
-        x: viewportBox.x + viewportBox.width / 2,
-        y: viewportBox.y + viewportBox.height / 2,
-      };
       const secondBoard = { x: 200, y: 200 };
+      let firstBoard: { x: number; y: number };
+      let guideX: number;
 
       await demoAccountFileTest.step(
         'Create a second board and drag ruler guides onto both boards',
         async () => {
+          await designPanelPage.changeHeightAndWidthForLayer('400', '400');
+          await mainPage.waitForChangeIsSaved();
+          firstBoard = await mainPage.getSelectionBox();
+          guideX = firstBoard.x + 200;
           await mainPage.createDefaultBoardByCoordinates(
             secondBoard.x,
             secondBoard.y,
           );
-          await mainPage.dragHorizontalGuideFromRuler(firstBoard.x, firstBoard.y);
-          await mainPage.dragVerticalGuideFromRuler(firstBoard.x, firstBoard.y);
+          await mainPage.dragHorizontalGuideFromRuler(guideX, firstBoard.y + 300);
+          await mainPage.dragVerticalGuideFromRuler(guideX, firstBoard.y + 200);
           await mainPage.dragVerticalGuideFromRuler(
             viewportBox.x + secondBoard.x,
             viewportBox.y + secondBoard.y,
@@ -651,6 +653,28 @@ demoAccountFileTest.describe(() => {
             true,
             1,
           );
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Move a shape near the vertical guide → it snaps to the guide',
+        async () => {
+          await mainPage.clickCreateRectangleButton();
+          await mainPage.dragOnViewport(
+            firstBoard.x - viewportBox.x + 40,
+            firstBoard.y - viewportBox.y + 40,
+            firstBoard.x - viewportBox.x + 90,
+            firstBoard.y - viewportBox.y + 90,
+          );
+          await mainPage.waitForChangeIsSaved();
+          // Dropped 2px and 6px right of the guide, it ends at the same X both times
+          const snappedX: number[] = [];
+          for (const offset of [2, 6]) {
+            const shape = await mainPage.getSelectionBox();
+            await mainPage.dragFromBoxCenter(shape, guideX + offset - shape.x, 0);
+            snappedX.push(await designPanelPage.getXValue());
+          }
+          expect(snappedX[1], 'Shape snaps to the guide').toBe(snappedX[0]);
         },
       );
 
