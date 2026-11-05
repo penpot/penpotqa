@@ -23,13 +23,24 @@ demoAccountFileTest.beforeEach(async ({ page }) => {
 });
 
 demoAccountFileTest(qase([216], 'Change color background'), async ({ mainPage }) => {
-  await designPanelPage.clickCanvasBackgroundColorIcon();
-  await colorPalettePage.setHex('#304d6a');
-  await mainPage.clickViewportTwice();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot('color-background.png', {
-    mask: mainPage.maskViewport(),
-  });
+  await demoAccountFileTest.step(
+    'Change the canvas background color from the Design tab',
+    async () => {
+      await designPanelPage.clickCanvasBackgroundColorIcon();
+      await colorPalettePage.setHex('#304d6a');
+      await mainPage.clickViewportTwice();
+      await mainPage.waitForChangeIsSaved();
+    },
+  );
+
+  await demoAccountFileTest.step(
+    'Verify the canvas background color is changed',
+    async () => {
+      await expect(mainPage.viewport).toHaveScreenshot('color-background.png', {
+        mask: mainPage.maskViewport(),
+      });
+    },
+  );
 });
 
 demoAccountFileTest.describe(() => {
@@ -48,27 +59,43 @@ demoAccountFileTest.describe(() => {
     async ({ mainPage }) => {
       const newName = 'New test board';
       const renamedName = 'renamed board';
-      // Rename board by double clicking on the board
-      await mainPage.doubleClickCreatedBoardTitleOnCanvas();
-      await mainPage.typeNameShapeLabelAndEnter(newName);
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isBoardNameDisplayed(newName);
-      // Rename board by double clicking on the board layer
-      await layersPanelPage.doubleClickLayerOnLayersTab(newName);
-      await layersPanelPage.typeNameCreatedLayerAndClickOnViewport(
-        renamedName,
-        900,
-        100,
+
+      await demoAccountFileTest.step(
+        'Rename the board by double clicking its name on the viewport',
+        async () => {
+          await mainPage.doubleClickCreatedBoardTitleOnCanvas();
+          await mainPage.typeNameShapeLabelAndEnter(newName);
+          await mainPage.waitForChangeIsSaved();
+          await layersPanelPage.isBoardNameDisplayed(newName);
+        },
       );
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isBoardNameDisplayed(renamedName);
-      // A locked layer can't be renamed (penpot/penpot#5845)
-      await layersPanel.toggleLayerLock(renamedName);
-      await mainPage.waitForChangeIsSaved();
-      await layersPanel.checkLayerLocked(renamedName);
-      await layersPanelPage.doubleClickLayerOnLayersTab(renamedName);
-      await layersPanel.checkLayerNameInputVisible(false);
-      await layersPanelPage.isBoardNameDisplayed(renamedName);
+
+      await demoAccountFileTest.step(
+        'Rename the board by double clicking it on the Layers panel',
+        async () => {
+          await layersPanelPage.doubleClickLayerOnLayersTab(newName);
+          await layersPanelPage.typeNameCreatedLayerAndClickOnViewport(
+            renamedName,
+            900,
+            100,
+          );
+          await mainPage.waitForChangeIsSaved();
+          await layersPanelPage.isBoardNameDisplayed(renamedName);
+        },
+      );
+
+      await demoAccountFileTest.step(
+        "Lock the board and verify it can't be renamed",
+        async () => {
+          // A locked layer can't be renamed (penpot/penpot#5845)
+          await layersPanel.toggleLayerLock(renamedName);
+          await mainPage.waitForChangeIsSaved();
+          await layersPanel.checkLayerLocked(renamedName);
+          await layersPanelPage.doubleClickLayerOnLayersTab(renamedName);
+          await layersPanel.checkLayerNameInputVisible(false);
+          await layersPanelPage.isBoardNameDisplayed(renamedName);
+        },
+      );
     },
   );
 
@@ -79,91 +106,114 @@ demoAccountFileTest.describe(() => {
     ),
     async ({ mainPage }) => {
       const defaultBoardName = 'Board';
-      await mainPage.doubleClickCreatedBoardTitleOnCanvas();
-      await layersPanelPage.clickOnBackspaceAndEnter();
-      await layersPanelPage.isBoardNameDisplayed(defaultBoardName);
+
+      await demoAccountFileTest.step(
+        'Clear the board name on the viewport and press Enter',
+        async () => {
+          await mainPage.doubleClickCreatedBoardTitleOnCanvas();
+          await layersPanelPage.clickOnBackspaceAndEnter();
+        },
+      );
+
+      await demoAccountFileTest.step('Verify the board is not renamed', async () => {
+        await layersPanelPage.isBoardNameDisplayed(defaultBoardName);
+      });
     },
   );
 
   demoAccountFileTest(
     qase([229], 'Add, edit and delete Stroke to board'),
     async ({ mainPage }) => {
-      await designPanelPage.clickAddStrokeButton();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('board-stroke-default.png', {
-        mask: mainPage.maskViewport(),
+      await demoAccountFileTest.step('Add a stroke to the board', async () => {
+        await designPanelPage.clickAddStrokeButton();
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.waitForResizeHandlerVisible();
+        await expect(mainPage.viewport).toHaveScreenshot(
+          'board-stroke-default.png',
+          {
+            mask: mainPage.maskViewport(),
+          },
+        );
       });
-      await mainPage.clickCreatedBoardTitleOnCanvas();
-      await designPanelPage.changeStrokeSettings(
-        '#43E50B',
-        '60',
-        '10',
-        'Inside',
-        'Dotted',
-      );
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'board-stroke-inside-dotted.png',
-        {
-          mask: mainPage.maskViewport(),
+
+      await demoAccountFileTest.step(
+        'Change the stroke color, opacity, width, position and style',
+        async () => {
+          await mainPage.clickCreatedBoardTitleOnCanvas();
+          await designPanelPage.changeStrokeSettings(
+            '#43E50B',
+            '60',
+            '10',
+            'Inside',
+            'Dotted',
+          );
+          await mainPage.waitForChangeIsSaved();
+          await mainPage.waitForResizeHandlerVisible();
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'board-stroke-inside-dotted.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
+          await mainPage.clickCreatedBoardTitleOnCanvas();
+          await designPanelPage.changeStrokeSettings(
+            '#F5358F',
+            '80',
+            '5',
+            'Outside',
+            'Dashed',
+          );
+          await mainPage.waitForChangeIsSaved();
+          await mainPage.waitForResizeHandlerVisible();
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'board-stroke-outside-dashed.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
+          await mainPage.clickCreatedBoardTitleOnCanvas();
+          await designPanelPage.changeStrokeSettings(
+            '#F5358F',
+            '100',
+            '3',
+            'Center',
+            'Solid',
+          );
+          await mainPage.waitForChangeIsSaved();
+          await mainPage.waitForResizeHandlerVisible();
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'board-stroke-center-solid.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
+          await mainPage.clickCreatedBoardTitleOnCanvas();
+          await designPanelPage.changeStrokeSettings(
+            '#F5358F',
+            '40',
+            '4',
+            'Center',
+            'Mixed',
+          );
+          await mainPage.waitForChangeIsSaved();
+          await mainPage.waitForResizeHandlerVisible();
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'board-stroke-center-mixed.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
         },
       );
-      await mainPage.clickCreatedBoardTitleOnCanvas();
-      await designPanelPage.changeStrokeSettings(
-        '#F5358F',
-        '80',
-        '5',
-        'Outside',
-        'Dashed',
-      );
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'board-stroke-outside-dashed.png',
-        {
+
+      await demoAccountFileTest.step('Remove the stroke', async () => {
+        await mainPage.clickCreatedBoardTitleOnCanvas();
+        await designPanelPage.removeStroke();
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.waitForResizeHandlerVisible();
+        await expect(mainPage.viewport).toHaveScreenshot('board-stroke-remove.png', {
           mask: mainPage.maskViewport(),
-        },
-      );
-      await mainPage.clickCreatedBoardTitleOnCanvas();
-      await designPanelPage.changeStrokeSettings(
-        '#F5358F',
-        '100',
-        '3',
-        'Center',
-        'Solid',
-      );
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'board-stroke-center-solid.png',
-        {
-          mask: mainPage.maskViewport(),
-        },
-      );
-      await mainPage.clickCreatedBoardTitleOnCanvas();
-      await designPanelPage.changeStrokeSettings(
-        '#F5358F',
-        '40',
-        '4',
-        'Center',
-        'Mixed',
-      );
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'board-stroke-center-mixed.png',
-        {
-          mask: mainPage.maskViewport(),
-        },
-      );
-      await mainPage.clickCreatedBoardTitleOnCanvas();
-      await designPanelPage.removeStroke();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('board-stroke-remove.png', {
-        mask: mainPage.maskViewport(),
+        });
       });
     },
   );
@@ -171,37 +221,63 @@ demoAccountFileTest.describe(() => {
   demoAccountFileTest(
     qase([1756], 'Absolute positioned board moving'),
     async ({ mainPage }) => {
-      await designPanelPage.changeHeightAndWidthForLayer('400', '500');
-      await mainPage.pressFlexLayoutShortcut();
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.checkLayoutPadding('Vertical', '0');
-      await designPanelPage.checkLayoutPadding('Horizontal', '0');
-      await designPanelPage.checkRowGap('0');
-      await designPanelPage.checkColumnGap('0');
-      await layersPanelPage.doubleClickLayerOnLayersTab('Board');
-      await layersPanelPage.typeNameCreatedLayerAndEnter('Main Board');
-      await mainPage.createDefaultBoardByCoordinates(200, 200);
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.changeHeightAndWidthForLayer('200', '200');
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.createDefaultEllipseByCoordinates(220, 220);
-      await layersPanelPage.dragAndDropComponentToBoard('Ellipse');
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.dragAndDropElementToElement('Board', 'Main Board');
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.setFlexElementPositionAbsolute();
-      await mainPage.pressHideShowRulersShortcut();
-      await expect(mainPage.viewport).toHaveScreenshot('board-in-flex-board.png', {
-        mask: mainPage.maskViewport(),
-      });
-      await mainPage.clickViewportByCoordinates(300, 100, 2);
-      await layersPanelPage.selectBoardChildLayer('Board');
-      await designPanelPage.changeAxisXAndYForLayer('100', '100');
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'board-in-flex-board-moved.png',
-        {
-          mask: mainPage.maskViewport(),
+      await demoAccountFileTest.step(
+        'Add a flex layout and verify it has no gaps or paddings',
+        async () => {
+          await designPanelPage.changeHeightAndWidthForLayer('400', '500');
+          await mainPage.pressFlexLayoutShortcut();
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkLayoutPadding('Vertical', '0');
+          await designPanelPage.checkLayoutPadding('Horizontal', '0');
+          await designPanelPage.checkRowGap('0');
+          await designPanelPage.checkColumnGap('0');
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Move a board with an ellipse into the flex layout board',
+        async () => {
+          await layersPanelPage.doubleClickLayerOnLayersTab('Board');
+          await layersPanelPage.typeNameCreatedLayerAndEnter('Main Board');
+          await mainPage.createDefaultBoardByCoordinates(200, 200);
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.changeHeightAndWidthForLayer('200', '200');
+          await mainPage.waitForChangeIsSaved();
+          await mainPage.createDefaultEllipseByCoordinates(220, 220);
+          await layersPanelPage.dragAndDropComponentToBoard('Ellipse');
+          await mainPage.waitForChangeIsSaved();
+          await layersPanelPage.dragAndDropElementToElement('Board', 'Main Board');
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Set the inner board position to absolute',
+        async () => {
+          await designPanelPage.setFlexElementPositionAbsolute();
+          await mainPage.pressHideShowRulersShortcut();
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'board-in-flex-board.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Move the absolute board and verify its content moves with it',
+        async () => {
+          await mainPage.clickViewportByCoordinates(300, 100, 2);
+          await layersPanelPage.selectBoardChildLayer('Board');
+          await designPanelPage.changeAxisXAndYForLayer('100', '100');
+          await mainPage.waitForChangeIsSaved();
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'board-in-flex-board-moved.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
         },
       );
     },
