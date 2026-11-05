@@ -2185,14 +2185,26 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     }
   }
 
+  /**
+   * Checks a padding of the selected board's layout, expanding the layout section first.
+   * @param {'Vertical' | 'Horizontal'} type Padding to check.
+   * @param {string} value Expected value (e.g. '0').
+   * @param {boolean} [flex=true] Whether the layout is flex (true) or grid (false).
+   */
   async checkLayoutPadding(type, value, flex = true) {
     flex ? await this.expandFlexLayoutMenu() : await this.expandGridLayoutMenu();
     switch (type) {
       case 'Vertical':
-        await expect(this.layoutVerticalPaddingInput).toHaveValue(value);
+        await expect(
+          this.layoutVerticalPaddingInput,
+          `Vertical padding is ${value}`,
+        ).toHaveValue(value);
         break;
       case 'Horizontal':
-        await expect(this.layoutHorizontalPaddingInput).toHaveValue(value);
+        await expect(
+          this.layoutHorizontalPaddingInput,
+          `Horizontal padding is ${value}`,
+        ).toHaveValue(value);
         break;
     }
   }
