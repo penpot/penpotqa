@@ -2618,6 +2618,37 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     ).toHaveValue(value);
   }
 
+  /**
+   * Checks whether a shadow is hidden, from the icon of its "Toggle shadow" button.
+   *
+   * @param {boolean} hidden Whether the shadow should be hidden (default: true)
+   * @param {number} index Index of the shadow row (default: 0)
+   */
+  async checkShadowHidden(hidden = true, index = 0) {
+    const icon = this.shadowShowIcon.nth(index).locator('use');
+    await expect(
+      icon,
+      hidden ? 'Shadow is hidden' : 'Shadow is shown',
+    ).toHaveAttribute('href', hidden ? '#icon-hide' : '#icon-shown');
+  }
+
+  /**
+   * Checks the color and opacity applied to a shadow, from the color bullet in its
+   * open advanced options (e.g. "#304d6a (50%)"). The bullet shows the applied value,
+   * unlike the opacity input, which shows what was typed.
+   *
+   * @param {string} hex Expected color, e.g. '#304d6a' (lowercase, as the bullet shows it)
+   * @param {string} opacity Expected opacity without "%", e.g. '50'
+   */
+  async checkShadowColor(hex, opacity) {
+    await expect(
+      this.page
+        .locator('div[class*="shadow-advanced"]')
+        .getByRole('button', { name: `${hex} (${opacity}%)`, exact: true }),
+      `Shadow color is ${hex} at ${opacity}%`,
+    ).toBeVisible();
+  }
+
   async isExpectedShadowColorVisible(color) {
     const shadowColorButton = this.shadowSectionContainer.getByRole('button', {
       name: color,
