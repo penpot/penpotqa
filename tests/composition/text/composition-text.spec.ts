@@ -60,6 +60,8 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Add shadow', async () => {
         await designPanelPage.clickAddShadowButton();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isExpectedShadowTypeOption('Drop shadow');
+        await designPanelPage.checkShadowHidden(false);
         await mainPage.waitForResizeHandlerVisible();
         await mainPage.focusLayerViaShortcut();
         await expect(mainPage.viewport).toHaveScreenshot(
@@ -74,6 +76,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Hide shadow', async () => {
         await designPanelPage.hideShadow();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkShadowHidden();
         await mainPage.waitForResizeHandlerVisible();
         await mainPage.focusLayerViaShortcut();
         await expect(mainPage.viewport).toHaveScreenshot(
@@ -88,6 +91,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Unhide shadow', async () => {
         await designPanelPage.unhideShadow();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkShadowHidden(false);
         await mainPage.waitForResizeHandlerVisible();
         await mainPage.focusLayerViaShortcut();
         await expect(mainPage.viewport).toHaveScreenshot(
@@ -104,6 +108,7 @@ demoAccountFileTest.describe(() => {
         async () => {
           await designPanelPage.selectTypeForShadow('Inner shadow');
           await mainPage.waitForChangeIsSaved();
+          await designPanelPage.isExpectedShadowTypeOption('Inner shadow');
           await mainPage.waitForResizeHandlerVisible();
           await mainPage.focusLayerViaShortcut();
           await expect(mainPage.viewport).toHaveScreenshot(
@@ -119,6 +124,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Remove shadow', async () => {
         await designPanelPage.removeShadow();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isShadowTypeOptionNotVisible('Inner shadow');
         await mainPage.waitForResizeHandlerVisible();
         await mainPage.focusLayerViaShortcut();
         await expect(mainPage.viewport).toHaveScreenshot(
@@ -142,10 +148,17 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Add a new shadow with settings', async () => {
         await designPanelPage.clickAddShadowButton();
         await designPanelPage.clickShadowActionsButton();
-        await designPanelPage.changeShadowSettings('2', '7', '0.5', '.5', '50');
         await designPanelPage.clickShadowColorIcon();
         await colorPalettePage.setHex('#304d6a');
+        await designPanelPage.changeShadowSettings('2', '7', '0.5', '.5', '50');
+        await mainPage.clickOnEnter();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isExpectedShadowTypeOption('Drop shadow');
+        await designPanelPage.hasShadowXOffsetExpectedValue('2');
+        await designPanelPage.hasShadowYOffsetExpectedValue('7');
+        await designPanelPage.hasShadowBlurExpectedValue('0.5');
+        await designPanelPage.hasShadowSpreadExpectedValue('0.5');
+        await designPanelPage.checkShadowColor('#304d6a', '50');
         await mainPage.clickOnLayerOnCanvas();
         await mainPage.focusLayerViaShortcut();
         await mainPage.clickViewportTwice();
@@ -160,10 +173,17 @@ demoAccountFileTest.describe(() => {
         async () => {
           await designPanelPage.selectTypeForShadow('Inner shadow');
           await designPanelPage.clickShadowActionsButton();
-          await designPanelPage.changeShadowSettings('5', '7', '9', '12', '25');
           await designPanelPage.clickShadowColorIcon();
           await colorPalettePage.setHex('#96e637');
+          await designPanelPage.changeShadowSettings('5', '7', '9', '12', '25');
+          await mainPage.clickOnEnter();
           await mainPage.waitForChangeIsSaved();
+          await designPanelPage.isExpectedShadowTypeOption('Inner shadow');
+          await designPanelPage.hasShadowXOffsetExpectedValue('5');
+          await designPanelPage.hasShadowYOffsetExpectedValue('7');
+          await designPanelPage.hasShadowBlurExpectedValue('9');
+          await designPanelPage.hasShadowSpreadExpectedValue('12');
+          await designPanelPage.checkShadowColor('#96e637', '25');
           await mainPage.clickOnLayerOnCanvas();
           await mainPage.focusLayerViaShortcut();
           await mainPage.clickViewportTwice();
