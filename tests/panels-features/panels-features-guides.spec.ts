@@ -1,6 +1,7 @@
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { expect } from '@playwright/test';
 import { demoAccountFileTest } from 'fixtures';
 import { openFileInWorkspace } from 'helpers/files/open-file-in-workspace';
@@ -8,9 +9,11 @@ import { createTeamName } from 'helpers/teams/create-team-name';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 let designPanelPage: DesignPanelPage;
+let layersPanelPage: LayersPanelPage;
 
 demoAccountFileTest.beforeEach(async ({ page }) => {
   designPanelPage = new DesignPanelPage(page);
+  layersPanelPage = new LayersPanelPage(page);
 });
 
 demoAccountFileTest.describe(() => {
@@ -522,10 +525,7 @@ demoAccountFileTest.describe(() => {
   );
 
   demoAccountFileTest(
-    qase(
-      [2842, 763, 816],
-      'Hide/show rulers and guides (shortcut and main menu) and clear board guides',
-    ),
+    qase([763, 816], 'Hide/show rulers and guides (shortcut and main menu)'),
     async ({ page, mainPage }) => {
       const viewportBox = await mainPage.viewport.boundingBox();
       if (!viewportBox) throw new Error('Could not get bounding box for viewport');
@@ -610,17 +610,76 @@ demoAccountFileTest.describe(() => {
           );
         },
       );
+    },
+  );
+
+  demoAccountFileTest(
+    qase([2842], 'Clear guides for a given board'),
+    async ({ mainPage }) => {
+      const viewportBox = await mainPage.viewport.boundingBox();
+      if (!viewportBox) throw new Error('Could not get bounding box for viewport');
+      const firstBoard = {
+        x: viewportBox.x + viewportBox.width / 2,
+        y: viewportBox.y + viewportBox.height / 2,
+      };
+      const secondBoard = { x: 200, y: 200 };
 
       await demoAccountFileTest.step(
-        'Clear board guides via right-click context menu',
+        'Create a second board and drag ruler guides onto both boards',
         async () => {
-          await mainPage.clearBoardGuidesViaRightClick();
+          await mainPage.createDefaultBoardByCoordinates(
+            secondBoard.x,
+            secondBoard.y,
+          );
+          await mainPage.dragHorizontalGuideFromRuler(firstBoard.x, firstBoard.y);
+          await mainPage.dragVerticalGuideFromRuler(firstBoard.x, firstBoard.y);
+          await mainPage.dragVerticalGuideFromRuler(
+            viewportBox.x + secondBoard.x,
+            viewportBox.y + secondBoard.y,
+          );
           await mainPage.waitForChangeIsSaved();
-          await expect(mainPage.viewport).toHaveScreenshot(
-            'board-without-guide.png',
-            {
-              mask: mainPage.maskViewport(),
-            },
+          // The newest layer is listed first: index 0 is the second board
+          await layersPanelPage.isLayerContextMenuOptionVisible(
+            'Board',
+            'Clear board guides',
+            true,
+            0,
+          );
+          await layersPanelPage.isLayerContextMenuOptionVisible(
+            'Board',
+            'Clear board guides',
+            true,
+            1,
+          );
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Clear the first board guides via right click',
+        async () => {
+          await layersPanelPage.clickOnLayerOptionViaRightClickForLayer(
+            'Board',
+            'Clear board guides',
+            1,
+          );
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Only the first board loses its guides',
+        async () => {
+          await layersPanelPage.isLayerContextMenuOptionVisible(
+            'Board',
+            'Clear board guides',
+            false,
+            1,
+          );
+          await layersPanelPage.isLayerContextMenuOptionVisible(
+            'Board',
+            'Clear board guides',
+            true,
+            0,
           );
         },
       );
