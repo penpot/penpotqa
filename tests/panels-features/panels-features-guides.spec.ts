@@ -1,6 +1,7 @@
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { expect } from '@playwright/test';
 import { demoAccountFileTest } from 'fixtures';
 import { openFileInWorkspace } from 'helpers/files/open-file-in-workspace';
@@ -8,9 +9,11 @@ import { createTeamName } from 'helpers/teams/create-team-name';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 let designPanelPage: DesignPanelPage;
+let layersPanelPage: LayersPanelPage;
 
 demoAccountFileTest.beforeEach(async ({ page }) => {
   designPanelPage = new DesignPanelPage(page);
+  layersPanelPage = new LayersPanelPage(page);
 });
 
 demoAccountFileTest.describe(() => {
@@ -25,6 +28,8 @@ demoAccountFileTest.describe(() => {
     await demoAccountFileTest.step('Add square guides', async () => {
       await designPanelPage.clickAddGuidesButton();
       await mainPage.waitForChangeIsSaved();
+      await designPanelPage.checkGuideType('Square');
+      await designPanelPage.checkGuideFieldValue('Size', '16');
     });
 
     await demoAccountFileTest.step(
@@ -49,6 +54,7 @@ demoAccountFileTest.describe(() => {
         await designPanelPage.changeSizeForGuides('8');
         await mainPage.clickViewportTwice();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkGuideFieldValue('Size', '8');
       });
 
       await demoAccountFileTest.step(
@@ -75,6 +81,7 @@ demoAccountFileTest.describe(() => {
         await designPanelPage.changeOpacityForGuides('70');
         await mainPage.clickViewportTwice();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkGuideFieldValue('Opacity', '70');
       });
 
       await demoAccountFileTest.step(
@@ -105,6 +112,7 @@ demoAccountFileTest.describe(() => {
           await designPanelPage.clickGuidesActionsButton();
           await designPanelPage.clickUseDefaultGuidesButton();
           await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkGuideFieldValue('Size', '16');
         },
       );
 
@@ -168,6 +176,7 @@ demoAccountFileTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await designPanelPage.clickRemoveGuidesButton();
       await mainPage.waitForChangeIsSaved();
+      await designPanelPage.checkGuideAdded(false);
     });
 
     await demoAccountFileTest.step('Verify board without guides', async () => {
@@ -182,6 +191,8 @@ demoAccountFileTest.describe(() => {
       await designPanelPage.clickAddGuidesButton();
       await designPanelPage.selectGuidesType('Columns');
       await mainPage.waitForChangeIsSaved();
+      await designPanelPage.checkGuideType('Columns');
+      await designPanelPage.checkGuideFieldValue('Columns/Rows', '12');
     });
 
     await demoAccountFileTest.step(
@@ -207,6 +218,7 @@ demoAccountFileTest.describe(() => {
         await designPanelPage.changeColumnsOrRowsNumberForGuides('8');
         await mainPage.clickViewportTwice();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkGuideFieldValue('Columns/Rows', '8');
       });
 
       await demoAccountFileTest.step(
@@ -236,6 +248,8 @@ demoAccountFileTest.describe(() => {
         await designPanelPage.changeWidthForGuides('10');
         await mainPage.clickViewportTwice();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkGuideFieldValue('Columns/Rows', '3');
+        await designPanelPage.checkGuideFieldValue('Width', '10');
       });
 
       await demoAccountFileTest.step(
@@ -271,6 +285,7 @@ demoAccountFileTest.describe(() => {
           await designPanelPage.changeOpacityForGuides('50');
           await mainPage.clickViewportTwice();
           await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkGuideFieldValue('Opacity', '50');
         },
       );
 
@@ -286,6 +301,7 @@ demoAccountFileTest.describe(() => {
           await designPanelPage.changeOpacityForGuides('100');
           await mainPage.clickViewportTwice();
           await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkGuideFieldValue('Opacity', '100');
           await expect(mainPage.viewport).toHaveScreenshot(
             'columns-guide-opacity-100.png',
             { mask: mainPage.maskViewport() },
@@ -309,6 +325,7 @@ demoAccountFileTest.describe(() => {
           await designPanelPage.clickUseDefaultGuidesButton();
           await mainPage.clickViewportTwice();
           await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkGuideFieldValue('Columns/Rows', '12');
         },
       );
 
@@ -326,27 +343,33 @@ demoAccountFileTest.describe(() => {
     },
   );
 
-  demoAccountFileTest(qase([743], 'Remove columns guides'), async ({ mainPage }) => {
-    await demoAccountFileTest.step('Remove columns guides', async () => {
-      await designPanelPage.clickAddGuidesButton();
-      await designPanelPage.selectGuidesType('Columns');
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.clickRemoveGuidesButton();
-      await mainPage.waitForChangeIsSaved();
-    });
-
-    await demoAccountFileTest.step('Verify board without guides', async () => {
-      await expect(mainPage.viewport).toHaveScreenshot('board-without-guide.png', {
-        mask: mainPage.maskViewport(),
+  demoAccountFileTest(
+    qase([3271], 'Remove columns guides'),
+    async ({ mainPage }) => {
+      await demoAccountFileTest.step('Remove columns guides', async () => {
+        await designPanelPage.clickAddGuidesButton();
+        await designPanelPage.selectGuidesType('Columns');
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.clickRemoveGuidesButton();
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkGuideAdded(false);
       });
-    });
-  });
+
+      await demoAccountFileTest.step('Verify board without guides', async () => {
+        await expect(mainPage.viewport).toHaveScreenshot('board-without-guide.png', {
+          mask: mainPage.maskViewport(),
+        });
+      });
+    },
+  );
 
   demoAccountFileTest(qase([3272], 'Set rows guides'), async ({ mainPage }) => {
     await demoAccountFileTest.step('Add rows guides', async () => {
       await designPanelPage.clickAddGuidesButton();
       await designPanelPage.selectGuidesType('Rows');
       await mainPage.waitForChangeIsSaved();
+      await designPanelPage.checkGuideType('Rows');
+      await designPanelPage.checkGuideFieldValue('Columns/Rows', '12');
     });
 
     await demoAccountFileTest.step(
@@ -366,9 +389,10 @@ demoAccountFileTest.describe(() => {
         await designPanelPage.clickAddGuidesButton();
         await designPanelPage.selectGuidesType('Rows');
         await mainPage.waitForChangeIsSaved();
-        await designPanelPage.changeColumnsOrRowsNumberForGuides('12');
+        await designPanelPage.changeColumnsOrRowsNumberForGuides('8');
         await mainPage.clickViewportTwice();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkGuideFieldValue('Columns/Rows', '8');
       });
 
       await demoAccountFileTest.step(
@@ -398,6 +422,8 @@ demoAccountFileTest.describe(() => {
         await designPanelPage.changeHeightForGuides('20');
         await mainPage.clickViewportTwice();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkGuideFieldValue('Columns/Rows', '3');
+        await designPanelPage.checkGuideFieldValue('Height', '20');
       });
 
       await demoAccountFileTest.step(
@@ -433,6 +459,7 @@ demoAccountFileTest.describe(() => {
           await designPanelPage.changeOpacityForGuides('50');
           await mainPage.clickViewportTwice();
           await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkGuideFieldValue('Opacity', '50');
         },
       );
 
@@ -448,6 +475,7 @@ demoAccountFileTest.describe(() => {
           await designPanelPage.changeOpacityForGuides('100');
           await mainPage.clickViewportTwice();
           await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkGuideFieldValue('Opacity', '100');
           await expect(mainPage.viewport).toHaveScreenshot(
             'rows-guide-opacity-100.png',
             {
@@ -473,6 +501,7 @@ demoAccountFileTest.describe(() => {
           await designPanelPage.clickUseDefaultGuidesButton();
           await mainPage.clickViewportTwice();
           await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkGuideFieldValue('Columns/Rows', '12');
         },
       );
 
@@ -501,6 +530,7 @@ demoAccountFileTest.describe(() => {
           await mainPage.clickShortcutCtrlD();
           await mainPage.waitForChangeIsUnsaved();
           await mainPage.waitForChangeIsSaved();
+          await layersPanelPage.isVisibleLayersCount(2);
         },
       );
 
@@ -519,10 +549,7 @@ demoAccountFileTest.describe(() => {
   );
 
   demoAccountFileTest(
-    qase(
-      [2842, 763],
-      'Hide/show rulers and guides (shortcut and main menu) and clear board guides',
-    ),
+    qase([763, 816], 'Hide/show rulers and guides (shortcut and main menu)'),
     async ({ page, mainPage }) => {
       const viewportBox = await mainPage.viewport.boundingBox();
       if (!viewportBox) throw new Error('Could not get bounding box for viewport');
@@ -607,17 +634,100 @@ demoAccountFileTest.describe(() => {
           );
         },
       );
+    },
+  );
+
+  demoAccountFileTest(
+    qase([2842], 'Clear guides for a given board'),
+    async ({ mainPage }) => {
+      const viewportBox = await mainPage.viewport.boundingBox();
+      if (!viewportBox) throw new Error('Could not get bounding box for viewport');
+      const secondBoard = { x: 200, y: 200 };
+      let firstBoard: { x: number; y: number };
+      let guideX: number;
 
       await demoAccountFileTest.step(
-        'Clear board guides via right-click context menu',
+        'Create a second board and drag ruler guides onto both boards',
         async () => {
-          await mainPage.clearBoardGuidesViaRightClick();
+          await designPanelPage.changeHeightAndWidthForLayer('400', '400');
           await mainPage.waitForChangeIsSaved();
-          await expect(mainPage.viewport).toHaveScreenshot(
-            'board-without-guide.png',
-            {
-              mask: mainPage.maskViewport(),
-            },
+          firstBoard = await mainPage.getSelectionBox();
+          guideX = firstBoard.x + 200;
+          await mainPage.createDefaultBoardByCoordinates(
+            secondBoard.x,
+            secondBoard.y,
+          );
+          await mainPage.dragHorizontalGuideFromRuler(guideX, firstBoard.y + 300);
+          await mainPage.dragVerticalGuideFromRuler(guideX, firstBoard.y + 200);
+          await mainPage.dragVerticalGuideFromRuler(
+            viewportBox.x + secondBoard.x,
+            viewportBox.y + secondBoard.y,
+          );
+          await mainPage.waitForChangeIsSaved();
+          // The newest layer is listed first: index 0 is the second board
+          await layersPanelPage.isLayerContextMenuOptionVisible(
+            'Board',
+            'Clear board guides',
+            true,
+            0,
+          );
+          await layersPanelPage.isLayerContextMenuOptionVisible(
+            'Board',
+            'Clear board guides',
+            true,
+            1,
+          );
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Move a shape near the vertical guide → it snaps to the guide',
+        async () => {
+          await mainPage.clickCreateRectangleButton();
+          await mainPage.dragOnViewport(
+            firstBoard.x - viewportBox.x + 40,
+            firstBoard.y - viewportBox.y + 40,
+            firstBoard.x - viewportBox.x + 90,
+            firstBoard.y - viewportBox.y + 90,
+          );
+          await mainPage.waitForChangeIsSaved();
+          // Dropped 2px and 6px right of the guide, it ends at the same X both times
+          const snappedX: number[] = [];
+          for (const offset of [2, 6]) {
+            const shape = await mainPage.getSelectionBox();
+            await mainPage.dragFromBoxCenter(shape, guideX + offset - shape.x, 0);
+            snappedX.push(await designPanelPage.getXValue());
+          }
+          expect(snappedX[1], 'Shape snaps to the guide').toBe(snappedX[0]);
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Clear the first board guides via right click',
+        async () => {
+          await layersPanelPage.clickOnLayerOptionViaRightClickForLayer(
+            'Board',
+            'Clear board guides',
+            1,
+          );
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Only the first board loses its guides',
+        async () => {
+          await layersPanelPage.isLayerContextMenuOptionVisible(
+            'Board',
+            'Clear board guides',
+            false,
+            1,
+          );
+          await layersPanelPage.isLayerContextMenuOptionVisible(
+            'Board',
+            'Clear board guides',
+            true,
+            0,
           );
         },
       );

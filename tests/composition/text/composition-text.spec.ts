@@ -60,6 +60,8 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Add shadow', async () => {
         await designPanelPage.clickAddShadowButton();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isExpectedShadowTypeOption('Drop shadow');
+        await designPanelPage.checkShadowHidden(false);
         await mainPage.waitForResizeHandlerVisible();
         await mainPage.focusLayerViaShortcut();
         await expect(mainPage.viewport).toHaveScreenshot(
@@ -74,6 +76,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Hide shadow', async () => {
         await designPanelPage.hideShadow();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkShadowHidden();
         await mainPage.waitForResizeHandlerVisible();
         await mainPage.focusLayerViaShortcut();
         await expect(mainPage.viewport).toHaveScreenshot(
@@ -88,6 +91,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Unhide shadow', async () => {
         await designPanelPage.unhideShadow();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkShadowHidden(false);
         await mainPage.waitForResizeHandlerVisible();
         await mainPage.focusLayerViaShortcut();
         await expect(mainPage.viewport).toHaveScreenshot(
@@ -104,6 +108,7 @@ demoAccountFileTest.describe(() => {
         async () => {
           await designPanelPage.selectTypeForShadow('Inner shadow');
           await mainPage.waitForChangeIsSaved();
+          await designPanelPage.isExpectedShadowTypeOption('Inner shadow');
           await mainPage.waitForResizeHandlerVisible();
           await mainPage.focusLayerViaShortcut();
           await expect(mainPage.viewport).toHaveScreenshot(
@@ -119,6 +124,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Remove shadow', async () => {
         await designPanelPage.removeShadow();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isShadowTypeOptionNotVisible('Inner shadow');
         await mainPage.waitForResizeHandlerVisible();
         await mainPage.focusLayerViaShortcut();
         await expect(mainPage.viewport).toHaveScreenshot(
@@ -142,10 +148,17 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Add a new shadow with settings', async () => {
         await designPanelPage.clickAddShadowButton();
         await designPanelPage.clickShadowActionsButton();
-        await designPanelPage.changeShadowSettings('2', '7', '0.5', '.5', '50');
         await designPanelPage.clickShadowColorIcon();
         await colorPalettePage.setHex('#304d6a');
+        await designPanelPage.changeShadowSettings('2', '7', '0.5', '.5', '50');
+        await mainPage.clickOnEnter();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isExpectedShadowTypeOption('Drop shadow');
+        await designPanelPage.hasShadowXOffsetExpectedValue('2');
+        await designPanelPage.hasShadowYOffsetExpectedValue('7');
+        await designPanelPage.hasShadowBlurExpectedValue('0.5');
+        await designPanelPage.hasShadowSpreadExpectedValue('0.5');
+        await designPanelPage.checkShadowColor('#304d6a', '50');
         await mainPage.clickOnLayerOnCanvas();
         await mainPage.focusLayerViaShortcut();
         await mainPage.clickViewportTwice();
@@ -160,10 +173,17 @@ demoAccountFileTest.describe(() => {
         async () => {
           await designPanelPage.selectTypeForShadow('Inner shadow');
           await designPanelPage.clickShadowActionsButton();
-          await designPanelPage.changeShadowSettings('5', '7', '9', '12', '25');
           await designPanelPage.clickShadowColorIcon();
           await colorPalettePage.setHex('#96e637');
+          await designPanelPage.changeShadowSettings('5', '7', '9', '12', '25');
+          await mainPage.clickOnEnter();
           await mainPage.waitForChangeIsSaved();
+          await designPanelPage.isExpectedShadowTypeOption('Inner shadow');
+          await designPanelPage.hasShadowXOffsetExpectedValue('5');
+          await designPanelPage.hasShadowYOffsetExpectedValue('7');
+          await designPanelPage.hasShadowBlurExpectedValue('9');
+          await designPanelPage.hasShadowSpreadExpectedValue('12');
+          await designPanelPage.checkShadowColor('#96e637', '25');
           await mainPage.clickOnLayerOnCanvas();
           await mainPage.focusLayerViaShortcut();
           await mainPage.clickViewportTwice();
@@ -215,41 +235,27 @@ demoAccountFileTest.describe(() => {
   });
 
   demoAccountFileTest(
-    qase([424], 'Change text uppercase, title case, lowercase (Design section)'),
+    qase([424], 'Change text uppercase, lowercase (Design section)'),
     async ({ mainPage }) => {
-      await demoAccountFileTest.step('Change text case to Uppercase', async () => {
-        await designPanelPage.changeTextCase('Upper');
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.focusLayerViaShortcut();
-        await expect(mainPage.viewport).toHaveScreenshot('text-upper-case.png', {
-          mask: mainPage.maskViewport(),
-        });
-        await mainPage.focusLayerViaShortcut();
-      });
+      for (const textCase of ['Upper', 'Lower', 'Title']) {
+        await demoAccountFileTest.step(
+          `Change text case to ${textCase}`,
+          async () => {
+            await designPanelPage.changeTextCase(textCase);
+            await mainPage.waitForChangeIsSaved();
+            await designPanelPage.isTextCaseSelected(textCase);
+          },
+        );
+      }
 
       await demoAccountFileTest.step(
-        'Change to text case to Title Case',
+        'Click the selected text case again → text case is reset',
         async () => {
           await designPanelPage.changeTextCase('Title');
           await mainPage.waitForChangeIsSaved();
-          await mainPage.focusLayerViaShortcut();
-          await expect(mainPage.viewport).toHaveScreenshot('text-title-case.png', {
-            mask: mainPage.maskViewport(),
-          });
-          await mainPage.focusLayerViaShortcut();
-        },
-      );
-
-      await demoAccountFileTest.step(
-        'Change to text case to Lower Case',
-        async () => {
-          await designPanelPage.changeTextCase('Lower');
-          await mainPage.waitForChangeIsSaved();
-          await mainPage.focusLayerViaShortcut();
-          await expect(mainPage.viewport).toHaveScreenshot('text-lower-case.png', {
-            mask: mainPage.maskViewport(),
-          });
-          await mainPage.focusLayerViaShortcut();
+          for (const textCase of ['Upper', 'Lower', 'Title']) {
+            await designPanelPage.isTextCaseSelected(textCase, false);
+          }
         },
       );
     },
@@ -312,25 +318,31 @@ demoAccountFileTest.describe(() => {
   );
 
   demoAccountFileTest(
-    qase([431], 'Change text color and opacity by typing color code'),
+    qase(
+      [431, 1753],
+      'Change text color and opacity by typing color code and check it in Inspect',
+    ),
     async ({ mainPage }) => {
-      await designPanelPage.clickFillColorIcon();
-      await colorPalettePage.setHex('#304d6a');
-      await designPanelPage.changeOpacityForFill('50');
-      await mainPage.clickMoveButton();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.focusLayerViaShortcut();
-      await mainPage.clickOnLayerOnCanvas();
-      await expect(mainPage.viewport).toHaveScreenshot('text-fill-opacity.png', {
-        mask: mainPage.maskViewport(),
-      });
-      await mainPage.focusLayerViaShortcut();
-      await inspectPanelPage.openInspectTab();
-      await inspectPanelPage.openComputedTab();
-      await expect(inspectPanelPage.textBlockOnInspect).toHaveScreenshot(
-        'inspect-text-block-color.png',
-        {
-          mask: mainPage.maskViewport(),
+      await demoAccountFileTest.step(
+        '431 Change text color and opacity by typing color code',
+        async () => {
+          await designPanelPage.clickFillColorIcon();
+          await colorPalettePage.setHex('#304d6a');
+          await designPanelPage.changeOpacityForFill('50');
+          await mainPage.clickMoveButton();
+          await mainPage.waitForChangeIsSaved();
+          await mainPage.clickOnLayerOnCanvas();
+          await designPanelPage.isFillHexCodeSet('#304d6a');
+          await designPanelPage.isFillOpacitySet('50');
+        },
+      );
+
+      await demoAccountFileTest.step(
+        '1753 Check text color in inspect mode',
+        async () => {
+          await inspectPanelPage.openInspectTab();
+          await inspectPanelPage.openComputedTab();
+          await inspectPanelPage.checkTextColor('#304d6a', '50%');
         },
       );
     },
@@ -352,41 +364,38 @@ demoAccountFileTest(
       await mainPage.typeTextFromKeyboard(text);
       await mainPage.clickMoveButton();
       await mainPage.waitForChangeIsSaved();
-      await mainPage.focusLayerViaShortcut();
-      await expect(mainPage.viewport).toHaveScreenshot('text-long-text.png', {
-        mask: mainPage.maskViewport(),
-      });
-      await mainPage.focusLayerViaShortcut();
+      await designPanelPage.checkFontName('Source Sans Pro');
     });
 
-    await demoAccountFileTest.step('Change font style', async () => {
-      await designPanelPage.changeTextFont('Saira Extra Condensed');
-      await designPanelPage.changeTextFontStyle('400');
+    await demoAccountFileTest.step(
+      'Change font to "Saira Extra Condensed" and its style from Regular to 700',
+      async () => {
+        await designPanelPage.changeTextFont('Saira Extra Condensed');
+        await designPanelPage.checkFontName('Saira Extra Condensed');
+        await designPanelPage.changeTextFontStyle('700');
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkFontStyle('700');
+      },
+    );
+
+    await demoAccountFileTest.step('Change font size', async () => {
       await designPanelPage.changeTextFontSize('9');
+      await mainPage.clickOnEnter();
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.checkFontSize('9');
     });
 
     await demoAccountFileTest.step('Change AV (letter spacing)', async () => {
       await designPanelPage.changeTextLetterSpacing('5');
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.checkLetterSpacing('5');
     });
 
     await demoAccountFileTest.step('Change Line Height', async () => {
       await designPanelPage.changeTextLineHeight('5');
       await mainPage.waitForChangeIsSaved();
+      await designPanelPage.checkLineHeight('5');
     });
-
-    await demoAccountFileTest.step(
-      'Assert changed font style, size, letter spacing AV',
-      async () => {
-        await mainPage.focusLayerViaShortcut();
-        await expect(mainPage.viewport).toHaveScreenshot(
-          'text-long-text-with-changed-properties.png',
-          {
-            mask: mainPage.maskViewport(),
-          },
-        );
-        await mainPage.focusLayerViaShortcut();
-      },
-    );
   },
 );
 

@@ -115,6 +115,16 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
     await expect(this.tokensSetAndThemesSection).toBeVisible();
   }
 
+  async checkTextColor(hex, opacity = '100%') {
+    const colorRow = this.textBlockOnInspect.getByRole('button', {
+      name: 'Copy color',
+    });
+    await expect(colorRow, `Text color is ${hex}`).toContainText(hex, {
+      ignoreCase: true,
+    });
+    await expect(colorRow, `Text opacity is ${opacity}`).toContainText(opacity);
+  }
+
   async isSizeAndPositionSectionVisible() {
     await expect(this.sizeAndPositionSection).toBeVisible();
   }

@@ -612,8 +612,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.addStrokeButton.click();
   }
 
-  async checkStrokeIsAdded() {
-    await expect(this.strokeColorBullet, 'Stroke is added').toBeVisible();
+  async checkStrokeIsAdded(added = true) {
+    added
+      ? await expect(this.strokeColorBullet, 'Stroke is added').toBeVisible()
+      : await expect(this.strokeColorBullet, 'Stroke is not added').toBeHidden();
   }
 
   /** The sections shown depend on the selected layer, e.g. "Text" for a text layer. */
@@ -1257,6 +1259,19 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     }
   }
 
+  /** Clicking the selected text case again resets it, so all of them can be unchecked. */
+  async isTextCaseSelected(value, selected = true) {
+    const icons = {
+      Upper: this.textUpperCaseIcon,
+      Lower: this.textLowerCaseIcon,
+      Title: this.textTitleCaseIcon,
+    };
+    const checkbox = icons[value].locator('input');
+    selected
+      ? await expect(checkbox, `${value} case is selected`).toBeChecked()
+      : await expect(checkbox, `${value} case is not selected`).not.toBeChecked();
+  }
+
   async openTextMoreOptionsBlock() {
     if (!(await this.textVerticalOptionsBlock.isVisible())) {
       await this.textMoreOptionsIcon.click({ force: true });
@@ -1842,6 +1857,45 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.guidesHeightInput.pressSequentially(value);
   }
 
+  /**
+   * Checks the type of the board guide.
+   *
+   * @param {'Square' | 'Columns' | 'Rows'} type Expected guide type
+   */
+  async checkGuideType(type) {
+    await expect(this.guidesTypeField, `Guide type is ${type}`).toHaveText(type);
+  }
+
+  /**
+   * Checks a field of the board guide. "Opacity", "Width" and "Height" are only shown
+   * while the guide's advanced options are open.
+   * Defaults: Square size 16 and opacity 40; Columns/Rows 12, opacity 10, width/height Auto.
+   *
+   * @param {'Size' | 'Columns/Rows' | 'Opacity' | 'Width' | 'Height'} field Guide field
+   * @param {string} value Expected value, '' for Auto
+   */
+  async checkGuideFieldValue(field, value) {
+    const inputs = {
+      'Size': this.guidesSizeInput,
+      'Columns/Rows': this.guidesColumnsRowsInput,
+      'Opacity': this.guidesOpacityInput,
+      'Width': this.guidesWidthInput,
+      'Height': this.guidesHeightInput,
+    };
+    await expect(inputs[field], `Guide ${field} is "${value}"`).toHaveValue(value);
+  }
+
+  /**
+   * Checks whether the selected board has a guide.
+   *
+   * @param {boolean} [added=true] Whether the guide row should be there
+   */
+  async checkGuideAdded(added = true) {
+    added
+      ? await expect(this.removeGuidesButton, 'Guide is added').toBeVisible()
+      : await expect(this.removeGuidesButton, 'Guide is removed').toBeHidden();
+  }
+
   async clickOnComponentMenuButton() {
     await expect(async () => {
       await this.componentMenuButton.click();
@@ -2416,6 +2470,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await expect(await this.textLetterSpacingInput).toHaveValue(value);
   }
 
+  async checkLineHeight(value) {
+    await expect(this.textLineHeightInput).toHaveValue(value);
+  }
+
   async checkTextLineHeight(value) {
     await expect(await this.textLineHeightInput).toHaveValue(value);
   }
@@ -2597,6 +2655,37 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       await this.shadowSpreadInput.nth(index),
       `Shadow Spread Input has expected value: "${value}"`,
     ).toHaveValue(value);
+  }
+
+  /**
+   * Checks whether a shadow is hidden, from the icon of its "Toggle shadow" button.
+   *
+   * @param {boolean} hidden Whether the shadow should be hidden (default: true)
+   * @param {number} index Index of the shadow row (default: 0)
+   */
+  async checkShadowHidden(hidden = true, index = 0) {
+    const icon = this.shadowShowIcon.nth(index).locator('use');
+    await expect(
+      icon,
+      hidden ? 'Shadow is hidden' : 'Shadow is shown',
+    ).toHaveAttribute('href', hidden ? '#icon-hide' : '#icon-shown');
+  }
+
+  /**
+   * Checks the color and opacity applied to a shadow, from the color bullet in its
+   * open advanced options (e.g. "#304d6a (50%)"). The bullet shows the applied value,
+   * unlike the opacity input, which shows what was typed.
+   *
+   * @param {string} hex Expected color, e.g. '#304d6a' (lowercase, as the bullet shows it)
+   * @param {string} opacity Expected opacity without "%", e.g. '50'
+   */
+  async checkShadowColor(hex, opacity) {
+    await expect(
+      this.page
+        .locator('div[class*="shadow-advanced"]')
+        .getByRole('button', { name: `${hex} (${opacity}%)`, exact: true }),
+      `Shadow color is ${hex} at ${opacity}%`,
+    ).toBeVisible();
   }
 
   async isExpectedShadowColorVisible(color) {

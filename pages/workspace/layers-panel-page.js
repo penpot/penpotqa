@@ -500,6 +500,35 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
   }
 
   /**
+   * Opens the layer's context menu via right click, checks whether an option is
+   * shown and closes the menu.
+   *
+   * @param {string} layerName Name of the layer
+   * @param {string} optionText Display text of the option to check
+   * @param {boolean} visible Whether the option should be visible (default: true)
+   * @param {number} index Index of the layer (for multiple layers with the same name)
+   */
+  async isLayerContextMenuOptionVisible(
+    layerName,
+    optionText,
+    visible = true,
+    index = 0,
+  ) {
+    await this.page
+      .locator('#layers')
+      .getByText(layerName)
+      .nth(index)
+      .click({ button: 'right', force: true });
+    const option = this.page
+      .getByRole('listitem')
+      .getByText(optionText, { exact: true });
+    visible
+      ? await expect(option, `"${optionText}" option is visible`).toBeVisible()
+      : await expect(option, `"${optionText}" option is hidden`).toBeHidden();
+    await this.page.keyboard.press('Escape');
+  }
+
+  /**
    * This method clicks on a layer option via right click for a given layer name and index.
    *
    * @param {string} layerName Name of the layer

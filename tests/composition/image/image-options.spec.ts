@@ -22,7 +22,7 @@ demoAccountFileTest.describe('PNG image', () => {
 
   demoAccountFileTest(
     qase(
-      [466, 468],
+      [466, 481],
       'Copy/Paste and Cut/Paste image (from context menu and shortcut)',
     ),
     async ({ mainPage }) => {
@@ -56,10 +56,10 @@ demoAccountFileTest.describe('PNG image', () => {
         },
       );
       await demoAccountFileTest.step(
-        '468 Cut image (From rightclick and Shortcut Ctrl+X)',
+        '481 Cut image (From rightclick and Shortcut Ctrl+X)',
         async () => {
           await demoAccountFileTest.step(
-            'Cut and paste image from context menu',
+            'Cut and paste image from the Layers panel context menu',
             async () => {
               await layersPanelPage.clickOnLayerOptionViaRightClickForLayer(
                 'images',
@@ -84,6 +84,44 @@ demoAccountFileTest.describe('PNG image', () => {
               await layersPanelPage.isVisibleLayersCount(3);
             },
           );
+          await demoAccountFileTest.step(
+            'Cut and paste image from the canvas context menu',
+            async () => {
+              await mainPage.cutLayerViaRightClick();
+              await layersPanelPage.isVisibleLayersCount(2);
+              await mainPage.clickViewportByCoordinates(600, 300);
+              await layersPanelPage.pasteLayerViaRightClick();
+              await mainPage.waitForChangeIsSaved();
+              await layersPanelPage.isVisibleLayersCount(3);
+            },
+          );
+        },
+      );
+    },
+  );
+
+  demoAccountFileTest(
+    qase([468], 'Click "Focus on" image from shortcut (F)'),
+    async ({ mainPage }) => {
+      await demoAccountFileTest.step('Import a second image', async () => {
+        await mainPage.uploadImage('images/sample.jpeg');
+        await mainPage.waitForChangeIsSaved();
+        await layersPanelPage.isVisibleLayersCount(2);
+      });
+
+      await demoAccountFileTest.step('Focus on the first image with F', async () => {
+        await layersPanelPage.selectLayerByName('images');
+        await mainPage.focusLayerViaShortcut();
+        await layersPanelPage.isFocusModeOn();
+        await layersPanelPage.isLayerPresentOnLayersTab('sample', false);
+      });
+
+      await demoAccountFileTest.step(
+        'Exit focus mode from the Focus mode tag',
+        async () => {
+          await layersPanelPage.clickOnFocusModeLabel();
+          await layersPanelPage.isFocusModeOff();
+          await layersPanelPage.isLayerPresentOnLayersTab('sample', true);
         },
       );
     },
