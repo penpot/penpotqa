@@ -1857,6 +1857,45 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.guidesHeightInput.pressSequentially(value);
   }
 
+  /**
+   * Checks the type of the board guide.
+   *
+   * @param {'Square' | 'Columns' | 'Rows'} type Expected guide type
+   */
+  async checkGuideType(type) {
+    await expect(this.guidesTypeField, `Guide type is ${type}`).toHaveText(type);
+  }
+
+  /**
+   * Checks a field of the board guide. "Opacity", "Width" and "Height" are only shown
+   * while the guide's advanced options are open.
+   * Defaults: Square size 16 and opacity 40; Columns/Rows 12, opacity 10, width/height Auto.
+   *
+   * @param {'Size' | 'Columns/Rows' | 'Opacity' | 'Width' | 'Height'} field Guide field
+   * @param {string} value Expected value, '' for Auto
+   */
+  async checkGuideFieldValue(field, value) {
+    const inputs = {
+      'Size': this.guidesSizeInput,
+      'Columns/Rows': this.guidesColumnsRowsInput,
+      'Opacity': this.guidesOpacityInput,
+      'Width': this.guidesWidthInput,
+      'Height': this.guidesHeightInput,
+    };
+    await expect(inputs[field], `Guide ${field} is "${value}"`).toHaveValue(value);
+  }
+
+  /**
+   * Checks whether the selected board has a guide.
+   *
+   * @param {boolean} [added=true] Whether the guide row should be there
+   */
+  async checkGuideAdded(added = true) {
+    added
+      ? await expect(this.removeGuidesButton, 'Guide is added').toBeVisible()
+      : await expect(this.removeGuidesButton, 'Guide is removed').toBeHidden();
+  }
+
   async clickOnComponentMenuButton() {
     await expect(async () => {
       await this.componentMenuButton.click();
