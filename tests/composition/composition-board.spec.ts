@@ -174,6 +174,10 @@ demoAccountFileTest.describe(() => {
       await designPanelPage.changeHeightAndWidthForLayer('400', '500');
       await mainPage.pressFlexLayoutShortcut();
       await mainPage.waitForChangeIsSaved();
+      await designPanelPage.checkLayoutPadding('Vertical', '0');
+      await designPanelPage.checkLayoutPadding('Horizontal', '0');
+      await designPanelPage.checkRowGap('0');
+      await designPanelPage.checkColumnGap('0');
       await layersPanelPage.doubleClickLayerOnLayersTab('Board');
       await layersPanelPage.typeNameCreatedLayerAndEnter('Main Board');
       await mainPage.createDefaultBoardByCoordinates(200, 200);
