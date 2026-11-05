@@ -1,8 +1,8 @@
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { MainPage } from '@pages/workspace/main-page';
 import { PagesPanelPage } from '@pages/workspace/panels-features/pages-panel-page';
-import { PrototypePanelPage } from '@pages/workspace/prototype-panel-page';
 import { ViewModePage } from '@pages/workspace/view-mode-page';
+import { WorkspacePage } from '@pages/workspace/workspace-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { expect } from '@playwright/test';
 import { demoAccountFileTest } from 'fixtures';
@@ -11,14 +11,14 @@ import { qase } from 'playwright-qase-reporter/playwright';
 const defaultNameBoard = 'Board';
 let pagesPanelPage: PagesPanelPage;
 let viewModePage: ViewModePage;
-let prototypePanelPage: PrototypePanelPage;
+let workspacePage: WorkspacePage;
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
 
 demoAccountFileTest.beforeEach(async ({ page }) => {
   pagesPanelPage = new PagesPanelPage(page);
   viewModePage = new ViewModePage(page);
-  prototypePanelPage = new PrototypePanelPage(page);
+  workspacePage = new WorkspacePage(page);
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
   await demoAccountFileTest.slow();
@@ -272,8 +272,8 @@ demoAccountFileTest(qase([689], 'Interactions dropdown'), async ({ mainPage }) =
       await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 1);
       await mainPage.createDefaultBoardByCoordinates(500, 500);
       await layersPanelPage.isNumLayerNameVisible(defaultNameBoard, 2);
-      await prototypePanelPage.clickPrototypeTab();
-      await prototypePanelPage.dragAndDropPrototypeArrowConnector(300, 300);
+      await workspacePage.rightSidebar.clickTab('prototype');
+      await workspacePage.prototypeOverlay.dragNewConnectorTo(300, 300);
       const newPage = await viewModePage.clickViewModeShortcut();
       viewModePage = new ViewModePage(newPage);
       await viewModePage.waitForViewerSection(45000);
