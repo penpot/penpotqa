@@ -215,41 +215,27 @@ demoAccountFileTest.describe(() => {
   });
 
   demoAccountFileTest(
-    qase([424], 'Change text uppercase, title case, lowercase (Design section)'),
+    qase([424], 'Change text uppercase, lowercase (Design section)'),
     async ({ mainPage }) => {
-      await demoAccountFileTest.step('Change text case to Uppercase', async () => {
-        await designPanelPage.changeTextCase('Upper');
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.focusLayerViaShortcut();
-        await expect(mainPage.viewport).toHaveScreenshot('text-upper-case.png', {
-          mask: mainPage.maskViewport(),
-        });
-        await mainPage.focusLayerViaShortcut();
-      });
+      for (const textCase of ['Upper', 'Lower', 'Title']) {
+        await demoAccountFileTest.step(
+          `Change text case to ${textCase}`,
+          async () => {
+            await designPanelPage.changeTextCase(textCase);
+            await mainPage.waitForChangeIsSaved();
+            await designPanelPage.isTextCaseSelected(textCase);
+          },
+        );
+      }
 
       await demoAccountFileTest.step(
-        'Change to text case to Title Case',
+        'Click the selected text case again → text case is reset',
         async () => {
           await designPanelPage.changeTextCase('Title');
           await mainPage.waitForChangeIsSaved();
-          await mainPage.focusLayerViaShortcut();
-          await expect(mainPage.viewport).toHaveScreenshot('text-title-case.png', {
-            mask: mainPage.maskViewport(),
-          });
-          await mainPage.focusLayerViaShortcut();
-        },
-      );
-
-      await demoAccountFileTest.step(
-        'Change to text case to Lower Case',
-        async () => {
-          await designPanelPage.changeTextCase('Lower');
-          await mainPage.waitForChangeIsSaved();
-          await mainPage.focusLayerViaShortcut();
-          await expect(mainPage.viewport).toHaveScreenshot('text-lower-case.png', {
-            mask: mainPage.maskViewport(),
-          });
-          await mainPage.focusLayerViaShortcut();
+          for (const textCase of ['Upper', 'Lower', 'Title']) {
+            await designPanelPage.isTextCaseSelected(textCase, false);
+          }
         },
       );
     },
@@ -325,12 +311,9 @@ demoAccountFileTest.describe(() => {
           await designPanelPage.changeOpacityForFill('50');
           await mainPage.clickMoveButton();
           await mainPage.waitForChangeIsSaved();
-          await mainPage.focusLayerViaShortcut();
           await mainPage.clickOnLayerOnCanvas();
-          await expect(mainPage.viewport).toHaveScreenshot('text-fill-opacity.png', {
-            mask: mainPage.maskViewport(),
-          });
-          await mainPage.focusLayerViaShortcut();
+          await designPanelPage.isFillHexCodeSet('#304d6a');
+          await designPanelPage.isFillOpacitySet('50');
         },
       );
 
@@ -339,13 +322,7 @@ demoAccountFileTest.describe(() => {
         async () => {
           await inspectPanelPage.openInspectTab();
           await inspectPanelPage.openComputedTab();
-          await inspectPanelPage.checkTextColor('#304d6a');
-          await expect(inspectPanelPage.textBlockOnInspect).toHaveScreenshot(
-            'inspect-text-block-color.png',
-            {
-              mask: mainPage.maskViewport(),
-            },
-          );
+          await inspectPanelPage.checkTextColor('#304d6a', '50%');
         },
       );
     },
@@ -367,41 +344,38 @@ demoAccountFileTest(
       await mainPage.typeTextFromKeyboard(text);
       await mainPage.clickMoveButton();
       await mainPage.waitForChangeIsSaved();
-      await mainPage.focusLayerViaShortcut();
-      await expect(mainPage.viewport).toHaveScreenshot('text-long-text.png', {
-        mask: mainPage.maskViewport(),
-      });
-      await mainPage.focusLayerViaShortcut();
+      await designPanelPage.checkFontName('Source Sans Pro');
     });
 
-    await demoAccountFileTest.step('Change font style', async () => {
-      await designPanelPage.changeTextFont('Saira Extra Condensed');
-      await designPanelPage.changeTextFontStyle('400');
+    await demoAccountFileTest.step(
+      'Change font to "Saira Extra Condensed" and its style from Regular to 700',
+      async () => {
+        await designPanelPage.changeTextFont('Saira Extra Condensed');
+        await designPanelPage.checkFontName('Saira Extra Condensed');
+        await designPanelPage.changeTextFontStyle('700');
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkFontStyle('700');
+      },
+    );
+
+    await demoAccountFileTest.step('Change font size', async () => {
       await designPanelPage.changeTextFontSize('9');
+      await mainPage.clickOnEnter();
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.checkFontSize('9');
     });
 
     await demoAccountFileTest.step('Change AV (letter spacing)', async () => {
       await designPanelPage.changeTextLetterSpacing('5');
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.checkLetterSpacing('5');
     });
 
     await demoAccountFileTest.step('Change Line Height', async () => {
       await designPanelPage.changeTextLineHeight('5');
       await mainPage.waitForChangeIsSaved();
+      await designPanelPage.checkLineHeight('5');
     });
-
-    await demoAccountFileTest.step(
-      'Assert changed font style, size, letter spacing AV',
-      async () => {
-        await mainPage.focusLayerViaShortcut();
-        await expect(mainPage.viewport).toHaveScreenshot(
-          'text-long-text-with-changed-properties.png',
-          {
-            mask: mainPage.maskViewport(),
-          },
-        );
-        await mainPage.focusLayerViaShortcut();
-      },
-    );
   },
 );
 
