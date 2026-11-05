@@ -254,13 +254,8 @@ demoAccountFileTest.describe(() => {
         async () => {
           await inspectPanelPage.openInspectTab();
           await inspectPanelPage.openComputedTab();
-          await inspectPanelPage.isRowGapExistOnInspectTab();
-          await expect(mainPage.fileRightSidebarAside).toHaveScreenshot(
-            'right-sidebar-inspect-row-gap-image.png',
-            {
-              mask: [mainPage.usersSection],
-            },
-          );
+          await inspectPanelPage.checkLayoutProperty('Display', 'grid');
+          await inspectPanelPage.checkLayoutProperty('Row gap', '50px');
         },
       );
     },

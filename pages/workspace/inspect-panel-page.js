@@ -15,9 +15,7 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
     this.textBlockOnInspect = page.locator(
       'div.main_ui_inspect_attributes_text__attributes-block',
     );
-    this.rowGapOnInspect = page.locator(
-      'div[class*="layout-row"] div[title="Row gap"]',
-    );
+    this.layoutRowOnInspect = page.locator('div[class*="layout-row"]');
     this.codeTabButton = page.getByRole('tab', { name: 'code' });
     this.inspectTabSelector = page.getByRole('combobox', {
       name: 'Switch inspect tab',
@@ -53,8 +51,19 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
     await expect(this.annotationBlockOnInspect).toBeVisible();
   }
 
-  async isRowGapExistOnInspectTab() {
-    await expect(this.rowGapOnInspect).toBeVisible();
+  /**
+   * Checks a property of the Layout block in Inspect › Computed.
+   * @param {string} label Property name as shown in the row (e.g. 'Row gap').
+   * @param {string} value Expected value (e.g. '50px').
+   */
+  async checkLayoutProperty(label, value) {
+    const valueButton = this.layoutRowOnInspect
+      .filter({ has: this.page.getByTitle(label, { exact: true }) })
+      .getByRole('button', { name: 'Copy' });
+    await expect(
+      valueButton,
+      `Inspect layout "${label}" should be ${value}`,
+    ).toHaveText(value);
   }
 
   getPropertyRow(label) {
