@@ -63,6 +63,13 @@ put them in `helpers/`.
    per CLAUDE.md. A section with no role or label (Export, Shadow, Guides) may
    be rooted on its class-matched container; if several parents compose it,
    export that root from one function (e.g. `getExportSectionRoot()`).
+7. **Doc comment on every method you create or touch.** A new method always
+   gets a TSDoc/JSDoc block (`/** ... */`): one line with what it does, plus
+   `@param` for each parameter (type, meaning and default) and `@returns`
+   when it returns something. When you change a method that already has one,
+   check it still matches (params, defaults, behavior) and fix it. Keep it
+   above its own method: adding a method next to another one must never leave
+   that one's doc orphaned.
 
 ## `BaseComponent` root
 
