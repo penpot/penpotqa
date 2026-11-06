@@ -17,6 +17,7 @@ export class DesignTabComponent extends BaseComponent {
   readonly layoutItem: LayoutItemSectionComponent;
   readonly gridCell: GridCellSectionComponent;
   readonly export: ExportSectionComponent;
+  readonly gridLocateButton: Locator;
 
   constructor(page: Page, root: Locator) {
     super(page, root);
@@ -46,6 +47,13 @@ export class DesignTabComponent extends BaseComponent {
         .filter({ has: page.getByRole('button', { name: 'Edit grid' }) })
         .last(),
     );
+    // In grid edit mode the Grid layout panel replaces the Layout section and has no accessible root
+    this.gridLocateButton = root.getByRole('button', { name: 'Locate grid layout' });
     this.export = new ExportSectionComponent(page, getExportSectionRoot(root));
+  }
+
+  /** Centers the viewport on the board being edited, with the Locate button of the Grid layout panel (grid edit mode). */
+  async clickGridLocate() {
+    await this.gridLocateButton.click();
   }
 }

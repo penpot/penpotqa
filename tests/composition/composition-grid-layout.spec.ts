@@ -9,6 +9,11 @@ import {
   LayoutDirection,
   LayoutType,
 } from '@pages/workspace/right-sidebar/design-tab/layout-container-section-component';
+import {
+  ElementMargin,
+  LayoutItemSectionComponent,
+} from '@pages/workspace/right-sidebar/design-tab/layout-item-section-component';
+import { DesignTabComponent } from '@pages/workspace/right-sidebar/design-tab/design-tab-component';
 import { WorkspacePage } from '@pages/workspace/workspace-page';
 import { InspectPanelPage } from '@pages/workspace/inspect-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
@@ -18,8 +23,10 @@ import { qase } from 'playwright-qase-reporter/playwright';
 
 let colorPalettePage: ColorPalettePage;
 let designPanelPage: DesignPanelPage;
+let design: DesignTabComponent;
 let layoutContainer: LayoutContainerSectionComponent;
 let gridCell: GridCellSectionComponent;
+let layoutItem: LayoutItemSectionComponent;
 let inspectPanelPage: InspectPanelPage;
 let layersPanelPage: LayersPanelPage;
 
@@ -28,8 +35,8 @@ demoAccountFileTest.use({ inNewTeam: true });
 
 demoAccountFileTest.beforeEach(async ({ page }) => {
   designPanelPage = new DesignPanelPage(page);
-  layoutContainer = new WorkspacePage(page).rightSidebar.design.layoutContainer;
-  gridCell = new WorkspacePage(page).rightSidebar.design.gridCell;
+  design = new WorkspacePage(page).rightSidebar.design;
+  ({ layoutContainer, gridCell, layoutItem } = design);
   layersPanelPage = new LayersPanelPage(page);
   inspectPanelPage = new InspectPanelPage(page);
   colorPalettePage = new ColorPalettePage(page);
@@ -51,7 +58,7 @@ demoAccountFileTest.describe(() => {
   demoAccountFileTest(
     qase(
       [1689, 1696],
-      'Create a board with Grid Layout -  Check grid lines, check edit mode, Create a board with Grid Layout - check edit mode in the right panel',
+      'Create a board with Grid Layout - Check grid lines, check edit mode, Create a board with Grid Layout - check edit mode in the right panel',
     ),
     async ({ mainPage }) => {
       await demoAccountFileTest.step(
@@ -230,19 +237,19 @@ demoAccountFileTest.describe(() => {
       );
 
       await demoAccountFileTest.step(
-        '(1692) Change justification to Space between and verify',
+        '(1692) Change justification to Space around and verify',
         async () => {
           await designPanelPage.clickGridDoneButton();
-          await designPanelPage.changeLayoutJustification('Space between', false);
+          await designPanelPage.changeLayoutJustification('Space around', false);
           await mainPage.waitForChangeIsSaved();
           await expect(mainPage.viewport).toHaveScreenshot(
-            'board-with-grid-justify-space-between.png',
+            'board-with-grid-justify-space-around.png',
             {
               mask: mainPage.maskViewport(),
             },
           );
           await mainPage.waitForChangeIsSaved();
-          await designPanelPage.checkLayoutJustification('Space between', false);
+          await designPanelPage.checkLayoutJustification('Space around', false);
         },
       );
     },
@@ -506,35 +513,20 @@ demoAccountFileTest.describe(() => {
       );
 
       await demoAccountFileTest.step(
-        'Set independent paddings and verify',
+        'Change vertical and horizontal margin of an image and verify',
         async () => {
-          await designPanelPage.openGridEditModeFromDesignPanel();
+          await layersPanelPage.clickLayerOnLayersTab('mini_sample');
           await mainPage.waitForChangeIsSaved();
-          await designPanelPage.switchToIndependentPaddingOnGridEdit();
+          await layoutItem.changeMargin(ElementMargin.Vertical, '50');
           await mainPage.waitForChangeIsSaved();
-          await designPanelPage.changeLayoutIndependentPaddingOnGridEdit(
-            'Top',
-            '50',
-          );
+          await layoutItem.changeMargin(ElementMargin.Horizontal, '50');
           await mainPage.waitForChangeIsSaved();
-          await designPanelPage.changeLayoutIndependentPaddingOnGridEdit(
-            'Left',
-            '50',
-          );
-          await mainPage.waitForChangeIsSaved();
-          await designPanelPage.changeLayoutIndependentPaddingOnGridEdit(
-            'Bottom',
-            '50',
-          );
-          await mainPage.waitForChangeIsSaved();
-          await designPanelPage.changeLayoutIndependentPaddingOnGridEdit(
-            'Right',
-            '50',
-          );
+          await layoutItem.checkMargin(ElementMargin.Vertical, '50');
+          await layoutItem.checkMargin(ElementMargin.Horizontal, '50');
           await expect(mainPage.viewport).toHaveScreenshot(
-            'board-with-grid-image-paddings.png',
+            'board-with-grid-image-margins.png',
             {
-              mask: mainPage.maskViewport({ gridEditorToolbar: true }),
+              mask: mainPage.maskViewport(),
             },
           );
         },
@@ -607,6 +599,18 @@ demoAccountFileTest.describe(() => {
   );
 
   demoAccountFileTest(qase([1706], 'Adding Flex Board'), async ({ mainPage }) => {
+    await demoAccountFileTest.step('Add an image to the board', async () => {
+      await mainPage.uploadImage('images/mini_sample.jpg');
+      await mainPage.waitForChangeIsUnsaved();
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.dragAndDropComponentToBoard('mini_sample');
+      await mainPage.waitForChangeIsUnsaved();
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.clickViewportOnce();
+      await mainPage.clickCreatedBoardTitleOnCanvas();
+      await mainPage.waitForChangeIsSaved();
+    });
+
     await demoAccountFileTest.step('Add flex layout from design panel', async () => {
       await designPanelPage.addLayoutFromDesignPanel('flex');
       await designPanelPage.isFlexElementSectionOpened();
@@ -856,7 +860,7 @@ demoAccountFileTest.describe(() => {
   );
 
   demoAccountFileTest(
-    qase([1703], 'Check fraction units, change px column manual'),
+    qase([1703], 'Check fraction units, change px row manual'),
     async ({ mainPage }) => {
       await demoAccountFileTest.step(
         'Enter board and change row label to 100 PX',
@@ -977,7 +981,7 @@ demoAccountFileTest.describe(() => {
     );
 
     await demoAccountFileTest.step(
-      'Verify board is not visible, then click locate',
+      'Verify board is not visible, then click Locate in the top menu',
       async () => {
         await mainPage.hideRulersViaMainMenu();
         await mainPage.clickViewportOnce();
@@ -988,6 +992,38 @@ demoAccountFileTest.describe(() => {
         await expect(mainPage.viewport).toHaveScreenshot('board-visible.png', {
           mask: mainPage.maskViewport({ gridEditorToolbar: true }),
         });
+      },
+    );
+
+    await demoAccountFileTest.step(
+      'Move board off-screen again and reopen grid edit mode',
+      async () => {
+        await designPanelPage.clickGridDoneButton();
+        await mainPage.clickBoardOnCanvas();
+        await designPanelPage.changeAxisXAndYForLayer('400', '300');
+        await designPanelPage.expandGridLayoutMenu();
+        await designPanelPage.openGridEditModeFromDesignPanel();
+        await mainPage.waitForChangeIsSaved();
+      },
+    );
+
+    await demoAccountFileTest.step(
+      'Verify board is not visible, then click Locate in the right menu',
+      async () => {
+        await mainPage.clickViewportOnce();
+        await expect(mainPage.viewport).toHaveScreenshot(
+          'board-not-visible-right-menu.png',
+          {
+            mask: mainPage.maskViewport({ gridEditorToolbar: true }),
+          },
+        );
+        await design.clickGridLocate();
+        await expect(mainPage.viewport).toHaveScreenshot(
+          'board-visible-right-menu.png',
+          {
+            mask: mainPage.maskViewport({ gridEditorToolbar: true }),
+          },
+        );
       },
     );
   });
