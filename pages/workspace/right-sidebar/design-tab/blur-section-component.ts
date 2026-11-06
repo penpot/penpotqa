@@ -1,14 +1,19 @@
 import { BaseComponent } from '@pages/base-component';
 import { expect, type Locator, type Page } from '@playwright/test';
 
-/**
- * The Blur section of the Design tab.
- *
- * The legacy blur methods in DesignPanelPage move here progressively.
- */
+/** Blur types as the blur type dropdown shows them. */
+export const BlurType = {
+  Layer: 'Layer blur',
+  Background: 'Background blur',
+} as const;
+
+export type BlurTypeName = (typeof BlurType)[keyof typeof BlurType];
+
+/** The Blur section of the Design tab. */
 export class BlurSectionComponent extends BaseComponent {
   readonly addBlurButton: Locator;
   readonly blurRow: Locator;
+  readonly blurTypeSelect: Locator;
   readonly moreOptionsButton: Locator;
   readonly blurValueInput: Locator;
   readonly toggleBlurButton: Locator;
@@ -18,6 +23,7 @@ export class BlurSectionComponent extends BaseComponent {
     super(page, root);
     this.addBlurButton = root.getByRole('button', { name: 'Add blur' });
     this.blurRow = root.getByTestId('blur-info');
+    this.blurTypeSelect = root.getByRole('combobox', { name: 'Blur type select' });
     this.moreOptionsButton = root.getByRole('button', {
       name: 'Show/hide more options',
     });
@@ -29,6 +35,15 @@ export class BlurSectionComponent extends BaseComponent {
   /** Adds a layer blur with the default value. */
   async addBlur() {
     await this.addBlurButton.click();
+  }
+
+  /**
+   * Changes the blur type from its dropdown.
+   * @param type Blur type, see BlurType.
+   */
+  async selectBlurType(type: BlurTypeName) {
+    await this.blurTypeSelect.click();
+    await this.page.getByRole('option', { name: type, exact: true }).click();
   }
 
   /**
