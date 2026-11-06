@@ -210,6 +210,10 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     }
   }
 
+  /**
+   * Checks that a layer with this exact name is visible on the layers tab.
+   * @param {string} name Layer name.
+   */
   async isLayerNameDisplayed(name) {
     await expect(
       this.layersRows.getByText(name, { exact: true }).first(),
@@ -217,6 +221,11 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     ).toBeVisible();
   }
 
+  /**
+   * Checks how many layers with this exact name are on the layers tab.
+   * @param {string} name Layer name.
+   * @param {number} count Expected number of layers.
+   */
   async isNumLayerNameVisible(name, count) {
     await expect(
       this.layersRows.getByText(name, { exact: true }),

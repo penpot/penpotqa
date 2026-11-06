@@ -641,8 +641,14 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.getColorTokenButtonByName(tokenName).click();
   }
 
+  /**
+   * Checks the hex code of the selected layer's fill.
+   * @param {string} value Expected hex code with the leading # (e.g. '#FF0000').
+   */
   async isFillHexCodeSet(value) {
-    await expect(this.fillColorInput).toHaveValue(value.slice(1));
+    await expect(this.fillColorInput, `Fill hex code is ${value}`).toHaveValue(
+      value.slice(1),
+    );
   }
 
   async isSelectedHexCode(value) {

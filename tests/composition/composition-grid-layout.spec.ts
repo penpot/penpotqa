@@ -44,20 +44,24 @@ demoAccountFileTest.describe(() => {
   demoAccountFileTest(
     qase(
       [1689, 1696],
-      'Create a board with Grid Layout - check edit mode in the right panel',
+      'Create a board with Grid Layout -  Check grid lines, check edit mode, Create a board with Grid Layout - check edit mode in the right panel',
     ),
     async ({ mainPage }) => {
-      await demoAccountFileTest.step('Verify board with grid layout', async () => {
-        await expect(mainPage.viewport).toHaveScreenshot(
-          'board-with-grid-layout.png',
-          {
-            mask: mainPage.maskViewport({ gridEditorToolbar: true }),
-          },
-        );
-      });
+      await demoAccountFileTest.step(
+        '(1689) Verify board with grid layout',
+        async () => {
+          await designPanelPage.checkGridLayoutIsAdded();
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'board-with-grid-layout.png',
+            {
+              mask: mainPage.maskViewport({ gridEditorToolbar: true }),
+            },
+          );
+        },
+      );
 
       await demoAccountFileTest.step(
-        'Open grid edit mode and verify canvas and sidebar',
+        '(1696) Open grid edit mode and verify canvas and sidebar',
         async () => {
           await designPanelPage.openGridEditModeFromDesignPanel();
           await mainPage.waitForChangeIsSaved();
@@ -92,6 +96,10 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step(
         'Verify canvas and columns panel with 30 columns',
         async () => {
+          await designPanelPage.checkGridEditModePanel(Array(32).fill('1fr'), [
+            '1fr',
+            '1fr',
+          ]);
           await expect(mainPage.viewport).toHaveScreenshot(
             'board-with-grid-3-30.png',
             {
@@ -141,6 +149,7 @@ demoAccountFileTest.describe(() => {
         async () => {
           await designPanelPage.changeLayoutAlignment('Center', false);
           await mainPage.waitForChangeIsSaved();
+          await designPanelPage.isLayoutAlignmentSelected('Center', false);
         },
       );
 
@@ -162,11 +171,11 @@ demoAccountFileTest.describe(() => {
   demoAccountFileTest(
     qase(
       [1692, 1694],
-      'Create a board with Grid Layout - change justify and change vertical, horizontal, bottom, and left paddings ',
+      'Create a board with Grid Layout - change justify, Create a board with Grid Layout - change vertical, horizontal, bottom and left paddings',
     ),
     async ({ mainPage }) => {
       await demoAccountFileTest.step(
-        'Set independent paddings in grid edit mode',
+        '(1694) Set independent paddings in grid edit mode',
         async () => {
           await designPanelPage.openGridEditModeFromDesignPanel();
           await mainPage.waitForChangeIsSaved();
@@ -197,7 +206,7 @@ demoAccountFileTest.describe(() => {
       );
 
       await demoAccountFileTest.step(
-        'Verify paddings on canvas and in design panel',
+        '(1694) Verify paddings on canvas and in design panel',
         async () => {
           await expect(mainPage.viewport).toHaveScreenshot(
             'board-with-grid-paddings.png',
@@ -214,7 +223,7 @@ demoAccountFileTest.describe(() => {
       );
 
       await demoAccountFileTest.step(
-        'Change justification to Space between and verify',
+        '(1692) Change justification to Space between and verify',
         async () => {
           await designPanelPage.clickGridDoneButton();
           await designPanelPage.changeLayoutJustification('Space between', false);
@@ -239,12 +248,13 @@ demoAccountFileTest.describe(() => {
     ),
     async ({ mainPage }) => {
       await demoAccountFileTest.step(
-        'Set row gap in grid edit mode and verify canvas',
+        '(1693) Set row gap in grid edit mode and verify canvas',
         async () => {
           await designPanelPage.openGridEditModeFromDesignPanel();
           await mainPage.waitForChangeIsSaved();
           await designPanelPage.changeLayoutRowGapOnGridEdit('50');
           await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkRowGap('50');
           await expect(mainPage.viewport).toHaveScreenshot(
             'board-with-grid-row-gap.png',
             {
@@ -255,12 +265,18 @@ demoAccountFileTest.describe(() => {
       );
 
       await demoAccountFileTest.step(
-        'Verify row gap is visible on inspect tab',
+        '(1716) Verify row gap is visible on inspect tab',
         async () => {
           await inspectPanelPage.openInspectTab();
           await inspectPanelPage.openComputedTab();
-          await inspectPanelPage.checkLayoutProperty('Display', 'grid');
           await inspectPanelPage.checkLayoutProperty('Row gap', '50px');
+        },
+      );
+
+      await demoAccountFileTest.step(
+        '(1744) Verify grid board information on inspect tab',
+        async () => {
+          await inspectPanelPage.checkLayoutProperty('Display', 'grid');
         },
       );
     },
@@ -280,6 +296,10 @@ demoAccountFileTest.describe(() => {
           await mainPage.addRowGridLayoutBtnClick();
           await mainPage.addColumnGridLayoutBtnClick();
           await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkGridEditModePanel(
+            ['1fr', '1fr', '1fr'],
+            ['1fr', '1fr', '1fr'],
+          );
         },
       );
 
@@ -301,7 +321,7 @@ demoAccountFileTest.describe(() => {
 demoAccountFileTest(
   qase(
     [1697, 1735],
-    'Check if the grid layout is resized automatically,  Autoscale while resizing',
+    'Check if the grid layout is resized automatically, Autoscale while resizing',
   ),
   async ({ mainPage }) => {
     await demoAccountFileTest.step('Create board with grid layout', async () => {
@@ -315,7 +335,7 @@ demoAccountFileTest(
     });
 
     await demoAccountFileTest.step(
-      'Resize board and verify layout adapts',
+      '(1697) Resize board and verify layout adapts',
       async () => {
         await designPanelPage.changeHeightAndWidthForLayer('400', '600');
         await mainPage.waitForChangeIsSaved();
@@ -332,7 +352,7 @@ demoAccountFileTest(
     );
 
     await demoAccountFileTest.step(
-      'Add rectangles, resize board smaller and verify',
+      '(1735) Add rectangles, resize board smaller and verify',
       async () => {
         await mainPage.createDefaultRectangleByCoordinates(210, 210, true);
         await mainPage.createDefaultRectangleByCoordinates(320, 210, true);
@@ -456,6 +476,7 @@ demoAccountFileTest.describe(() => {
         async () => {
           await designPanelPage.changeLayoutAlignment('Center', false);
           await mainPage.waitForChangeIsSaved();
+          await designPanelPage.isLayoutAlignmentSelected('Center', false);
           await expect(mainPage.viewport).toHaveScreenshot(
             'board-with-grid-image-alignment-center.png',
             {
@@ -512,19 +533,21 @@ demoAccountFileTest.describe(() => {
       'Create a board with Grid Layout with a image and create duplicate this image in next column (change vertical direction)',
     ),
     async ({ mainPage }) => {
-      await demoAccountFileTest.step(
-        'Change direction to Column and duplicate image',
-        async () => {
-          await layoutContainer.changeDirection(LayoutDirection.Column);
-          await mainPage.waitForChangeIsSaved();
-          await layersPanelPage.clickLayerOnLayersTab('mini_sample');
-          await mainPage.duplicateLayerViaLayersTab('mini_sample');
-        },
-      );
+      await demoAccountFileTest.step('Select Column direction', async () => {
+        await layoutContainer.changeDirection(LayoutDirection.Column);
+        await mainPage.waitForChangeIsSaved();
+        await layoutContainer.checkDirection(LayoutDirection.Column);
+      });
+
+      await demoAccountFileTest.step('Duplicate the image', async () => {
+        await layersPanelPage.clickLayerOnLayersTab('mini_sample');
+        await mainPage.duplicateLayerViaLayersTab('mini_sample');
+      });
 
       await demoAccountFileTest.step(
         'Verify column direction with duplicated image',
         async () => {
+          await layersPanelPage.isNumLayerNameVisible('mini_sample', 2);
           await expect(mainPage.viewport).toHaveScreenshot(
             'column-direction-image.png',
             {
@@ -542,19 +565,21 @@ demoAccountFileTest.describe(() => {
       'Create a board with Grid Layout with an image and create duplicate this image in next column (change horizontal direction)',
     ),
     async ({ mainPage }) => {
-      await demoAccountFileTest.step(
-        'Change direction to Row and duplicate image',
-        async () => {
-          await layoutContainer.changeDirection(LayoutDirection.Row);
-          await mainPage.waitForChangeIsSaved();
-          await layersPanelPage.clickLayerOnLayersTab('mini_sample');
-          await mainPage.duplicateLayerViaLayersTab('mini_sample');
-        },
-      );
+      await demoAccountFileTest.step('Select Row direction', async () => {
+        await layoutContainer.changeDirection(LayoutDirection.Row);
+        await mainPage.waitForChangeIsSaved();
+        await layoutContainer.checkDirection(LayoutDirection.Row);
+      });
+
+      await demoAccountFileTest.step('Duplicate the image', async () => {
+        await layersPanelPage.clickLayerOnLayersTab('mini_sample');
+        await mainPage.duplicateLayerViaLayersTab('mini_sample');
+      });
 
       await demoAccountFileTest.step(
         'Verify row direction with duplicated image',
         async () => {
+          await layersPanelPage.isNumLayerNameVisible('mini_sample', 2);
           await expect(mainPage.viewport).toHaveScreenshot(
             'row-direction-image.png',
             {
@@ -613,6 +638,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Duplicate row and verify', async () => {
         await mainPage.duplicateGridRow();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkGridEditModePanel(['1fr', '1fr'], ['1fr', '1fr']);
         await expect(mainPage.viewport).toHaveScreenshot(
           'board-with-image-duplicated-row.png',
           {
@@ -624,6 +650,10 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Add row below and verify', async () => {
         await mainPage.addGridRowBelow();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkGridEditModePanel(
+          ['1fr', '1fr'],
+          ['1fr', '1fr', '1fr'],
+        );
         await expect(mainPage.viewport).toHaveScreenshot(
           'board-with-image-add-row-below.png',
           {
@@ -635,6 +665,10 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Add column right and verify', async () => {
         await mainPage.addGridColumnRight();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkGridEditModePanel(
+          ['1fr', '1fr', '1fr'],
+          ['1fr', '1fr', '1fr'],
+        );
         await expect(mainPage.viewport).toHaveScreenshot(
           'board-with-image-add-column-right.png',
           {
@@ -687,6 +721,7 @@ demoAccountFileTest.describe(() => {
           await mainPage.clickCreatedBoardTitleOnCanvas();
           await mainPage.waitForChangeIsSaved();
           await mainPage.waitForResizeHandlerVisible();
+          await designPanelPage.isFillHexCodeSet('#FF0000');
           await expect(mainPage.viewport).toHaveScreenshot(
             'red-board-with-4-image.png',
             {
@@ -725,6 +760,7 @@ demoAccountFileTest.describe(() => {
           await layersPanelPage.dragAndDropComponentToBoard('Hello world!');
           await mainPage.waitForChangeIsUnsaved();
           await mainPage.waitForChangeIsSaved();
+          await layersPanelPage.isLayerNameDisplayed('Hello world!');
         },
       );
 
@@ -761,6 +797,10 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Duplicate row and verify', async () => {
         await mainPage.duplicateGridRow();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkGridEditModePanel(
+          ['1fr', '1fr'],
+          ['1fr', '1fr', '1fr'],
+        );
         await expect(mainPage.viewport).toHaveScreenshot(
           'board-with-duplicated-row.png',
           {
@@ -772,6 +812,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Delete row and verify', async () => {
         await mainPage.deleteGridRow();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkGridEditModePanel(['1fr', '1fr'], ['1fr', '1fr']);
         await expect(mainPage.viewport).toHaveScreenshot(
           'board-with-delete-row.png',
           {
@@ -783,6 +824,10 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Add row below and verify', async () => {
         await mainPage.addGridRowBelow();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkGridEditModePanel(
+          ['1fr', '1fr'],
+          ['1fr', '1fr', '1fr'],
+        );
         await expect(mainPage.viewport).toHaveScreenshot(
           'board-with-add-row-below.png',
           {
@@ -803,6 +848,10 @@ demoAccountFileTest.describe(() => {
           await mainPage.doubleClickBoardOnCanvas();
           await mainPage.changeGridRowLabel('100 PX');
           await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkGridEditModePanel(
+            ['1fr', '1fr'],
+            ['1fr', '100px'],
+          );
         },
       );
 
@@ -928,12 +977,14 @@ demoAccountFileTest.describe(() => {
       });
 
       await demoAccountFileTest.step(
-        'Duplicate rectangle in column direction and verify',
+        '(1739) Duplicate rectangle in column direction and verify',
         async () => {
           await layoutContainer.changeDirection(LayoutDirection.Column);
           await mainPage.waitForChangeIsSaved();
+          await layoutContainer.checkDirection(LayoutDirection.Column);
           await layersPanelPage.clickLayerOnLayersTab('Rectangle');
           await mainPage.duplicateLayerViaLayersTab('Rectangle');
+          await layersPanelPage.isNumLayerNameVisible('Rectangle', 2);
           await expect(mainPage.viewport).toHaveScreenshot(
             'column-direction-rectangle.png',
             {
@@ -943,17 +994,24 @@ demoAccountFileTest.describe(() => {
         },
       );
 
+      await demoAccountFileTest.step('(1742) Undo the duplication', async () => {
+        await mainPage.clickShortcutCtrlZ();
+        await mainPage.waitForChangeIsSaved();
+        await layersPanelPage.isNumLayerNameVisible('Rectangle', 1);
+      });
+
       await demoAccountFileTest.step(
-        'Undo and duplicate rectangle in row direction, verify',
+        '(1739) Duplicate rectangle in row direction and verify',
         async () => {
-          await mainPage.clickShortcutCtrlZ();
           await mainPage.clickViewportOnce();
           await mainPage.clickCreatedBoardTitleOnCanvas();
           await mainPage.waitForChangeIsSaved();
           await layoutContainer.changeDirection(LayoutDirection.Row);
           await mainPage.waitForChangeIsSaved();
+          await layoutContainer.checkDirection(LayoutDirection.Row);
           await layersPanelPage.clickLayerOnLayersTab('Rectangle');
           await mainPage.duplicateLayerViaLayersTab('Rectangle');
+          await layersPanelPage.isNumLayerNameVisible('Rectangle', 2);
           await expect(mainPage.viewport).toHaveScreenshot(
             'row-direction-rectangle.png',
             {
@@ -976,6 +1034,7 @@ demoAccountFileTest.describe(() => {
         await mainPage.clickViewportByCoordinates(410, 410);
         await mainPage.waitForChangeIsSaved();
         await mainPage.waitForResizeHandlerVisible();
+        await designPanelPage.isFillHexCodeSet('#00FF00');
       },
     );
 
@@ -989,6 +1048,7 @@ demoAccountFileTest.describe(() => {
       await mainPage.clickViewportOnce();
       await mainPage.clickShortcutCtrlZ();
       await mainPage.waitForResizeHandlerVisible();
+      await designPanelPage.isFillHexCodeSet('#B1B2B5');
       await expect(mainPage.viewport).toHaveScreenshot('rectangle-undo-color.png', {
         mask: mainPage.maskViewport(),
       });
@@ -1062,7 +1122,7 @@ demoAccountFileTest.describe(() => {
 demoAccountFileTest(
   qase(
     [1707, 1741],
-    'Add grid lines, and upload the images, Check removed some image',
+    'Add grid lines, and upload the images, check removed some image, Undo element creation',
   ),
   async ({ mainPage }) => {
     await demoAccountFileTest.step('Create board with grid layout', async () => {
@@ -1074,18 +1134,21 @@ demoAccountFileTest(
       await designPanelPage.isLayoutRemoveButtonExists();
     });
 
-    await demoAccountFileTest.step('Upload image and drag to board', async () => {
-      await mainPage.uploadImage('images/mini_sample.jpg');
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.dragAndDropComponentToBoard('mini_sample');
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isLayerPresentOnLayersTab('mini_sample', true);
-    });
+    await demoAccountFileTest.step(
+      '(1707) Upload image and drag to board',
+      async () => {
+        await mainPage.uploadImage('images/mini_sample.jpg');
+        await mainPage.waitForChangeIsUnsaved();
+        await mainPage.waitForChangeIsSaved();
+        await layersPanelPage.dragAndDropComponentToBoard('mini_sample');
+        await mainPage.waitForChangeIsUnsaved();
+        await mainPage.waitForChangeIsSaved();
+        await layersPanelPage.isLayerPresentOnLayersTab('mini_sample', true);
+      },
+    );
 
     await demoAccountFileTest.step(
-      'Undo twice and verify image is removed',
+      '(1741) Undo twice and verify image is removed',
       async () => {
         await mainPage.clickShortcutCtrlZ();
         await mainPage.waitForChangeIsSaved();
@@ -1098,7 +1161,7 @@ demoAccountFileTest(
 );
 
 demoAccountFileTest(
-  qase([1712], 'Add grid lines, change px for all column'),
+  qase([1712], 'Add grid lines, change px for all columns and rows'),
   async ({ mainPage }) => {
     await demoAccountFileTest.step('Create board with grid layout', async () => {
       await mainPage.createDefaultBoardByCoordinates(400, 300);
@@ -1128,6 +1191,10 @@ demoAccountFileTest(
         await designPanelPage.enterGridCellValue(1, '200');
         await designPanelPage.enterGridCellValue(2, '200');
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkGridEditModePanel(
+          ['200px', '200px'],
+          ['200px', '200px'],
+        );
       },
     );
 
