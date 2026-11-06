@@ -2271,6 +2271,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.checkTokenField('Bottom right', bottomRight);
   }
 
+  /**
+   * Checks the value of the Rotation field (or its applied token).
+   * @param {string} value Expected rotation in degrees.
+   */
   async checkRotationForLayer(value) {
     await this.checkTokenField('Rotation', value);
   }
