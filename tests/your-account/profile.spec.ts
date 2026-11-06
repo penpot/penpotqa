@@ -1,9 +1,8 @@
-import { expect, test } from '@playwright/test';
-import { registerTest } from 'fixtures';
+import { expect } from '@playwright/test';
+import { demoAccountApiFixture, registerTest } from 'fixtures';
 import { profileTest } from './your-account-fixture';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { random } from 'helpers/string-generator';
-import { loginAsDemoAccount } from 'helpers/accounts/login-as-demo-account';
 import { LoginPage } from '@pages/login-page';
 import { ProfilePage } from '@pages/profile-page';
 import {
@@ -67,40 +66,49 @@ profileTest(qase(205, 'Logout from Account'), async ({ page, profilePage }) => {
   });
 });
 
-// Uses a fresh demo account. loginAsDemoAccount() is called directly instead of through
-// demoAccountApiFixture to keep the credentials and check they no longer work.
-test(qase([211], 'Delete account'), async ({ page }) => {
-  const loginPage = new LoginPage(page);
-  const profilePage = new ProfilePage(page);
-  let credentials: { email: string; password: string };
+// Plain demoAccountApiFixture rather than profileTest: no need to rename the user,
+// and `demoAccount` gives the credentials to check they no longer work.
+demoAccountApiFixture(
+  qase([211], 'Delete account'),
+  async ({ page, demoAccount }) => {
+    const loginPage = new LoginPage(page);
+    const profilePage = new ProfilePage(page);
 
-  await test.step('Setup: log in as a fresh demo account', async () => {
-    credentials = await loginAsDemoAccount(page);
-  });
+    await demoAccountApiFixture.step('Open Your account', async () => {
+      await profilePage.openYourAccountPage();
+      await profilePage.isHeaderDisplayed('Your account');
+    });
 
-  await test.step('Open Your account', async () => {
-    await profilePage.openYourAccountPage();
-    await profilePage.isHeaderDisplayed('Your account');
-  });
+    await demoAccountApiFixture.step(
+      'Click "Want to remove your account?" → confirmation modal with "Cancel and keep my account" and "Yes, delete my account"',
+      async () => {
+        await profilePage.clickOnWantToRemoveAccountLink();
+        await profilePage.isDeleteAccountModalButtonsVisible();
+      },
+    );
 
-  await test.step('Click "Want to remove your account?" → confirmation modal with "Cancel and keep my account" and "Yes, delete my account"', async () => {
-    await profilePage.clickOnWantToRemoveAccountLink();
-    await profilePage.isDeleteAccountModalButtonsVisible();
-  });
+    await demoAccountApiFixture.step(
+      'Click "Yes, delete my account" → redirected to the login page',
+      async () => {
+        await profilePage.clickOnConfirmDeleteAccountButton();
+        await loginPage.isLoginPageUrlShown();
+        await loginPage.isLoginPageOpened();
+      },
+    );
 
-  await test.step('Click "Yes, delete my account" → redirected to the login page', async () => {
-    await profilePage.clickOnConfirmDeleteAccountButton();
-    await loginPage.isLoginPageUrlShown();
-    await loginPage.isLoginPageOpened();
-  });
-
-  await test.step('The account is deleted → logging in with its credentials fails', async () => {
-    await loginPage.enterEmailAndClickOnContinue(credentials.email);
-    await loginPage.enterPwd(credentials.password);
-    await loginPage.clickLoginButton();
-    await loginPage.isLoginErrorMessageDisplayed('Email or password is incorrect.');
-  });
-});
+    await demoAccountApiFixture.step(
+      'The account is deleted → logging in with its credentials fails',
+      async () => {
+        await loginPage.enterEmailAndClickOnContinue(demoAccount.email);
+        await loginPage.enterPwd(demoAccount.password);
+        await loginPage.clickLoginButton();
+        await loginPage.isLoginErrorMessageDisplayed(
+          'Email or password is incorrect.',
+        );
+      },
+    );
+  },
+);
 
 registerTest(qase(190, 'Change email to valid'), async ({ page, name, email }) => {
   await registerTest.slow();
@@ -138,5 +146,6 @@ registerTest(qase(190, 'Change email to valid'), async ({ page, name, email }) =
 
   await registerTest.step('Verify dashboard is opened', async () => {
     await dashboardPage.isDashboardOpenedAfterLogin();
+    await dashboardPage.isHeaderDisplayed('Personal Projects');
   });
 });

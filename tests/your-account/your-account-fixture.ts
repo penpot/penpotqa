@@ -1,8 +1,6 @@
-import { test } from '@playwright/test';
 import { demoAccountApiFixture } from 'fixtures';
 import { ProfilePage } from '@pages/profile-page';
 import { ShortcutsPage } from '@pages/shortcuts-page';
-import { loginAsDemoAccount } from 'helpers/accounts/login-as-demo-account';
 import { setDemoUserName } from 'helpers/accounts/set-demo-user-name';
 
 type YourAccountFixtures = {
@@ -28,14 +26,13 @@ type PasswordFixtures = YourAccountFixtures & {
   currentPassword: string;
 };
 
-// Open Your Account > Password section, as a fresh demo account. Logs in directly
-// (not through demoAccountApiFixture) to expose its password as `currentPassword`.
-export const passwordTest = test.extend<PasswordFixtures>({
-  currentPassword: async ({ page }, use) => {
-    const { password } = await loginAsDemoAccount(page, { renderer: 'wasm' });
-    await use(password);
+// Open Your Account > Password section, as a fresh demo account whose password is
+// exposed as `currentPassword`.
+export const passwordTest = demoAccountApiFixture.extend<PasswordFixtures>({
+  currentPassword: async ({ demoAccount }, use) => {
+    await use(demoAccount.password);
   },
-  profilePage: async ({ page, currentPassword: _currentPassword }, use) => {
+  profilePage: async ({ page }, use) => {
     const profilePage = new ProfilePage(page);
 
     await profilePage.openYourAccountPage();

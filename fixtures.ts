@@ -1,7 +1,7 @@
 import { type Page, test } from '@playwright/test';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { random } from './helpers/string-generator';
-import { loginAsDemoAccount } from './helpers/accounts/login-as-demo-account';
+import { openDashboardAfterApiLogin } from './helpers/accounts/login-as-demo-account';
 import { createDemoUser } from './helpers/accounts/create-demo-user';
 import { createFile } from './helpers/files/create-file';
 import { openFileInWorkspace } from 'helpers/files/open-file-in-workspace';
@@ -38,11 +38,20 @@ export const registerTest = test.extend<RegisterTestFixtures>({
   },
 });
 
+type DemoAccountFixtures = {
+  demoAccount: { email: string; password: string };
+};
+
 // Fresh demo account (WASM renderer) created and logged in via the API, landing on
 // the dashboard. Use it for tests that just need a logged-in, isolated user.
-export const demoAccountApiFixture = test.extend({
-  page: async ({ page }, use) => {
-    await loginAsDemoAccount(page, { renderer: 'wasm' });
+// `demoAccount` holds its credentials, for tests that log back in through the UI.
+export const demoAccountApiFixture = test.extend<DemoAccountFixtures>({
+  // Logs in on the context (not `page`), so `page` can depend on it.
+  demoAccount: async ({ context }, use) => {
+    await use(await createDemoUser(context.request, { renderer: 'wasm' }));
+  },
+  page: async ({ page, demoAccount: _demoAccount }, use) => {
+    await openDashboardAfterApiLogin(page);
     await use(page);
   },
 });
