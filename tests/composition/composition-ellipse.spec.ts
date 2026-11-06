@@ -139,6 +139,7 @@ demoAccountFileTest.describe(() => {
     async ({ mainPage }) => {
       await demoAccountFileTest.step('Rotate to 90 degrees and verify', async () => {
         await designPanelPage.changeRotationForLayer('90');
+        await designPanelPage.checkRotationForLayer('90');
         await mainPage.waitForChangeIsUnsaved();
         await mainPage.waitForChangeIsSaved();
         await mainPage.waitForResizeHandlerVisible();
@@ -151,6 +152,7 @@ demoAccountFileTest.describe(() => {
         'Rotate to 120 degrees and verify',
         async () => {
           await designPanelPage.changeRotationForLayer('120');
+          await designPanelPage.checkRotationForLayer('120');
           await mainPage.waitForChangeIsUnsaved();
           await mainPage.waitForChangeIsSaved();
           await mainPage.waitForResizeHandlerVisible();
@@ -165,6 +167,7 @@ demoAccountFileTest.describe(() => {
 
       await demoAccountFileTest.step('Rotate to 45 degrees and verify', async () => {
         await designPanelPage.changeRotationForLayer('45');
+        await designPanelPage.checkRotationForLayer('45');
         await mainPage.waitForChangeIsUnsaved();
         await mainPage.waitForChangeIsSaved();
         await mainPage.waitForResizeHandlerVisible();
@@ -177,6 +180,7 @@ demoAccountFileTest.describe(() => {
         'Rotate to 360 degrees and verify',
         async () => {
           await designPanelPage.changeRotationForLayer('360');
+          await designPanelPage.checkRotationForLayer('359');
           await mainPage.waitForChangeIsUnsaved();
           await mainPage.waitForChangeIsSaved();
           await mainPage.waitForResizeHandlerVisible();
