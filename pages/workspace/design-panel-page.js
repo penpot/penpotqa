@@ -287,29 +287,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       { exact: true },
     );
 
-    //Design panel - Blur section
-    this.blurSection = page.getByRole('region', {
-      name: 'Blur effects',
-      exact: true,
-    });
-    this.addBlurButton = this.blurSection.getByRole('button', { name: 'Add blur' });
-    this.blurTypeSelect = this.blurSection.getByRole('combobox', {
-      name: 'Blur type select',
-    });
-    this.blurMoreOptions = this.blurSection.locator(
-      'button[class*="blur__show-more"]',
-    );
-    this.blurValueInput = this.blurSection.getByRole('textbox');
-    this.blurHideIcon = this.blurSection.getByRole('button', {
-      name: 'Toggle blur',
-    });
-    this.blurUnhideIcon = this.blurSection.getByRole('button', {
-      name: 'Toggle blur',
-    });
-    this.blurRemoveIcon = this.blurSection.getByRole('button', {
-      name: 'Remove blur',
-    });
-
     //Design panel - Stroke section
     this.strokeSectionContainer = this.rightSidebar.getByRole('region', {
       name: 'Stroke',
@@ -1218,35 +1195,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async removeShadow() {
     await this.shadowRemoveIcon.click();
-  }
-
-  async clickAddBlurButton() {
-    await this.blurSection.waitFor();
-    await this.addBlurButton.click();
-  }
-
-  async selectTypeForBlurEffects(type) {
-    await this.blurTypeSelect.click();
-    const typeOptionSel = this.page.getByRole('option', { name: type, exact: true });
-    await typeOptionSel.click();
-  }
-
-  async changeValueForBlur(value) {
-    await this.blurMoreOptions.click();
-    await this.blurValueInput.clear();
-    await this.blurValueInput.pressSequentially(value);
-  }
-
-  async hideBlur() {
-    await this.blurHideIcon.click();
-  }
-
-  async unhideBlur() {
-    await this.blurUnhideIcon.click();
-  }
-
-  async removeBlur() {
-    await this.blurRemoveIcon.click();
   }
 
   async changeTextCase(value) {
