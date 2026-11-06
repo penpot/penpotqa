@@ -3,6 +3,8 @@ import { qase } from 'playwright-qase-reporter/playwright';
 import { demoAccountFileTest } from 'fixtures';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { BlurSectionComponent } from '@pages/workspace/right-sidebar/design-tab/blur-section-component';
+import { WorkspacePage } from '@pages/workspace/workspace-page';
 import { InspectPanelPage } from '@pages/workspace/inspect-panel-page';
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
@@ -18,6 +20,7 @@ const sampleData: SampleData = new SampleData();
 
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
+let blur: BlurSectionComponent;
 let colorPalettePage: ColorPalettePage;
 let assetsPanelPage: AssetsPanelPage;
 let inspectPanelPage: InspectPanelPage;
@@ -25,6 +28,7 @@ let pagesPanelPage: PagesPanelPage;
 
 demoAccountFileTest.beforeEach(async ({ page }) => {
   designPanelPage = new DesignPanelPage(page);
+  blur = new WorkspacePage(page).rightSidebar.design.blur;
   layersPanelPage = new LayersPanelPage(page);
   colorPalettePage = new ColorPalettePage(page);
   assetsPanelPage = new AssetsPanelPage(page);
@@ -49,8 +53,8 @@ demoAccountFileTest.describe(() => {
         'Solid',
       );
       await designPanelPage.clickAddShadowButton();
-      await designPanelPage.clickAddBlurButton();
-      await designPanelPage.changeValueForBlur('7');
+      await blur.addBlur();
+      await blur.changeBlurValue('7');
       await mainPage.waitForChangeIsSaved();
       await mainPage.waitForResizeHandlerVisible();
       await mainPage.clickViewportTwice();
