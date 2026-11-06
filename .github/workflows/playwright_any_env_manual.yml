@@ -1,0 +1,52 @@
+name: Manual Penpot Tests on any environment
+#
+# Runs the suite against any Penpot URL through the same action that dev
+# branches use (.github/actions/run-penpotqa), e.g. the hourly develop
+# environment, or PRE to check the action itself. Tests tagged @external are
+# skipped and nothing is reported to Qase.
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: 'Penpot URL (empty = PRE)'
+        required: false
+        type: string
+      tests:
+        description: 'Space-separated folders/specs, e.g. "tests/tokens tests/login-signup/login.spec.ts" (empty = all)'
+        required: false
+        type: string
+      grep:
+        description: 'Title regex filter (optional), e.g. "2204|2205"'
+        required: false
+        type: string
+      repeat_each:
+        description: 'Run each test N times'
+        required: true
+        type: string
+        default: '1'
+
+permissions:
+  contents: read
+
+jobs:
+  tests_chromium:
+    environment: PRE # account credentials (LOGIN_EMAIL/LOGIN_PWD) and PRE's BASE_URL
+    timeout-minutes: 280
+    runs-on: ubuntu-24.04
+    env:
+      TZ: Europe/Madrid
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Run Penpot QA suite
+        uses: ./.github/actions/run-penpotqa
+        with:
+          base-url: ${{ inputs.base_url || secrets.BASE_URL }}
+          login-email: ${{ secrets.LOGIN_EMAIL }}
+          login-password: ${{ secrets.LOGIN_PWD }}
+          tests: ${{ inputs.tests }}
+          grep: ${{ inputs.grep }}
+          repeat-each: ${{ inputs.repeat_each }}
+          artifact-name: penpotqa-report-${{ github.run_id }}
