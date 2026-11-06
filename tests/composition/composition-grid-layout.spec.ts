@@ -1,8 +1,13 @@
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import {
+  GridCellCoordinate,
+  GridCellSectionComponent,
+} from '@pages/workspace/right-sidebar/design-tab/grid-cell-section-component';
+import {
   LayoutContainerSectionComponent,
   LayoutDirection,
+  LayoutType,
 } from '@pages/workspace/right-sidebar/design-tab/layout-container-section-component';
 import { WorkspacePage } from '@pages/workspace/workspace-page';
 import { InspectPanelPage } from '@pages/workspace/inspect-panel-page';
@@ -14,6 +19,7 @@ import { qase } from 'playwright-qase-reporter/playwright';
 let colorPalettePage: ColorPalettePage;
 let designPanelPage: DesignPanelPage;
 let layoutContainer: LayoutContainerSectionComponent;
+let gridCell: GridCellSectionComponent;
 let inspectPanelPage: InspectPanelPage;
 let layersPanelPage: LayersPanelPage;
 
@@ -23,6 +29,7 @@ demoAccountFileTest.use({ inNewTeam: true });
 demoAccountFileTest.beforeEach(async ({ page }) => {
   designPanelPage = new DesignPanelPage(page);
   layoutContainer = new WorkspacePage(page).rightSidebar.design.layoutContainer;
+  gridCell = new WorkspacePage(page).rightSidebar.design.gridCell;
   layersPanelPage = new LayersPanelPage(page);
   inspectPanelPage = new InspectPanelPage(page);
   colorPalettePage = new ColorPalettePage(page);
@@ -363,6 +370,11 @@ demoAccountFileTest(
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.checkSizeWidth('300');
         await designPanelPage.checkSizeHeight('200');
+        await layersPanelPage.clickLayerOnLayersTab('Rectangle');
+        await designPanelPage.checkSizeWidth('100');
+        await designPanelPage.checkSizeHeight('100');
+        await mainPage.clickViewportOnce();
+        await mainPage.clickCreatedBoardTitleOnCanvas();
         await mainPage.isCornerHandleVisible();
         await mainPage.waitForChangeIsSaved();
         await mainPage.movePointerToViewportBottomRight();
@@ -405,6 +417,9 @@ demoAccountFileTest(
       await designPanelPage.changeWidthForLayer('800');
       await mainPage.hoverBoardOnCanvas();
       await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.clickLayerOnLayersTab('sample');
+      await designPanelPage.checkSizeWidth('800');
+      await designPanelPage.checkSizeHeight('532.5');
       await expect(mainPage.viewport).toHaveScreenshot(
         'resized-board-with-image.png',
         {
@@ -596,6 +611,8 @@ demoAccountFileTest.describe(() => {
       await designPanelPage.addLayoutFromDesignPanel('flex');
       await designPanelPage.isFlexElementSectionOpened();
       await mainPage.waitForChangeIsSaved();
+      await layoutContainer.checkLayoutType(LayoutType.Flex);
+      await layoutContainer.checkDirection(LayoutDirection.Row);
     });
 
     await demoAccountFileTest.step('Verify flex layout on canvas', async () => {
@@ -882,7 +899,13 @@ demoAccountFileTest.describe(() => {
         'Select cells and create vertical area, verify',
         async () => {
           await mainPage.selectGridCellMultiple(6, 9);
-          await designPanelPage.clickOnAreaButton();
+          await gridCell.clickOnAreaButton();
+          await gridCell.checkCellPosition({
+            columnStart: '3',
+            columnEnd: '4',
+            rowStart: '2',
+            rowEnd: '4',
+          });
           await expect(mainPage.viewport).toHaveScreenshot(
             'board-with-grid-vertical-area.png',
             {
@@ -896,7 +919,13 @@ demoAccountFileTest.describe(() => {
         'Select cells and create horizontal area, verify',
         async () => {
           await mainPage.selectGridCellMultiple(1, 2);
-          await designPanelPage.clickOnAreaButton();
+          await gridCell.clickOnAreaButton();
+          await gridCell.checkCellPosition({
+            columnStart: '1',
+            columnEnd: '3',
+            rowStart: '1',
+            rowEnd: '2',
+          });
           await expect(mainPage.viewport).toHaveScreenshot(
             'board-with-grid-horizontal-area.png',
             {
@@ -918,8 +947,9 @@ demoAccountFileTest.describe(() => {
           await mainPage.doubleClickBoardOnCanvas();
           await mainPage.waitForChangeIsSaved();
           await mainPage.selectGridCellMultiple(1, 4);
-          await designPanelPage.clickOnAreaButton();
-          await designPanelPage.enterAreaName('Test Area  Name');
+          await gridCell.clickOnAreaButton();
+          await gridCell.enterAreaName('Test Area  Name');
+          await gridCell.checkAreaName('Test Area  Name');
         },
       );
 
@@ -1071,8 +1101,14 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step(
         'Set area manually via design panel and verify',
         async () => {
-          await designPanelPage.clickOnManualButton();
-          await designPanelPage.enterGridCellCoordinate('row', 'end', '3');
+          await gridCell.clickOnManualButton();
+          await gridCell.enterGridCellCoordinate(GridCellCoordinate.RowEnd, '3');
+          await gridCell.checkCellPosition({
+            columnStart: '1',
+            columnEnd: '2',
+            rowStart: '1',
+            rowEnd: '3',
+          });
           await expect(mainPage.viewport).toHaveScreenshot(
             'board-with-grid-manual-area.png',
             {
@@ -1107,6 +1143,12 @@ demoAccountFileTest.describe(() => {
         async () => {
           await mainPage.selectGridCellMultiple(1, 3);
           await mainPage.mergeGridCellViaRightClick(3);
+          await gridCell.checkCellPosition({
+            columnStart: '1',
+            columnEnd: '4',
+            rowStart: '1',
+            rowEnd: '2',
+          });
           await expect(mainPage.viewport).toHaveScreenshot(
             'board-with-grid-horizontal-area-right.png',
             {

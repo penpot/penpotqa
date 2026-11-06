@@ -178,9 +178,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       exact: true,
     });
     this.gridLayoutMenu = page.locator('div[class*="grid-layout-menu"]').first();
-    this.manualButton = page.getByText('manual');
-    this.areaButton = page.getByText('area');
-    this.areaNameInput = page.getByPlaceholder('Area name');
     this.gridExpandGridColumnLengthButton = page
       .locator('div[class*="grid-track-header"] button[class*="expand-icon"]')
       .first();
@@ -2038,17 +2035,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.clipContentButton.click();
   }
 
-  async clickOnManualButton() {
-    await this.manualButton.click();
-  }
-  async clickOnAreaButton() {
-    await this.areaButton.click();
-  }
-
-  async enterAreaName(name) {
-    await this.areaNameInput.fill(name);
-  }
-
   async selectGridCellUnit(cellNumber, unit = 'PX') {
     const dropdownLocator = await this.page.locator(
       `div[class*="track-info-unit"] span[class*="current-label"] >>nth=${
@@ -2091,17 +2077,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async hoverOnGridFirstColumnSelectButton() {
     await this.gridFirstColumnSelectButton.hover();
-  }
-
-  async enterGridCellCoordinate(rowColumn, startOrEnd, value) {
-    let cellNumber = startOrEnd === 'start' ? 0 : 1;
-    cellNumber = rowColumn === 'row' ? cellNumber + 2 : cellNumber;
-    const inputLocator = await this.page.locator(
-      `div[class*="grid_cell__row"] div[class*="grid_cell__coord-input"] input >>nth=${cellNumber}`,
-    );
-    await inputLocator.click();
-    await inputLocator.fill(value);
-    await this.clickOnEnter();
   }
 
   async changeCap(capName, firstSecond = 'first') {

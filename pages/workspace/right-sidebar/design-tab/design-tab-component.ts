@@ -5,6 +5,7 @@ import {
   getExportSectionRoot,
 } from '@pages/components/export-section-component';
 import { BlurSectionComponent } from '@pages/workspace/right-sidebar/design-tab/blur-section-component';
+import { GridCellSectionComponent } from '@pages/workspace/right-sidebar/design-tab/grid-cell-section-component';
 import { LayoutContainerSectionComponent } from '@pages/workspace/right-sidebar/design-tab/layout-container-section-component';
 import { LayoutItemSectionComponent } from '@pages/workspace/right-sidebar/design-tab/layout-item-section-component';
 import { StrokeSectionComponent } from '@pages/workspace/right-sidebar/design-tab/stroke-section-component';
@@ -14,6 +15,7 @@ export class DesignTabComponent extends BaseComponent {
   readonly blur: BlurSectionComponent;
   readonly layoutContainer: LayoutContainerSectionComponent;
   readonly layoutItem: LayoutItemSectionComponent;
+  readonly gridCell: GridCellSectionComponent;
   readonly export: ExportSectionComponent;
 
   constructor(page: Page, root: Locator) {
@@ -33,6 +35,16 @@ export class DesignTabComponent extends BaseComponent {
     this.layoutItem = new LayoutItemSectionComponent(
       page,
       root.getByRole('region', { name: 'Layout item section' }),
+    );
+    this.gridCell = new GridCellSectionComponent(
+      page,
+      root
+        .locator('div')
+        .filter({
+          has: page.getByRole('button', { name: 'Grid cell', exact: true }),
+        })
+        .filter({ has: page.getByRole('button', { name: 'Edit grid' }) })
+        .last(),
     );
     this.export = new ExportSectionComponent(page, getExportSectionRoot(root));
   }

@@ -12,6 +12,14 @@ export const LayoutDirection = {
 export type LayoutDirectionName =
   (typeof LayoutDirection)[keyof typeof LayoutDirection];
 
+/** Layout types a board can have. */
+export const LayoutType = {
+  Flex: 'flex',
+  Grid: 'grid',
+} as const;
+
+export type LayoutTypeName = (typeof LayoutType)[keyof typeof LayoutType];
+
 /**
  * The Layout section of the Design tab for a board with a flex or grid layout.
  *
@@ -64,5 +72,22 @@ export class LayoutContainerSectionComponent extends BaseComponent {
       this.getDirectionButton(direction),
       `Layout direction "${direction}" is selected`,
     ).toBeChecked();
+  }
+
+  /**
+   * Checks whether the board's layout is flex or grid, by the direction radio group the
+   * Layout section shows (its labels' test ids are flex-direction-row / grid-direction-row).
+   * @param type Expected layout type, see LayoutType.
+   */
+  async checkLayoutType(type: LayoutTypeName) {
+    const other = type === LayoutType.Flex ? LayoutType.Grid : LayoutType.Flex;
+    await expect(
+      this.root.getByTestId(`${type}-direction-row`),
+      `Layout type is ${type}`,
+    ).toBeVisible();
+    await expect(
+      this.root.getByTestId(`${other}-direction-row`),
+      `Layout type is not ${other}`,
+    ).toHaveCount(0);
   }
 }
