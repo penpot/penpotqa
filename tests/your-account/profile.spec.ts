@@ -67,8 +67,7 @@ profileTest(qase(205, 'Logout from Account'), async ({ page, profilePage }) => {
   });
 });
 
-// Uses a fresh demo account (not the shared LOGIN_EMAIL one, which other
-// tests need). loginAsDemoAccount() is called directly instead of through
+// Uses a fresh demo account. loginAsDemoAccount() is called directly instead of through
 // demoAccountApiFixture to keep the credentials and check they no longer work.
 test(qase([211], 'Delete account'), async ({ page }) => {
   const loginPage = new LoginPage(page);
