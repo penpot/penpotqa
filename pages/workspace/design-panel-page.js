@@ -1597,55 +1597,114 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     }
   }
 
+  /**
+   * Checks which Justify content button of the selected board's layout is selected.
+   * @param {'Start' | 'Center' | 'End' | 'Space between' | 'Space around' | 'Space evenly'} justify Expected justification.
+   * @param {boolean} [flex=true] Whether the layout is flex (true) or grid (false).
+   */
   async checkLayoutJustification(justify, flex = true) {
     if (flex) {
       await this.expandFlexLayoutMenu();
       switch (justify) {
         case 'Start':
-          await expect(this.layoutJustifyStartBtn).toBeChecked();
+          await expect(
+            this.layoutJustifyStartBtn,
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
           break;
         case 'Center':
-          await expect(this.layoutJustifyCenterBtn).toBeChecked();
+          await expect(
+            this.layoutJustifyCenterBtn,
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
           break;
         case 'End':
-          await expect(this.layoutJustifyEndBtn).toBeChecked();
+          await expect(
+            this.layoutJustifyEndBtn,
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
           break;
         case 'Space between':
-          await expect(this.layoutJustifySpaceBetweenBtn).toBeChecked();
+          await expect(
+            this.layoutJustifySpaceBetweenBtn,
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
           break;
         case 'Space around':
-          await expect(this.layoutJustifySpaceAroundBtn).toBeChecked();
+          await expect(
+            this.layoutJustifySpaceAroundBtn,
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
           break;
         case 'Space evenly':
-          await expect(this.layoutJustifySpaceEvenlyBtn).toBeChecked();
+          await expect(
+            this.layoutJustifySpaceEvenlyBtn,
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
           break;
       }
     } else {
       await this.expandGridLayoutMenu();
       switch (justify) {
         case 'Start':
-          await expect(this.layoutGridJustifyStartBtn.first()).toBeChecked();
-          await expect(this.layoutGridJustifyStartBtn.last()).toBeChecked();
+          await expect(
+            this.layoutGridJustifyStartBtn.first(),
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
+          await expect(
+            this.layoutGridJustifyStartBtn.last(),
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
           break;
         case 'Center':
-          await expect(this.layoutGridJustifyCenterBtn.first()).toBeChecked();
-          await expect(this.layoutGridJustifyCenterBtn.last()).toBeChecked();
+          await expect(
+            this.layoutGridJustifyCenterBtn.first(),
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
+          await expect(
+            this.layoutGridJustifyCenterBtn.last(),
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
           break;
         case 'End':
-          await expect(this.layoutGridJustifyEndBtn.first()).toBeChecked();
-          await expect(this.layoutGridJustifyEndBtn.last()).toBeChecked();
+          await expect(
+            this.layoutGridJustifyEndBtn.first(),
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
+          await expect(
+            this.layoutGridJustifyEndBtn.last(),
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
           break;
         case 'Space between':
-          await expect(this.layoutGridJustifySpaceBetweenBtn.first()).toBeChecked();
-          await expect(this.layoutGridJustifySpaceBetweenBtn.last()).toBeChecked();
+          await expect(
+            this.layoutGridJustifySpaceBetweenBtn.first(),
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
+          await expect(
+            this.layoutGridJustifySpaceBetweenBtn.last(),
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
           break;
         case 'Space around':
-          await expect(this.layoutGridJustifySpaceAroundBtn.first()).toBeChecked();
-          await expect(this.layoutGridJustifySpaceAroundBtn.last()).toBeChecked();
+          await expect(
+            this.layoutGridJustifySpaceAroundBtn.first(),
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
+          await expect(
+            this.layoutGridJustifySpaceAroundBtn.last(),
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
           break;
         case 'Space evenly':
-          await expect(this.layoutGridJustifySpaceEvenlyBtn.first()).toBeChecked();
-          await expect(this.layoutGridJustifySpaceEvenlyBtn.last()).toBeChecked();
+          await expect(
+            this.layoutGridJustifySpaceEvenlyBtn.first(),
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
+          await expect(
+            this.layoutGridJustifySpaceEvenlyBtn.last(),
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
           break;
       }
     }
@@ -1752,19 +1811,36 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.clickOnEnter();
   }
 
+  /**
+   * Checks one of the four independent paddings of the selected board's layout.
+   * @param {'Top' | 'Right' | 'Bottom' | 'Left'} type Padding to check.
+   * @param {string} value Expected value.
+   */
   async verifyLayoutIndependentPaddingValue(type, value) {
     switch (type) {
       case 'Bottom':
-        await expect(this.layoutPaddingBottomInput).toHaveValue(value);
+        await expect(
+          this.layoutPaddingBottomInput,
+          `${type} padding is ${value}`,
+        ).toHaveValue(value);
         break;
       case 'Right':
-        await expect(this.layoutPaddingRightInput).toHaveValue(value);
+        await expect(
+          this.layoutPaddingRightInput,
+          `${type} padding is ${value}`,
+        ).toHaveValue(value);
         break;
       case 'Left':
-        await expect(this.layoutPaddingLeftInput).toHaveValue(value);
+        await expect(
+          this.layoutPaddingLeftInput,
+          `${type} padding is ${value}`,
+        ).toHaveValue(value);
         break;
       case 'Top':
-        await expect(this.layoutPaddingTopInput).toHaveValue(value);
+        await expect(
+          this.layoutPaddingTopInput,
+          `${type} padding is ${value}`,
+        ).toHaveValue(value);
         break;
     }
   }
@@ -2100,34 +2176,66 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.resizeBoardToFitButton.click();
   }
 
+  /**
+   * Checks which Align items button of the selected board's layout is selected.
+   * @param {'Start' | 'Center' | 'End'} alignment Expected alignment.
+   * @param {boolean} [flex=true] Whether the layout is flex (true) or grid (false).
+   */
   async isLayoutAlignmentSelected(alignment, flex = true) {
     if (flex) {
       await this.expandFlexLayoutMenu();
       switch (alignment) {
         case 'Start':
-          await expect(this.layoutAlignStartBtn).toBeChecked();
+          await expect(
+            this.layoutAlignStartBtn,
+            `Layout alignment "${alignment}" is selected`,
+          ).toBeChecked();
           break;
         case 'Center':
-          await expect(this.layoutAlignCenterBtn).toBeChecked();
+          await expect(
+            this.layoutAlignCenterBtn,
+            `Layout alignment "${alignment}" is selected`,
+          ).toBeChecked();
           break;
         case 'End':
-          await expect(this.layoutAlignEndBtn).toBeChecked();
+          await expect(
+            this.layoutAlignEndBtn,
+            `Layout alignment "${alignment}" is selected`,
+          ).toBeChecked();
           break;
       }
     } else {
       await this.expandGridLayoutMenu();
       switch (alignment) {
         case 'Start':
-          await expect(this.layoutAlignStartBtn.first()).toBeChecked();
-          await expect(this.layoutAlignStartBtn.last()).toBeChecked();
+          await expect(
+            this.layoutAlignStartBtn.first(),
+            `Layout alignment "${alignment}" is selected`,
+          ).toBeChecked();
+          await expect(
+            this.layoutAlignStartBtn.last(),
+            `Layout alignment "${alignment}" is selected`,
+          ).toBeChecked();
           break;
         case 'Center':
-          await expect(this.layoutAlignCenterBtn.first()).toBeChecked();
-          await expect(this.layoutAlignCenterBtn.last()).toBeChecked();
+          await expect(
+            this.layoutAlignCenterBtn.first(),
+            `Layout alignment "${alignment}" is selected`,
+          ).toBeChecked();
+          await expect(
+            this.layoutAlignCenterBtn.last(),
+            `Layout alignment "${alignment}" is selected`,
+          ).toBeChecked();
           break;
         case 'End':
-          await expect(this.layoutAlignEndBtn.first()).toBeChecked();
-          await expect(this.layoutAlignEndBtn.last()).toBeChecked();
+          await expect(
+            this.layoutAlignEndBtn.first(),
+            `Layout alignment "${alignment}" is selected`,
+          ).toBeChecked();
+          await expect(
+            this.layoutAlignEndBtn.last(),
+            `Layout alignment "${alignment}" is selected`,
+          ).toBeChecked();
           break;
       }
     }
@@ -2231,10 +2339,18 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.checkTokenField('Stroke width', value);
   }
 
+  /**
+   * Checks the value of the Row gap field (or its applied token).
+   * @param {string} value Expected gap in px.
+   */
   async checkRowGap(value) {
     await this.checkTokenField('Row gap', value);
   }
 
+  /**
+   * Checks the value of the Column gap field (or its applied token).
+   * @param {string} value Expected gap in px.
+   */
   async checkColumnGap(value) {
     await this.checkTokenField('Column gap', value);
   }
