@@ -57,6 +57,25 @@ export class SetsComponent {
     await this.baseComponent.clickOnEnter();
   }
 
+  /**
+   * Creates a set via the add set button, checks it (and its groups) are
+   * shown, then activates it and checks its checkbox is checked.
+   *
+   * @param path - Set path, with groups separated by "/" (e.g. "Mode/Dark").
+   *   The last segment is the set name.
+   */
+  async createAndActivateSet(path: string) {
+    const groups = path.split('/');
+    const setName = groups.pop()!;
+    await this.createSetViaButton(path);
+    await this.isSetNameVisible(setName);
+    for (const group of groups) {
+      await this.isGroupSetNameVisible(group);
+    }
+    await this.clickOnSetCheckboxByName(setName);
+    await this.isSetCheckedByName(setName);
+  }
+
   async checkFirstSetName(text: string) {
     await expect(
       this.setName.first(),
@@ -101,11 +120,18 @@ export class SetsComponent {
     await this.groupSetName.filter({ hasText: setName }).click({ button: 'right' });
   }
 
-  async isSetCheckedByName(setName: string) {
+  /**
+   * Checks whether a set's checkbox in the Sets list is checked (active).
+   *
+   * @param setName - Name of the set as shown in the Sets list.
+   * @param checked - Expected state; `true` (default) for checked, `false`
+   *   for unchecked.
+   */
+  async isSetCheckedByName(setName: string, checked = true) {
     await expect(
       this.setName.filter({ hasText: setName }).getByRole('checkbox'),
-      `Set "${setName}" checkbox should be checked`,
-    ).toBeChecked();
+      `Set "${setName}" checkbox should be ${checked ? 'checked' : 'unchecked'}`,
+    ).toBeChecked({ checked });
   }
 
   async checkActiveSetsCountByThemeName(name: string, count: string) {
