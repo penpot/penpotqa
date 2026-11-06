@@ -1,17 +1,17 @@
-import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { WorkspacePage } from '@pages/workspace/workspace-page';
 import { expect } from '@playwright/test';
 import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 const defaultNameRectangle = 'Rectangle';
-let colorPalettePage: ColorPalettePage;
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
+let workspacePage: WorkspacePage;
 
 demoAccountFileTest.beforeEach(async ({ page }) => {
-  colorPalettePage = new ColorPalettePage(page);
+  workspacePage = new WorkspacePage(page);
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
 });
@@ -54,6 +54,8 @@ demoAccountFileTest.describe(() => {
         'Verify rectangle layer is created',
         async () => {
           await mainPage.isCreatedLayerVisible();
+          await designPanelPage.checkSizeWidth('100');
+          await designPanelPage.checkSizeHeight('100');
           await expect(mainPage.viewport).toHaveScreenshot('rectangle.png', {
             mask: mainPage.maskViewport(),
           });
@@ -66,23 +68,55 @@ demoAccountFileTest.describe(() => {
     qase([278], 'Change border radius multiple values (Design page in the right)'),
     async ({ mainPage }) => {
       await demoAccountFileTest.step(
-        'Set independent corner radii and verify',
+        'Click on the "Single corners" icon in the Design tab',
         async () => {
           await designPanelPage.clickIndividualCornersRadiusButton();
-          await designPanelPage.changeIndependentCorners('30', '60', '90', '120');
-          await mainPage.waitForChangeIsSaved();
-          await designPanelPage.checkIndividualCorners('30', '60', '90', '120');
         },
       );
 
-      await demoAccountFileTest.step(
-        'Reset corner radii and verify default',
-        async () => {
-          await designPanelPage.changeIndependentCorners('0', '0', '0', '0');
-          await mainPage.waitForChangeIsSaved();
-          await designPanelPage.checkIndividualCorners('0', '0', '0', '0');
+      const corners = [
+        {
+          step: 'first',
+          label: 'Top left',
+          value: '30',
+          change: 'changeTopLeftCornerRadiusForLayer',
         },
-      );
+        {
+          step: 'second',
+          label: 'Top right',
+          value: '60',
+          change: 'changeTopRightCornerRadiusForLayer',
+        },
+        {
+          step: '3rd',
+          label: 'Bottom left',
+          value: '90',
+          change: 'changeBottomLeftCornerRadiusForLayer',
+        },
+        {
+          step: '4th',
+          label: 'Bottom right',
+          value: '120',
+          change: 'changeBottomRightCornerRadiusForLayer',
+        },
+      ] as const;
+
+      for (const { step, label, value, change } of corners) {
+        await demoAccountFileTest.step(
+          `Change the ${step} radius to ${value}`,
+          async () => {
+            await designPanelPage[change](value);
+            await mainPage.waitForChangeIsSaved();
+            await designPanelPage.checkTokenField(label, value);
+          },
+        );
+      }
+
+      await demoAccountFileTest.step('Change all radiuses to 0', async () => {
+        await designPanelPage.changeIndependentCorners('0', '0', '0', '0');
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkIndividualCorners('0', '0', '0', '0');
+      });
     },
   );
 
@@ -143,33 +177,31 @@ demoAccountFileTest.describe(() => {
       );
 
       await demoAccountFileTest.step(
-        'Detach a rectangle copy instance via right click',
+        'Select 1st rectangle, right click and click on "Detach instance"',
         async () => {
           await layersPanelPage.detachInstanceFirstCopyComponentViaRightClick();
           await mainPage.waitForChangeIsSaved();
-        },
-      );
-
-      await demoAccountFileTest.step(
-        'Verify one copy instance was detached (copy count is 1)',
-        async () => {
           await layersPanelPage.checkCopyComponentLayerCount(1);
+          await workspacePage.leftSidebar.layers.checkLayerIsChildOf(
+            'Rectangle',
+            'Rectangle',
+            'board',
+          );
         },
       );
 
       await demoAccountFileTest.step(
-        'Select remaining rectangle copy and detach instance via shortcut',
+        'Select 2nd rectangle and press Shift+Ctrl+K',
         async () => {
           await layersPanelPage.clickCopyComponentOnLayersTab();
           await mainPage.detachInstanceViaShortcut();
           await mainPage.waitForChangeIsSaved();
-        },
-      );
-
-      await demoAccountFileTest.step(
-        'Verify all copy instances were detached (copy count is 0)',
-        async () => {
           await layersPanelPage.checkCopyComponentLayerCount(0);
+          await workspacePage.leftSidebar.layers.checkLayerIsChildOf(
+            'Rectangle',
+            'Rectangle',
+            'board',
+          );
         },
       );
     },
@@ -179,45 +211,48 @@ demoAccountFileTest.describe(() => {
 demoAccountFileTest(
   qase([2255], 'Select and deselect rectangles'),
   async ({ mainPage }) => {
-    await demoAccountFileTest.step('Create four rectangles on canvas', async () => {
-      await mainPage.createDefaultRectangleByCoordinates(400, 800);
-      await layersPanelPage.isNumLayerNameVisible(defaultNameRectangle, 1);
-      await mainPage.createDefaultRectangleByCoordinates(400, 200);
-      await layersPanelPage.isNumLayerNameVisible(defaultNameRectangle, 2);
-      await mainPage.createDefaultRectangleByCoordinates(100, 600);
-      await layersPanelPage.isNumLayerNameVisible(defaultNameRectangle, 3);
-      await mainPage.createDefaultRectangleByCoordinates(700, 600);
-      await layersPanelPage.isNumLayerNameVisible(defaultNameRectangle, 4);
+    const rectangleCoordinates = [
+      { order: 'first', x: 400, y: 800 },
+      { order: 'second', x: 400, y: 200 },
+      { order: 'third', x: 100, y: 600 },
+      { order: 'fourth', x: 700, y: 600 },
+    ];
+
+    for (const [index, { order, x, y }] of rectangleCoordinates.entries()) {
+      await demoAccountFileTest.step(`Create the ${order} rectangle`, async () => {
+        await mainPage.createDefaultRectangleByCoordinates(x, y);
+        await layersPanelPage.isNumLayerNameVisible(defaultNameRectangle, index + 1);
+      });
+    }
+
+    await demoAccountFileTest.step('Select the 4 rectangles', async () => {
       await mainPage.clickViewportTwice();
       await mainPage.waitForChangeIsSaved();
+      await mainPage.pressSelectAllShortcut();
+      await workspacePage.leftSidebar.layers.checkSelectedLayersCount(4);
     });
 
-    await demoAccountFileTest.step(
-      'Select all and deselect one, verify three selected',
-      async () => {
-        await mainPage.pressSelectAllShortcut();
-        await mainPage.deselectElement();
-        await expect(mainPage.viewport).toHaveScreenshot(
-          'three-rectangle-selected.png',
-          {
-            mask: mainPage.maskViewport(),
-          },
-        );
-      },
-    );
+    await demoAccountFileTest.step('Deselect a rectangle', async () => {
+      await mainPage.deselectElement();
+      await workspacePage.leftSidebar.layers.checkSelectedLayersCount(3);
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'three-rectangle-selected.png',
+        {
+          mask: mainPage.maskViewport(),
+        },
+      );
+    });
 
-    await demoAccountFileTest.step(
-      'Deselect further and verify one selected',
-      async () => {
-        await mainPage.deselectElement();
-        await mainPage.deselectElement();
-        await expect(mainPage.viewport).toHaveScreenshot(
-          'one-rectangle-selected.png',
-          {
-            mask: mainPage.maskViewport(),
-          },
-        );
-      },
-    );
+    await demoAccountFileTest.step('Deselect two rectangles', async () => {
+      await mainPage.deselectElement();
+      await mainPage.deselectElement();
+      await workspacePage.leftSidebar.layers.checkSelectedLayersCount(1);
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'one-rectangle-selected.png',
+        {
+          mask: mainPage.maskViewport(),
+        },
+      );
+    });
   },
 );

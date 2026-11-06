@@ -388,10 +388,20 @@ exports.MainPage = class MainPage extends BasePage {
     await expect(this.unSavedChangesIcon).toBeVisible();
   }
 
+  /**
+   * Checks whether the created layer is shown on the viewport.
+   * @param {boolean} [visible=true] Expected state; `false` = the layer is gone.
+   */
   async isCreatedLayerVisible(visible = true) {
     visible
-      ? await expect(this.createdLayer).toBeVisible()
-      : await expect(this.createdLayer).not.toBeVisible();
+      ? await expect(
+          this.createdLayer,
+          'Created layer is visible on the viewport',
+        ).toBeVisible()
+      : await expect(
+          this.createdLayer,
+          'Created layer is not visible on the viewport',
+        ).not.toBeVisible();
   }
 
   async doubleClickCreatedBoardTitleOnCanvas() {
@@ -1415,10 +1425,20 @@ exports.MainPage = class MainPage extends BasePage {
     }
   }
 
+  /**
+   * Checks whether the selection's bottom-left resize handle is shown.
+   * @param {boolean} [visible=true] Expected state.
+   */
   async isCornerHandleVisible(visible = true) {
     visible
-      ? await expect(this.cornerHandle).toBeVisible()
-      : await expect(this.cornerHandle).not.toBeVisible();
+      ? await expect(
+          this.cornerHandle,
+          'Selection corner handle is visible',
+        ).toBeVisible()
+      : await expect(
+          this.cornerHandle,
+          'Selection corner handle is not visible',
+        ).not.toBeVisible();
   }
 
   async movePointerToViewportBottomRight() {

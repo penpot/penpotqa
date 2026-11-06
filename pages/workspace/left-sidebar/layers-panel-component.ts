@@ -109,4 +109,45 @@ export class LayersPanelComponent extends BaseComponent {
       `Layer "${name}" is ${hidden ? 'hidden' : 'shown'}`,
     ).toBeAttached();
   }
+
+  /**
+   * Checks that a layer is inside another one. A collapsed parent doesn't render its
+   * children, so it is expanded first; they sit in a `children-<id>` container next
+   * to the parent's row.
+   * @param child Child layer name exactly as shown in the panel.
+   * @param parent Parent layer name exactly as shown in the panel.
+   * @param parentIcon Icon id (without the `icon-` prefix, e.g. `board`) the parent row must show, to tell apart layers with the same name; default: any.
+   */
+  async checkLayerIsChildOf(child: string, parent: string, parentIcon?: string) {
+    const parentRows = this.getLayerRow(parent);
+    const parentRow = (
+      parentIcon
+        ? parentRows.filter({ has: this.page.getByTestId(`icon-${parentIcon}`) })
+        : parentRows
+    ).first();
+    const toggle = parentRow.getByTestId('toggle-content');
+    await toggle.waitFor({ state: 'visible' });
+    if ((await toggle.getAttribute('aria-expanded')) !== 'true') {
+      await toggle.click();
+    }
+    const parentId = await parentRow.getAttribute('id');
+    await expect(
+      this.root
+        .getByTestId(`children-${parentId}`)
+        .getByTestId('layer-row')
+        .filter({ has: this.page.getByText(child, { exact: true }) }),
+      `Layer "${child}" is inside "${parent}"`,
+    ).not.toHaveCount(0);
+  }
+
+  /**
+   * Checks how many layer rows are selected in the panel (rows are checkboxes with `aria-checked`).
+   * @param count Expected number of selected rows.
+   */
+  async checkSelectedLayersCount(count: number) {
+    await expect(
+      this.layerRows.and(this.page.getByRole('checkbox', { checked: true })),
+      `${count} layer(s) are selected in the layers panel`,
+    ).toHaveCount(count);
+  }
 }
