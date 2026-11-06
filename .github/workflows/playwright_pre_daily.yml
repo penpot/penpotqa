@@ -33,7 +33,6 @@ jobs:
           QASE_MODE: ${{ vars.QASE_MODE }}
           QASE_PROJECT_CODE: ${{ secrets.QASE_PROJECT_CODE }}
           BASE_URL: ${{ secrets.BASE_URL }}
-          LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
           LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
           SSO_LOGIN_EMAIL: ${{ secrets.SSO_LOGIN_EMAIL }}
           SSO_LOGIN_PWD: ${{ secrets.SSO_LOGIN_PWD }}
@@ -135,7 +134,6 @@ jobs:
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           LICENSES_MANAGER_URL: ${{ secrets.LICENSES_MANAGER_URL }}
-          LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
           LOGIN_PWD: ${{ secrets.LOGIN_PWD }}
           REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
           CLIENT_ID: ${{ secrets.CLIENT_ID }}

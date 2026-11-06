@@ -51,9 +51,6 @@ npm-debug.log*
 /playwright/.cache/
 .playwright-cli/
 
-# Playwright test run state
-.test-run-id
-
 # Test results
 /test-results/
 testResults.json

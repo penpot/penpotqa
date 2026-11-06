@@ -9,9 +9,17 @@ import { createDemoUser, type DemoUserOptions } from './create-demo-user';
  * so both stay in sync. Returns the demo profile's email + password.
  */
 export async function loginAsDemoAccount(page: Page, options: DemoUserOptions = {}) {
-  const dashboardPage = new DashboardPage(page);
-
   const credentials = await createDemoUser(page.context().request, options);
+  await openDashboardAfterApiLogin(page);
+  return credentials;
+}
+
+/**
+ * Opens the dashboard of an account already logged in via the API (session
+ * cookie in the page's context), past the cookie banner and onboarding popups.
+ */
+export async function openDashboardAfterApiLogin(page: Page) {
+  const dashboardPage = new DashboardPage(page);
 
   await page.goto('/');
   await dashboardPage.isDashboardOpenedAfterLogin();
@@ -19,6 +27,4 @@ export async function loginAsDemoAccount(page: Page, options: DemoUserOptions = 
   await dashboardPage.isHeaderDisplayed('Personal Projects');
   await dashboardPage.skipWhatNewsPopUp();
   await dashboardPage.skipPluginsPopUp();
-
-  return credentials;
 }

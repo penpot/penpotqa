@@ -11,10 +11,8 @@ Prerequisites for local run:
 - Ubuntu 24.04 OS
 - Screen resolution 1920x1080
 - Installed Node.js v25.2.1
-- “Clear” Penpot account (without added files, projects, etc., but with a completed onboarding flow, and the account name must be 'QA Engineer').
 - The _.env_ file added to the root of the project with the following env variables:
-  - `LOGIN_EMAIL` (email from your Penpot account)
-  - `LOGIN_PWD` (password from your Penpot account)
+  - `LOGIN_PWD` (password set on the accounts that tests register)
   - `SSO_LOGIN_EMAIL` (SSO test email)
   - `SSO_LOGIN_PWD` (SSO test password)
   - `BASE_URL` (Penpot url - e.g. http://localhost:9001/ if deployed locally)
@@ -85,7 +83,7 @@ To use them, add (and uncomment) the following lines to your `.env` file:
 Notes:
 
 - The project directory is mounted as `/work` inside the container. The `node_modules` folder and the Playwright browsers are kept in separate Docker volumes (`pw-node-modules` and `pw-browsers`) so they don't mix with the host installation.
-- All other variables from `.env` (e.g. `LOGIN_EMAIL`, `LOGIN_PWD`, `BASE_URL`, etc.) are used the same way as for a local run.
+- All other variables from `.env` (e.g. `LOGIN_PWD`, `BASE_URL`, etc.) are used the same way as for a local run.
 - **Whenever `@playwright/test` is updated, the `PLAYWRIGHT_DOCKER_TAG` default in `docker-compose.yml` must also be updated** to match the new version (e.g. if upgrading to `1.52.0`, set the tag to `v1.52.0-noble`). The resolved version can be checked in `package-lock.json`.
 
 **5. Test run - additional settings.**
@@ -153,13 +151,13 @@ A script is available to check which test cases in Qase are non-regression:
 
 **10. Demo account fixture logic.**
 
-Some tests log in with a disposable demo Penpot account instead of the fixed `LOGIN_EMAIL` account, created directly via API (`demoAccountApiFixture` in `fixtures.ts`, backed by `helpers/demo-user.ts`). It's faster than `registerTest` since it skips both the UI registration form and the onboarding flow.
+Most tests log in with a disposable demo Penpot account, created directly via API (`demoAccountApiFixture` in `fixtures.ts`, backed by `helpers/accounts/create-demo-user.ts`). It's faster than `registerTest` since it skips both the UI registration form and the onboarding flow.
 
 - `createDemoUser()` calls the `create-demo-profile` RPC (`POST /api/rpc/command/create-demo-profile?_fmt=json`) with `{ "skip-onboarding": true }`. This flag marks `onboarding-viewed` and `release-notes-viewed` as already completed server-side, so the account lands straight on the dashboard instead of stepping through the onboarding questions, team-choice and release-notes modals.
 - The RPC returns a backend-generated `email`/`password` pair. The helper then logs in via the `login-with-password` RPC using `page.context().request`, so Playwright stores the resulting session cookie directly in the browser context (no manual cookie handling needed).
 - Demo profile emails are always backend-generated, non-deliverable placeholders (`demo-<uuid>@demo.example.com`) — there's no parameter to set a real, readable email address. **Only use the demo account for tests that don't need to read email sent to it** (e.g. accepting a team invite, reading an SSO-activation notice). For those cases, use `registerTest` or the existing Gmail-alias pattern instead (a `GMAIL_NAME+role+unique@GMAIL_DOMAIN` address via `helpers/teams/invite-email.ts`, read with `helpers/gmail.js`).
 - Demo profiles are gated server-side by Penpot's `:demo-users` config flag and are flagged `is-demo: true` in the database.
-- Cleanup is automatic: demo profiles, and anything solely owned by them (teams, files, etc.), are purged after the server's configured deletion delay (7 days in our test environments), so `tests/global.teardown.ts`-style cleanup isn't needed for demo-account data. Penpot's `create-demo-profile` RPC also accepts an optional `expires-in` duration (between 5 minutes and the configured global deletion delay) to request a shorter TTL than the global delay, e.g.:
+- Cleanup is automatic: demo profiles, and anything solely owned by them (teams, files, etc.), are purged after the server's configured deletion delay (7 days in our test environments), so the suite has no global teardown. Penpot's `create-demo-profile` RPC also accepts an optional `expires-in` duration (between 5 minutes and the configured global deletion delay) to request a shorter TTL than the global delay, e.g.:
 
   ```
   { 'skip-onboarding': true, 'expires-in': '10m' }
@@ -170,8 +168,7 @@ Some tests log in with a disposable demo Penpot account instead of the fixed `LO
 On _Settings > Environments_ page 2 environments were created: _PRE_ and _PRO_.
 For each environment the appropriate secrets were added:
 
-- _LOGIN_EMAIL_ (email from your Penpot account, which is used for tests)
-- _LOGIN_PWD_ (password from your Penpot account, which is used for tests)
+- _LOGIN_PWD_ (password set on the accounts that tests register)
 - _SSO_LOGIN_EMAIL_ (SSO test email)
 - _SSO_LOGIN_PWD_ (SSO test password)
 - _BASE_URL_ (Penpot url)
