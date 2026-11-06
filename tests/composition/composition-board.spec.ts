@@ -1,6 +1,8 @@
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import { type LayersPanelComponent } from '@pages/workspace/left-sidebar/layers-panel-component';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { WorkspacePage } from '@pages/workspace/workspace-page';
 import { expect } from '@playwright/test';
 import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
@@ -8,6 +10,7 @@ import { qase } from 'playwright-qase-reporter/playwright';
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
 let colorPalettePage: ColorPalettePage;
+let layersPanel: LayersPanelComponent;
 
 // The header snapshots need the Share button, hidden in the personal team
 demoAccountFileTest.use({ inNewTeam: true });
@@ -16,16 +19,28 @@ demoAccountFileTest.beforeEach(async ({ page }) => {
   colorPalettePage = new ColorPalettePage(page);
   designPanelPage = new DesignPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
+  layersPanel = new WorkspacePage(page).leftSidebar.layers;
 });
 
 demoAccountFileTest(qase([216], 'Change color background'), async ({ mainPage }) => {
-  await designPanelPage.clickCanvasBackgroundColorIcon();
-  await colorPalettePage.setHex('#304d6a');
-  await mainPage.clickViewportTwice();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.viewport).toHaveScreenshot('color-background.png', {
-    mask: mainPage.maskViewport(),
-  });
+  await demoAccountFileTest.step(
+    'Change the canvas background color from the Design tab',
+    async () => {
+      await designPanelPage.clickCanvasBackgroundColorIcon();
+      await colorPalettePage.setHex('#304d6a');
+      await mainPage.clickViewportTwice();
+      await mainPage.waitForChangeIsSaved();
+    },
+  );
+
+  await demoAccountFileTest.step(
+    'Verify the canvas background color is changed',
+    async () => {
+      await expect(mainPage.viewport).toHaveScreenshot('color-background.png', {
+        mask: mainPage.maskViewport(),
+      });
+    },
+  );
 });
 
 demoAccountFileTest.describe(() => {
@@ -37,16 +52,6 @@ demoAccountFileTest.describe(() => {
   });
 
   demoAccountFileTest(
-    qase([217], 'Create board without a default size preset (Toolbar)'),
-    async ({ mainPage }) => {
-      await mainPage.isCreatedLayerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('board.png', {
-        mask: mainPage.maskViewport(),
-      });
-    },
-  );
-
-  demoAccountFileTest(
     qase(
       [219],
       'Rename board on the Layers Panel (by double clicking) with valid name',
@@ -54,20 +59,43 @@ demoAccountFileTest.describe(() => {
     async ({ mainPage }) => {
       const newName = 'New test board';
       const renamedName = 'renamed board';
-      // Rename board by double clicking on the board
-      await mainPage.doubleClickCreatedBoardTitleOnCanvas();
-      await mainPage.typeNameShapeLabelAndEnter(newName);
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isBoardNameDisplayed(newName);
-      // Rename board by double clicking on the board layer
-      await layersPanelPage.doubleClickLayerOnLayersTab(newName);
-      await layersPanelPage.typeNameCreatedLayerAndClickOnViewport(
-        renamedName,
-        900,
-        100,
+
+      await demoAccountFileTest.step(
+        'Rename the board by double clicking its name on the viewport',
+        async () => {
+          await mainPage.doubleClickCreatedBoardTitleOnCanvas();
+          await mainPage.typeNameShapeLabelAndEnter(newName);
+          await mainPage.waitForChangeIsSaved();
+          await layersPanelPage.isBoardNameDisplayed(newName);
+        },
       );
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isBoardNameDisplayed(renamedName);
+
+      await demoAccountFileTest.step(
+        'Rename the board by double clicking it on the Layers panel',
+        async () => {
+          await layersPanelPage.doubleClickLayerOnLayersTab(newName);
+          await layersPanelPage.typeNameCreatedLayerAndClickOnViewport(
+            renamedName,
+            900,
+            100,
+          );
+          await mainPage.waitForChangeIsSaved();
+          await layersPanelPage.isBoardNameDisplayed(renamedName);
+        },
+      );
+
+      await demoAccountFileTest.step(
+        "Lock the board and verify it can't be renamed",
+        async () => {
+          // A locked layer can't be renamed (penpot/penpot#5845)
+          await layersPanel.toggleLayerLock(renamedName);
+          await mainPage.waitForChangeIsSaved();
+          await layersPanel.checkLayerLocked(renamedName);
+          await layersPanelPage.doubleClickLayerOnLayersTab(renamedName);
+          await layersPanel.checkLayerNameInputVisible(false);
+          await layersPanelPage.isBoardNameDisplayed(renamedName);
+        },
+      );
     },
   );
 
@@ -78,91 +106,114 @@ demoAccountFileTest.describe(() => {
     ),
     async ({ mainPage }) => {
       const defaultBoardName = 'Board';
-      await mainPage.doubleClickCreatedBoardTitleOnCanvas();
-      await layersPanelPage.clickOnBackspaceAndEnter();
-      await layersPanelPage.isBoardNameDisplayed(defaultBoardName);
+
+      await demoAccountFileTest.step(
+        'Clear the board name on the viewport and press Enter',
+        async () => {
+          await mainPage.doubleClickCreatedBoardTitleOnCanvas();
+          await layersPanelPage.clickOnBackspaceAndEnter();
+        },
+      );
+
+      await demoAccountFileTest.step('Verify the board is not renamed', async () => {
+        await layersPanelPage.isBoardNameDisplayed(defaultBoardName);
+      });
     },
   );
 
   demoAccountFileTest(
     qase([229], 'Add, edit and delete Stroke to board'),
     async ({ mainPage }) => {
-      await designPanelPage.clickAddStrokeButton();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('board-stroke-default.png', {
-        mask: mainPage.maskViewport(),
+      await demoAccountFileTest.step('Add a stroke to the board', async () => {
+        await designPanelPage.clickAddStrokeButton();
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.waitForResizeHandlerVisible();
+        await expect(mainPage.viewport).toHaveScreenshot(
+          'board-stroke-default.png',
+          {
+            mask: mainPage.maskViewport(),
+          },
+        );
       });
-      await mainPage.clickCreatedBoardTitleOnCanvas();
-      await designPanelPage.changeStrokeSettings(
-        '#43E50B',
-        '60',
-        '10',
-        'Inside',
-        'Dotted',
-      );
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'board-stroke-inside-dotted.png',
-        {
-          mask: mainPage.maskViewport(),
+
+      await demoAccountFileTest.step(
+        'Change the stroke color, opacity, width, position and style',
+        async () => {
+          await mainPage.clickCreatedBoardTitleOnCanvas();
+          await designPanelPage.changeStrokeSettings(
+            '#43E50B',
+            '60',
+            '10',
+            'Inside',
+            'Dotted',
+          );
+          await mainPage.waitForChangeIsSaved();
+          await mainPage.waitForResizeHandlerVisible();
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'board-stroke-inside-dotted.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
+          await mainPage.clickCreatedBoardTitleOnCanvas();
+          await designPanelPage.changeStrokeSettings(
+            '#F5358F',
+            '80',
+            '5',
+            'Outside',
+            'Dashed',
+          );
+          await mainPage.waitForChangeIsSaved();
+          await mainPage.waitForResizeHandlerVisible();
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'board-stroke-outside-dashed.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
+          await mainPage.clickCreatedBoardTitleOnCanvas();
+          await designPanelPage.changeStrokeSettings(
+            '#F5358F',
+            '100',
+            '3',
+            'Center',
+            'Solid',
+          );
+          await mainPage.waitForChangeIsSaved();
+          await mainPage.waitForResizeHandlerVisible();
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'board-stroke-center-solid.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
+          await mainPage.clickCreatedBoardTitleOnCanvas();
+          await designPanelPage.changeStrokeSettings(
+            '#F5358F',
+            '40',
+            '4',
+            'Center',
+            'Mixed',
+          );
+          await mainPage.waitForChangeIsSaved();
+          await mainPage.waitForResizeHandlerVisible();
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'board-stroke-center-mixed.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
         },
       );
-      await mainPage.clickCreatedBoardTitleOnCanvas();
-      await designPanelPage.changeStrokeSettings(
-        '#F5358F',
-        '80',
-        '5',
-        'Outside',
-        'Dashed',
-      );
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'board-stroke-outside-dashed.png',
-        {
+
+      await demoAccountFileTest.step('Remove the stroke', async () => {
+        await mainPage.clickCreatedBoardTitleOnCanvas();
+        await designPanelPage.removeStroke();
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.waitForResizeHandlerVisible();
+        await expect(mainPage.viewport).toHaveScreenshot('board-stroke-remove.png', {
           mask: mainPage.maskViewport(),
-        },
-      );
-      await mainPage.clickCreatedBoardTitleOnCanvas();
-      await designPanelPage.changeStrokeSettings(
-        '#F5358F',
-        '100',
-        '3',
-        'Center',
-        'Solid',
-      );
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'board-stroke-center-solid.png',
-        {
-          mask: mainPage.maskViewport(),
-        },
-      );
-      await mainPage.clickCreatedBoardTitleOnCanvas();
-      await designPanelPage.changeStrokeSettings(
-        '#F5358F',
-        '40',
-        '4',
-        'Center',
-        'Mixed',
-      );
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'board-stroke-center-mixed.png',
-        {
-          mask: mainPage.maskViewport(),
-        },
-      );
-      await mainPage.clickCreatedBoardTitleOnCanvas();
-      await designPanelPage.removeStroke();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.waitForResizeHandlerVisible();
-      await expect(mainPage.viewport).toHaveScreenshot('board-stroke-remove.png', {
-        mask: mainPage.maskViewport(),
+        });
       });
     },
   );
@@ -170,33 +221,63 @@ demoAccountFileTest.describe(() => {
   demoAccountFileTest(
     qase([1756], 'Absolute positioned board moving'),
     async ({ mainPage }) => {
-      await designPanelPage.changeHeightAndWidthForLayer('400', '500');
-      await mainPage.pressFlexLayoutShortcut();
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.doubleClickLayerOnLayersTab('Board');
-      await layersPanelPage.typeNameCreatedLayerAndEnter('Main Board');
-      await mainPage.createDefaultBoardByCoordinates(200, 200);
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.changeHeightAndWidthForLayer('200', '200');
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.createDefaultEllipseByCoordinates(220, 220);
-      await layersPanelPage.dragAndDropComponentToBoard('Ellipse');
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.dragAndDropElementToElement('Board', 'Main Board');
-      await mainPage.waitForChangeIsSaved();
-      await designPanelPage.setFlexElementPositionAbsolute();
-      await mainPage.pressHideShowRulersShortcut();
-      await expect(mainPage.viewport).toHaveScreenshot('board-in-flex-board.png', {
-        mask: mainPage.maskViewport(),
-      });
-      await mainPage.clickViewportByCoordinates(300, 100, 2);
-      await layersPanelPage.selectBoardChildLayer('Board');
-      await designPanelPage.changeAxisXAndYForLayer('100', '100');
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'board-in-flex-board-moved.png',
-        {
-          mask: mainPage.maskViewport(),
+      await demoAccountFileTest.step(
+        'Add a flex layout and verify it has no gaps or paddings',
+        async () => {
+          await designPanelPage.changeHeightAndWidthForLayer('400', '500');
+          await mainPage.pressFlexLayoutShortcut();
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkLayoutPadding('Vertical', '0');
+          await designPanelPage.checkLayoutPadding('Horizontal', '0');
+          await designPanelPage.checkRowGap('0');
+          await designPanelPage.checkColumnGap('0');
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Move a board with an ellipse into the flex layout board',
+        async () => {
+          await layersPanelPage.doubleClickLayerOnLayersTab('Board');
+          await layersPanelPage.typeNameCreatedLayerAndEnter('Main Board');
+          await mainPage.createDefaultBoardByCoordinates(200, 200);
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.changeHeightAndWidthForLayer('200', '200');
+          await mainPage.waitForChangeIsSaved();
+          await mainPage.createDefaultEllipseByCoordinates(220, 220);
+          await layersPanelPage.dragAndDropComponentToBoard('Ellipse');
+          await mainPage.waitForChangeIsSaved();
+          await layersPanelPage.dragAndDropElementToElement('Board', 'Main Board');
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Set the inner board position to absolute',
+        async () => {
+          await designPanelPage.setFlexElementPositionAbsolute();
+          await mainPage.pressHideShowRulersShortcut();
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'board-in-flex-board.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Move the absolute board and verify its content moves with it',
+        async () => {
+          await mainPage.clickViewportByCoordinates(300, 100, 2);
+          await layersPanelPage.selectBoardChildLayer('Board');
+          await designPanelPage.changeAxisXAndYForLayer('100', '100');
+          await mainPage.waitForChangeIsSaved();
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'board-in-flex-board-moved.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
         },
       );
     },
@@ -307,8 +388,13 @@ demoAccountFileTest.describe(() => {
         'Plugin icon400 x 400',
         'Plugin cover1390 x 724',
       ];
-      await mainPage.isCreatedLayerVisible();
-      await designPanelPage.checkSizePresetsOptions(sizePresetsOptions);
+      await demoAccountFileTest.step(
+        'Open the Size presets dropdown and verify its options',
+        async () => {
+          await mainPage.isCreatedLayerVisible();
+          await designPanelPage.checkSizePresetsOptions(sizePresetsOptions);
+        },
+      );
 
       await demoAccountFileTest.step('Select iPhone 13/14 preset', async () => {
         await designPanelPage.selectSizePresetsOption('iPhone 13/14 ');
@@ -331,6 +417,7 @@ demoAccountFileTest.describe(() => {
         await designPanelPage.checkSizeHeight('1024');
         await designPanelPage.clickOnHorizontalOrientationButton();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isHorizontalOrientationButtonChecked();
         await designPanelPage.checkSizeWidth('1024');
         await designPanelPage.checkSizeHeight('768');
       });
@@ -343,6 +430,7 @@ demoAccountFileTest.describe(() => {
         await designPanelPage.checkSizeHeight('640');
         await designPanelPage.clickOnHorizontalOrientationButton();
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isHorizontalOrientationButtonChecked();
         await designPanelPage.checkSizeWidth('640');
         await designPanelPage.checkSizeHeight('360');
       });
@@ -471,87 +559,151 @@ demoAccountFileTest.describe(() => {
     async ({ mainPage }) => {
       const board1 = 'Board #1';
       const board2 = 'Board #2';
-      await layersPanelPage.doubleClickLayerIconOnLayersTab(board1);
-      await expect(mainPage.viewport).toHaveScreenshot('board-first-zoom.png', {
-        mask: mainPage.maskViewport(),
-      });
-      await layersPanelPage.doubleClickLayerIconOnLayersTab(board2);
-      await expect(mainPage.viewport).toHaveScreenshot('board-second-zoom.png', {
-        mask: mainPage.maskViewport(),
-      });
+
+      await demoAccountFileTest.step(
+        'Zoom to the first board by double clicking its icon on the Layers panel',
+        async () => {
+          await layersPanelPage.doubleClickLayerIconOnLayersTab(board1);
+          await expect(mainPage.viewport).toHaveScreenshot('board-first-zoom.png', {
+            mask: mainPage.maskViewport(),
+          });
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Zoom to the second board by double clicking its icon on the Layers panel',
+        async () => {
+          await layersPanelPage.doubleClickLayerIconOnLayersTab(board2);
+          await expect(mainPage.viewport).toHaveScreenshot('board-second-zoom.png', {
+            mask: mainPage.maskViewport(),
+          });
+        },
+      );
     },
   );
 
   demoAccountFileTest(
     qase([249], 'Hide and show board (From rightclick and icons)'),
-    async ({ page, mainPage }) => {
+    async ({ mainPage }) => {
       const board1 = 'Board #1';
       const board2 = 'Board #2';
-      await layersPanelPage.hideUnhideLayerByIconOnLayersTab(board1);
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('board-first-hide.png', {
-        mask: mainPage.maskViewport(),
-      });
-      await mainPage.hideLayerViaRightClickOnLayersTab(board2);
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('board-second-hide.png', {
-        mask: mainPage.maskViewport(),
-      });
-      await layersPanelPage.unHideLayerViaRightClickOnLayersTab(board1);
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('board-first-show.png', {
-        mask: mainPage.maskViewport(),
-      });
-      await layersPanelPage.hideUnhideLayerByIconOnLayersTab(board2, false);
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot('board-second-show.png', {
-        mask: mainPage.maskViewport(),
-      });
+
+      await demoAccountFileTest.step(
+        'Hide the first board with its eye icon on the Layers panel',
+        async () => {
+          await layersPanelPage.hideUnhideLayerByIconOnLayersTab(board1);
+          await mainPage.waitForChangeIsUnsaved();
+          await mainPage.waitForChangeIsSaved();
+          await layersPanel.checkLayerHidden(board1);
+          await expect(mainPage.viewport).toHaveScreenshot('board-first-hide.png', {
+            mask: mainPage.maskViewport(),
+          });
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Hide the second board from its right-click menu on the Layers panel',
+        async () => {
+          await mainPage.hideLayerViaRightClickOnLayersTab(board2);
+          await mainPage.waitForChangeIsUnsaved();
+          await mainPage.waitForChangeIsSaved();
+          await layersPanel.checkLayerHidden(board2);
+          await expect(mainPage.viewport).toHaveScreenshot('board-second-hide.png', {
+            mask: mainPage.maskViewport(),
+          });
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Show the first board from its right-click menu on the Layers panel',
+        async () => {
+          await layersPanelPage.unHideLayerViaRightClickOnLayersTab(board1);
+          await mainPage.waitForChangeIsUnsaved();
+          await mainPage.waitForChangeIsSaved();
+          await layersPanel.checkLayerHidden(board1, false);
+          await expect(mainPage.viewport).toHaveScreenshot('board-first-show.png', {
+            mask: mainPage.maskViewport(),
+          });
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Show the second board with its eye icon on the Layers panel',
+        async () => {
+          await layersPanelPage.hideUnhideLayerByIconOnLayersTab(board2, false);
+          await mainPage.waitForChangeIsUnsaved();
+          await mainPage.waitForChangeIsSaved();
+          await layersPanel.checkLayerHidden(board2, false);
+          await expect(mainPage.viewport).toHaveScreenshot('board-second-show.png', {
+            mask: mainPage.maskViewport(),
+          });
+        },
+      );
     },
   );
 
   demoAccountFileTest(
     qase([268], "Click 'Focus on' board from right click"),
-    async ({ page, mainPage }) => {
+    async ({ mainPage }) => {
       const board1 = 'Board #1';
       const board2 = 'Board #2';
-      await mainPage.focusBoardViaRightClickOnCanvas(board2);
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isLayerPresentOnLayersTab(board1, false);
-      await layersPanelPage.isLayerPresentOnLayersTab(board2, true);
-      await layersPanelPage.isFocusModeOn();
-      await mainPage.waitForChangeIsSaved();
-      await expect(page).toHaveScreenshot('board-second-focus-on.png', {
-        mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
-      });
-      await layersPanelPage.clickOnFocusModeLabel();
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isLayerPresentOnLayersTab(board1, true);
-      await layersPanelPage.isLayerPresentOnLayersTab(board2, true);
-      await layersPanelPage.isFocusModeOff();
-      await expect(page).toHaveScreenshot('board-second-focus-off.png', {
-        mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
-      });
-      await mainPage.focusLayerViaRightClickOnLayersTab(board1);
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isLayerPresentOnLayersTab(board1, true);
-      await layersPanelPage.isLayerPresentOnLayersTab(board2, false);
-      await layersPanelPage.isFocusModeOn();
-      await expect(page).toHaveScreenshot('board-first-focus-on.png', {
-        mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
-      });
-      await layersPanelPage.clickOnFocusModeLabel();
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.isLayerPresentOnLayersTab(board1, true);
-      await layersPanelPage.isLayerPresentOnLayersTab(board2, true);
-      await layersPanelPage.isFocusModeOff();
-      await expect(page).toHaveScreenshot('board-first-focus-off.png', {
-        mask: [mainPage.guides, mainPage.usersSection, mainPage.zoomButton],
-      });
+
+      await demoAccountFileTest.step(
+        'Focus on the second board from its right-click menu on the viewport',
+        async () => {
+          await mainPage.focusBoardViaRightClickOnCanvas(board2);
+          await mainPage.waitForChangeIsSaved();
+          await layersPanelPage.isLayerPresentOnLayersTab(board1, false);
+          await layersPanelPage.isLayerPresentOnLayersTab(board2, true);
+          await layersPanelPage.isFocusModeOn();
+          await mainPage.waitForChangeIsSaved();
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'board-second-focus-on.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Exit focus mode from the Focus mode label',
+        async () => {
+          await layersPanelPage.clickOnFocusModeLabel();
+          await mainPage.waitForChangeIsSaved();
+          await layersPanelPage.isLayerPresentOnLayersTab(board1, true);
+          await layersPanelPage.isLayerPresentOnLayersTab(board2, true);
+          await layersPanelPage.isFocusModeOff();
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Focus on the first board from its right-click menu on the Layers panel',
+        async () => {
+          await mainPage.focusLayerViaRightClickOnLayersTab(board1);
+          await mainPage.waitForChangeIsSaved();
+          await layersPanelPage.isLayerPresentOnLayersTab(board1, true);
+          await layersPanelPage.isLayerPresentOnLayersTab(board2, false);
+          await layersPanelPage.isFocusModeOn();
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'board-first-focus-on.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Exit focus mode and verify both boards are back on the Layers panel',
+        async () => {
+          await layersPanelPage.clickOnFocusModeLabel();
+          await mainPage.waitForChangeIsSaved();
+          await layersPanelPage.isLayerPresentOnLayersTab(board1, true);
+          await layersPanelPage.isLayerPresentOnLayersTab(board2, true);
+          await layersPanelPage.isFocusModeOff();
+        },
+      );
     },
   );
 
@@ -577,7 +729,7 @@ demoAccountFileTest.describe(() => {
           const board1 = 'Board #1';
           await mainPage.duplicateLayerViaRightClickOnCanvas(board1);
           await mainPage.waitForChangeIsSaved();
-          await expect(layersPanelPage.sidebarLayerItem).toHaveCount(4);
+          await layersPanelPage.isVisibleLayersCount(4);
         },
       );
 
@@ -587,7 +739,7 @@ demoAccountFileTest.describe(() => {
           const board2 = 'Board #2';
           await mainPage.duplicateLayerViaLayersTab(board2);
           await mainPage.waitForChangeIsSaved();
-          await expect(layersPanelPage.sidebarLayerItem).toHaveCount(5);
+          await layersPanelPage.isVisibleLayersCount(5);
         },
       );
 
@@ -598,7 +750,7 @@ demoAccountFileTest.describe(() => {
           await layersPanelPage.selectLayerByName(board3);
           await mainPage.clickShortcutCtrlD();
           await mainPage.waitForChangeIsSaved();
-          await expect(layersPanelPage.sidebarLayerItem).toHaveCount(6);
+          await layersPanelPage.isVisibleLayersCount(6);
         },
       );
     },
@@ -641,21 +793,38 @@ demoAccountFileTest.describe(() => {
     await mainPage.createDefaultBoardByCoordinates(200, 200);
     await designPanelPage.changeHeightAndWidthForLayer('600', '600');
     await mainPage.waitForChangeIsSaved();
-    await mainPage.createDefaultEllipseByCoordinates(210, 210, true);
   });
 
   demoAccountFileTest(
     qase([2040], 'Resize board to fit 2 elements'),
     async ({ mainPage }) => {
-      await mainPage.createDefaultRectangleByCoordinates(320, 210, true);
-      await mainPage.clickViewportOnce();
-      await mainPage.clickCreatedBoardTitleOnCanvas();
-      await designPanelPage.clickOnResizeBoardToFitButton();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'resize-board-to-fit-2-elements.png',
-        {
-          mask: mainPage.maskViewport(),
+      await demoAccountFileTest.step(
+        'Create an ellipse and a rectangle inside the board',
+        async () => {
+          await mainPage.createDefaultEllipseByCoordinates(210, 210, true);
+          await mainPage.createDefaultRectangleByCoordinates(320, 210, true);
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Select the board and click Resize to fit content',
+        async () => {
+          await mainPage.clickViewportOnce();
+          await mainPage.clickCreatedBoardTitleOnCanvas();
+          await designPanelPage.clickOnResizeBoardToFitButton();
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Verify the board fits the ellipse and the rectangle',
+        async () => {
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'resize-board-to-fit-2-elements.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
         },
       );
     },
@@ -667,20 +836,66 @@ demoAccountFileTest.describe(() => {
       'Resize board to fit content that goes partially outside of the board',
     ),
     async ({ mainPage }) => {
-      await mainPage.createDefaultRectangleByCoordinates(180, 350, true);
-      await mainPage.clickViewportOnce();
-      await mainPage.clickCreatedBoardTitleOnCanvas();
-      await designPanelPage.clickOnResizeBoardToFitButton();
-      await mainPage.waitForChangeIsSaved();
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'resize-board-to-fit-partially-outside.png',
-        {
-          mask: mainPage.maskViewport(),
+      await demoAccountFileTest.step(
+        'Create a rectangle partially outside the board',
+        async () => {
+          await mainPage.createDefaultRectangleByCoordinates(180, 350, true);
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Select the board and click Resize to fit content',
+        async () => {
+          await mainPage.clickViewportOnce();
+          await mainPage.clickCreatedBoardTitleOnCanvas();
+          await designPanelPage.clickOnResizeBoardToFitButton();
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Verify the board fits the rectangle',
+        async () => {
+          await designPanelPage.checkSizeWidth('100');
+          await designPanelPage.checkSizeHeight('100');
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'resize-board-to-fit-partially-outside.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
         },
       );
     },
   );
 });
+
+demoAccountFileTest(
+  qase([217], 'Create board without a default size preset (Toolbar)'),
+  async ({ mainPage }) => {
+    await demoAccountFileTest.step(
+      'Click the Board tool and verify Size presets dropdown appears',
+      async () => {
+        await mainPage.clickCreateBoardButton();
+        await designPanelPage.checkSizePresetsDropdownVisible();
+      },
+    );
+
+    await demoAccountFileTest.step(
+      'Click on canvas and verify board with default size is created',
+      async () => {
+        await mainPage.clickViewportTwice();
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.isCreatedLayerVisible();
+        await designPanelPage.checkSizeWidth('100');
+        await designPanelPage.checkSizeHeight('100');
+        await expect(mainPage.viewport).toHaveScreenshot('board.png', {
+          mask: mainPage.maskViewport(),
+        });
+      },
+    );
+  },
+);
 
 demoAccountFileTest(
   qase([218], 'Create a board without a default size preset (Shortcut B)'),
@@ -712,13 +927,15 @@ demoAccountFileTest(
     'Create board with a default size preset allow to change frame orientation (Toolbar)',
   ),
   async ({ mainPage }) => {
-    await mainPage.clickCreateBoardButton();
-
     await demoAccountFileTest.step(
-      'Select Expanded preset and change to vertical orientation',
+      '2390 Create a board with a landscape preset switched to portrait',
       async () => {
+        await mainPage.clickCreateBoardButton();
+        await designPanelPage.checkSizePresetsDropdownVisible();
         await designPanelPage.selectSizePresetsOption('Expanded');
+        await designPanelPage.isHorizontalOrientationButtonChecked();
         await designPanelPage.clickOnVerticalOrientationButton();
+        await designPanelPage.isVerticalOrientationButtonChecked();
         await mainPage.clickViewportByCoordinates(100, 150);
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.isVerticalOrientationButtonChecked();
@@ -728,25 +945,28 @@ demoAccountFileTest(
     );
 
     await demoAccountFileTest.step(
-      'Select iPhone 16 preset and change to horizontal orientation',
+      '2390 Create a board with a portrait preset switched to landscape',
       async () => {
+        await mainPage.clickCreateBoardButton();
+        await designPanelPage.checkSizePresetsDropdownVisible();
         await designPanelPage.selectSizePresetsOption('iPhone 16 ');
-        await mainPage.waitForChangeIsSaved();
         await designPanelPage.isVerticalOrientationButtonChecked();
-        await designPanelPage.checkSizeWidth('393');
-        await designPanelPage.checkSizeHeight('852');
         await designPanelPage.clickOnHorizontalOrientationButton();
+        await designPanelPage.isHorizontalOrientationButtonChecked();
+        await mainPage.clickViewportByCoordinates(1000, 150);
         await mainPage.waitForChangeIsSaved();
         await designPanelPage.isHorizontalOrientationButtonChecked();
         await designPanelPage.checkSizeWidth('852');
         await designPanelPage.checkSizeHeight('393');
+        await layersPanelPage.isVisibleLayersCount(2);
       },
     );
 
     await demoAccountFileTest.step(
-      'Change to custom dimensions after preset',
+      '2389 Resize the board to custom dimensions',
       async () => {
         await designPanelPage.changeHeightAndWidthForLayer('500', '750');
+        await mainPage.waitForChangeIsSaved();
         await designPanelPage.checkSizeWidth('750');
         await designPanelPage.checkSizeHeight('500');
       },

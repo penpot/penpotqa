@@ -201,9 +201,79 @@ export class PathEditorPage extends ToolbarPage {
     ).toHaveCount(0);
   }
 
+  /**
+   * Checks whether a path toolbar button is toggled (the active mode or toggle).
+   * @param button The toolbar button, e.g. `nodePanelMoveNodesButton`.
+   * @param toggled Expected state; `true` (default) = toggled, `false` = not toggled.
+   */
   async isToolbarButtonToggled(button: Locator, toggled = true) {
     toggled
-      ? await expect(button).toHaveClass(/is-toggled/)
-      : await expect(button).not.toHaveClass(/is-toggled/);
+      ? await expect(button, 'Path toolbar button should be toggled').toHaveClass(
+          /is-toggled/,
+        )
+      : await expect(
+          button,
+          'Path toolbar button should not be toggled',
+        ).not.toHaveClass(/is-toggled/);
+  }
+
+  /**
+   * Checks the path toolbar (the bar with Draw/Move nodes and the node actions)
+   * is shown or hidden.
+   * @param visible Expected state; `true` (default) = shown, `false` = hidden.
+   */
+  async checkPathToolbarVisible(visible = true) {
+    visible
+      ? await expect(
+          this.pathActionsBlock,
+          'Path toolbar should be visible',
+        ).toBeVisible()
+      : await expect(
+          this.pathActionsBlock,
+          'Path toolbar should be hidden',
+        ).toBeHidden();
+  }
+
+  /**
+   * Checks an action button is shown or hidden in the path toolbar.
+   * @param action The toolbar action (see `PathToolbarAction`).
+   * @param visible Expected state; `true` (default) = shown, `false` = hidden.
+   */
+  async checkToolbarButtonVisible(action: PathToolbarActionName, visible = true) {
+    const button = this.getToolbarButton(action);
+    visible
+      ? await expect(
+          button,
+          `"${action}" should be visible in the path toolbar`,
+        ).toBeVisible()
+      : await expect(
+          button,
+          `"${action}" should be hidden in the path toolbar`,
+        ).toBeHidden();
+  }
+
+  /**
+   * Checks the "Handler behaviour" control (Equal/Aligned/Independent) is shown or
+   * hidden in the path toolbar; it only applies to curve nodes.
+   * @param visible Expected state; `true` (default) = shown, `false` = hidden.
+   */
+  async checkHandlerBehaviourVisible(visible = true) {
+    await this.checkToolbarButtonVisible(
+      PathToolbarAction.HandlerBehaviour,
+      visible,
+    );
+  }
+
+  /**
+   * Checks the Path tool is the active drawing tool: its toolbar button is
+   * pressed. Penpot hides the toolbar while the path tool is active, so the button
+   * is out of the accessibility tree and is found by its `data-tool` instead.
+   * `isShapeToolActive` only covers the shapes group, not the path/curve one.
+   */
+  async checkPathToolActive() {
+    await expect(
+      this.page.locator('button[data-tool="path"][aria-haspopup="true"]'),
+      'Path tool should be the active tool in the toolbar',
+    ).toHaveAttribute('aria-pressed', 'true');
   }
 }

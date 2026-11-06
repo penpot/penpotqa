@@ -1,15 +1,22 @@
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import {
+  BlurSectionComponent,
+  BlurType,
+} from '@pages/workspace/right-sidebar/design-tab/blur-section-component';
+import { WorkspacePage } from '@pages/workspace/workspace-page';
 import { expect } from '@playwright/test';
 import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
+let blur: BlurSectionComponent;
 
 demoAccountFileTest.beforeEach(async ({ page }) => {
   layersPanelPage = new LayersPanelPage(page);
   designPanelPage = new DesignPanelPage(page);
+  blur = new WorkspacePage(page).rightSidebar.design.blur;
 });
 
 demoAccountFileTest.describe(() => {
@@ -25,8 +32,8 @@ demoAccountFileTest.describe(() => {
         await demoAccountFileTest.step(
           'Add a background blur to the ellipse',
           async () => {
-            await designPanelPage.clickAddBlurButton();
-            await designPanelPage.selectTypeForBlurEffects('Background blur');
+            await blur.addBlur();
+            await blur.selectBlurType(BlurType.Background);
             await mainPage.waitForChangeIsSaved();
           },
         );

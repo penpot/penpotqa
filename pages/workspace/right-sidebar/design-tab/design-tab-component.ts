@@ -4,11 +4,20 @@ import {
   ExportSectionComponent,
   getExportSectionRoot,
 } from '@pages/components/export-section-component';
+import { BlurSectionComponent } from '@pages/workspace/right-sidebar/design-tab/blur-section-component';
+import { GridCellSectionComponent } from '@pages/workspace/right-sidebar/design-tab/grid-cell-section-component';
+import { LayoutContainerSectionComponent } from '@pages/workspace/right-sidebar/design-tab/layout-container-section-component';
+import { LayoutItemSectionComponent } from '@pages/workspace/right-sidebar/design-tab/layout-item-section-component';
 import { StrokeSectionComponent } from '@pages/workspace/right-sidebar/design-tab/stroke-section-component';
 
 export class DesignTabComponent extends BaseComponent {
   readonly stroke: StrokeSectionComponent;
+  readonly blur: BlurSectionComponent;
+  readonly layoutContainer: LayoutContainerSectionComponent;
+  readonly layoutItem: LayoutItemSectionComponent;
+  readonly gridCell: GridCellSectionComponent;
   readonly export: ExportSectionComponent;
+  readonly gridLocateButton: Locator;
 
   constructor(page: Page, root: Locator) {
     super(page, root);
@@ -16,6 +25,35 @@ export class DesignTabComponent extends BaseComponent {
       page,
       root.getByRole('region', { name: 'Stroke' }),
     );
+    this.blur = new BlurSectionComponent(
+      page,
+      root.getByRole('region', { name: 'Blur effects', exact: true }),
+    );
+    this.layoutContainer = new LayoutContainerSectionComponent(
+      page,
+      root.getByRole('region', { name: 'Layout container section' }),
+    );
+    this.layoutItem = new LayoutItemSectionComponent(
+      page,
+      root.getByRole('region', { name: 'Layout item section' }),
+    );
+    this.gridCell = new GridCellSectionComponent(
+      page,
+      root
+        .locator('div')
+        .filter({
+          has: page.getByRole('button', { name: 'Grid cell', exact: true }),
+        })
+        .filter({ has: page.getByRole('button', { name: 'Edit grid' }) })
+        .last(),
+    );
+    // In grid edit mode the Grid layout panel replaces the Layout section and has no accessible root
+    this.gridLocateButton = root.getByRole('button', { name: 'Locate grid layout' });
     this.export = new ExportSectionComponent(page, getExportSectionRoot(root));
+  }
+
+  /** Centers the viewport on the board being edited, with the Locate button of the Grid layout panel (grid edit mode). */
+  async clickGridLocate() {
+    await this.gridLocateButton.click();
   }
 }

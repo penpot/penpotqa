@@ -155,15 +155,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.flexLayoutCollapsedIcon = page.locator(
       'div[class*="layout_container"] button:has([href="#icon-arrow-right"])',
     );
-    this.flexElementAlignStartBtn = page.getByTestId('align-self-start');
-    this.flexElementAlignCenterBtn = page.getByTestId('align-self-center');
-    this.flexElementAlignEndBtn = page.getByTestId('align-self-end');
-    this.flexElementMarginVertInput = page.getByRole('textbox', {
-      name: 'Vertical margin',
-    });
-    this.flexElementMarginHorizontalInput = page.getByRole('textbox', {
-      name: 'Horizontal margin',
-    });
     this.flexElementPositionAbsolute = page.locator(
       'label[for=":absolute-position"] span',
     );
@@ -178,14 +169,15 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.gridAddLayoutButton = page.getByRole('button', { name: 'Grid layout' });
     this.gridEditButton = page.getByRole('button', { name: 'Edit grid' });
     this.gridDoneButton = page.getByRole('button', { name: 'Done' });
+    this.gridEditExitButton = this.designTabpanel.getByRole('button', {
+      name: 'Exit',
+    });
+    this.gridTrackTitle = this.designTabpanel.locator('div[class*="track-title"]');
     this.gridLocateButton = page.getByRole('button', {
       name: 'Locate',
       exact: true,
     });
     this.gridLayoutMenu = page.locator('div[class*="grid-layout-menu"]').first();
-    this.manualButton = page.getByText('manual');
-    this.areaButton = page.getByText('area');
-    this.areaNameInput = page.getByPlaceholder('Area name');
     this.gridExpandGridColumnLengthButton = page
       .locator('div[class*="grid-track-header"] button[class*="expand-icon"]')
       .first();
@@ -201,12 +193,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.percentMenuItem = page.getByRole('option').filter({ hasText: '%' });
     this.layoutRemoveButton = page.getByRole('button', { name: 'Remove layout' });
     this.layoutAddButton = page.getByRole('button', { name: 'Add layout' });
-    this.layoutDirectRowBtn = page.getByTitle('Row', { exact: true });
-    this.layoutDirectRowReverseBtn = page.getByTitle('Row reverse', { exact: true });
-    this.layoutDirectColumnBtn = page.getByTitle('Column', { exact: true });
-    this.layoutDirectColumnReverseBtn = page.getByTitle('Column reverse', {
-      exact: true,
-    });
     this.layoutAlignStartBtn = page.getByTitle('Align items start', { exact: true });
     this.layoutAlignCenterBtn = page.getByTitle('Align items center', {
       exact: true,
@@ -282,29 +268,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'Justify items space-evenly',
       { exact: true },
     );
-
-    //Design panel - Blur section
-    this.blurSection = page.getByRole('region', {
-      name: 'Blur effects',
-      exact: true,
-    });
-    this.addBlurButton = this.blurSection.getByRole('button', { name: 'Add blur' });
-    this.blurTypeSelect = this.blurSection.getByRole('combobox', {
-      name: 'Blur type select',
-    });
-    this.blurMoreOptions = this.blurSection.locator(
-      'button[class*="blur__show-more"]',
-    );
-    this.blurValueInput = this.blurSection.getByRole('textbox');
-    this.blurHideIcon = this.blurSection.getByRole('button', {
-      name: 'Toggle blur',
-    });
-    this.blurUnhideIcon = this.blurSection.getByRole('button', {
-      name: 'Toggle blur',
-    });
-    this.blurRemoveIcon = this.blurSection.getByRole('button', {
-      name: 'Remove blur',
-    });
 
     //Design panel - Stroke section
     this.strokeSectionContainer = this.rightSidebar.getByRole('region', {
@@ -564,34 +527,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await expect(this.flexElementMenu).toBeVisible();
   }
 
-  async changeFlexElementAlignment(alignment) {
-    switch (alignment) {
-      case 'Start':
-        await this.flexElementAlignStartBtn.click();
-        break;
-      case 'Center':
-        await this.flexElementAlignCenterBtn.click();
-        break;
-      case 'End':
-        await this.flexElementAlignEndBtn.click();
-        break;
-    }
-  }
-
-  async changeFlexElementMargin(type, value) {
-    switch (type) {
-      case 'Vertical':
-        await this.flexElementMarginVertInput.clear();
-        await this.flexElementMarginVertInput.pressSequentially(value);
-        break;
-      case 'Horizontal':
-        await this.flexElementMarginHorizontalInput.clear();
-        await this.flexElementMarginHorizontalInput.pressSequentially(value);
-        break;
-    }
-    await this.clickOnEnter();
-  }
-
   async setComponentColor(color) {
     await this.componentColorInput.clear();
     await this.componentColorInput.fill(color);
@@ -703,8 +638,14 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.getColorTokenButtonByName(tokenName).click();
   }
 
+  /**
+   * Checks the hex code of the selected layer's fill.
+   * @param {string} value Expected hex code with the leading # (e.g. '#FF0000').
+   */
   async isFillHexCodeSet(value) {
-    await expect(this.fillColorInput).toHaveValue(value.slice(1));
+    await expect(this.fillColorInput, `Fill hex code is ${value}`).toHaveValue(
+      value.slice(1),
+    );
   }
 
   async isSelectedHexCode(value) {
@@ -1216,35 +1157,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.shadowRemoveIcon.click();
   }
 
-  async clickAddBlurButton() {
-    await this.blurSection.waitFor();
-    await this.addBlurButton.click();
-  }
-
-  async selectTypeForBlurEffects(type) {
-    await this.blurTypeSelect.click();
-    const typeOptionSel = this.page.getByRole('option', { name: type, exact: true });
-    await typeOptionSel.click();
-  }
-
-  async changeValueForBlur(value) {
-    await this.blurMoreOptions.click();
-    await this.blurValueInput.clear();
-    await this.blurValueInput.pressSequentially(value);
-  }
-
-  async hideBlur() {
-    await this.blurHideIcon.click();
-  }
-
-  async unhideBlur() {
-    await this.blurUnhideIcon.click();
-  }
-
-  async removeBlur() {
-    await this.blurRemoveIcon.click();
-  }
-
   async changeTextCase(value) {
     switch (value) {
       case 'Upper':
@@ -1461,6 +1373,32 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
   async openGridEditModeFromDesignPanel() {
     await this.gridEditButton.click();
   }
+
+  /**
+   * Checks the Design tab in grid edit mode: the Exit button and the column and
+   * row tracks with their values.
+   * @param {string[]} columns Expected column track values (e.g. ['1fr', '1fr']).
+   * @param {string[]} rows Expected row track values (e.g. ['1fr', '1fr']).
+   */
+  async checkGridEditModePanel(columns, rows) {
+    await expect(
+      this.gridEditExitButton,
+      'Grid edit mode Exit button',
+    ).toBeVisible();
+    for (const [name, values] of [
+      [`Columns ${columns.length}`, columns],
+      [`Rows ${rows.length}`, rows],
+    ]) {
+      const track = this.gridTrackTitle.filter({
+        has: this.page.getByTitle(name, { exact: true }),
+      });
+      await expect(
+        track.getByTitle(values.join(', '), { exact: true }),
+        `Grid track "${name}" should be ${values.join(', ')}`,
+      ).toBeVisible();
+    }
+  }
+
   async clickGridDoneButton() {
     await this.gridDoneButton.click();
   }
@@ -1481,24 +1419,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       await this.flexLayoutCollapsedIcon.click();
     }
     await expect(this.gridLayoutMenu).toBeVisible();
-  }
-
-  async changeLayoutDirection(direction, flex = true) {
-    flex ? await this.expandFlexLayoutMenu() : await this.expandGridLayoutMenu();
-    switch (direction) {
-      case 'Row':
-        await this.layoutDirectRowBtn.click();
-        break;
-      case 'Row reverse':
-        await this.layoutDirectRowReverseBtn.click();
-        break;
-      case 'Column':
-        await this.layoutDirectColumnBtn.click();
-        break;
-      case 'Column reverse':
-        await this.layoutDirectColumnReverseBtn.click();
-        break;
-    }
   }
 
   /** @param {'Wrap' | 'No wrap'} wrap */
@@ -1619,55 +1539,114 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     }
   }
 
+  /**
+   * Checks which Justify content button of the selected board's layout is selected.
+   * @param {'Start' | 'Center' | 'End' | 'Space between' | 'Space around' | 'Space evenly'} justify Expected justification.
+   * @param {boolean} [flex=true] Whether the layout is flex (true) or grid (false).
+   */
   async checkLayoutJustification(justify, flex = true) {
     if (flex) {
       await this.expandFlexLayoutMenu();
       switch (justify) {
         case 'Start':
-          await expect(this.layoutJustifyStartBtn).toBeChecked();
+          await expect(
+            this.layoutJustifyStartBtn,
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
           break;
         case 'Center':
-          await expect(this.layoutJustifyCenterBtn).toBeChecked();
+          await expect(
+            this.layoutJustifyCenterBtn,
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
           break;
         case 'End':
-          await expect(this.layoutJustifyEndBtn).toBeChecked();
+          await expect(
+            this.layoutJustifyEndBtn,
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
           break;
         case 'Space between':
-          await expect(this.layoutJustifySpaceBetweenBtn).toBeChecked();
+          await expect(
+            this.layoutJustifySpaceBetweenBtn,
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
           break;
         case 'Space around':
-          await expect(this.layoutJustifySpaceAroundBtn).toBeChecked();
+          await expect(
+            this.layoutJustifySpaceAroundBtn,
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
           break;
         case 'Space evenly':
-          await expect(this.layoutJustifySpaceEvenlyBtn).toBeChecked();
+          await expect(
+            this.layoutJustifySpaceEvenlyBtn,
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
           break;
       }
     } else {
       await this.expandGridLayoutMenu();
       switch (justify) {
         case 'Start':
-          await expect(this.layoutGridJustifyStartBtn.first()).toBeChecked();
-          await expect(this.layoutGridJustifyStartBtn.last()).toBeChecked();
+          await expect(
+            this.layoutGridJustifyStartBtn.first(),
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
+          await expect(
+            this.layoutGridJustifyStartBtn.last(),
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
           break;
         case 'Center':
-          await expect(this.layoutGridJustifyCenterBtn.first()).toBeChecked();
-          await expect(this.layoutGridJustifyCenterBtn.last()).toBeChecked();
+          await expect(
+            this.layoutGridJustifyCenterBtn.first(),
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
+          await expect(
+            this.layoutGridJustifyCenterBtn.last(),
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
           break;
         case 'End':
-          await expect(this.layoutGridJustifyEndBtn.first()).toBeChecked();
-          await expect(this.layoutGridJustifyEndBtn.last()).toBeChecked();
+          await expect(
+            this.layoutGridJustifyEndBtn.first(),
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
+          await expect(
+            this.layoutGridJustifyEndBtn.last(),
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
           break;
         case 'Space between':
-          await expect(this.layoutGridJustifySpaceBetweenBtn.first()).toBeChecked();
-          await expect(this.layoutGridJustifySpaceBetweenBtn.last()).toBeChecked();
+          await expect(
+            this.layoutGridJustifySpaceBetweenBtn.first(),
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
+          await expect(
+            this.layoutGridJustifySpaceBetweenBtn.last(),
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
           break;
         case 'Space around':
-          await expect(this.layoutGridJustifySpaceAroundBtn.first()).toBeChecked();
-          await expect(this.layoutGridJustifySpaceAroundBtn.last()).toBeChecked();
+          await expect(
+            this.layoutGridJustifySpaceAroundBtn.first(),
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
+          await expect(
+            this.layoutGridJustifySpaceAroundBtn.last(),
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
           break;
         case 'Space evenly':
-          await expect(this.layoutGridJustifySpaceEvenlyBtn.first()).toBeChecked();
-          await expect(this.layoutGridJustifySpaceEvenlyBtn.last()).toBeChecked();
+          await expect(
+            this.layoutGridJustifySpaceEvenlyBtn.first(),
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
+          await expect(
+            this.layoutGridJustifySpaceEvenlyBtn.last(),
+            `Layout justification "${justify}" is selected`,
+          ).toBeChecked();
           break;
       }
     }
@@ -1774,19 +1753,36 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.clickOnEnter();
   }
 
+  /**
+   * Checks one of the four independent paddings of the selected board's layout.
+   * @param {'Top' | 'Right' | 'Bottom' | 'Left'} type Padding to check.
+   * @param {string} value Expected value.
+   */
   async verifyLayoutIndependentPaddingValue(type, value) {
     switch (type) {
       case 'Bottom':
-        await expect(this.layoutPaddingBottomInput).toHaveValue(value);
+        await expect(
+          this.layoutPaddingBottomInput,
+          `${type} padding is ${value}`,
+        ).toHaveValue(value);
         break;
       case 'Right':
-        await expect(this.layoutPaddingRightInput).toHaveValue(value);
+        await expect(
+          this.layoutPaddingRightInput,
+          `${type} padding is ${value}`,
+        ).toHaveValue(value);
         break;
       case 'Left':
-        await expect(this.layoutPaddingLeftInput).toHaveValue(value);
+        await expect(
+          this.layoutPaddingLeftInput,
+          `${type} padding is ${value}`,
+        ).toHaveValue(value);
         break;
       case 'Top':
-        await expect(this.layoutPaddingTopInput).toHaveValue(value);
+        await expect(
+          this.layoutPaddingTopInput,
+          `${type} padding is ${value}`,
+        ).toHaveValue(value);
         break;
     }
   }
@@ -2039,17 +2035,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.clipContentButton.click();
   }
 
-  async clickOnManualButton() {
-    await this.manualButton.click();
-  }
-  async clickOnAreaButton() {
-    await this.areaButton.click();
-  }
-
-  async enterAreaName(name) {
-    await this.areaNameInput.fill(name);
-  }
-
   async selectGridCellUnit(cellNumber, unit = 'PX') {
     const dropdownLocator = await this.page.locator(
       `div[class*="track-info-unit"] span[class*="current-label"] >>nth=${
@@ -2094,17 +2079,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.gridFirstColumnSelectButton.hover();
   }
 
-  async enterGridCellCoordinate(rowColumn, startOrEnd, value) {
-    let cellNumber = startOrEnd === 'start' ? 0 : 1;
-    cellNumber = rowColumn === 'row' ? cellNumber + 2 : cellNumber;
-    const inputLocator = await this.page.locator(
-      `div[class*="grid_cell__row"] div[class*="grid_cell__coord-input"] input >>nth=${cellNumber}`,
-    );
-    await inputLocator.click();
-    await inputLocator.fill(value);
-    await this.clickOnEnter();
-  }
-
   async changeCap(capName, firstSecond = 'first') {
     const dropdown =
       firstSecond === 'first'
@@ -2122,47 +2096,91 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.resizeBoardToFitButton.click();
   }
 
+  /**
+   * Checks which Align items button of the selected board's layout is selected.
+   * @param {'Start' | 'Center' | 'End'} alignment Expected alignment.
+   * @param {boolean} [flex=true] Whether the layout is flex (true) or grid (false).
+   */
   async isLayoutAlignmentSelected(alignment, flex = true) {
     if (flex) {
       await this.expandFlexLayoutMenu();
       switch (alignment) {
         case 'Start':
-          await expect(this.layoutAlignStartBtn).toBeChecked();
+          await expect(
+            this.layoutAlignStartBtn,
+            `Layout alignment "${alignment}" is selected`,
+          ).toBeChecked();
           break;
         case 'Center':
-          await expect(this.layoutAlignCenterBtn).toBeChecked();
+          await expect(
+            this.layoutAlignCenterBtn,
+            `Layout alignment "${alignment}" is selected`,
+          ).toBeChecked();
           break;
         case 'End':
-          await expect(this.layoutAlignEndBtn).toBeChecked();
+          await expect(
+            this.layoutAlignEndBtn,
+            `Layout alignment "${alignment}" is selected`,
+          ).toBeChecked();
           break;
       }
     } else {
       await this.expandGridLayoutMenu();
       switch (alignment) {
         case 'Start':
-          await expect(this.layoutAlignStartBtn.first()).toBeChecked();
-          await expect(this.layoutAlignStartBtn.last()).toBeChecked();
+          await expect(
+            this.layoutAlignStartBtn.first(),
+            `Layout alignment "${alignment}" is selected`,
+          ).toBeChecked();
+          await expect(
+            this.layoutAlignStartBtn.last(),
+            `Layout alignment "${alignment}" is selected`,
+          ).toBeChecked();
           break;
         case 'Center':
-          await expect(this.layoutAlignCenterBtn.first()).toBeChecked();
-          await expect(this.layoutAlignCenterBtn.last()).toBeChecked();
+          await expect(
+            this.layoutAlignCenterBtn.first(),
+            `Layout alignment "${alignment}" is selected`,
+          ).toBeChecked();
+          await expect(
+            this.layoutAlignCenterBtn.last(),
+            `Layout alignment "${alignment}" is selected`,
+          ).toBeChecked();
           break;
         case 'End':
-          await expect(this.layoutAlignEndBtn.first()).toBeChecked();
-          await expect(this.layoutAlignEndBtn.last()).toBeChecked();
+          await expect(
+            this.layoutAlignEndBtn.first(),
+            `Layout alignment "${alignment}" is selected`,
+          ).toBeChecked();
+          await expect(
+            this.layoutAlignEndBtn.last(),
+            `Layout alignment "${alignment}" is selected`,
+          ).toBeChecked();
           break;
       }
     }
   }
 
+  /**
+   * Checks a padding of the selected board's layout, expanding the layout section first.
+   * @param {'Vertical' | 'Horizontal'} type Padding to check.
+   * @param {string} value Expected value (e.g. '0').
+   * @param {boolean} [flex=true] Whether the layout is flex (true) or grid (false).
+   */
   async checkLayoutPadding(type, value, flex = true) {
     flex ? await this.expandFlexLayoutMenu() : await this.expandGridLayoutMenu();
     switch (type) {
       case 'Vertical':
-        await expect(this.layoutVerticalPaddingInput).toHaveValue(value);
+        await expect(
+          this.layoutVerticalPaddingInput,
+          `Vertical padding is ${value}`,
+        ).toHaveValue(value);
         break;
       case 'Horizontal':
-        await expect(this.layoutHorizontalPaddingInput).toHaveValue(value);
+        await expect(
+          this.layoutHorizontalPaddingInput,
+          `Horizontal padding is ${value}`,
+        ).toHaveValue(value);
         break;
     }
   }
@@ -2229,6 +2247,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.checkTokenField('Bottom right', bottomRight);
   }
 
+  /**
+   * Checks the value of the Rotation field (or its applied token).
+   * @param {string} value Expected rotation in degrees.
+   */
   async checkRotationForLayer(value) {
     await this.checkTokenField('Rotation', value);
   }
@@ -2237,10 +2259,18 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.checkTokenField('Stroke width', value);
   }
 
+  /**
+   * Checks the value of the Row gap field (or its applied token).
+   * @param {string} value Expected gap in px.
+   */
   async checkRowGap(value) {
     await this.checkTokenField('Row gap', value);
   }
 
+  /**
+   * Checks the value of the Column gap field (or its applied token).
+   * @param {string} value Expected gap in px.
+   */
   async checkColumnGap(value) {
     await this.checkTokenField('Column gap', value);
   }
@@ -2253,10 +2283,18 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.checkTokenField('Y axis', value);
   }
 
+  /**
+   * Checks the value of the Width field (or its applied token).
+   * @param {string} value Expected width in px.
+   */
   async checkSizeWidth(value) {
     await this.checkTokenField('Width', value);
   }
 
+  /**
+   * Checks the value of the Height field (or its applied token).
+   * @param {string} value Expected height in px.
+   */
   async checkSizeHeight(value) {
     await this.checkTokenField('Height', value);
   }
@@ -2345,13 +2383,19 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.horizontalOrientationButton.click();
   }
 
+  /**
+   * Checks whether the board's horizontal (landscape) orientation button is checked.
+   * @param {boolean} [checked=true] Expected state.
+   * @param {number} [timeout=10000] Max time in ms to wait for the state.
+   */
   async isHorizontalOrientationButtonChecked(checked = true, timeout = 10000) {
+    const message = `Horizontal orientation button is ${checked ? '' : 'not '}checked`;
     await expect(async () => {
       const buttonClass =
         await this.horizontalOrientationButton.getAttribute('class');
       checked
-        ? expect(buttonClass).toContain('radio_buttons__checked')
-        : expect(buttonClass).not.toContain('radio_buttons__checked');
+        ? expect(buttonClass, message).toContain('radio_buttons__checked')
+        : expect(buttonClass, message).not.toContain('radio_buttons__checked');
     }).toPass({ timeout });
   }
 
@@ -2359,12 +2403,18 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.verticalOrientationButton.click();
   }
 
+  /**
+   * Checks whether the board's vertical (portrait) orientation button is checked.
+   * @param {boolean} [checked=true] Expected state.
+   * @param {number} [timeout=10000] Max time in ms to wait for the state.
+   */
   async isVerticalOrientationButtonChecked(checked = true, timeout = 10000) {
+    const message = `Vertical orientation button is ${checked ? '' : 'not '}checked`;
     await expect(async () => {
       const buttonClass = await this.verticalOrientationButton.getAttribute('class');
       checked
-        ? expect(buttonClass).toContain('radio_buttons__checked')
-        : expect(buttonClass).not.toContain('radio_buttons__checked');
+        ? expect(buttonClass, message).toContain('radio_buttons__checked')
+        : expect(buttonClass, message).not.toContain('radio_buttons__checked');
     }).toPass({ timeout });
   }
 
