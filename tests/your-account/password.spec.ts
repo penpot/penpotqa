@@ -38,6 +38,7 @@ passwordTest(
 // "Password changed" email.
 registerTest(
   qase([199], 'Change password to valid'),
+  { tag: '@external' },
   async ({ page, name, email }) => {
     registerTest.slow();
     const dashboardPage = new DashboardPage(page);

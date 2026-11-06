@@ -161,6 +161,7 @@ demoAccountApiFixture(
     1180,
     'Team Invitation: Access deleted invitation link and display Invite invalid message',
   ),
+  { tag: '@external' },
   async ({ page }) => {
     const teamPage = new TeamPage(page);
     const team = createTeamName();

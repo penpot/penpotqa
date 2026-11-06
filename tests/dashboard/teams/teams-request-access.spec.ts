@@ -103,6 +103,7 @@ registerAndDemoUserTest(
     [1827],
     "Request access from Workspace URL (Not Personal Projects): 'You don't have access to this file'",
   ),
+  { tag: '@external' },
   async ({ page, email, demoUser: requester }) => {
     const { mainPage } = await setupTeamAndFile(page, teamName);
 
@@ -141,6 +142,7 @@ registerAndDemoUserTest(
     [1829],
     "Request access from Dashboard URL (Not Your Penpot): You don't have access to this project",
   ),
+  { tag: '@external' },
   async ({ page, email, demoUser: requester }) => {
     const { mainPage } = await setupTeamAndFile(page, teamName);
 
@@ -174,6 +176,7 @@ registerAndDemoUserTest(
     [1830],
     "Request access from Workspace (Personal Projects): 'You don't have access to this file'",
   ),
+  { tag: '@external' },
   async ({ page, email, demoUser: requester }) => {
     const mainPage = await setupFileOnly(page);
 
@@ -206,6 +209,7 @@ registerAndDemoUserTest(
     [1831],
     "Request access from View mode (Personal Projects): 'You don't have access to this file'",
   ),
+  { tag: '@external' },
   async ({ page, email, demoUser: requester }) => {
     const mainPage = await setupFileOnly(page);
 
@@ -241,6 +245,7 @@ registerAndDemoUserTest(
 
 registerTest(
   qase([1833], 'Auto Join to the team'),
+  { tag: '@external' },
   async ({ page, name, email }) => {
     // Two UI sign-ups plus three Gmail round-trips: it takes ~80s, right at the
     // default timeout, so mark it slow.

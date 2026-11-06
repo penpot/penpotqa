@@ -183,6 +183,7 @@ demoAccountApiFixture.describe('As Owner - Invitations (demo account)', () => {
 
 registerAndDemoUserTest(
   qase(1174, 'Invite to a registered user (not a team member)'),
+  { tag: '@external' },
   async ({ page, email, demoUser: owner }) => {
     const ownerTeamPage = new TeamPage(owner.page);
     const inviteeTeamPage = new TeamPage(page);
@@ -218,6 +219,7 @@ registerAndDemoUserTest(
 
 demoAccountApiFixture(
   qase(1168, 'Invite via owner (multiple invitations, editor)'),
+  { tag: '@external' },
   async ({ page }) => {
     initPages(page);
     const firstEditor = random().concat('autotest');
