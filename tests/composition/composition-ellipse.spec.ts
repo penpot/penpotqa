@@ -22,6 +22,7 @@ demoAccountFileTest(
       'Press E shortcut and verify ellipse tool is active',
       async () => {
         await mainPage.pressKeyboardShortcut('E');
+        await mainPage.isShapeToolActive('circle');
       },
     );
 
@@ -50,12 +51,18 @@ demoAccountFileTest.describe(() => {
   demoAccountFileTest(
     qase([327], 'Create Ellipse (Toolbar)'),
     async ({ mainPage }) => {
-      await demoAccountFileTest.step('Verify ellipse layer is created', async () => {
-        await mainPage.isCreatedLayerVisible();
-        await expect(mainPage.viewport).toHaveScreenshot('ellipse.png', {
-          mask: mainPage.maskViewport(),
-        });
-      });
+      await demoAccountFileTest.step(
+        'Verify ellipse with default size is created',
+        async () => {
+          await mainPage.isCreatedLayerVisible();
+          await layersPanelPage.isLayerNameDisplayed('Ellipse');
+          await designPanelPage.checkSizeWidth('100');
+          await designPanelPage.checkSizeHeight('100');
+          await expect(mainPage.viewport).toHaveScreenshot('ellipse.png', {
+            mask: mainPage.maskViewport(),
+          });
+        },
+      );
     },
   );
 
