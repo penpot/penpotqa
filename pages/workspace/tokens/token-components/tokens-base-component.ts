@@ -75,6 +75,7 @@ export class TokensComponent {
   readonly expandTokensButton: Locator;
   readonly remapTokenModal: Locator;
   readonly remapTokensButton: Locator;
+  readonly dontRemapButton: Locator;
   readonly tokenGroupName: Locator;
   readonly tokensPage: TokensPage;
   readonly createTokenModal: Locator;
@@ -115,6 +116,9 @@ export class TokensComponent {
     this.remapTokenModal = page.getByTestId('token-remapping-modal');
     this.remapTokensButton = this.remapTokenModal.getByRole('button', {
       name: 'Remap tokens',
+    });
+    this.dontRemapButton = this.remapTokenModal.getByRole('button', {
+      name: /don.?t remap/i,
     });
     this.tokenGroupName = this.tokenSideBar.locator('[class*="layer-button-name"]');
     this.errorHintMessage = page.locator(
@@ -428,6 +432,43 @@ export class TokensComponent {
   }
 
   /**
+   * Returns the "All" option row of a section in the open token context menu.
+   *
+   * The "All" option row is the only row per section that carries the hint
+   * span (e.g. "Size"); Width/Height rows don't have it. Filtering by the hint
+   * text alone relies on that DOM assumption, so callers should also check the
+   * row's text includes "All" to catch a DOM/structure change instead of
+   * silently matching the wrong row.
+   *
+   * @param sectionName - Exact display name of the section (e.g. "Radius").
+   * @returns Locator for the section's "All" <li> row.
+   */
+  private getAllMenuItemWithSectionName(sectionName: string): Locator {
+    const escaped = sectionName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return this.tokenContextMenu
+      .locator('.main_ui_workspace_tokens_management_context_menu__menu-item-hint')
+      .filter({ hasText: new RegExp(`^${escaped}$`) })
+      .locator('xpath=ancestor::li[1]');
+  }
+
+  /**
+   * Clicks the "All" option of a section in the already open token context
+   * menu. When the token is applied that option is ticked, so clicking it
+   * unapplies the token from the selected shape.
+   *
+   * @param sectionName - Exact display name of the section (e.g. "Radius").
+   */
+  async clickAllMenuItemWithSectionName(sectionName: string) {
+    const sectionItem = this.getAllMenuItemWithSectionName(sectionName);
+    await expect(
+      sectionItem,
+      `Section "${sectionName}" row is the "All" option`,
+    ).toContainText('All');
+    await sectionItem.click();
+    await this.tokensPage.waitForChangeIsSaved();
+  }
+
+  /**
    * Verifies that the "All" option is selected for a given section directly
    * in the token's context menu (no submenu hover required).
    *
@@ -442,18 +483,7 @@ export class TokensComponent {
   ) {
     await this.rightClickOnTokenWithName(tokenName);
 
-    const escaped = sectionName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
-    // The "All" option row is the only row per section that carries the hint
-    // span (e.g. "Size"); Width/Height rows don't have it. Filtering by the
-    // hint text alone relies on that DOM assumption, so we also explicitly
-    // assert the row's text includes "All" below — making the intent
-    // explicit and catching a DOM/structure change instead of silently
-    // matching the wrong row.
-    const sectionItem = this.tokenContextMenu
-      .locator('.main_ui_workspace_tokens_management_context_menu__menu-item-hint')
-      .filter({ hasText: new RegExp(`^${escaped}$`) })
-      .locator('xpath=ancestor::li[1]');
+    const sectionItem = this.getAllMenuItemWithSectionName(sectionName);
 
     await expect(
       sectionItem,
@@ -744,6 +774,28 @@ export class TokensComponent {
     await this.baseComp.modalSaveButton.click();
     await this.isRemapTokenModalVisible();
     await this.clickRemapTokensButton();
+    await this.tokensPage.waitForChangeIsSaved();
+    await this.isTokenVisibleWithName(newName);
+  }
+
+  /**
+   * Renames a token through the edit modal and chooses "Don't remap" in the
+   * remap modal, so shapes keep pointing to the old (now broken) name.
+   *
+   * @param originalToken - Token to rename; its class is used to expand its
+   *   section and its name to open the edit modal.
+   * @param newName - New name to save for the token.
+   */
+  async renameTokenAndSkipRemap(
+    originalToken: MainToken<TokenClass>,
+    newName: string,
+  ): Promise<void> {
+    await this.expandTokenByName(originalToken.class);
+    await this.clickEditToken(originalToken);
+    await this.tokenNameInput.fill(newName);
+    await this.baseComp.modalSaveButton.click();
+    await this.isRemapTokenModalVisible();
+    await this.dontRemapButton.click();
     await this.tokensPage.waitForChangeIsSaved();
     await this.isTokenVisibleWithName(newName);
   }
