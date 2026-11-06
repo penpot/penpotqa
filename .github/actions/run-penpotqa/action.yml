@@ -22,18 +22,8 @@ inputs:
   base-url:
     description: 'Penpot URL to test, e.g. http://localhost:9001'
     required: true
-  # Tests create their own demo accounts through the API (the instance needs
-  # the `enable-demo-users` flag), so no real account is required. Until
-  # tests/global.teardown.ts is removed, it still logs in with these to
-  # clean up, and fails the run without them.
-  login-email:
-    description: 'Email of an existing Penpot account on that instance (optional)'
-    required: false
-    default: ''
-  login-password:
-    description: 'Password of that account (optional)'
-    required: false
-    default: ''
+  # No account inputs: tests create their own demo accounts through the API,
+  # so the instance only needs the `enable-demo-users` flag.
   tests:
     description: >-
       Space-separated spec files and/or folders to run, relative to the
@@ -132,18 +122,15 @@ runs:
       # so free-text values (paths, grep) can't inject shell commands.
       env:
         BASE_URL: ${{ inputs.base-url }}
-        LOGIN_EMAIL: ${{ inputs.login-email }}
-        LOGIN_PWD: ${{ inputs.login-password }}
+        # Only typed into forms by a few tests (e.g. sign-up negative cases);
+        # the tests that register real accounts with it are @external.
+        LOGIN_PWD: 'Penpotqa-temp-1234'
         TESTS: ${{ inputs.tests }}
         GREP: ${{ inputs.grep }}
         REPEAT_EACH: ${{ inputs.repeat-each }}
         WORKERS: ${{ inputs.workers }}
         QASE_MODE: 'off'
       run: |
-        # A few tests only type LOGIN_PWD into forms (e.g. sign-up negative
-        # cases), so any value works when no account is given.
-        export LOGIN_PWD="${LOGIN_PWD:-Penpotqa-temp-1234}"
-
         ARGS=(--project=chrome --grep-invert @external --repeat-each="$REPEAT_EACH")
         [ -n "$GREP" ] && ARGS+=(-g "$GREP")
         [ -n "$WORKERS" ] && ARGS+=(--workers="$WORKERS")
