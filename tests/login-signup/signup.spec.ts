@@ -28,49 +28,53 @@ demoCredentialsTest.beforeEach(
   },
 );
 
-demoCredentialsTest.describe('Sign up via email invitation', () => {
-  let email: string;
-  let invite: InviteMessage;
-  let randomName: string;
+demoCredentialsTest.describe(
+  'Sign up via email invitation',
+  { tag: '@external' },
+  () => {
+    let email: string;
+    let invite: InviteMessage;
+    let randomName: string;
 
-  demoCredentialsTest.beforeEach('Create a new account', async ({ page }) => {
-    randomName = createTeamName();
-    email = `${process.env.GMAIL_NAME}+${randomName}${process.env.GMAIL_DOMAIN}`;
+    demoCredentialsTest.beforeEach('Create a new account', async ({ page }) => {
+      randomName = createTeamName();
+      email = `${process.env.GMAIL_NAME}+${randomName}${process.env.GMAIL_DOMAIN}`;
 
-    await registerPage.registerAccount(randomName, email, process.env.LOGIN_PWD);
-    await registerPage.isRegisterEmailCorrect(email);
+      await registerPage.registerAccount(randomName, email, process.env.LOGIN_PWD);
+      await registerPage.isRegisterEmailCorrect(email);
 
-    const registerInvite = await waitMessage(page, email, 40);
-    if (!registerInvite?.inviteText || !registerInvite?.inviteUrl) {
-      throw new Error('Registration email confirmation was not received');
-    }
+      const registerInvite = await waitMessage(page, email, 40);
+      if (!registerInvite?.inviteText || !registerInvite?.inviteUrl) {
+        throw new Error('Registration email confirmation was not received');
+      }
 
-    invite = {
-      inviteText: registerInvite.inviteText,
-      inviteUrl: registerInvite.inviteUrl,
-    };
-  });
+      invite = {
+        inviteText: registerInvite.inviteText,
+        inviteUrl: registerInvite.inviteUrl,
+      };
+    });
 
-  demoCredentialsTest(
-    qase([28], 'Sign up with an email address'),
-    async ({ page }) => {
-      await demoCredentialsTest.step(
-        'Verify registration email content',
-        async () => {
-          await checkRegisterText(invite.inviteText, randomName);
-        },
-      );
+    demoCredentialsTest(
+      qase([28], 'Sign up with an email address'),
+      async ({ page }) => {
+        await demoCredentialsTest.step(
+          'Verify registration email content',
+          async () => {
+            await checkRegisterText(invite.inviteText, randomName);
+          },
+        );
 
-      await demoCredentialsTest.step(
-        'Open invitation link and complete onboarding',
-        async () => {
-          await page.goto(invite.inviteUrl);
-          await dashboardPage.fillOnboardingFirstQuestions();
-        },
-      );
-    },
-  );
-});
+        await demoCredentialsTest.step(
+          'Open invitation link and complete onboarding',
+          async () => {
+            await page.goto(invite.inviteUrl);
+            await dashboardPage.fillOnboardingFirstQuestions();
+          },
+        );
+      },
+    );
+  },
+);
 
 demoCredentialsTest.describe('Create Account form negative cases', () => {
   demoCredentialsTest(qase([32], 'Sign up with invalid email address'), async () => {

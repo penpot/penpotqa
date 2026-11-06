@@ -110,42 +110,46 @@ demoAccountApiFixture(
   },
 );
 
-registerTest(qase(190, 'Change email to valid'), async ({ page, name, email }) => {
-  await registerTest.slow();
-  const newEmail = `${process.env.GMAIL_NAME}+${random().concat(
-    'autotest',
-  )}${process.env.GMAIL_DOMAIN}`;
-  const dashboardPage = new DashboardPage(page);
-  const loginPage = new LoginPage(page);
-  const profilePage = new ProfilePage(page);
+registerTest(
+  qase(190, 'Change email to valid'),
+  { tag: '@external' },
+  async ({ page, name, email }) => {
+    await registerTest.slow();
+    const newEmail = `${process.env.GMAIL_NAME}+${random().concat(
+      'autotest',
+    )}${process.env.GMAIL_DOMAIN}`;
+    const dashboardPage = new DashboardPage(page);
+    const loginPage = new LoginPage(page);
+    const profilePage = new ProfilePage(page);
 
-  await registerTest.step(
-    'Request email change and wait for confirmation email',
-    async () => {
-      await profilePage.changeEmail(newEmail);
-      await waitSecondMessage(page, email, 40);
-    },
-  );
+    await registerTest.step(
+      'Request email change and wait for confirmation email',
+      async () => {
+        await profilePage.changeEmail(newEmail);
+        await waitSecondMessage(page, email, 40);
+      },
+    );
 
-  await registerTest.step(
-    'Verify confirmation email content and follow the link',
-    async () => {
-      const changeEmail = await getVerificationMessage(email);
-      if (!changeEmail) throw new Error('Email confirmation not received');
-      await checkNewEmailText(changeEmail.inviteText, name, newEmail);
-      await page.goto(changeEmail.inviteUrl);
-    },
-  );
+    await registerTest.step(
+      'Verify confirmation email content and follow the link',
+      async () => {
+        const changeEmail = await getVerificationMessage(email);
+        if (!changeEmail) throw new Error('Email confirmation not received');
+        await checkNewEmailText(changeEmail.inviteText, name, newEmail);
+        await page.goto(changeEmail.inviteUrl);
+      },
+    );
 
-  await registerTest.step('Logout and login with new email', async () => {
-    await profilePage.logout();
-    await loginPage.enterEmailAndClickOnContinue(newEmail);
-    await loginPage.enterPwd(process.env.LOGIN_PWD);
-    await loginPage.clickLoginButton();
-  });
+    await registerTest.step('Logout and login with new email', async () => {
+      await profilePage.logout();
+      await loginPage.enterEmailAndClickOnContinue(newEmail);
+      await loginPage.enterPwd(process.env.LOGIN_PWD);
+      await loginPage.clickLoginButton();
+    });
 
-  await registerTest.step('Verify dashboard is opened', async () => {
-    await dashboardPage.isDashboardOpenedAfterLogin();
-    await dashboardPage.isHeaderDisplayed('Personal Projects');
-  });
-});
+    await registerTest.step('Verify dashboard is opened', async () => {
+      await dashboardPage.isDashboardOpenedAfterLogin();
+      await dashboardPage.isHeaderDisplayed('Personal Projects');
+    });
+  },
+);

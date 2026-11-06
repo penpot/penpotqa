@@ -77,37 +77,45 @@ registerTest.describe(() => {
     },
   );
 
-  registerTest(qase([49], 'Forgot password flow'), async ({ page, email }) => {
-    await registerTest.step(
-      'Verify "Password changed" email is received',
-      async () => {
-        await waitForMessageCount(page, email, 3, 60);
-        await checkLastMessageSubject(email, 'Password changed');
-      },
-    );
-
-    await registerTest.step('Login with new password after recovery', async () => {
-      await loginPage.enterEmailAndClickOnContinue(email);
-      await loginPage.enterPwd(newPwd);
-      await loginPage.clickLoginButton();
-    });
-
-    await registerTest.step('Verify successful login to dashboard', async () => {
-      await dashboardPage.isDashboardOpenedAfterLogin();
-    });
-  });
-
-  registerTest(qase([52], 'Login with old password'), async ({ email }) => {
-    await registerTest.step('Attempt to login with old password', async () => {
-      await loginPage.enterEmailAndClickOnContinue(email);
-      await loginPage.enterPwd(process.env.LOGIN_PWD);
-      await loginPage.clickLoginButton();
-    });
-
-    await registerTest.step('Verify login fails with old password', async () => {
-      await loginPage.isLoginErrorMessageDisplayed(
-        'Email or password is incorrect.',
+  registerTest(
+    qase([49], 'Forgot password flow'),
+    { tag: '@external' },
+    async ({ page, email }) => {
+      await registerTest.step(
+        'Verify "Password changed" email is received',
+        async () => {
+          await waitForMessageCount(page, email, 3, 60);
+          await checkLastMessageSubject(email, 'Password changed');
+        },
       );
-    });
-  });
+
+      await registerTest.step('Login with new password after recovery', async () => {
+        await loginPage.enterEmailAndClickOnContinue(email);
+        await loginPage.enterPwd(newPwd);
+        await loginPage.clickLoginButton();
+      });
+
+      await registerTest.step('Verify successful login to dashboard', async () => {
+        await dashboardPage.isDashboardOpenedAfterLogin();
+      });
+    },
+  );
+
+  registerTest(
+    qase([52], 'Login with old password'),
+    { tag: '@external' },
+    async ({ email }) => {
+      await registerTest.step('Attempt to login with old password', async () => {
+        await loginPage.enterEmailAndClickOnContinue(email);
+        await loginPage.enterPwd(process.env.LOGIN_PWD);
+        await loginPage.clickLoginButton();
+      });
+
+      await registerTest.step('Verify login fails with old password', async () => {
+        await loginPage.isLoginErrorMessageDisplayed(
+          'Email or password is incorrect.',
+        );
+      });
+    },
+  );
 });
