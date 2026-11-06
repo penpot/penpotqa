@@ -203,6 +203,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Change alignment to Center', async () => {
         await designPanelPage.changeLayoutAlignment('Center');
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isLayoutAlignmentSelected('Center');
         await expect(mainPage.viewport).toHaveScreenshot('layout-align-center.png', {
           mask: mainPage.maskViewport(),
         });
@@ -210,6 +211,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Change alignment to End', async () => {
         await designPanelPage.changeLayoutAlignment('End');
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isLayoutAlignmentSelected('End');
         await expect(mainPage.viewport).toHaveScreenshot('layout-align-end.png', {
           mask: mainPage.maskViewport(),
         });
@@ -217,6 +219,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Change alignment to Start', async () => {
         await designPanelPage.changeLayoutAlignment('Start');
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.isLayoutAlignmentSelected('Start');
         await expect(mainPage.viewport).toHaveScreenshot('layout-align-start.png', {
           mask: mainPage.maskViewport(),
         });
@@ -231,6 +234,7 @@ demoAccountFileTest.describe(() => {
           async () => {
             await designPanelPage.changeLayoutJustification('Center');
             await mainPage.waitForChangeIsSaved();
+            await designPanelPage.checkLayoutJustification('Center');
             await expect(mainPage.viewport).toHaveScreenshot(
               'layout-justify-center.png',
               {
@@ -242,6 +246,7 @@ demoAccountFileTest.describe(() => {
         await demoAccountFileTest.step('Change justification to End', async () => {
           await designPanelPage.changeLayoutJustification('End');
           await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkLayoutJustification('End');
           await expect(mainPage.viewport).toHaveScreenshot(
             'layout-justify-end.png',
             {
@@ -254,6 +259,7 @@ demoAccountFileTest.describe(() => {
           async () => {
             await designPanelPage.changeLayoutJustification('Space between');
             await mainPage.waitForChangeIsSaved();
+            await designPanelPage.checkLayoutJustification('Space between');
             await expect(mainPage.viewport).toHaveScreenshot(
               'layout-justify-space-between.png',
               { mask: mainPage.maskViewport() },
@@ -265,6 +271,7 @@ demoAccountFileTest.describe(() => {
           async () => {
             await designPanelPage.changeLayoutJustification('Space around');
             await mainPage.waitForChangeIsSaved();
+            await designPanelPage.checkLayoutJustification('Space around');
             await expect(mainPage.viewport).toHaveScreenshot(
               'layout-justify-space-around.png',
               { mask: mainPage.maskViewport() },
@@ -276,6 +283,7 @@ demoAccountFileTest.describe(() => {
           async () => {
             await designPanelPage.changeLayoutJustification('Space evenly');
             await mainPage.waitForChangeIsSaved();
+            await designPanelPage.checkLayoutJustification('Space evenly');
             await expect(mainPage.viewport).toHaveScreenshot(
               'layout-justify-space-evenly.png',
               { mask: mainPage.maskViewport() },
@@ -285,6 +293,7 @@ demoAccountFileTest.describe(() => {
         await demoAccountFileTest.step('Change justification to Start', async () => {
           await designPanelPage.changeLayoutJustification('Start');
           await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkLayoutJustification('Start');
           await expect(mainPage.viewport).toHaveScreenshot(
             'layout-justify-start.png',
             {
@@ -368,6 +377,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Set column gap to 5', async () => {
         await designPanelPage.changeLayoutColumnGap('5');
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkColumnGap('5');
         await expect(mainPage.viewport).toHaveScreenshot('layout-column-gap-5.png', {
           mask: mainPage.maskViewport(),
         });
@@ -375,6 +385,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Set column gap to 15', async () => {
         await designPanelPage.changeLayoutColumnGap('15');
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkColumnGap('15');
         await expect(mainPage.viewport).toHaveScreenshot(
           'layout-column-gap-15.png',
           {
@@ -385,6 +396,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Set column gap to 0', async () => {
         await designPanelPage.changeLayoutColumnGap('0');
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkColumnGap('0');
         await expect(mainPage.viewport).toHaveScreenshot('layout-column-gap-0.png', {
           mask: mainPage.maskViewport(),
         });
@@ -399,6 +411,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Set row gap to 5', async () => {
         await designPanelPage.changeLayoutRowGap('5');
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkRowGap('5');
         await expect(mainPage.viewport).toHaveScreenshot('layout-row-gap-5.png', {
           mask: mainPage.maskViewport(),
         });
@@ -406,6 +419,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Set row gap to 15', async () => {
         await designPanelPage.changeLayoutRowGap('15');
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkRowGap('15');
         await expect(mainPage.viewport).toHaveScreenshot('layout-row-gap-15.png', {
           mask: mainPage.maskViewport(),
         });
@@ -413,6 +427,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Set row gap to 0', async () => {
         await designPanelPage.changeLayoutRowGap('0');
         await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkRowGap('0');
         await expect(mainPage.viewport).toHaveScreenshot('layout-row-gap-0.png', {
           mask: mainPage.maskViewport(),
         });
@@ -422,34 +437,37 @@ demoAccountFileTest.describe(() => {
     demoAccountFileTest(
       qase([620], 'Change padding (single)'),
       async ({ mainPage }) => {
-        await demoAccountFileTest.step(
-          'Set Vertical padding to 5 and Horizontal padding to 15',
-          async () => {
-            await designPanelPage.changeLayoutPadding('Vertical', '5');
-            await mainPage.waitForChangeIsSaved();
-            await designPanelPage.changeLayoutPadding('Horizontal', '15');
-            await mainPage.waitForChangeIsSaved();
-            await expect(mainPage.viewport).toHaveScreenshot(
-              'layout-padding-5-15.png',
-              {
-                mask: mainPage.maskViewport(),
-              },
-            );
-          },
-        );
-        await demoAccountFileTest.step('Set Horizontal padding to 0', async () => {
-          await designPanelPage.changeLayoutPadding('Horizontal', '0');
+        await demoAccountFileTest.step('Set Vertical padding to 5', async () => {
+          await designPanelPage.changeLayoutPadding('Vertical', '5');
           await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkLayoutPadding('Vertical', '5');
+        });
+        await demoAccountFileTest.step('Set Horizontal padding to 15', async () => {
+          await designPanelPage.changeLayoutPadding('Horizontal', '15');
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkLayoutPadding('Horizontal', '15');
           await expect(mainPage.viewport).toHaveScreenshot(
-            'layout-horizontal-padding-0.png',
-            { mask: mainPage.maskViewport() },
+            'layout-padding-5-15.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
           );
         });
         await demoAccountFileTest.step('Set Vertical padding to 0', async () => {
           await designPanelPage.changeLayoutPadding('Vertical', '0');
           await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkLayoutPadding('Vertical', '0');
           await expect(mainPage.viewport).toHaveScreenshot(
             'layout-vertical-padding-0.png',
+            { mask: mainPage.maskViewport() },
+          );
+        });
+        await demoAccountFileTest.step('Set Horizontal padding to 0', async () => {
+          await designPanelPage.changeLayoutPadding('Horizontal', '0');
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkLayoutPadding('Horizontal', '0');
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'layout-horizontal-padding-0.png',
             { mask: mainPage.maskViewport() },
           );
         });
@@ -459,45 +477,51 @@ demoAccountFileTest.describe(() => {
     demoAccountFileTest(
       qase([621], 'Change padding (multiple)'),
       async ({ mainPage }) => {
-        await demoAccountFileTest.step(
-          'Switch to independent padding and set Top=10, Left=15',
-          async () => {
-            await designPanelPage.switchToIndependentPadding();
-            await mainPage.waitForChangeIsSaved();
-            await designPanelPage.changeLayoutIndependentPadding('Top', '10');
-            await mainPage.waitForChangeIsSaved();
-            await designPanelPage.changeLayoutIndependentPadding('Left', '15');
-            await mainPage.waitForChangeIsSaved();
-            await expect(mainPage.viewport).toHaveScreenshot(
-              'layout-top-left-padding-10-15.png',
-              { mask: mainPage.maskViewport() },
-            );
-          },
-        );
+        await demoAccountFileTest.step('Switch to independent padding', async () => {
+          await designPanelPage.switchToIndependentPadding();
+          await mainPage.waitForChangeIsSaved();
+        });
+        await demoAccountFileTest.step('Set Top padding to 10', async () => {
+          await designPanelPage.changeLayoutIndependentPadding('Top', '10');
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.verifyLayoutIndependentPaddingValue('Top', '10');
+        });
+        await demoAccountFileTest.step('Set Left padding to 15', async () => {
+          await designPanelPage.changeLayoutIndependentPadding('Left', '15');
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.verifyLayoutIndependentPaddingValue('Left', '15');
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'layout-top-left-padding-10-15.png',
+            { mask: mainPage.maskViewport() },
+          );
+        });
         await demoAccountFileTest.step('Change justification to End', async () => {
           await designPanelPage.changeLayoutJustification('End');
           await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkLayoutJustification('End');
           await expect(mainPage.viewport).toHaveScreenshot(
             'layout-top-left-padding-10-15-justify.png',
             { mask: mainPage.maskViewport() },
           );
         });
-        await demoAccountFileTest.step(
-          'Set Right=20 and alignment to End',
-          async () => {
-            await designPanelPage.changeLayoutIndependentPadding('Right', '20');
-            await mainPage.waitForChangeIsSaved();
-            await designPanelPage.changeLayoutAlignment('End');
-            await mainPage.waitForChangeIsSaved();
-            await expect(mainPage.viewport).toHaveScreenshot(
-              'layout-top-left-right-padding-justify-align.png',
-              { mask: mainPage.maskViewport() },
-            );
-          },
-        );
-        await demoAccountFileTest.step('Set Bottom=25', async () => {
+        await demoAccountFileTest.step('Set Right padding to 20', async () => {
+          await designPanelPage.changeLayoutIndependentPadding('Right', '20');
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.verifyLayoutIndependentPaddingValue('Right', '20');
+        });
+        await demoAccountFileTest.step('Change alignment to End', async () => {
+          await designPanelPage.changeLayoutAlignment('End');
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.isLayoutAlignmentSelected('End');
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'layout-top-left-right-padding-justify-align.png',
+            { mask: mainPage.maskViewport() },
+          );
+        });
+        await demoAccountFileTest.step('Set Bottom padding to 25', async () => {
           await designPanelPage.changeLayoutIndependentPadding('Bottom', '25');
           await mainPage.waitForChangeIsSaved();
+          await designPanelPage.verifyLayoutIndependentPaddingValue('Bottom', '25');
           await expect(mainPage.viewport).toHaveScreenshot(
             'layout-top-left-right-bottom-padding.png',
             { mask: mainPage.maskViewport() },
@@ -562,10 +586,15 @@ demoAccountFileTest.describe(() => {
       qase([628], 'Flex elements - change margin (single)'),
       async ({ mainPage }) => {
         await demoAccountFileTest.step(
-          'Set flex element margin Vertical=10 and Horizontal=25',
+          'Set flex element margin Vertical to 10',
           async () => {
             await designPanelPage.changeFlexElementMargin('Vertical', '10');
             await mainPage.waitForChangeIsSaved();
+          },
+        );
+        await demoAccountFileTest.step(
+          'Set flex element margin Horizontal to 25',
+          async () => {
             await designPanelPage.changeFlexElementMargin('Horizontal', '25');
             await mainPage.waitForChangeIsSaved();
             await expect(mainPage.viewport).toHaveScreenshot(
@@ -679,6 +708,9 @@ demoAccountFileTest.describe(() => {
           await mainPage.waitForChangeIsSaved();
           await designPanelPage.changeLayoutColumnGap('0');
           await mainPage.waitForChangeIsSaved();
+          await designPanelPage.checkLayoutPadding('Vertical', '0');
+          await designPanelPage.checkLayoutPadding('Horizontal', '0');
+          await designPanelPage.checkColumnGap('0');
           await expect(mainPage.viewport).toHaveScreenshot(
             'layout-padding-gap-0.png',
             {
