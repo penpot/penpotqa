@@ -2247,10 +2247,18 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.checkTokenField('Y axis', value);
   }
 
+  /**
+   * Checks the value of the Width field (or its applied token).
+   * @param {string} value Expected width in px.
+   */
   async checkSizeWidth(value) {
     await this.checkTokenField('Width', value);
   }
 
+  /**
+   * Checks the value of the Height field (or its applied token).
+   * @param {string} value Expected height in px.
+   */
   async checkSizeHeight(value) {
     await this.checkTokenField('Height', value);
   }

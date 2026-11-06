@@ -793,15 +793,15 @@ demoAccountFileTest.describe(() => {
     await mainPage.createDefaultBoardByCoordinates(200, 200);
     await designPanelPage.changeHeightAndWidthForLayer('600', '600');
     await mainPage.waitForChangeIsSaved();
-    await mainPage.createDefaultEllipseByCoordinates(210, 210, true);
   });
 
   demoAccountFileTest(
     qase([2040], 'Resize board to fit 2 elements'),
     async ({ mainPage }) => {
       await demoAccountFileTest.step(
-        'Create a rectangle inside the board',
+        'Create an ellipse and a rectangle inside the board',
         async () => {
+          await mainPage.createDefaultEllipseByCoordinates(210, 210, true);
           await mainPage.createDefaultRectangleByCoordinates(320, 210, true);
         },
       );
@@ -854,8 +854,10 @@ demoAccountFileTest.describe(() => {
       );
 
       await demoAccountFileTest.step(
-        'Verify the board fits its content',
+        'Verify the board fits the rectangle',
         async () => {
+          await designPanelPage.checkSizeWidth('100');
+          await designPanelPage.checkSizeHeight('100');
           await expect(mainPage.viewport).toHaveScreenshot(
             'resize-board-to-fit-partially-outside.png',
             {
