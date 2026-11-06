@@ -151,7 +151,7 @@ A script is available to check which test cases in Qase are non-regression:
 
 **10. Demo account fixture logic.**
 
-Most tests log in with a disposable demo Penpot account, created directly via API (`demoAccountApiFixture` in `fixtures.ts`, backed by `helpers/demo-user.ts`). It's faster than `registerTest` since it skips both the UI registration form and the onboarding flow.
+Most tests log in with a disposable demo Penpot account, created directly via API (`demoAccountApiFixture` in `fixtures.ts`, backed by `helpers/accounts/create-demo-user.ts`). It's faster than `registerTest` since it skips both the UI registration form and the onboarding flow.
 
 - `createDemoUser()` calls the `create-demo-profile` RPC (`POST /api/rpc/command/create-demo-profile?_fmt=json`) with `{ "skip-onboarding": true }`. This flag marks `onboarding-viewed` and `release-notes-viewed` as already completed server-side, so the account lands straight on the dashboard instead of stepping through the onboarding questions, team-choice and release-notes modals.
 - The RPC returns a backend-generated `email`/`password` pair. The helper then logs in via the `login-with-password` RPC using `page.context().request`, so Playwright stores the resulting session cookie directly in the browser context (no manual cookie handling needed).
