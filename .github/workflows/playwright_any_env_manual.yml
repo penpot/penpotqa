@@ -31,7 +31,7 @@ permissions:
 
 jobs:
   tests_chromium:
-    environment: PRE # account credentials (LOGIN_EMAIL/LOGIN_PWD) and PRE's BASE_URL
+    environment: PRE # PRE's BASE_URL, used when no URL is given
     timeout-minutes: 280
     runs-on: ubuntu-24.04
     env:
@@ -44,8 +44,6 @@ jobs:
         uses: ./.github/actions/run-penpotqa
         with:
           base-url: ${{ inputs.base_url || secrets.BASE_URL }}
-          login-email: ${{ secrets.LOGIN_EMAIL }}
-          login-password: ${{ secrets.LOGIN_PWD }}
           tests: ${{ inputs.tests }}
           grep: ${{ inputs.grep }}
           repeat-each: ${{ inputs.repeat_each }}
