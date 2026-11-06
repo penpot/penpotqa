@@ -1,12 +1,19 @@
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import {
+  LayoutContainerSectionComponent,
+  LayoutDirection,
+} from '@pages/workspace/right-sidebar/design-tab/layout-container-section-component';
+import { WorkspacePage } from '@pages/workspace/workspace-page';
 import { expect } from '@playwright/test';
 import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 let designPanelPage: DesignPanelPage;
+let layoutContainer: LayoutContainerSectionComponent;
 
 demoAccountFileTest.beforeEach(async ({ page }) => {
   designPanelPage = new DesignPanelPage(page);
+  layoutContainer = new WorkspacePage(page).rightSidebar.design.layoutContainer;
 });
 
 demoAccountFileTest.describe(() => {
@@ -40,7 +47,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step(
         'Create flex board with main component and its copy, change direction',
         async () => {
-          await designPanelPage.changeLayoutDirection('Column');
+          await layoutContainer.changeDirection(LayoutDirection.Column);
           await mainPage.waitForChangeIsSaved();
           await expect(mainPage.viewport).toHaveScreenshot(
             'main-component-change-board-direction.png',

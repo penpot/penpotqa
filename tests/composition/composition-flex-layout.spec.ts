@@ -3,12 +3,25 @@ import { qase } from 'playwright-qase-reporter/playwright';
 import { demoAccountFileTest } from 'fixtures';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import {
+  LayoutContainerSectionComponent,
+  LayoutDirection,
+} from '@pages/workspace/right-sidebar/design-tab/layout-container-section-component';
+import {
+  AlignSelf,
+  ElementMargin,
+  LayoutItemSectionComponent,
+} from '@pages/workspace/right-sidebar/design-tab/layout-item-section-component';
+import { WorkspacePage } from '@pages/workspace/workspace-page';
 
 let layersPanelPage: LayersPanelPage;
 let designPanelPage: DesignPanelPage;
+let layoutContainer: LayoutContainerSectionComponent;
+let layoutItem: LayoutItemSectionComponent;
 
 demoAccountFileTest.beforeEach(async ({ page }) => {
   designPanelPage = new DesignPanelPage(page);
+  ({ layoutContainer, layoutItem } = new WorkspacePage(page).rightSidebar.design);
   layersPanelPage = new LayersPanelPage(page);
 });
 
@@ -161,16 +174,18 @@ demoAccountFileTest.describe(() => {
 
     demoAccountFileTest(qase([613], 'Change direction'), async ({ mainPage }) => {
       await demoAccountFileTest.step('Change direction to Row reverse', async () => {
-        await designPanelPage.changeLayoutDirection('Row reverse');
+        await layoutContainer.changeDirection(LayoutDirection.RowReverse);
         await mainPage.waitForChangeIsSaved();
+        await layoutContainer.checkDirection(LayoutDirection.RowReverse);
         await expect(mainPage.viewport).toHaveScreenshot(
           'layout-row-reverse-direction.png',
           { mask: mainPage.maskViewport() },
         );
       });
       await demoAccountFileTest.step('Change direction to Column', async () => {
-        await designPanelPage.changeLayoutDirection('Column');
+        await layoutContainer.changeDirection(LayoutDirection.Column);
         await mainPage.waitForChangeIsSaved();
+        await layoutContainer.checkDirection(LayoutDirection.Column);
         await expect(mainPage.viewport).toHaveScreenshot(
           'layout-column-direction.png',
           { mask: mainPage.maskViewport() },
@@ -179,8 +194,9 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step(
         'Change direction to Column reverse',
         async () => {
-          await designPanelPage.changeLayoutDirection('Column reverse');
+          await layoutContainer.changeDirection(LayoutDirection.ColumnReverse);
           await mainPage.waitForChangeIsSaved();
+          await layoutContainer.checkDirection(LayoutDirection.ColumnReverse);
           await expect(mainPage.viewport).toHaveScreenshot(
             'layout-column-reverse-direction.png',
             { mask: mainPage.maskViewport() },
@@ -188,8 +204,9 @@ demoAccountFileTest.describe(() => {
         },
       );
       await demoAccountFileTest.step('Change direction to Row', async () => {
-        await designPanelPage.changeLayoutDirection('Row');
+        await layoutContainer.changeDirection(LayoutDirection.Row);
         await mainPage.waitForChangeIsSaved();
+        await layoutContainer.checkDirection(LayoutDirection.Row);
         await expect(mainPage.viewport).toHaveScreenshot(
           'layout-row-direction.png',
           {
@@ -405,8 +422,9 @@ demoAccountFileTest.describe(() => {
 
     demoAccountFileTest(qase([619], 'Change row gap'), async ({ mainPage }) => {
       await demoAccountFileTest.step('Change direction to Column', async () => {
-        await designPanelPage.changeLayoutDirection('Column');
+        await layoutContainer.changeDirection(LayoutDirection.Column);
         await mainPage.waitForChangeIsSaved();
+        await layoutContainer.checkDirection(LayoutDirection.Column);
       });
       await demoAccountFileTest.step('Set row gap to 5', async () => {
         await designPanelPage.changeLayoutRowGap('5');
@@ -547,8 +565,9 @@ demoAccountFileTest.describe(() => {
         await demoAccountFileTest.step(
           'Change flex element alignment to Center',
           async () => {
-            await designPanelPage.changeFlexElementAlignment('Center');
+            await layoutItem.changeAlignSelf(AlignSelf.Center);
             await mainPage.waitForChangeIsSaved();
+            await layoutItem.checkAlignSelf(AlignSelf.Center);
             await expect(mainPage.viewport).toHaveScreenshot(
               'flex-element-align-center.png',
               { mask: mainPage.maskViewport() },
@@ -558,8 +577,9 @@ demoAccountFileTest.describe(() => {
         await demoAccountFileTest.step(
           'Change flex element alignment to End',
           async () => {
-            await designPanelPage.changeFlexElementAlignment('End');
+            await layoutItem.changeAlignSelf(AlignSelf.End);
             await mainPage.waitForChangeIsSaved();
+            await layoutItem.checkAlignSelf(AlignSelf.End);
             await expect(mainPage.viewport).toHaveScreenshot(
               'flex-element-align-end.png',
               {
@@ -571,8 +591,9 @@ demoAccountFileTest.describe(() => {
         await demoAccountFileTest.step(
           'Change flex element alignment to Start',
           async () => {
-            await designPanelPage.changeFlexElementAlignment('Start');
+            await layoutItem.changeAlignSelf(AlignSelf.Start);
             await mainPage.waitForChangeIsSaved();
+            await layoutItem.checkAlignSelf(AlignSelf.Start);
             await expect(mainPage.viewport).toHaveScreenshot(
               'flex-element-align-start.png',
               { mask: mainPage.maskViewport() },
@@ -588,15 +609,17 @@ demoAccountFileTest.describe(() => {
         await demoAccountFileTest.step(
           'Set flex element margin Vertical to 10',
           async () => {
-            await designPanelPage.changeFlexElementMargin('Vertical', '10');
+            await layoutItem.changeMargin(ElementMargin.Vertical, '10');
             await mainPage.waitForChangeIsSaved();
+            await layoutItem.checkMargin(ElementMargin.Vertical, '10');
           },
         );
         await demoAccountFileTest.step(
           'Set flex element margin Horizontal to 25',
           async () => {
-            await designPanelPage.changeFlexElementMargin('Horizontal', '25');
+            await layoutItem.changeMargin(ElementMargin.Horizontal, '25');
             await mainPage.waitForChangeIsSaved();
+            await layoutItem.checkMargin(ElementMargin.Horizontal, '25');
             await expect(mainPage.viewport).toHaveScreenshot(
               'flex-element-margin-10-25.png',
               { mask: mainPage.maskViewport() },
@@ -606,8 +629,9 @@ demoAccountFileTest.describe(() => {
         await demoAccountFileTest.step(
           'Set flex element margin Vertical to 0',
           async () => {
-            await designPanelPage.changeFlexElementMargin('Vertical', '0');
+            await layoutItem.changeMargin(ElementMargin.Vertical, '0');
             await mainPage.waitForChangeIsSaved();
+            await layoutItem.checkMargin(ElementMargin.Vertical, '0');
             await expect(mainPage.viewport).toHaveScreenshot(
               'flex-element-margin-vert-0.png',
               { mask: mainPage.maskViewport() },
@@ -617,8 +641,9 @@ demoAccountFileTest.describe(() => {
         await demoAccountFileTest.step(
           'Set flex element margin Horizontal to 0',
           async () => {
-            await designPanelPage.changeFlexElementMargin('Horizontal', '0');
+            await layoutItem.changeMargin(ElementMargin.Horizontal, '0');
             await mainPage.waitForChangeIsSaved();
+            await layoutItem.checkMargin(ElementMargin.Horizontal, '0');
             await expect(mainPage.viewport).toHaveScreenshot(
               'flex-element-margin-horizontal-0.png',
               { mask: mainPage.maskViewport() },

@@ -155,15 +155,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.flexLayoutCollapsedIcon = page.locator(
       'div[class*="layout_container"] button:has([href="#icon-arrow-right"])',
     );
-    this.flexElementAlignStartBtn = page.getByTestId('align-self-start');
-    this.flexElementAlignCenterBtn = page.getByTestId('align-self-center');
-    this.flexElementAlignEndBtn = page.getByTestId('align-self-end');
-    this.flexElementMarginVertInput = page.getByRole('textbox', {
-      name: 'Vertical margin',
-    });
-    this.flexElementMarginHorizontalInput = page.getByRole('textbox', {
-      name: 'Horizontal margin',
-    });
     this.flexElementPositionAbsolute = page.locator(
       'label[for=":absolute-position"] span',
     );
@@ -205,12 +196,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.percentMenuItem = page.getByRole('option').filter({ hasText: '%' });
     this.layoutRemoveButton = page.getByRole('button', { name: 'Remove layout' });
     this.layoutAddButton = page.getByRole('button', { name: 'Add layout' });
-    this.layoutDirectRowBtn = page.getByTitle('Row', { exact: true });
-    this.layoutDirectRowReverseBtn = page.getByTitle('Row reverse', { exact: true });
-    this.layoutDirectColumnBtn = page.getByTitle('Column', { exact: true });
-    this.layoutDirectColumnReverseBtn = page.getByTitle('Column reverse', {
-      exact: true,
-    });
     this.layoutAlignStartBtn = page.getByTitle('Align items start', { exact: true });
     this.layoutAlignCenterBtn = page.getByTitle('Align items center', {
       exact: true,
@@ -543,34 +528,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
   async isFlexElementSectionOpened() {
     await expect(this.flexElementMenu).toBeVisible();
-  }
-
-  async changeFlexElementAlignment(alignment) {
-    switch (alignment) {
-      case 'Start':
-        await this.flexElementAlignStartBtn.click();
-        break;
-      case 'Center':
-        await this.flexElementAlignCenterBtn.click();
-        break;
-      case 'End':
-        await this.flexElementAlignEndBtn.click();
-        break;
-    }
-  }
-
-  async changeFlexElementMargin(type, value) {
-    switch (type) {
-      case 'Vertical':
-        await this.flexElementMarginVertInput.clear();
-        await this.flexElementMarginVertInput.pressSequentially(value);
-        break;
-      case 'Horizontal':
-        await this.flexElementMarginHorizontalInput.clear();
-        await this.flexElementMarginHorizontalInput.pressSequentially(value);
-        break;
-    }
-    await this.clickOnEnter();
   }
 
   async setComponentColor(color) {
@@ -1459,24 +1416,6 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       await this.flexLayoutCollapsedIcon.click();
     }
     await expect(this.gridLayoutMenu).toBeVisible();
-  }
-
-  async changeLayoutDirection(direction, flex = true) {
-    flex ? await this.expandFlexLayoutMenu() : await this.expandGridLayoutMenu();
-    switch (direction) {
-      case 'Row':
-        await this.layoutDirectRowBtn.click();
-        break;
-      case 'Row reverse':
-        await this.layoutDirectRowReverseBtn.click();
-        break;
-      case 'Column':
-        await this.layoutDirectColumnBtn.click();
-        break;
-      case 'Column reverse':
-        await this.layoutDirectColumnReverseBtn.click();
-        break;
-    }
   }
 
   /** @param {'Wrap' | 'No wrap'} wrap */

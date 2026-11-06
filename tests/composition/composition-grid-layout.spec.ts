@@ -1,5 +1,10 @@
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import {
+  LayoutContainerSectionComponent,
+  LayoutDirection,
+} from '@pages/workspace/right-sidebar/design-tab/layout-container-section-component';
+import { WorkspacePage } from '@pages/workspace/workspace-page';
 import { InspectPanelPage } from '@pages/workspace/inspect-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { expect } from '@playwright/test';
@@ -8,6 +13,7 @@ import { qase } from 'playwright-qase-reporter/playwright';
 
 let colorPalettePage: ColorPalettePage;
 let designPanelPage: DesignPanelPage;
+let layoutContainer: LayoutContainerSectionComponent;
 let inspectPanelPage: InspectPanelPage;
 let layersPanelPage: LayersPanelPage;
 
@@ -16,6 +22,7 @@ demoAccountFileTest.use({ inNewTeam: true });
 
 demoAccountFileTest.beforeEach(async ({ page }) => {
   designPanelPage = new DesignPanelPage(page);
+  layoutContainer = new WorkspacePage(page).rightSidebar.design.layoutContainer;
   layersPanelPage = new LayersPanelPage(page);
   inspectPanelPage = new InspectPanelPage(page);
   colorPalettePage = new ColorPalettePage(page);
@@ -508,7 +515,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step(
         'Change direction to Column and duplicate image',
         async () => {
-          await designPanelPage.changeLayoutDirection('Column', false);
+          await layoutContainer.changeDirection(LayoutDirection.Column);
           await mainPage.waitForChangeIsSaved();
           await layersPanelPage.clickLayerOnLayersTab('mini_sample');
           await mainPage.duplicateLayerViaLayersTab('mini_sample');
@@ -538,7 +545,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step(
         'Change direction to Row and duplicate image',
         async () => {
-          await designPanelPage.changeLayoutDirection('Row', false);
+          await layoutContainer.changeDirection(LayoutDirection.Row);
           await mainPage.waitForChangeIsSaved();
           await layersPanelPage.clickLayerOnLayersTab('mini_sample');
           await mainPage.duplicateLayerViaLayersTab('mini_sample');
@@ -923,7 +930,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step(
         'Duplicate rectangle in column direction and verify',
         async () => {
-          await designPanelPage.changeLayoutDirection('Column', false);
+          await layoutContainer.changeDirection(LayoutDirection.Column);
           await mainPage.waitForChangeIsSaved();
           await layersPanelPage.clickLayerOnLayersTab('Rectangle');
           await mainPage.duplicateLayerViaLayersTab('Rectangle');
@@ -943,7 +950,7 @@ demoAccountFileTest.describe(() => {
           await mainPage.clickViewportOnce();
           await mainPage.clickCreatedBoardTitleOnCanvas();
           await mainPage.waitForChangeIsSaved();
-          await designPanelPage.changeLayoutDirection('Row', false);
+          await layoutContainer.changeDirection(LayoutDirection.Row);
           await mainPage.waitForChangeIsSaved();
           await layersPanelPage.clickLayerOnLayersTab('Rectangle');
           await mainPage.duplicateLayerViaLayersTab('Rectangle');
