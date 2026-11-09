@@ -350,6 +350,7 @@ demoAccountFileTest.describe('Comment bubbles', () => {
           await commentsPanelPage.areCommentBubblesVisible(['1', '2']);
           await mainPage.zoom(100, 100, 3);
           await commentsPanelPage.areCommentBubblesVisible(['1-2']);
+          await commentsPanelPage.checkCommentClusterCount('1-2', 2);
         },
       );
 

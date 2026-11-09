@@ -429,6 +429,14 @@ export class CommentsPanelPage extends BasePage {
     }
   }
 
+  /** Checks the number shown on a cluster bubble, e.g. index "1-2" shows "2". */
+  async checkCommentClusterCount(index: string, count: number) {
+    await expect(
+      this.commentThreadBubbleByIndex(index),
+      `Comment cluster "${index}" should show the count ${count}`,
+    ).toHaveText(String(count));
+  }
+
   async isUnreadCommentIconVisible(visible = true) {
     visible
       ? await expect(this.unreadCommentIcon).toBeVisible()
