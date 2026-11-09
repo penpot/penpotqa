@@ -10,6 +10,7 @@ export class InspectTabComponent extends BaseComponent {
   readonly colorSpaceSelect: Locator;
   readonly inspectTabSelect: Locator;
   readonly stylesRegion: Locator;
+  readonly layoutRows: Locator;
   readonly export: ExportSectionComponent;
 
   constructor(page: Page, root: Locator) {
@@ -21,6 +22,8 @@ export class InspectTabComponent extends BaseComponent {
       name: 'Switch inspect tab',
     });
     this.stylesRegion = root.getByRole('region', { name: 'Styles' });
+    // Only this container groups a Layout property's label with its value (no role or test id)
+    this.layoutRows = root.locator('div[class*="layout-row"]');
     this.export = new ExportSectionComponent(page, getExportSectionRoot(root));
   }
 
@@ -71,5 +74,20 @@ export class InspectTabComponent extends BaseComponent {
       this.root.getByRole('textbox'),
       'Inspect has no editable fields (read-only for viewers)',
     ).toHaveCount(0);
+  }
+
+  /**
+   * Checks a property of the Layout block in Inspect › Computed.
+   * @param label Property name as shown in the row (e.g. 'Row gap').
+   * @param value Expected value (e.g. '50px').
+   */
+  async checkLayoutProperty(label: string, value: string) {
+    const valueButton = this.layoutRows
+      .filter({ has: this.page.getByTitle(label, { exact: true }) })
+      .getByRole('button', { name: 'Copy' });
+    await expect(
+      valueButton,
+      `Inspect layout "${label}" should be ${value}`,
+    ).toHaveText(value);
   }
 }

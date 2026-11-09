@@ -1,5 +1,5 @@
 import { BaseComponent } from '@pages/base-component';
-import { type Locator, type Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 import {
   ExportSectionComponent,
   getExportSectionRoot,
@@ -18,6 +18,8 @@ export class DesignTabComponent extends BaseComponent {
   readonly gridCell: GridCellSectionComponent;
   readonly export: ExportSectionComponent;
   readonly gridLocateButton: Locator;
+  readonly gridEditExitButton: Locator;
+  readonly gridTrackTitles: Locator;
 
   constructor(page: Page, root: Locator) {
     super(page, root);
@@ -49,11 +51,39 @@ export class DesignTabComponent extends BaseComponent {
     );
     // In grid edit mode the Grid layout panel replaces the Layout section and has no accessible root
     this.gridLocateButton = root.getByRole('button', { name: 'Locate grid layout' });
+    this.gridEditExitButton = root.getByRole('button', { name: 'Exit' });
+    // Only this container groups a track's name with its values (no role or test id)
+    this.gridTrackTitles = root.locator('div[class*="track-title"]');
     this.export = new ExportSectionComponent(page, getExportSectionRoot(root));
   }
 
   /** Centers the viewport on the board being edited, with the Locate button of the Grid layout panel (grid edit mode). */
   async clickGridLocate() {
     await this.gridLocateButton.click();
+  }
+
+  /**
+   * Checks the Grid layout panel in grid edit mode: the Exit button and the column and
+   * row tracks with their values.
+   * @param columns Expected column track values (e.g. ['1fr', '1fr']).
+   * @param rows Expected row track values (e.g. ['1fr', '1fr']).
+   */
+  async checkGridEditModePanel(columns: string[], rows: string[]) {
+    await expect(
+      this.gridEditExitButton,
+      'Grid edit mode Exit button',
+    ).toBeVisible();
+    for (const [name, values] of [
+      [`Columns ${columns.length}`, columns],
+      [`Rows ${rows.length}`, rows],
+    ] as const) {
+      const track = this.gridTrackTitles.filter({
+        has: this.page.getByTitle(name, { exact: true }),
+      });
+      await expect(
+        track.getByTitle(values.join(', '), { exact: true }),
+        `Grid track "${name}" should be ${values.join(', ')}`,
+      ).toBeVisible();
+    }
   }
 }

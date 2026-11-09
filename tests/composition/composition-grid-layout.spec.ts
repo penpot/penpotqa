@@ -13,6 +13,7 @@ import {
   ElementMargin,
   LayoutItemSectionComponent,
 } from '@pages/workspace/right-sidebar/design-tab/layout-item-section-component';
+import { InspectTabComponent } from '@pages/workspace/right-sidebar/inspect-tab-component';
 import { DesignTabComponent } from '@pages/workspace/right-sidebar/design-tab/design-tab-component';
 import { WorkspacePage } from '@pages/workspace/workspace-page';
 import { InspectPanelPage } from '@pages/workspace/inspect-panel-page';
@@ -24,6 +25,7 @@ import { qase } from 'playwright-qase-reporter/playwright';
 let colorPalettePage: ColorPalettePage;
 let designPanelPage: DesignPanelPage;
 let design: DesignTabComponent;
+let inspect: InspectTabComponent;
 let layoutContainer: LayoutContainerSectionComponent;
 let gridCell: GridCellSectionComponent;
 let layoutItem: LayoutItemSectionComponent;
@@ -35,7 +37,7 @@ demoAccountFileTest.use({ inNewTeam: true });
 
 demoAccountFileTest.beforeEach(async ({ page }) => {
   designPanelPage = new DesignPanelPage(page);
-  design = new WorkspacePage(page).rightSidebar.design;
+  ({ design, inspectTabComponent: inspect } = new WorkspacePage(page).rightSidebar);
   ({ layoutContainer, gridCell, layoutItem } = design);
   layersPanelPage = new LayersPanelPage(page);
   inspectPanelPage = new InspectPanelPage(page);
@@ -85,10 +87,7 @@ demoAccountFileTest.describe(() => {
               mask: mainPage.maskViewport({ gridEditorToolbar: true }),
             },
           );
-          await designPanelPage.checkGridEditModePanel(
-            ['1fr', '1fr'],
-            ['1fr', '1fr'],
-          );
+          await design.checkGridEditModePanel(['1fr', '1fr'], ['1fr', '1fr']);
         },
       );
     },
@@ -110,10 +109,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step(
         'Verify canvas and columns panel with 30 columns',
         async () => {
-          await designPanelPage.checkGridEditModePanel(Array(32).fill('1fr'), [
-            '1fr',
-            '1fr',
-          ]);
+          await design.checkGridEditModePanel(Array(32).fill('1fr'), ['1fr', '1fr']);
           await expect(mainPage.viewport).toHaveScreenshot(
             'board-with-grid-3-30.png',
             {
@@ -283,14 +279,14 @@ demoAccountFileTest.describe(() => {
         async () => {
           await inspectPanelPage.openInspectTab();
           await inspectPanelPage.openComputedTab();
-          await inspectPanelPage.checkLayoutProperty('Row gap', '50px');
+          await inspect.checkLayoutProperty('Row gap', '50px');
         },
       );
 
       await demoAccountFileTest.step(
         '(1744) Verify grid board information on inspect tab',
         async () => {
-          await inspectPanelPage.checkLayoutProperty('Display', 'grid');
+          await inspect.checkLayoutProperty('Display', 'grid');
         },
       );
     },
@@ -310,7 +306,7 @@ demoAccountFileTest.describe(() => {
           await mainPage.addRowGridLayoutBtnClick();
           await mainPage.addColumnGridLayoutBtnClick();
           await mainPage.waitForChangeIsSaved();
-          await designPanelPage.checkGridEditModePanel(
+          await design.checkGridEditModePanel(
             ['1fr', '1fr', '1fr'],
             ['1fr', '1fr', '1fr'],
           );
@@ -659,7 +655,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Duplicate row and verify', async () => {
         await mainPage.duplicateGridRow();
         await mainPage.waitForChangeIsSaved();
-        await designPanelPage.checkGridEditModePanel(['1fr', '1fr'], ['1fr', '1fr']);
+        await design.checkGridEditModePanel(['1fr', '1fr'], ['1fr', '1fr']);
         await expect(mainPage.viewport).toHaveScreenshot(
           'board-with-image-duplicated-row.png',
           {
@@ -671,10 +667,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Add row below and verify', async () => {
         await mainPage.addGridRowBelow();
         await mainPage.waitForChangeIsSaved();
-        await designPanelPage.checkGridEditModePanel(
-          ['1fr', '1fr'],
-          ['1fr', '1fr', '1fr'],
-        );
+        await design.checkGridEditModePanel(['1fr', '1fr'], ['1fr', '1fr', '1fr']);
         await expect(mainPage.viewport).toHaveScreenshot(
           'board-with-image-add-row-below.png',
           {
@@ -686,7 +679,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Add column right and verify', async () => {
         await mainPage.addGridColumnRight();
         await mainPage.waitForChangeIsSaved();
-        await designPanelPage.checkGridEditModePanel(
+        await design.checkGridEditModePanel(
           ['1fr', '1fr', '1fr'],
           ['1fr', '1fr', '1fr'],
         );
@@ -818,10 +811,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Duplicate row and verify', async () => {
         await mainPage.duplicateGridRow();
         await mainPage.waitForChangeIsSaved();
-        await designPanelPage.checkGridEditModePanel(
-          ['1fr', '1fr'],
-          ['1fr', '1fr', '1fr'],
-        );
+        await design.checkGridEditModePanel(['1fr', '1fr'], ['1fr', '1fr', '1fr']);
         await expect(mainPage.viewport).toHaveScreenshot(
           'board-with-duplicated-row.png',
           {
@@ -833,7 +823,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Delete row and verify', async () => {
         await mainPage.deleteGridRow();
         await mainPage.waitForChangeIsSaved();
-        await designPanelPage.checkGridEditModePanel(['1fr', '1fr'], ['1fr', '1fr']);
+        await design.checkGridEditModePanel(['1fr', '1fr'], ['1fr', '1fr']);
         await expect(mainPage.viewport).toHaveScreenshot(
           'board-with-delete-row.png',
           {
@@ -845,10 +835,7 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step('Add row below and verify', async () => {
         await mainPage.addGridRowBelow();
         await mainPage.waitForChangeIsSaved();
-        await designPanelPage.checkGridEditModePanel(
-          ['1fr', '1fr'],
-          ['1fr', '1fr', '1fr'],
-        );
+        await design.checkGridEditModePanel(['1fr', '1fr'], ['1fr', '1fr', '1fr']);
         await expect(mainPage.viewport).toHaveScreenshot(
           'board-with-add-row-below.png',
           {
@@ -869,10 +856,7 @@ demoAccountFileTest.describe(() => {
           await mainPage.doubleClickBoardOnCanvas();
           await mainPage.changeGridRowLabel('100 PX');
           await mainPage.waitForChangeIsSaved();
-          await designPanelPage.checkGridEditModePanel(
-            ['1fr', '1fr'],
-            ['1fr', '100px'],
-          );
+          await design.checkGridEditModePanel(['1fr', '1fr'], ['1fr', '100px']);
         },
       );
 
@@ -1269,10 +1253,7 @@ demoAccountFileTest(
         await designPanelPage.enterGridCellValue(1, '200');
         await designPanelPage.enterGridCellValue(2, '200');
         await mainPage.waitForChangeIsSaved();
-        await designPanelPage.checkGridEditModePanel(
-          ['200px', '200px'],
-          ['200px', '200px'],
-        );
+        await design.checkGridEditModePanel(['200px', '200px'], ['200px', '200px']);
       },
     );
 
