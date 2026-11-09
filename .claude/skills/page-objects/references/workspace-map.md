@@ -64,7 +64,10 @@ pages/
         measures-section-component.ts
         fill-section-component.ts
         stroke-section-component.ts
-        layout-section-component.ts
+        blur-section-component.ts
+        layout-container-section-component.ts # Layout section (flex/grid board)
+        layout-item-section-component.ts      # Flex/Grid element section of a child
+        grid-cell-section-component.ts        # Grid cell section (grid edit mode)
         text-section-component.ts
       prototype-tab/               # prototype tab + flow / interactions sections
       inspect-tab-component.ts
@@ -77,7 +80,7 @@ pages/
 | Legacy file                                               | New home                                                                                                                                                                              |
 | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `workspace/main-page.js`                                  | Canvas actions → `viewport/`; drawing tools → `toolbar/`; navigation, save state → `workspace-page.ts`; context menu → `components/context-menu-component.ts`                         |
-| `workspace/design-panel-page.js`                          | One section component per right-sidebar section under `right-sidebar/design-tab/`                                                                                                     |
+| `workspace/design-panel-page.js`                          | One section component per right-sidebar section under `right-sidebar/design-tab/` (in progress: stroke, blur, layout container, layout item and grid cell are done)                   |
 | `workspace/layers-panel-page.js`                          | `left-sidebar/layers-panel-component.ts` (drop `extends MainPage`)                                                                                                                    |
 | `workspace/panels-features/pages-panel-page.ts`           | `left-sidebar/pages-panel-component.ts`                                                                                                                                               |
 | `workspace/assets-panel-page.js`                          | `left-sidebar/assets/`                                                                                                                                                                |

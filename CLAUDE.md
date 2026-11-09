@@ -43,6 +43,7 @@ All page interactions are abstracted into page objects under `pages/`:
 - **`base-page.js`** — Shared locators and methods (viewport, context menus, save state). All workspace page objects use these.
 - **`base-component.ts`** — Base class for component composition (shared by tokens and other TS page objects).
 - **`pages/workspace/`** — Editor page objects: `main-page.js` (canvas), `design-panel-page.js`, `layers-panel-page.js`, `assets-panel-page.js`, `color-palette-page.js`, `inspect-panel-page.js`, `view-mode-page.js`, `comments-panel-page.js`, `plugins-page.js`, `history-panel-page.js`
+- **`pages/workspace/workspace-page.ts`** — Composes the editor by UI region: `leftSidebar` (`pages/workspace/left-sidebar/`, e.g. `layers`), `rightSidebar.design` (`pages/workspace/right-sidebar/design-tab/`: `stroke`, `blur`, `layoutContainer`, `layoutItem`, `gridCell`, `export`). New locators and methods go in the component of their region, never in the legacy `*-page.js` files, which are migrated progressively (map in `.claude/skills/page-objects/references/workspace-map.md`).
 - **`pages/workspace/tokens/`** — Design tokens feature (TypeScript). Uses `BaseComponent` as base class with a component composition pattern: `TokensBasePage` composes `SetsComponent`, `ThemesComponent`, `ToolsComponent`, and token-type components.
 - **`pages/dashboard/`** — Dashboard and team management: `dashboard-page.js`, `team-page.js`, `dashboard-deleted-page.ts`
 - **`pages/login-page.js`**, **`register-page.js`**, **`profile-page.js`**, **`forgot-password-page.js`** — Auth flows

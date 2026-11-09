@@ -2,6 +2,8 @@ import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { BlurSectionComponent } from '@pages/workspace/right-sidebar/design-tab/blur-section-component';
+import { WorkspacePage } from '@pages/workspace/workspace-page';
 import { expect } from '@playwright/test';
 import { demoAccountFileTest } from 'fixtures';
 import { SampleData } from 'helpers/sample-data';
@@ -11,10 +13,12 @@ let assetsPanelPage: AssetsPanelPage;
 let colorPalettePage: ColorPalettePage;
 let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
+let blur: BlurSectionComponent;
 
 demoAccountFileTest.beforeEach(async ({ page }) => {
   layersPanelPage = new LayersPanelPage(page);
   designPanelPage = new DesignPanelPage(page);
+  blur = new WorkspacePage(page).rightSidebar.design.blur;
   colorPalettePage = new ColorPalettePage(page);
   assetsPanelPage = new AssetsPanelPage(page);
 });
@@ -174,7 +178,7 @@ demoAccountFileTest.describe(() => {
         async () => {
           await layersPanelPage.clickMainComponentOnLayersTab();
           await mainPage.waitForChangeIsSaved();
-          await designPanelPage.clickAddBlurButton();
+          await blur.addBlur();
           await mainPage.waitForChangeIsSaved();
           await layersPanelPage.clickMainComponentOnLayersTab();
           await mainPage.waitForChangeIsSaved();

@@ -230,6 +230,14 @@ export class CommentsPanelPage extends BasePage {
       : await expect(this.commentClusterPreviewCard).not.toBeVisible();
   }
 
+  /** Checks that the hover card of an expanded cluster shows `text`. */
+  async checkCommentClusterPreviewText(text: string) {
+    await expect(
+      this.commentClusterPreviewCard,
+      `Comment cluster preview should show "${text}"`,
+    ).toContainText(text);
+  }
+
   async clickResolvedCommentThreadIcon() {
     await this.commentResolvedThreadIcon.waitFor({ state: 'visible' });
     await this.commentResolvedThreadIcon.hover();
@@ -427,6 +435,14 @@ export class CommentsPanelPage extends BasePage {
     for (const bubbleIndex of bubblesIndexes) {
       await expect(this.commentThreadBubbleByIndex(bubbleIndex)).toBeVisible();
     }
+  }
+
+  /** Checks the number shown on a cluster bubble, e.g. index "1-2" shows "2". */
+  async checkCommentClusterCount(index: string, count: number) {
+    await expect(
+      this.commentThreadBubbleByIndex(index),
+      `Comment cluster "${index}" should show the count ${count}`,
+    ).toHaveText(String(count));
   }
 
   async isUnreadCommentIconVisible(visible = true) {

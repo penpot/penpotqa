@@ -2,8 +2,6 @@ import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { ProfilePage } from '@pages/profile-page';
 import { CommentsPanelPage } from '@pages/workspace/comments-panel-page';
-import { MainPage } from '@pages/workspace/main-page';
-import { expect } from '@playwright/test';
 import { demoAccountFileTest, demoTeamWithInviteeTest } from 'fixtures';
 import { openTeamFile } from 'helpers/teams/open-team-file';
 import { InvitationRole } from 'helpers/teams/invitation-role';
@@ -12,13 +10,6 @@ import { setDemoUserName } from 'helpers/accounts/set-demo-user-name';
 
 let commentsPanelPage: CommentsPanelPage;
 let profilePage: ProfilePage;
-
-function commentScreenshotMask(mainPage: MainPage) {
-  return mainPage.maskViewport({ usersSection: true }, [
-    commentsPanelPage.commentsAuthorSection,
-    commentsPanelPage.commentAvatarImage,
-  ]);
-}
 
 demoAccountFileTest.describe('Single comment thread actions', () => {
   demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
@@ -332,19 +323,10 @@ demoAccountFileTest.describe('Comment bubbles', () => {
       [3638],
       'Hover over an avatar in an expanded comment cluster shows a comment preview',
     ),
-    async ({ page, mainPage }) => {
-      const comment = 'Test Comment';
+    async ({ mainPage }) => {
+      const comments = ['First comment', 'Second comment'];
       const xAxisCommentsCoordinates = [100, 50];
       const yAxisCommentsCoordinates = [150, 50];
-
-      await demoAccountFileTest.step(
-        'Setup: give the user a fixed name (shown in the snapshots)',
-        async () => {
-          await setDemoUserName(page.context().request, 'QA Tester');
-          await page.reload();
-          await mainPage.isMainPageLoaded();
-        },
-      );
 
       await demoAccountFileTest.step(
         'Create two comments close together',
@@ -356,7 +338,7 @@ demoAccountFileTest.describe('Comment bubbles', () => {
               yAxisCommentsCoordinates[i],
               2,
             );
-            await commentsPanelPage.postComment(comment);
+            await commentsPanelPage.postComment(comments[i]);
             await commentsPanelPage.checkCommentCountInList(i + 1);
           }
         },
@@ -368,11 +350,7 @@ demoAccountFileTest.describe('Comment bubbles', () => {
           await commentsPanelPage.areCommentBubblesVisible(['1', '2']);
           await mainPage.zoom(100, 100, 3);
           await commentsPanelPage.areCommentBubblesVisible(['1-2']);
-
-          await mainPage.hideRulersViaMainMenu();
-          await expect(page).toHaveScreenshot('comment-cluster-merged.png', {
-            mask: commentScreenshotMask(mainPage),
-          });
+          await commentsPanelPage.checkCommentClusterCount('1-2', 2);
         },
       );
 
@@ -381,10 +359,6 @@ demoAccountFileTest.describe('Comment bubbles', () => {
         async () => {
           await commentsPanelPage.clickCommentThreadBubbleByIndex('1-2');
           await commentsPanelPage.areCommentBubblesVisible(['1', '2']);
-
-          await expect(page).toHaveScreenshot('comment-cluster-expanded.png', {
-            mask: commentScreenshotMask(mainPage),
-          });
         },
       );
 
@@ -393,9 +367,9 @@ demoAccountFileTest.describe('Comment bubbles', () => {
         async () => {
           await commentsPanelPage.hoverCommentThreadBubbleByIndex('1');
           await commentsPanelPage.isCommentClusterPreviewDisplayed();
-          await expect(page).toHaveScreenshot('comment-cluster-preview.png', {
-            mask: commentScreenshotMask(mainPage),
-          });
+          await commentsPanelPage.checkCommentClusterPreviewText(comments[0]);
+          await commentsPanelPage.hoverCommentThreadBubbleByIndex('2');
+          await commentsPanelPage.checkCommentClusterPreviewText(comments[1]);
         },
       );
     },

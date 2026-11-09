@@ -1,6 +1,8 @@
-import { PathEditorPage } from '@pages/workspace/toolbar/path-editor/path-editor-page';
+import {
+  PathEditorPage,
+  PathToolbarAction,
+} from '@pages/workspace/toolbar/path-editor/path-editor-page';
 import type { Point } from '@pages/workspace/toolbar/path-editor/path-geometry';
-import { expect } from '@playwright/test';
 import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
@@ -39,7 +41,12 @@ demoAccountFileTest.describe(() => {
     await pathEditorPage.waitForChangeIsSaved();
     await pathEditorPage.transformToPathViaRightClick();
     await pathEditorPage.waitForChangeIsSaved();
+    await pathEditorPage.layersPanelPage.isLayerNameDisplayed('Ellipse');
     await pathEditorPage.openNodesPanelViaRightClick();
+    await pathEditorPage.checkPathToolbarVisible();
+    await pathEditorPage.isToolbarButtonToggled(
+      pathEditorPage.nodePanelMoveNodesButton,
+    );
     await pathEditorPage.overlayComp.checkNodeCount(4);
     nodes = await getEllipseNodes();
   });
@@ -47,20 +54,23 @@ demoAccountFileTest.describe(() => {
   demoAccountFileTest(
     qase([545], 'Delete node (via Del/Backspace shortcut)'),
     async () => {
-      await demoAccountFileTest.step('Delete the top node with Delete', async () => {
+      await demoAccountFileTest.step('Click on the top node', async () => {
         await selectNodes(nodes.top);
+      });
+
+      await demoAccountFileTest.step('Press Delete', async () => {
         await pathEditorPage.pressDeleteKeyboardButton();
         await pathEditorPage.overlayComp.checkNodeCount(3);
       });
 
-      await demoAccountFileTest.step(
-        'Delete the left node with Backspace',
-        async () => {
-          await selectNodes(nodes.left);
-          await pathEditorPage.pressBackspaceKeyboardButton();
-          await pathEditorPage.overlayComp.checkNodeCount(2);
-        },
-      );
+      await demoAccountFileTest.step('Click on the left node', async () => {
+        await selectNodes(nodes.left);
+      });
+
+      await demoAccountFileTest.step('Press Backspace', async () => {
+        await pathEditorPage.pressBackspaceKeyboardButton();
+        await pathEditorPage.overlayComp.checkNodeCount(2);
+      });
     },
   );
 
@@ -68,63 +78,122 @@ demoAccountFileTest.describe(() => {
     qase([547], 'Merge nodes (via Node panel and CTRL+J shortcut)'),
     async () => {
       await demoAccountFileTest.step(
-        'Merge the top and right nodes via the node panel',
+        'Click on the top node, then Shift+click on the right node',
         async () => {
           await selectNodes(nodes.top, nodes.right);
-          await expect(
-            pathEditorPage.nodePanelMergeNodesButton,
-            'Merge nodes button should appear for 2 selected nodes',
-          ).toBeVisible();
-          await pathEditorPage.clickMergeNodesButtonOnNodePanel();
-          await pathEditorPage.overlayComp.checkNodeCount(3);
-        },
-      );
-
-      await demoAccountFileTest.step(
-        'Merge the bottom and left nodes with Ctrl+J',
-        async () => {
-          await selectNodes(nodes.bottom, nodes.left);
-          await expect(
-            pathEditorPage.nodePanelMergeNodesButton,
-            'Merge nodes button should appear for 2 selected nodes',
-          ).toBeVisible();
-          await pathEditorPage.pressCtrlJKeyboardShortcut();
-          await pathEditorPage.overlayComp.checkNodeCount(2);
-        },
-      );
-
-      let pathNodes: Point[];
-      let newLineNodes: Point[];
-      await demoAccountFileTest.step(
-        'Draw a separate line in Draw nodes mode',
-        async () => {
-          pathNodes = await pathEditorPage.overlayComp.getNodes();
-          await pathEditorPage.clickDrawNodesButtonOnNodePanel();
-          await pathEditorPage.clickViewportByCoordinates(200, 200);
-          await pathEditorPage.clickViewportByCoordinates(300, 350);
-          await pathEditorPage.clickOnESC();
-          await expect(
-            pathEditorPage.pathActionsBlock,
-            'Path editor should stay open after Esc',
-          ).toBeVisible();
-          await pathEditorPage.overlayComp.checkNodeCount(4);
-          newLineNodes = (await pathEditorPage.overlayComp.getNodes()).filter(
-            (node) => !pathNodes.some((p) => p.x === node.x && p.y === node.y),
+          await pathEditorPage.checkToolbarButtonVisible(
+            PathToolbarAction.MergeNodes,
           );
         },
       );
 
       await demoAccountFileTest.step(
-        'Merge a node of the new line with a node of the initial path',
+        'Click on the "Merge nodes (Ctrl+J)" button',
         async () => {
-          await pathEditorPage.clickMoveNodesButtonOnNodePanel();
-          await selectNodes(newLineNodes[0], pathNodes[0]);
-          await expect(
-            pathEditorPage.nodePanelMergeNodesButton,
-            'Merge nodes button should appear for nodes of 2 subpaths',
-          ).toBeVisible();
           await pathEditorPage.clickMergeNodesButtonOnNodePanel();
           await pathEditorPage.overlayComp.checkNodeCount(3);
+          await pathEditorPage.isToolbarButtonToggled(
+            pathEditorPage.nodePanelMoveNodesButton,
+          );
+          await pathEditorPage.isToolbarButtonToggled(
+            pathEditorPage.nodePanelDrawNodesButton,
+            false,
+          );
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Click on the bottom node, then Shift+click on the left node',
+        async () => {
+          await selectNodes(nodes.bottom, nodes.left);
+          await pathEditorPage.checkToolbarButtonVisible(
+            PathToolbarAction.MergeNodes,
+          );
+        },
+      );
+
+      await demoAccountFileTest.step('Press Ctrl+J', async () => {
+        await pathEditorPage.pressCtrlJKeyboardShortcut();
+        await pathEditorPage.overlayComp.checkNodeCount(2);
+        await pathEditorPage.isToolbarButtonToggled(
+          pathEditorPage.nodePanelMoveNodesButton,
+        );
+        await pathEditorPage.isToolbarButtonToggled(
+          pathEditorPage.nodePanelDrawNodesButton,
+          false,
+        );
+      });
+
+      let pathNodes: Point[];
+      let newLineNodes: Point[];
+      await demoAccountFileTest.step(
+        'Click on the "Draw nodes (P)" button',
+        async () => {
+          pathNodes = await pathEditorPage.overlayComp.getNodes();
+          await pathEditorPage.clickDrawNodesButtonOnNodePanel();
+          await pathEditorPage.isToolbarButtonToggled(
+            pathEditorPage.nodePanelDrawNodesButton,
+          );
+          await pathEditorPage.isToolbarButtonToggled(
+            pathEditorPage.nodePanelMoveNodesButton,
+            false,
+          );
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Click twice on an empty area of the viewport, away from the path',
+        async () => {
+          await pathEditorPage.clickViewportByCoordinates(200, 200);
+          await pathEditorPage.clickViewportByCoordinates(300, 350);
+        },
+      );
+
+      await demoAccountFileTest.step('Press Esc', async () => {
+        await pathEditorPage.clickOnESC();
+        await pathEditorPage.checkPathToolbarVisible();
+        await pathEditorPage.overlayComp.checkNodeCount(4);
+        newLineNodes = (await pathEditorPage.overlayComp.getNodes()).filter(
+          (node) => !pathNodes.some((p) => p.x === node.x && p.y === node.y),
+        );
+      });
+
+      await demoAccountFileTest.step(
+        'Click on the "Move nodes (M)" button',
+        async () => {
+          await pathEditorPage.clickMoveNodesButtonOnNodePanel();
+          await pathEditorPage.isToolbarButtonToggled(
+            pathEditorPage.nodePanelMoveNodesButton,
+          );
+          await pathEditorPage.isToolbarButtonToggled(
+            pathEditorPage.nodePanelDrawNodesButton,
+            false,
+          );
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Click on one end node of the new line, then Shift+click on a node of the initial path',
+        async () => {
+          await selectNodes(newLineNodes[0], pathNodes[0]);
+          await pathEditorPage.checkToolbarButtonVisible(
+            PathToolbarAction.MergeNodes,
+          );
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Click on the "Merge nodes (Ctrl+J)" button',
+        async () => {
+          await pathEditorPage.clickMergeNodesButtonOnNodePanel();
+          await pathEditorPage.overlayComp.checkNodeCount(3);
+          await pathEditorPage.isToolbarButtonToggled(
+            pathEditorPage.nodePanelMoveNodesButton,
+          );
+          await pathEditorPage.isToolbarButtonToggled(
+            pathEditorPage.nodePanelDrawNodesButton,
+            false,
+          );
         },
       );
     },
@@ -134,36 +203,43 @@ demoAccountFileTest.describe(() => {
     qase([548], 'Join nodes (via Node panel and J shortcut)'),
     async () => {
       await demoAccountFileTest.step(
-        'Join the top and bottom nodes via the node panel',
+        'Click on the top node, then Shift+click on the bottom node',
         async () => {
           await selectNodes(nodes.top, nodes.bottom);
-          await expect(
-            pathEditorPage.nodePanelJoinNodesButton,
-            'Join nodes button should appear for 2 unjoined nodes',
-          ).toBeVisible();
-          await pathEditorPage.clickJoinNodesButtonOnNodePanel();
-          await expect(
-            pathEditorPage.nodePanelJoinNodesButton,
-            'Join nodes button should disappear once the nodes are joined',
-          ).toBeHidden();
+          await pathEditorPage.checkToolbarButtonVisible(
+            PathToolbarAction.JoinNodes,
+          );
         },
       );
 
       await demoAccountFileTest.step(
-        'Join the right and left nodes with J',
+        'Click on the "Join nodes (J)" button',
         async () => {
-          await selectNodes(nodes.right, nodes.left);
-          await expect(
-            pathEditorPage.nodePanelJoinNodesButton,
-            'Join nodes button should appear for 2 unjoined nodes',
-          ).toBeVisible();
-          await pathEditorPage.pressKeyboardShortcut('J');
-          await expect(
-            pathEditorPage.nodePanelJoinNodesButton,
-            'Join nodes button should disappear once the nodes are joined',
-          ).toBeHidden();
+          await pathEditorPage.clickJoinNodesButtonOnNodePanel();
+          await pathEditorPage.checkToolbarButtonVisible(
+            PathToolbarAction.JoinNodes,
+            false,
+          );
         },
       );
+
+      await demoAccountFileTest.step(
+        'Click on the right node, then Shift+click on the left node',
+        async () => {
+          await selectNodes(nodes.right, nodes.left);
+          await pathEditorPage.checkToolbarButtonVisible(
+            PathToolbarAction.JoinNodes,
+          );
+        },
+      );
+
+      await demoAccountFileTest.step('Press J', async () => {
+        await pathEditorPage.pressKeyboardShortcut('J');
+        await pathEditorPage.checkToolbarButtonVisible(
+          PathToolbarAction.JoinNodes,
+          false,
+        );
+      });
     },
   );
 
@@ -171,89 +247,83 @@ demoAccountFileTest.describe(() => {
     qase([549], 'Separate nodes (via Node panel and K shortcut)'),
     async () => {
       await demoAccountFileTest.step(
-        'Separate the top and right nodes via the node panel',
+        'Click on the top node, then Shift+click on the right node',
         async () => {
           await selectNodes(nodes.top, nodes.right);
-          await expect(
-            pathEditorPage.nodePanelSeparateNodesButton,
-            'Separate nodes button should appear for 2 joined nodes',
-          ).toBeVisible();
-          await pathEditorPage.clickSeparateNodesButtonOnNodePanel();
-          await expect(
-            pathEditorPage.nodePanelSeparateNodesButton,
-            'Separate nodes button should disappear once the nodes are separated',
-          ).toBeHidden();
-          await expect(
-            pathEditorPage.nodePanelJoinNodesButton,
-            'Join nodes button should appear once the nodes are separated',
-          ).toBeVisible();
+          await pathEditorPage.checkToolbarButtonVisible(
+            PathToolbarAction.SeparateNodes,
+          );
         },
       );
 
       await demoAccountFileTest.step(
-        'Separate the bottom and left nodes with K',
+        'Click on the "Separate nodes (K)" button',
         async () => {
-          await selectNodes(nodes.bottom, nodes.left);
-          await expect(
-            pathEditorPage.nodePanelSeparateNodesButton,
-            'Separate nodes button should appear for 2 joined nodes',
-          ).toBeVisible();
-          await pathEditorPage.pressKeyboardShortcut('K');
-          await expect(
-            pathEditorPage.nodePanelSeparateNodesButton,
-            'Separate nodes button should disappear once the nodes are separated',
-          ).toBeHidden();
-          await expect(
-            pathEditorPage.nodePanelJoinNodesButton,
-            'Join nodes button should appear once the nodes are separated',
-          ).toBeVisible();
+          await pathEditorPage.clickSeparateNodesButtonOnNodePanel();
+          await pathEditorPage.checkToolbarButtonVisible(
+            PathToolbarAction.SeparateNodes,
+            false,
+          );
+          await pathEditorPage.checkToolbarButtonVisible(
+            PathToolbarAction.JoinNodes,
+          );
         },
       );
+
+      await demoAccountFileTest.step(
+        'Click on the bottom node, then Shift+click on the left node',
+        async () => {
+          await selectNodes(nodes.bottom, nodes.left);
+          await pathEditorPage.checkToolbarButtonVisible(
+            PathToolbarAction.SeparateNodes,
+          );
+        },
+      );
+
+      await demoAccountFileTest.step('Press K', async () => {
+        await pathEditorPage.pressKeyboardShortcut('K');
+        await pathEditorPage.checkToolbarButtonVisible(
+          PathToolbarAction.SeparateNodes,
+          false,
+        );
+        await pathEditorPage.checkToolbarButtonVisible(PathToolbarAction.JoinNodes);
+      });
     },
   );
 
   demoAccountFileTest(
     qase([550], 'To corner (via Node panel and X shortcut) - single node'),
     async () => {
+      await demoAccountFileTest.step('Click on the top node', async () => {
+        await selectNodes(nodes.top);
+        await pathEditorPage.checkToolbarButtonVisible(PathToolbarAction.ToCorner);
+      });
+
       await demoAccountFileTest.step(
-        'Change the top node to corner via the node panel',
+        'Click on the "To corner (X)" button',
         async () => {
-          await selectNodes(nodes.top);
-          await expect(
-            pathEditorPage.nodePanelToCornerButton,
-            'To corner button should appear for a curve node',
-          ).toBeVisible();
           await pathEditorPage.clickToCornerButtonOnNodePanel();
-          await expect(
-            pathEditorPage.nodePanelToCornerButton,
-            'To corner button should disappear once the node is a corner',
-          ).toBeHidden();
-          await expect(
-            pathEditorPage.nodePanelToCurveButton,
-            'To curve button should appear once the node is a corner',
-          ).toBeVisible();
+          await pathEditorPage.checkToolbarButtonVisible(
+            PathToolbarAction.ToCorner,
+            false,
+          );
+          await pathEditorPage.checkToolbarButtonVisible(PathToolbarAction.ToCurve);
         },
       );
 
-      await demoAccountFileTest.step(
-        'Change the right node to corner with X',
-        async () => {
-          await selectNodes(nodes.right);
-          await expect(
-            pathEditorPage.nodePanelToCornerButton,
-            'To corner button should appear for a curve node',
-          ).toBeVisible();
-          await pathEditorPage.pressKeyboardShortcut('X');
-          await expect(
-            pathEditorPage.nodePanelToCornerButton,
-            'To corner button should disappear once the node is a corner',
-          ).toBeHidden();
-          await expect(
-            pathEditorPage.nodePanelToCurveButton,
-            'To curve button should appear once the node is a corner',
-          ).toBeVisible();
-        },
-      );
+      await demoAccountFileTest.step('Click on the right node', async () => {
+        await selectNodes(nodes.right);
+        await pathEditorPage.checkToolbarButtonVisible(PathToolbarAction.ToCorner);
+      });
+
+      await demoAccountFileTest.step('Press X', async () => {
+        await pathEditorPage.pressKeyboardShortcut('X');
+        await pathEditorPage.checkToolbarButtonVisible(
+          PathToolbarAction.ToCorner,
+          false,
+        );
+        await pathEditorPage.checkToolbarButtonVisible(PathToolbarAction.ToCurve);
+      });
     },
   );
 });
@@ -262,62 +332,88 @@ demoAccountFileTest(
   qase([552], 'To curve (via Node panel and C shortcut) - single node'),
   async () => {
     let triangleNodes: Point[];
+
+    await demoAccountFileTest.step('Click on the "Path (P)" tool', async () => {
+      await pathEditorPage.clickCreatePathButton();
+      await pathEditorPage.checkPathToolActive();
+    });
+
     await demoAccountFileTest.step(
-      'Draw a closed path with 3 corner nodes',
+      'Click on an empty area of the viewport',
       async () => {
-        await pathEditorPage.clickCreatePathButton();
         await pathEditorPage.clickViewportByCoordinates(500, 200);
+        await pathEditorPage.checkPathToolbarVisible();
+      },
+    );
+
+    await demoAccountFileTest.step(
+      'Click on another area of the viewport',
+      async () => {
         await pathEditorPage.clickViewportByCoordinates(1200, 700);
+      },
+    );
+
+    await demoAccountFileTest.step(
+      'Click on a third area of the viewport',
+      async () => {
         await pathEditorPage.clickViewportByCoordinates(1000, 400);
-        await pathEditorPage.clickViewportByCoordinates(500, 200);
-        await expect(
-          pathEditorPage.pathActionsBlock,
-          'Path should stay open for editing once closed',
-        ).toBeVisible();
+      },
+    );
+
+    await demoAccountFileTest.step('Click on the starting node', async () => {
+      await pathEditorPage.clickViewportByCoordinates(500, 200);
+      await pathEditorPage.checkPathToolbarVisible();
+    });
+
+    await demoAccountFileTest.step(
+      'Click on the "Move nodes (M)" button',
+      async () => {
         await pathEditorPage.clickMoveNodesButtonOnNodePanel();
+        await pathEditorPage.isToolbarButtonToggled(
+          pathEditorPage.nodePanelMoveNodesButton,
+        );
         await pathEditorPage.overlayComp.checkNodeCount(3);
         triangleNodes = await pathEditorPage.overlayComp.getNodes();
       },
     );
 
     await demoAccountFileTest.step(
-      'Change the second node to curve via the node panel',
+      'Click on the second node of the path',
       async () => {
         await pathEditorPage.overlayComp.clickNode(triangleNodes[1]);
-        await expect(
-          pathEditorPage.nodePanelToCurveButton,
-          'To curve button should appear for a corner node',
-        ).toBeVisible();
-        await pathEditorPage.clickToCurveButtonOnNodePanel();
-        await expect(
-          pathEditorPage.nodePanelToCurveButton,
-          'To curve button should disappear once the node is a curve',
-        ).toBeHidden();
-        await expect(
-          pathEditorPage.nodePanelToCornerButton,
-          'To corner button should appear once the node is a curve',
-        ).toBeVisible();
+        await pathEditorPage.checkToolbarButtonVisible(PathToolbarAction.ToCurve);
       },
     );
 
     await demoAccountFileTest.step(
-      'Change the third node to curve with C',
+      'Click on the "To curve (C)" button',
       async () => {
-        await pathEditorPage.overlayComp.clickNode(triangleNodes[2]);
-        await expect(
-          pathEditorPage.nodePanelToCurveButton,
-          'To curve button should appear for a corner node',
-        ).toBeVisible();
-        await pathEditorPage.pressKeyboardShortcut('C');
-        await expect(
-          pathEditorPage.nodePanelToCurveButton,
-          'To curve button should disappear once the node is a curve',
-        ).toBeHidden();
-        await expect(
-          pathEditorPage.nodePanelToCornerButton,
-          'To corner button should appear once the node is a curve',
-        ).toBeVisible();
+        await pathEditorPage.clickToCurveButtonOnNodePanel();
+        await pathEditorPage.checkToolbarButtonVisible(
+          PathToolbarAction.ToCurve,
+          false,
+        );
+        await pathEditorPage.checkToolbarButtonVisible(PathToolbarAction.ToCorner);
+        await pathEditorPage.checkHandlerBehaviourVisible();
       },
     );
+
+    await demoAccountFileTest.step(
+      'Click on the third node of the path',
+      async () => {
+        await pathEditorPage.overlayComp.clickNode(triangleNodes[2]);
+        await pathEditorPage.checkToolbarButtonVisible(PathToolbarAction.ToCurve);
+      },
+    );
+
+    await demoAccountFileTest.step('Press C', async () => {
+      await pathEditorPage.pressKeyboardShortcut('C');
+      await pathEditorPage.checkToolbarButtonVisible(
+        PathToolbarAction.ToCurve,
+        false,
+      );
+      await pathEditorPage.checkToolbarButtonVisible(PathToolbarAction.ToCorner);
+      await pathEditorPage.checkHandlerBehaviourVisible();
+    });
   },
 );

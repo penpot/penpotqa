@@ -15,9 +15,6 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
     this.textBlockOnInspect = page.locator(
       'div.main_ui_inspect_attributes_text__attributes-block',
     );
-    this.rowGapOnInspect = page.locator(
-      'div[class*="layout-row"] div[title="Row gap"]',
-    );
     this.codeTabButton = page.getByRole('tab', { name: 'code' });
     this.inspectTabSelector = page.getByRole('combobox', {
       name: 'Switch inspect tab',
@@ -51,10 +48,6 @@ exports.InspectPanelPage = class InspectPanelPage extends BasePage {
 
   async isAnnotationExistOnInspectTab() {
     await expect(this.annotationBlockOnInspect).toBeVisible();
-  }
-
-  async isRowGapExistOnInspectTab() {
-    await expect(this.rowGapOnInspect).toBeVisible();
   }
 
   getPropertyRow(label) {

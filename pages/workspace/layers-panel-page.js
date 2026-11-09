@@ -210,6 +210,10 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     }
   }
 
+  /**
+   * Checks that a layer with this exact name is visible on the layers tab.
+   * @param {string} name Layer name.
+   */
   async isLayerNameDisplayed(name) {
     await expect(
       this.layersRows.getByText(name, { exact: true }).first(),
@@ -217,6 +221,11 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     ).toBeVisible();
   }
 
+  /**
+   * Checks how many layers with this exact name are on the layers tab.
+   * @param {string} name Layer name.
+   * @param {number} count Expected number of layers.
+   */
   async isNumLayerNameVisible(name, count) {
     await expect(
       this.layersRows.getByText(name, { exact: true }),
@@ -577,13 +586,20 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     await this.mainComponentLayerSelected.waitFor({ state: 'visible' });
   }
 
+  /**
+   * Checks whether the main component row of the layers tab shows a name.
+   * @param {string} name Text expected in the main component row.
+   * @param {boolean} [visible=true] Expected state.
+   */
   async isMainComponentOnLayersTabVisibleWithName(name, visible = true) {
     visible
       ? await expect(
           this.mainComponentLayer.locator('//../..').getByText(name),
+          `Main component "${name}" is visible on the layers tab`,
         ).toBeVisible()
       : await expect(
           this.mainComponentLayer.locator('//../..').getByText(name),
+          `Main component "${name}" is not visible on the layers tab`,
         ).not.toBeVisible();
   }
 
@@ -597,8 +613,12 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
         ).not.toBeVisible();
   }
 
+  /** Checks that a path layer (its icon) is shown on the layers tab. */
   async isPathComponentOnLayersTabVisible() {
-    await expect(this.pathComponentLayer).toBeVisible();
+    await expect(
+      this.pathComponentLayer,
+      'Path layer icon is visible on the layers tab',
+    ).toBeVisible();
   }
 
   async isLayerWithNameSelected(name, selected = true) {
@@ -612,8 +632,15 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     await expect(this.variantLayer).toHaveCount(expectedCount);
   }
 
+  /**
+   * Checks how many component copy layers are on the layers tab.
+   * @param {number} expectedCount Expected number of copies.
+   */
   async checkCopyComponentLayerCount(expectedCount) {
-    await expect(this.copyComponentLayer).toHaveCount(expectedCount);
+    await expect(
+      this.copyComponentLayer,
+      `${expectedCount} component copy layer(s) on the layers tab`,
+    ).toHaveCount(expectedCount);
   }
 
   async isVariantLayerVisible(visible = true) {
@@ -643,6 +670,10 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
     }
   }
 
+  /**
+   * Checks how many layer rows the Layers panel shows (children of collapsed layers aren't shown).
+   * @param {number} count Expected number of rows.
+   */
   async isVisibleLayersCount(count) {
     await expect(
       this.layersRows,
