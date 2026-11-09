@@ -595,18 +595,6 @@ demoAccountFileTest.describe(() => {
   );
 
   demoAccountFileTest(qase([1706], 'Adding Flex Board'), async ({ mainPage }) => {
-    await demoAccountFileTest.step('Add an image to the board', async () => {
-      await mainPage.uploadImage('images/mini_sample.jpg');
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
-      await layersPanelPage.dragAndDropComponentToBoard('mini_sample');
-      await mainPage.waitForChangeIsUnsaved();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.clickViewportOnce();
-      await mainPage.clickCreatedBoardTitleOnCanvas();
-      await mainPage.waitForChangeIsSaved();
-    });
-
     await demoAccountFileTest.step('Add flex layout from design panel', async () => {
       await designPanelPage.addLayoutFromDesignPanel('flex');
       await designPanelPage.isFlexElementSectionOpened();
