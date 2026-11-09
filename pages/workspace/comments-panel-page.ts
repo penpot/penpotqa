@@ -230,6 +230,14 @@ export class CommentsPanelPage extends BasePage {
       : await expect(this.commentClusterPreviewCard).not.toBeVisible();
   }
 
+  /** Checks that the hover card of an expanded cluster shows `text`. */
+  async checkCommentClusterPreviewText(text: string) {
+    await expect(
+      this.commentClusterPreviewCard,
+      `Comment cluster preview should show "${text}"`,
+    ).toContainText(text);
+  }
+
   async clickResolvedCommentThreadIcon() {
     await this.commentResolvedThreadIcon.waitFor({ state: 'visible' });
     await this.commentResolvedThreadIcon.hover();

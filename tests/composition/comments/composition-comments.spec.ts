@@ -324,7 +324,7 @@ demoAccountFileTest.describe('Comment bubbles', () => {
       'Hover over an avatar in an expanded comment cluster shows a comment preview',
     ),
     async ({ mainPage }) => {
-      const comment = 'Test Comment';
+      const comments = ['First comment', 'Second comment'];
       const xAxisCommentsCoordinates = [100, 50];
       const yAxisCommentsCoordinates = [150, 50];
 
@@ -338,7 +338,7 @@ demoAccountFileTest.describe('Comment bubbles', () => {
               yAxisCommentsCoordinates[i],
               2,
             );
-            await commentsPanelPage.postComment(comment);
+            await commentsPanelPage.postComment(comments[i]);
             await commentsPanelPage.checkCommentCountInList(i + 1);
           }
         },
@@ -367,6 +367,9 @@ demoAccountFileTest.describe('Comment bubbles', () => {
         async () => {
           await commentsPanelPage.hoverCommentThreadBubbleByIndex('1');
           await commentsPanelPage.isCommentClusterPreviewDisplayed();
+          await commentsPanelPage.checkCommentClusterPreviewText(comments[0]);
+          await commentsPanelPage.hoverCommentThreadBubbleByIndex('2');
+          await commentsPanelPage.checkCommentClusterPreviewText(comments[1]);
         },
       );
     },
