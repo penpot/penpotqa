@@ -16,7 +16,7 @@ the label, but the labels aren't always obvious, so prefer the number.
 | behavior   | 1 = Not set, 2 = Positive, 3 = Negative (many older cases have 1) |
 | automation | 0 = Not automated, 1 = To be automated, 2 = Automated             |
 | priority   | 0 = Not set, 1 = High, 2 = Medium, 3 = Low                        |
-| status     | 0 = Actual                                                        |
+| status     | 0 = Actual; Draft and Deprecated not confirmed yet (use labels)   |
 | layer      | 1 = E2E                                                           |
 | severity   | 0 = Not set                                                       |
 

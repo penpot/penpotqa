@@ -56,9 +56,9 @@ the header row, one test case per row.
   **severity** `undefined`, **type** `regression` or `nonregression` as
   agreed, **layer** `e2e` or `api`, **behavior** `positive` or `negative`,
   **automation_status** `to-be-automated` or `is-not-automated` as agreed,
-  **status** `actual`, **is_flaky** `no`. Is smoke is a custom field and
-  isn't in the CSV: set it in Qase after the import, together with To be
-  reviewed.
+  **status** `draft` (the team sets it to actual once reviewed), **is_flaky**
+  `no`. Is smoke is a custom field and isn't in the CSV: set it in Qase after
+  the import, together with Penpot Release.
 
 ## No double quotes inside step text
 
@@ -86,7 +86,7 @@ v2.id,title,description,preconditions,postconditions,steps_type,steps_actions,st
 ","1. """"
 2. """"
 3. """"
-",undefined,undefined,nonregression,e2e,positive,is-not-automated,actual,no
+",undefined,undefined,nonregression,e2e,positive,is-not-automated,draft,no
 ```
 
 ## Self-check before handing the file over

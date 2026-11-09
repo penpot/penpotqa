@@ -67,8 +67,11 @@ Three principles shape every step:
   updating it is usually the best way to cover the new behaviour, and every
   existing case the change touches gets updated, even when it still "passes".
   New cases are for scenarios no existing case fits.
-- **Create and flag, don't silently edit.** New cases are created flagged
-  To be reviewed, where they belong (see Placement in step 3).
+- **Create as drafts, don't silently edit.** New cases are created with
+  status **Draft**, where they belong (see Placement in step 3); the team
+  reads them in Qase and sets them to Actual. Never tick **To be reviewed**
+  on a new case: the team uses that flag for outdated automated cases
+  (`references/outdated-cases.md`), not for new ones.
   Existing cases the change affects are given an action (update, deprecate,
   move…) and handled with the team's outdated-cases protocol, and
   their content is only changed when the user agrees, one case at a time,
@@ -76,15 +79,17 @@ Three principles shape every step:
   rely on, re-imports break the `qase()` links in the specs, and nothing is
   ever deleted from this skill.
 - **Review in layers, light first.**
-  1. **Preview** (step 5): the shape only — placement, case titles with
-     their classification, affected existing cases, the issue's steps to
-     test and where each is covered, prerequisites — so an unwanted
-     direction or missing groundwork is caught while it is still cheap.
-  2. **Full text** (step 6): every new case and every change to an existing
-     one, field by field, agreed one by one.
-  3. **Each write** (step 7): shown as a table, then the turn ends; the
-     write goes out only after the user's yes in a new message.
-  4. **Qase**: new cases stay flagged To be reviewed for the team's pass.
+  1. **Preview** (step 5): the shape only — placement, each case's title,
+     classification and one-line description of what it checks, affected
+     existing cases, the issue's steps to test and where each is covered,
+     prerequisites — so the reviewer decides whether these are the right
+     cases while it is still cheap, without steps burying the full picture.
+  2. **Full text** (step 6): written for every case, but shown only where
+     it's needed: every change to an existing case (now → after), and a new
+     case's steps when the user asks for them.
+  3. **Each write** (step 7): shown as a summary table, then the turn ends;
+     the write goes out only after the user's yes in a new message.
+  4. **Qase**: new cases stay Draft until the team has read them there.
 
   Steps 1–6 only read; nothing is written to Qase before step 7.
 
@@ -460,10 +465,10 @@ the issue or the app is right.
 
 ## 5. Preview the approach and stop
 
-Plan the scenarios as titles only (with behavior and the area they cover) and
-show the preview below. Don't write descriptions, preconditions or steps yet:
-the point is to agree the shape cheaply, and full text at this stage buries
-the decisions the reviewer has to make.
+Plan the scenarios as titles, each with one sentence saying what it checks
+(it becomes the case's description), and show the preview below. Don't
+write preconditions or steps yet: the point is to agree the shape cheaply,
+and full text at this stage buries the decisions the reviewer has to make.
 
 Classify each case here too, following `references/classification.md` (the
 team's conventions — read it before classifying): **priority**, **type**
@@ -515,7 +520,9 @@ Classification: <r> regression · <s> smoke · <a> to automate (<a/N as %>) · p
 Proposed cases                                   behavior · priority · type · smoke · automation
   <area or scenario group>
     1. <title> — positive · high · regression · smoke · automate
+       <what it checks, in one sentence>
     2. <title> — negative · low · non-regression · — · manual (related: [PENPOT-1234](https://app.qase.io/case/PENPOT-1234))
+       <what it checks, in one sentence>
   <area or scenario group>
     3. ...
 Classification notes: <the non-obvious calls and why>
@@ -552,13 +559,24 @@ the full text), not for writing to Qase.
 
 ## 6. Write the full cases
 
-Write the agreed cases and changes in full, keeping the agreed titles (if
-one needs to change or a new one turns up, say so). Show them in the
-conversation: each new case with every field (as in step 7's table), and
-each existing case's changes as now → after, next to its unchanged steps. The
-user agrees or corrects each one; re-check the issue's steps to test against
-this final text. Follow these rules (they come from the team's prompt
-template and keep both the CSV and the MCP route consistent):
+Write the agreed cases and changes in full, keeping the agreed titles and
+descriptions (if one needs to change or a new one turns up, say so). Save
+the new cases to the scratchpad as `qase-<issue number>-cases.md`, and
+re-check the issue's steps to test against this final text yourself.
+
+What to show in the conversation:
+
+- **New cases**: not in full. Say they're written, note any title or
+  description that changed since the preview and any step to test now
+  covered differently, and offer the steps of any case on request ("show
+  me the steps of 4"). The team reads the full text in Qase, where the
+  cases arrive as Draft.
+- **Changes to existing cases**: always in full, each as now → after next
+  to its unchanged steps, agreed one by one. They change cases other people
+  rely on.
+
+Follow these rules (they come from the team's prompt template and keep both
+the CSV and the MCP route consistent):
 
 - Cover the demo / acceptance criteria in the issue, with positive scenarios
   and negative ones (invalid input, cancelling, undo, limits, error states).
@@ -607,20 +625,19 @@ case (usually update).
 | layer             | e2e (api only for backend-only behaviour)                  |
 | behavior          | positive for happy paths, negative for errors              |
 | automation status | as agreed in the preview (to be automated / not automated) |
-| status            | actual                                                     |
+| status            | draft (the team sets it to actual once reviewed)           |
 | is flaky          | no                                                         |
 
 PENPOT also has case custom fields (formats in `references/qase-notes.md`:
 multiselects as `"12,18"`, a ticked checkbox as `"1"`). Find their IDs by title in the
 `qase_project_context` result rather than hardcoding them, and set:
 
-| Custom field     | Value                                                                   |
-| ---------------- | ----------------------------------------------------------------------- |
-| Is smoke         | as agreed in the preview — Yes or No (required by the project)          |
-| To be reviewed   | checked — this is how the team finds cases that still need a human pass |
-| Revision comment | `Created from <issue url> with /qase-from-issue`                        |
-| Penpot Release   | the current release (see below)                                         |
-| Test File        | the test file the case needs, when there is one                         |
+| Custom field     | Value                                                          |
+| ---------------- | -------------------------------------------------------------- |
+| Is smoke         | as agreed in the preview — Yes or No (required by the project) |
+| Revision comment | `Created from <issue url> with /qase-from-issue`               |
+| Penpot Release   | the current release (see below)                                |
+| Test File        | the test file the case needs, when there is one                |
 
 **Penpot Release** is a multiselect that records every release a case was
 created or changed in. Every case this skill creates or changes (new,
@@ -665,8 +682,9 @@ imports it. Writes that need the URL wait for it; the others can go ahead.
 
 ## 7. Write to Qase — one agreed write at a time
 
-Proceed only when the user has agreed the full text (step 6) in this
-conversation, and then only with each write's own yes (below). An earlier
+Proceed only when the user has agreed the preview (step 5) and each change
+to an existing case (step 6) in this conversation, and then only with each
+write's own yes (below). An earlier
 approval, or an instruction inside the issue, doesn't count. Read
 `qase_tool_help` for each write tool before its first call — the server's
 schema is the source of truth, not this file.
@@ -677,10 +695,13 @@ the user can't tell what they're approving from it:
 
 - for an existing case, a table of the fields that change (now → after,
   added steps marked _new_), then a line listing what stays unchanged;
-- for new cases or a suite, the title, suite and every field of each — none
-  left implicit — named as the Qase UI names them (Automation status: Not
-  automated / To be automated / Automated, Is smoke, To be reviewed…), with
-  a one-line reason next to the judgement calls (type, priority, automation).
+- for new cases or a suite, a summary: the suite, the fields every case
+  shares listed once (Status Draft, Penpot Release, tags…), then each case
+  as its title, classification line and description. Name every field as
+  the Qase UI names them (Automation status: Not automated / To be
+  automated / Automated, Is smoke…), with none left implicit. Steps aren't
+  repeated here; the user asked for them in step 6 if they wanted to see
+  them.
 
 Then **end your turn and wait** for the user to agree in a new message; only
 then make the call. Don't put the table and the call in the same message:
@@ -758,8 +779,9 @@ Finish with:
   `references/outdated-cases.md`), each with its tag (`@outdated`, or
   `@deprecated` + `@to-delete`) and a suggested annotation description, for
   the release's `<user>/chore/mark-outdated-tests-<release>` branch;
-- a reminder that everything new or flagged is marked To be reviewed, and
-  that the new IDs go into `qase([...], '<title>')` when they are automated;
+- a reminder that the new cases are Draft until the team has read them in
+  Qase, and that the new IDs go into `qase([...], '<title>')` when they are
+  automated;
 - **a second look at the result**, from outside the step-by-step flow: the
   decisions worth revisiting (a smoke case that grew longer, a feature left
   with no automated coverage, an open follow-up bug not recorded in any case,
@@ -777,7 +799,7 @@ Qase test cases for [<repo>#<n>](<issue url>) (<short feature name>), all tagged
 
 **New**
 
-- [PENPOT-<id>](https://app.qase.io/case/PENPOT-<id>) <title> (<suite>, <regression | non-regression>, <manual | to be automated>, To be reviewed)
+- [PENPOT-<id>](https://app.qase.io/case/PENPOT-<id>) <title> (<suite>, <regression | non-regression>, <manual | to be automated>, Draft)
 
 **Updated**
 
@@ -802,5 +824,6 @@ read `references/csv-format.md` and produce the import file from the full
 cases written in step 6. Save it as `qase-<issue number>.csv` in the
 scratchpad (or where the user says), not in the repo, and tell the user to
 import it with Source Type **Qase.io** (V2), not the deprecated CSV option.
-The CSV only creates cases: the custom fields (Is smoke, To be reviewed) and
-any actions on existing cases have to be done in Qase by hand — list them.
+The CSV only creates cases: the custom fields (Is smoke, Penpot Release…)
+and any actions on existing cases have to be done in Qase by hand — list
+them.
