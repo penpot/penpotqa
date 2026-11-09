@@ -34,7 +34,8 @@ QA covers them as one app, and so does this skill:
   issue in `penpot/penpot`, a community post).
 
 Where Nitrate needs something different, the steps say so: where its cases
-live (step 3) and how to try it live (step 4).
+live (step 3), how to try it live (step 4) and the **nitrate** tag its
+cases carry (step 6).
 
 ## How to run it
 
@@ -638,6 +639,12 @@ multiselects as `"12,18"`, a ticked checkbox as `"1"`). Find their IDs by title 
 | Revision comment | `Created from <issue url> with /qase-from-issue`               |
 | Penpot Release   | the current release (see below)                                |
 | Test File        | the test file the case needs, when there is one                |
+
+**Tags**: every case of a Nitrate feature carries the tag **nitrate** (the
+team's convention, used by every case under Nitrate (Enterprise Plan)):
+new cases get it, and an updated or moved Nitrate case keeps it. Add it
+too to a case outside that suite when it tests Nitrate behaviour, e.g. a
+dashboard case about organizations.
 
 **Penpot Release** is a multiselect that records every release a case was
 created or changed in. Every case this skill creates or changes (new,

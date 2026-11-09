@@ -16,7 +16,7 @@ the label, but the labels aren't always obvious, so prefer the number.
 | behavior   | 1 = Not set, 2 = Positive, 3 = Negative (many older cases have 1) |
 | automation | 0 = Not automated, 1 = To be automated, 2 = Automated             |
 | priority   | 0 = Not set, 1 = High, 2 = Medium, 3 = Low                        |
-| status     | 0 = Actual; Draft and Deprecated not confirmed yet (use labels)   |
+| status     | 0 = Actual, 1 = Draft, 2 = Deprecated                             |
 | layer      | 1 = E2E                                                           |
 | severity   | 0 = Not set                                                       |
 
@@ -36,6 +36,11 @@ IDs are stable but look them up by title in `qase_project_context` anyway.
 | Revision comment (13) | string      | plain text                                                        |
 | Test File (16)        | text        | `[<file name>](<url>)`; `"None"` is how many cases mark "no file" |
 
+**Link in Taiga (1)** is a field for **defects**, not cases: sending it in a
+case write makes Qase reject the whole batch with "The field name is not
+valid". Check a field's `entity` (`qase_get` with `entity: "custom_field"`)
+before using one that isn't in this table.
+
 Penpot Release options so far: 2.4 = 1, 2.5 = 3 … 2.19 = 17, 2.20 = 18,
 future release = 2 (read the full list from `qase_project_context`).
 
@@ -51,6 +56,11 @@ A read returns a multiselect as **one entry per value** (`{"id": 2, "value":
   and preconditions). Whether leaving out a custom field keeps it hasn't been
   tested, so always send the case's other custom fields unchanged.
 - After every write, read the case back and compare it with the backup.
+- Right after a create, QQL doesn't find the new cases yet (its index lags
+  behind, even with `id in [...]`). Read them back with `qase_get`, one per
+  case with a `fields` projection.
+- Tags are sent by name (`"tags": ["nitrate"]`) and read back as
+  `{"title": "nitrate", "internal_id": 4}`.
 
 ## QQL limits
 
