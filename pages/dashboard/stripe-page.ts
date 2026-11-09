@@ -36,6 +36,8 @@ export class StripePage extends BasePage {
   readonly activePlanLink: Locator;
   // Only offered on Unlimited — Enterprise's plan page never shows it.
   readonly updatePlanLink: Locator;
+  // Plan page: a link to the review page. Review page: the confirm button.
+  readonly cancelPlanLink: Locator;
   readonly cancelPlanButton: Locator;
   readonly cancellationReasonDropdown: Locator;
   readonly cancellationReasonOption: Locator;
@@ -43,6 +45,8 @@ export class StripePage extends BasePage {
   readonly planCanceledHeading: Locator;
   readonly planCanceledReturnButton: Locator;
   readonly canceledBadge: Locator;
+  // Plan page: a link to the review page. Review page: the confirm button.
+  readonly reactivatePlanLink: Locator;
   readonly reactivatePlanButton: Locator;
   // Penpot's own subscription panel, not Stripe's — shown once canceled.
   readonly cancelsEnds: Locator;
@@ -115,6 +119,7 @@ export class StripePage extends BasePage {
       name: /Penpot (Enterprise|Unlimited)/,
     });
     this.updatePlanLink = page.getByRole('link', { name: 'Update plan' });
+    this.cancelPlanLink = page.getByRole('link', { name: 'Cancel plan' });
     this.cancelPlanButton = page.getByRole('button', { name: 'Cancel plan' });
     this.cancellationReasonDropdown = page.getByRole('button', {
       name: 'Reason for cancellation (optional)',
@@ -130,6 +135,7 @@ export class StripePage extends BasePage {
       name: 'Return to Overview',
     });
     this.canceledBadge = page.getByText('Canceled', { exact: true });
+    this.reactivatePlanLink = page.getByRole('link', { name: 'Reactivate plan' });
     this.reactivatePlanButton = page.getByRole('button', {
       name: 'Reactivate plan',
     });
@@ -403,7 +409,12 @@ export class StripePage extends BasePage {
         ).not.toBeVisible();
   }
 
-  /** Same locator, reused after the full navigation to the review page. */
+  /** Assumes clickOnActivePlanLink() already; navigates to the review page. */
+  async clickOnCancelPlanLink() {
+    await this.cancelPlanLink.click();
+  }
+
+  /** Assumes isReviewChangesHeadingVisible() already; confirms the cancellation. */
   async clickOnCancelPlanButton() {
     await this.cancelPlanButton.click();
   }
@@ -431,6 +442,11 @@ export class StripePage extends BasePage {
       : await expect(this.canceledBadge).not.toBeVisible();
   }
 
+  /** Assumes clickOnActivePlanLink() already; navigates to the review page. */
+  async clickOnReactivatePlanLink() {
+    await this.reactivatePlanLink.click();
+  }
+
   async clickOnReactivatePlanButton() {
     await this.reactivatePlanButton.click();
   }
@@ -442,7 +458,7 @@ export class StripePage extends BasePage {
   /** Assumes isOnStripeBillingPage() already. */
   async cancelSubscription() {
     await this.clickOnActivePlanLink();
-    await this.clickOnCancelPlanButton();
+    await this.clickOnCancelPlanLink();
     await this.isReviewChangesHeadingVisible();
     await this.selectCancellationReason();
     await this.clickOnCancelPlanButton();
@@ -450,10 +466,10 @@ export class StripePage extends BasePage {
     await this.clickOnPlanCanceledReturnButton();
   }
 
-  /** Assumes isOnStripeBillingPage() already; clicks twice (open, then confirm). */
+  /** Assumes isOnStripeBillingPage() already; opens the review page, then confirms. */
   async reactivateSubscription() {
     await this.clickOnActivePlanLink();
-    await this.clickOnReactivatePlanButton();
+    await this.clickOnReactivatePlanLink();
     await this.clickOnReactivatePlanButton();
   }
 
