@@ -2513,6 +2513,15 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.typographyTokenButton.first().hover();
   }
 
+  /**
+   * Hovers the typography token applied in the Text section and checks the
+   * resolved values in its tooltip. Only the values passed are checked. Then
+   * moves the mouse away so the tooltip doesn't cover the next interaction.
+   * @param {string} name - Typography token name.
+   * @param {{fontFamily?: string, fontSize?: string, fontWeight?: string,
+   *   letterSpacing?: string, textCase?: string, textDecoration?: string,
+   *   lineHeight?: string}} [values] - Expected resolved values.
+   */
   async hoverAndAssertTypographyTokenValues(
     name,
     {
@@ -2564,9 +2573,16 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       await test.step(`Assert ${label} is: ${value}`, async () => {
         await expect(
           typographyModal.getByText(line(value), { exact: true }),
+          `Typography token "${name}" tooltip shows ${label} ${value}`,
         ).toBeVisible();
       });
     }
+
+    await this.page.mouse.move(0, 0);
+    await expect(
+      this.page.getByRole('tooltip'),
+      'Typography token tooltip is closed',
+    ).toBeHidden();
   }
 
   async checkTextCase(value) {
@@ -2583,10 +2599,17 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     }
   }
 
+  /**
+   * Checks whether the Underline text decoration option is checked.
+   * @param {boolean} [checked=true] - `true` to expect it checked, `false` to expect it not.
+   */
   async isTextUnderlineChecked(checked = true) {
     checked
-      ? await expect(await this.textUnderline).toBeChecked()
-      : await expect(await this.textUnderline).not.toBeChecked();
+      ? await expect(this.textUnderline, 'Text underline is checked').toBeChecked()
+      : await expect(
+          this.textUnderline,
+          'Text underline is not checked',
+        ).not.toBeChecked();
   }
 
   async isTextUnderlineDisabled(disabled = true) {

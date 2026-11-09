@@ -1,20 +1,18 @@
-import { qase } from 'playwright-qase-reporter/playwright';
-import { demoAccountFileTest } from 'fixtures';
-import { MainPage } from '@pages/workspace/main-page';
+import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
+import { DesignPanelPage } from '@pages/workspace/design-panel-page';
+import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
+import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
 import { TypographyToken } from '@pages/workspace/tokens/token-components/typography-tokens-component';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
-import { TokenClass } from '@pages/workspace/tokens/token-components/tokens-base-component';
-import { DesignPanelPage } from '@pages/workspace/design-panel-page';
-import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
-import { MainToken } from '@pages/workspace/tokens/token-components/main-tokens-component';
-import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { demoAccountFileTest } from 'fixtures';
+import { qase } from 'playwright-qase-reporter/playwright';
 
-demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+demoAccountFileTest.beforeEach(async ({ mainPage }) => {
   await mainPage.clickMoveButton();
 });
 
 demoAccountFileTest.describe(() => {
-  let mainPage: MainPage;
   let tokensPage: TokensPage;
   let designPanelPage: DesignPanelPage;
   let assetsPanelPage: AssetsPanelPage;
@@ -22,7 +20,6 @@ demoAccountFileTest.describe(() => {
 
   demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
     tokensPage = new TokensPage(page);
-    mainPage = new MainPage(page);
     designPanelPage = new DesignPanelPage(page);
     assetsPanelPage = new AssetsPanelPage(page);
     layersPanelPage = new LayersPanelPage(page);
@@ -57,7 +54,7 @@ demoAccountFileTest.describe(() => {
           await tokensPage.tokensComp.baseComp.clickOnSaveButton();
           await mainPage.waitForChangeIsSaved();
           await tokensPage.tokensComp.isTokenVisibleWithName(TYPO_TOKEN.name);
-          await tokensPage.tokensComp.clickOnTokenWithName(TYPO_TOKEN.name);
+          await tokensPage.tokensComp.applyTokenToSelectedShape(TYPO_TOKEN.name);
         },
       );
 
