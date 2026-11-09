@@ -6,6 +6,8 @@ import { qase } from 'playwright-qase-reporter/playwright';
 const defaultNameBoard = 'Board';
 const screenshotMask = { usersSection: true };
 
+prototypeTest.use({ inNewTeam: true });
+
 prototypeTest.describe(() => {
   prototypeTest.beforeEach(
     async ({ mainPage, workspacePage, prototypeOverlay, layersPanelPage }) => {
