@@ -824,6 +824,30 @@ Qase test cases for [<repo>#<n>](<issue url>) (<short feature name>), all tagged
 Leave out any section with nothing in it. Prefix GitHub links with the repo
 (`penpot#`, `penpot-nitrate#`), since Taiga has its own `#` numbers.
 
+### Requirement
+
+Last, the issue gets a Qase **requirement**: the upper level that gathers
+what the issue asks for and every case that covers it, whichever suites
+they're in (e.g. [REQ-1](https://app.qase.io/requirement/PENPOT?requirement=1)).
+The MCP has no tool for requirements, so give its fields ready for the user
+to create it by hand in Qase (Requirements › + Requirement):
+
+| Field       | Value                                                                                                                                  |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Parent      | the release's Epic, e.g. `Penpot 2.20` (same release as Penpot Release)                                                                |
+| Title       | the issue title and its number: `<title> #<n>` for `penpot/penpot`, `<title> penpot-nitrate#<n>` for Nitrate (a bare `#` is ambiguous) |
+| Type        | from the GitHub issue type: Feature → **User Story**, Enhancement → **Feature**                                                        |
+| Status      | Valid                                                                                                                                  |
+| Description | the issue URL, nothing else                                                                                                            |
+| Cases       | every new, updated and moved case of this run (not kept or deprecated ones), as `PENPOT-<id>` with their suite                         |
+
+- **The release's Epic doesn't exist yet**: say so; the user creates it
+  first (type Epic, title `Penpot <release>`).
+- **The issue already has a requirement** (an earlier run, a follow-up
+  PR): don't propose a second one; list only the cases to add to it.
+- **A bug**, or an issue with no GitHub type: the mapping above doesn't
+  cover it, so ask the user whether it gets a requirement and of which type.
+
 ## 8. CSV fallback
 
 When Qase is unavailable, writes are blocked, or the user asks for the CSV:
