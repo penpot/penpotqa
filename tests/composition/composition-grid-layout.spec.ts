@@ -287,6 +287,12 @@ demoAccountFileTest.describe(() => {
         '(1744) Verify grid board information on inspect tab',
         async () => {
           await inspect.checkLayoutProperty('Display', 'grid');
+          await inspect.checkLayoutProperty('Grid template rows', '1fr 1fr');
+          await inspect.checkLayoutProperty('Grid template columns', '1fr 1fr');
+          await inspect.checkLayoutProperty('Align items', 'start');
+          await inspect.checkLayoutProperty('Align content', 'stretch');
+          await inspect.checkLayoutProperty('Justify items', 'start');
+          await inspect.checkLayoutProperty('Justify content', 'stretch');
         },
       );
     },
