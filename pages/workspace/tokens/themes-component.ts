@@ -100,4 +100,40 @@ export class ThemesComponent {
   async saveTheme() {
     await this.baseComponent.modalSaveButton.click();
   }
+
+  /**
+   * Returns the row of a theme in the "Theme list" modal.
+   *
+   * @param name - Exact theme name.
+   * @returns Locator for the theme row.
+   */
+  private getThemeRowInList(name: string): Locator {
+    return this.page
+      .locator('[class*="theme-row"]')
+      .filter({ has: this.page.getByText(name, { exact: true }) });
+  }
+
+  /**
+   * Clicks the toggle switch of a theme in the open "Theme list" modal to
+   * enable or disable it.
+   *
+   * @param name - Exact theme name.
+   */
+  async toggleThemeInList(name: string) {
+    await this.getThemeRowInList(name).getByRole('switch').click();
+  }
+
+  /**
+   * Checks whether a theme's toggle switch in the "Theme list" modal is on.
+   *
+   * @param name - Exact theme name.
+   * @param enabled - Expected state; `true` (default) for enabled, `false`
+   *   for disabled.
+   */
+  async checkThemeEnabledInList(name: string, enabled = true) {
+    await expect(
+      this.getThemeRowInList(name).getByRole('switch'),
+      `Theme "${name}" is ${enabled ? 'enabled' : 'disabled'} in the theme list`,
+    ).toBeChecked({ checked: enabled });
+  }
 }

@@ -139,7 +139,7 @@ Tests instantiate the page, never individual panels, and the call reads like
 the UI path:
 
 ```ts
-mainTest(qase(1234, 'Add fill to rectangle'), async ({ page }) => {
+demoAccountFileTest(qase(1234, 'Add fill to rectangle'), async ({ page }) => {
   const workspace = new WorkspacePage(page);
   await workspace.toolbar.drawRectangle();
   await workspace.leftSidebar.layers.selectByName('Rectangle');

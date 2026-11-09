@@ -66,23 +66,22 @@ This document contains comprehensive information about the Penpot QA automation 
 - **Operating System**: Ubuntu 24.04 (required for snapshot consistency)
 - **Screen Resolution**: 1920х1080
 - **Node.js**: v25.2.1
-- **Penpot Account**: "Clean" account (no files/projects) with completed onboarding flow, and the account name must be 'QA Engineer'
+- **Penpot instance**: with demo users enabled (`:demo-users` flag), since most tests create a disposable demo account via the API. No pre-configured account is needed.
 
 ### .env File Configuration
 
 Create an `.env` file in the root directory with the following variables:
 
-| Variable        | Purpose                                     |
-| --------------- | ------------------------------------------- |
-| `LOGIN_EMAIL`   | Email from your Penpot account              |
-| `LOGIN_PWD`     | Password from your Penpot account           |
-| `BASE_URL`      | Penpot URL (e.g., `http://localhost:9001/`) |
-| `GMAIL_NAME`    | Gmail account name for email verification   |
-| `GMAIL_DOMAIN ` | Gmail account domain for email verification |
-| `REFRESH_TOKEN` | Token for Gmail API access                  |
-| `CLIENT_ID`     | Client ID for Gmail API access              |
-| `CLIENT_SECRET` | Client Secret for Gmail API access          |
-| `STRIPE_SK`     | Stripe Secret Key for Stripe API access     |
+| Variable        | Purpose                                      |
+| --------------- | -------------------------------------------- |
+| `LOGIN_PWD`     | Password set on accounts that tests register |
+| `BASE_URL`      | Penpot URL (e.g., `http://localhost:9001/`)  |
+| `GMAIL_NAME`    | Gmail account name for email verification    |
+| `GMAIL_DOMAIN ` | Gmail account domain for email verification  |
+| `REFRESH_TOKEN` | Token for Gmail API access                   |
+| `CLIENT_ID`     | Client ID for Gmail API access               |
+| `CLIENT_SECRET` | Client Secret for Gmail API access           |
+| `STRIPE_SK`     | Stripe Secret Key for Stripe API access      |
 
 ---
 
@@ -273,55 +272,51 @@ tests/composition/composition-rectangle.spec.js-snapshots/rectangle.png
 
 ### Overview
 
-The project uses **three specialized fixtures** that extend Playwright's base test:
+Every test runs on a disposable account, never on a shared one. The fixtures in `fixtures.ts` extend Playwright's base test:
 
-### 5.1 mainTest - Authenticated User Tests
+| Fixture                                               | Account                                       | Use it for                                  |
+| ----------------------------------------------------- | --------------------------------------------- | ------------------------------------------- |
+| `demoAccountApiFixture`                               | Fresh demo account, created via the API       | Default choice: any test that needs a login |
+| `demoAccountFileTest`                                 | Demo account with a file open in the editor   | Workspace/canvas tests                      |
+| `demoTeamWithInviteeTest` / `demoTeamWithMembersTest` | Demo owner plus demo members in a shared team | Permissions and collaboration               |
+| `registerTest`                                        | Account registered through the UI with Gmail  | Flows that need to read email               |
 
-**Use Case:** Standard tests on pre-configured account
+### 5.1 demoAccountApiFixture - Disposable Demo Account
+
+**Use Case:** Standard tests that need a logged-in, isolated user
 
 **Features:**
 
-- ✅ Automatic login before each test
-- ✅ Cookie acceptance
-- ✅ Dashboard navigation
-- ✅ Popup handling ("What's New", "Plugins")
-- ✅ Test result tracking
+- ✅ Demo account created and logged in via the API (`create-demo-profile` RPC), skipping onboarding
+- ✅ Cookie acceptance and popup handling ("What's New", "Plugins")
+- ✅ Lands on the dashboard
+- ✅ Credentials exposed as `demoAccount` (`{ email, password }`) for tests that log back in through the UI
+- ✅ No cleanup needed: the server purges demo accounts and everything they own
 
 **Code Structure:**
 
-```javascript
-const mainTest = base.test.extend({
-  page: async ({ page }, use, testInfo) => {
-    // 1. Navigate and accept cookies
-    await loginPage.goto();
-    await loginPage.acceptCookie();
-
-    // 2. Login with main account
-    await loginPage.enterEmailAndClickOnContinue(process.env.LOGIN_EMAIL);
-    await loginPage.enterPwd(process.env.LOGIN_PWD);
-    await loginPage.clickLoginButton();
-
-    // 3. Verify dashboard and skip popups
-    await dashboardPage.isDashboardOpenedAfterLogin();
-    await dashboardPage.skipWhatNewsPopUp();
-    await dashboardPage.skipPluginsPopUp();
-
-    // 4. Run test
+```typescript
+export const demoAccountApiFixture = test.extend<DemoAccountFixtures>({
+  // Creates the account on the browser context, so `page` can depend on it
+  demoAccount: async ({ context }, use) => {
+    await use(await createDemoUser(context.request, { renderer: 'wasm' }));
+  },
+  page: async ({ page, demoAccount: _demoAccount }, use) => {
+    await openDashboardAfterApiLogin(page);
     await use(page);
-
-    // 5. Track results
-    await updateTestResults(testInfo.status, testInfo.retry);
   },
 });
 ```
 
 **Usage:**
 
-```javascript
-mainTest('Create rectangle', async ({ page }) => {
-  // Test already logged in and ready
+```typescript
+demoAccountApiFixture(qase(1234, 'Create rectangle'), async ({ page }) => {
+  // Test already logged in and on the dashboard
 });
 ```
+
+**Limitation:** demo accounts get a placeholder email (`demo-<uuid>@demo.example.com`) and can't receive email. Use `registerTest` for flows that read email.
 
 ### 5.2 registerTest - New User Registration Tests
 
@@ -393,48 +388,28 @@ registerTest('Verify invitation email', async ({ page, email, name }) => {
 
 When running tests in parallel on the same account, tests can interfere with each other (e.g., deleting files, modifying teams).
 
-### Solution: Unique Team per Test
+### Solution: One Disposable Account per Test
 
-#### Random Team Name Generation
+Each test gets its own fresh account from its fixture (see section 5), so parallel tests never share teams, files or settings. Demo accounts and everything they own are purged by the server, so there is no `afterEach` or global teardown cleanup.
 
-```javascript
-const { random } = require('../../helpers/string-generator');
-const teamName = random().concat('autotest'); // e.g., "k8q6byzautotest"
+#### Team and Organization Names
+
+When a test creates a team or an organization, name it with `createTeamName()` / `createOrgName()`:
+
+```typescript
+import { createTeamName } from 'helpers/teams/create-team-name';
+
+const teamName = createTeamName(); // e.g. "at-k8q6byz261106-d52e6740"
 ```
 
-#### Team Lifecycle
-
-```javascript
-mainTest.describe('Team Management Tests', () => {
-  const teamName = random().concat('autotest');
-
-  mainTest.beforeEach(async ({ page }) => {
-    await teamPage.createTeam(teamName);
-    await teamPage.isTeamSelected(teamName);
-    await dashboardPage.createFileViaPlaceholder();
-    await mainPage.isMainPageLoaded();
-  });
-
-  mainTest.afterEach(async () => {
-    await mainPage.backToDashboardFromFileEditor();
-    await teamPage.deleteTeam(teamName);
-  });
-
-  mainTest('Test 1', async () => {
-    /* ... */
-  });
-  mainTest('Test 2', async () => {
-    /* ... */
-  });
-});
-```
+The name ends with the run's `TEST_RUN_ID`, which `tests/global.setup.ts` sets once per run (or CI injects), so leftovers can be traced back to the run that created them.
 
 **Benefits:**
 
-- ✅ Each test works in isolated environment
+- ✅ Each test works in an isolated account
 - ✅ No conflicts between parallel tests
-- ✅ Clean state before and after each test
-- ✅ Easy debugging (random names are traceable)
+- ✅ No cleanup code in tests
+- ✅ Easy debugging (names are traceable to their run)
 
 ### Email Isolation for registerTest
 
@@ -657,9 +632,9 @@ async function waitCustomersWithPenpotId(page, penpotId, timeout = 40000) {
 
 For tests that need more time:
 
-```javascript
-mainTest.beforeEach(async () => {
-  await mainTest.slow(); // Multiplies timeout by 3
+```typescript
+demoAccountApiFixture.beforeEach(async () => {
+  demoAccountApiFixture.slow(); // Multiplies timeout by 3
 });
 ```
 
@@ -884,18 +859,18 @@ Tests are integrated with **Qase Test Management System** for tracking.
 
 **Single test case:**
 
-```javascript
-const { qase } = require('playwright-qase-reporter/playwright');
+```typescript
+import { qase } from 'playwright-qase-reporter/playwright';
 
-mainTest(qase(1162, 'Create a team'), async () => {
+demoAccountApiFixture(qase(1162, 'Create a team'), async () => {
   // Test implementation
 });
 ```
 
 **Multiple test case IDs:**
 
-```javascript
-mainTest(qase([274, 275], 'Create Rectangle'), async () => {
+```typescript
+demoAccountFileTest(qase([274, 275], 'Create Rectangle'), async () => {
   // Test implementation
 });
 ```
@@ -1009,7 +984,7 @@ await sendMessage({
 **Required secrets per environment:**
 
 - `BASE_URL`
-- `LOGIN_EMAIL`, `LOGIN_PWD`
+- `LOGIN_PWD` (password for accounts that tests register)
 - `GMAIL_NAME`, `GMAIL_DOMAIN`, `REFRESH_TOKEN`, `CLIENT_ID`, `CLIENT_SECRET`
 - `STRIPE_SK`
 - `MATTERMOST_WEBHOOK_DAILY_REPORT`, `MATTERMOST_WEBHOOK_PR`
@@ -1130,31 +1105,20 @@ insert_final_newline = true
 
 ### Pattern 1: Standard Test Structure
 
-```javascript
-const { mainTest } = require('../../fixtures');
-const { MainPage } = require('../../pages/workspace/main-page');
+```typescript
+import { expect } from '@playwright/test';
+import { demoAccountFileTest } from 'fixtures';
+import { qase } from 'playwright-qase-reporter/playwright';
 
-mainTest.describe('Feature Tests', () => {
-  const teamName = random().concat('autotest');
-  let mainPage;
-
-  mainTest.beforeEach(async ({ page }) => {
-    mainPage = new MainPage(page);
-    await teamPage.createTeam(teamName);
-    await teamPage.isTeamSelected(teamName);
-    await dashboardPage.createFileViaPlaceholder();
-    await mainPage.isMainPageLoaded();
-  });
-
-  mainTest.afterEach(async () => {
-    await mainPage.backToDashboardFromFileEditor();
-    await teamPage.deleteTeam(teamName);
-  });
-
-  mainTest(qase(1234, 'Test case name'), async () => {
-    // Test implementation
+// demoAccountFileTest creates a fresh demo account with a blank file open in
+// the editor, so the test needs no beforeEach/afterEach setup or cleanup.
+demoAccountFileTest(qase(1234, 'Test case name'), async ({ mainPage }) => {
+  await demoAccountFileTest.step('Create a rectangle', async () => {
     await mainPage.createDefaultRectangleByCoordinates(200, 300);
     await mainPage.waitForChangeIsSaved();
+  });
+
+  await demoAccountFileTest.step('Check the rectangle', async () => {
     await expect(mainPage.createdLayer).toHaveScreenshot('rectangle.png');
   });
 });
@@ -1253,9 +1217,9 @@ npx playwright show-trace trace.zip
 
 **Solution:**
 
-```javascript
-mainTest.beforeEach(async () => {
-  await mainTest.slow(); // 3x timeout
+```typescript
+demoAccountApiFixture.beforeEach(async () => {
+  demoAccountApiFixture.slow(); // 3x timeout
 });
 ```
 
@@ -1289,8 +1253,7 @@ contextOptions: {
 - Wait for `waitForChangeIsSaved()` after mutations
 - Use descriptive test names
 - Use Qase IDs for traceability
-- Create isolated teams per test
-- Clean up in `afterEach`
+- Run each test on a disposable-account fixture
 
 ❌ **DON'T:**
 
@@ -1321,14 +1284,14 @@ contextOptions: {
 
 ✅ **DO:**
 
-- Use unique team names
-- Clean up resources in `afterEach`
+- Use a disposable-account fixture (one account per test)
+- Name teams and organizations with `createTeamName()` / `createOrgName()`
 - Use `fullyParallel: true`
 - Test isolation in describe blocks
 
 ❌ **DON'T:**
 
-- Share teams between tests
+- Share accounts or teams between tests
 - Rely on execution order
 - Use `workers: 1` unless necessary
 
@@ -1376,9 +1339,9 @@ npm update
 
 ### Adding New Tests
 
-1. **Choose appropriate fixture:** mainTest or registerTest
-2. **Create team in beforeEach:** Use random team name
-3. **Clean up in afterEach:** Delete team and resources
+1. **Choose appropriate fixture:** `demoAccountApiFixture` (default), `demoAccountFileTest` for the workspace, or `registerTest` when the flow reads email
+2. **Name teams/orgs with the helpers:** `createTeamName()` / `createOrgName()`
+3. **No cleanup needed:** disposable accounts are purged by the server
 4. **Add Qase ID:** Use `qase(id, 'test name')`
 5. **Add snapshots:** Use element-level snapshots
 6. **Verify in CI:** Check GitHub Actions pass
@@ -1444,10 +1407,10 @@ All emails go to same inbox, but Penpot treats them as different users.
 
 ## 22. Key Architecture Decisions
 
-### Why Three Fixtures?
+### Why Disposable-Account Fixtures?
 
-1. **mainTest**: Fast (no registration), most common use case
-2. **registerTest**: Full control, email verification, slower
+1. **Demo-account fixtures** (`demoAccountApiFixture` and the ones built on it): fast (API-created, no registration or onboarding), fully isolated, cleaned up by the server. Most common use case.
+2. **registerTest**: Full control, email verification, slower. Only for flows that need to read email.
 
 ### Why Chrome Only?
 
@@ -1471,12 +1434,11 @@ All emails go to same inbox, but Penpot treats them as different users.
 - ✅ Focused on relevant changes
 - ✅ Easier to debug
 
-### Why Random Team Names?
+### Why Run-Scoped Team Names?
 
-- ✅ Parallel execution without conflicts
-- ✅ Test isolation
+- ✅ Unique names even when several tests create teams in parallel
+- ✅ The `TEST_RUN_ID` suffix traces any leftover back to its run
 - ✅ No shared state
-- ✅ Easy cleanup
 
 ### Why Gmail + Addressing?
 
@@ -1501,7 +1463,7 @@ All emails go to same inbox, but Penpot treats them as different users.
 - [ ] Ubuntu 24.04 OS with 1920x1080 resolution
 - [ ] Node.js v25.2.1 installed
 - [ ] `.env` file created with all variables
-- [ ] Clean Penpot account with completed onboarding
+- [ ] Penpot instance with demo users enabled
 - [ ] Gmail API credentials configured
 - [ ] Stripe API credentials configured
 - [ ] Dependencies installed (`npm install`)
@@ -1520,7 +1482,7 @@ All emails go to same inbox, but Penpot treats them as different users.
 - [ ] Snapshots reviewed and updated if needed
 - [ ] Code formatted with Prettier
 - [ ] Qase IDs added to new tests
-- [ ] Cleanup logic in `afterEach`
+- [ ] Tests use a disposable-account fixture
 - [ ] CI passes successfully
 
 ### Before Release

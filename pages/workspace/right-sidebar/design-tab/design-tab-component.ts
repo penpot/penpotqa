@@ -8,9 +8,11 @@ import { BlurSectionComponent } from '@pages/workspace/right-sidebar/design-tab/
 import { GridCellSectionComponent } from '@pages/workspace/right-sidebar/design-tab/grid-cell-section-component';
 import { LayoutContainerSectionComponent } from '@pages/workspace/right-sidebar/design-tab/layout-container-section-component';
 import { LayoutItemSectionComponent } from '@pages/workspace/right-sidebar/design-tab/layout-item-section-component';
+import { RadiusSectionComponent } from '@pages/workspace/right-sidebar/design-tab/radius-section-component';
 import { StrokeSectionComponent } from '@pages/workspace/right-sidebar/design-tab/stroke-section-component';
 
 export class DesignTabComponent extends BaseComponent {
+  readonly radius: RadiusSectionComponent;
   readonly stroke: StrokeSectionComponent;
   readonly blur: BlurSectionComponent;
   readonly layoutContainer: LayoutContainerSectionComponent;
@@ -23,6 +25,10 @@ export class DesignTabComponent extends BaseComponent {
 
   constructor(page: Page, root: Locator) {
     super(page, root);
+    this.radius = new RadiusSectionComponent(
+      page,
+      root.getByRole('region', { name: 'Border radius section' }),
+    );
     this.stroke = new StrokeSectionComponent(
       page,
       root.getByRole('region', { name: 'Stroke' }),

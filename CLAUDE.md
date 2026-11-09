@@ -50,19 +50,25 @@ All page interactions are abstracted into page objects under `pages/`:
 
 ### Test Fixtures (`fixtures.ts`)
 
-- **`mainTest`** — Auto-logs in before each test, lands on dashboard. Used by most tests.
-- **`registerTest`** — Creates a fresh account via Gmail API. Provides `name` and `email` fixtures.
+Every test runs on a disposable account:
+
+- **`demoAccountApiFixture`** — Creates a demo account via the API and lands on the dashboard. Default choice.
+- **`demoAccountFileTest`** — Demo account with a blank (or imported, via `penpotFile`) file open in the editor.
+- **`demoTeamWithInviteeTest`** / **`demoTeamWithMembersTest`** — Demo owner plus demo members in a shared team.
+- **`registerTest`** — Creates a fresh account via Gmail API, for flows that need to read email. Provides `name` and `email` fixtures.
+
+Demo accounts and everything they own are purged by the server, so there's no global teardown.
 
 ### Test Organization (`tests/`)
 
 Tests are grouped by feature area. Each spec file imports from `fixtures` and uses the `qase()` wrapper to link tests to Qase test management IDs:
 
 ```typescript
-import { mainTest } from 'fixtures';
+import { demoAccountApiFixture } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
-mainTest(qase(1234, 'Test title'), async ({ page }) => {
-  await mainTest.step('Step description', async () => {
+demoAccountApiFixture(qase(1234, 'Test title'), async ({ page }) => {
+  await demoAccountApiFixture.step('Step description', async () => {
     // test logic
   });
 });
@@ -75,7 +81,7 @@ Organizations, Admin Console, advanced permissions, SSO, billing), run via
 its own `enterprise` Playwright project (`npm run test:enterprise`, kept out
 of the default `chrome` project). Uses its own fixtures
 (`enterprisePageTest`/`ownerAndInviteeTest` in
-`tests/enterprise/fixtures/enterprise-fixtures.ts`), not `mainTest`. See
+`tests/enterprise/fixtures/enterprise-fixtures.ts`). See
 `tests/enterprise/README.md` before touching anything in this directory.
 
 ### Visual Regression
@@ -97,14 +103,13 @@ Snapshots are stored at `tests/{dir}/{file}-snapshots/`. Comparison threshold fo
 ## Key Conventions
 
 - **Mixed JS/TS codebase** — New code should use TypeScript. Legacy JS files use JSDoc type annotations.
-- **Test isolation** — Tests create uniquely-named teams/files via `random()` to avoid conflicts across parallel workers (default: 3).
-- **Global teardown** (`tests/global.teardown.ts`) — Deletes teams matching `autotest` pattern after test runs.
+- **Test isolation** — Tests run on disposable accounts and name teams/orgs with `createTeamName()`/`createOrgName()`, which add the run's `TEST_RUN_ID` (set in `tests/global.setup.ts`).
 - **Formatting** — Prettier with single quotes, trailing commas, tab width 2, print width 85. Pre-commit hook enforces this via Husky.
 - **Locator style** — Prefer Playwright's `getByRole()`, `getByTestId()`, `getByText()` over CSS selectors.
 - **Path aliases** — `@tests/*` and `@pages/*` are configured in `tsconfig.json`.
 
 ## Environment
 
-Requires `.env` file (see `.env.example`). Key variables: `LOGIN_EMAIL`, `LOGIN_PWD`, `BASE_URL`. Gmail and Stripe credentials needed only for registration and payment tests.
+Requires `.env` file (see `.env.example`). Key variables: `BASE_URL`, `LOGIN_PWD` (password for accounts that tests register). Gmail and Stripe credentials needed only for registration and payment tests.
 
 Node.js version is pinned in `.nvmrc` (v25.2.1).

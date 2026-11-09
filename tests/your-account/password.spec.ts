@@ -34,9 +34,8 @@ passwordTest(
   },
 );
 
-// Uses a freshly registered account: changing the password of the shared
-// LOGIN_EMAIL account would break the other tests, and demo accounts can't
-// receive the "Password changed" email.
+// Uses a freshly registered account: demo accounts can't receive the
+// "Password changed" email.
 registerTest(
   qase([199], 'Change password to valid'),
   async ({ page, name, email }) => {

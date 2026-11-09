@@ -6,7 +6,6 @@ export default defineConfig({
   testDir: './tests',
   /* Maximum time one test can run for. */
   timeout: process.env.CI ? 120 * 1000 : 80 * 1000,
-  globalTeardown: './tests/global.teardown.ts',
   globalSetup: './tests/global.setup.ts',
   expect: {
     /**
