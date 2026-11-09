@@ -88,6 +88,8 @@ demoAccountFileTest.describe(() => {
             },
           );
           await design.checkGridEditModePanel(['1fr', '1fr'], ['1fr', '1fr']);
+          // In grid edit mode the Design tab only shows the GRID LAYOUT panel
+          await expect(design.root).toHaveScreenshot('grid-edit-mode-panel.png');
         },
       );
     },
@@ -607,6 +609,7 @@ demoAccountFileTest.describe(() => {
       await mainPage.waitForChangeIsSaved();
       await layoutContainer.checkLayoutType(LayoutType.Flex);
       await layoutContainer.checkDirection(LayoutDirection.Row);
+      await expect(layoutContainer.root).toHaveScreenshot('flex-layout-section.png');
     });
 
     await demoAccountFileTest.step('Verify flex layout on canvas', async () => {
