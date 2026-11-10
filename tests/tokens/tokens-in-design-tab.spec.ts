@@ -460,6 +460,7 @@ demoAccountFileTest.describe('Typography token', () => {
 
       await demoAccountFileTest.step('(3021) Detach typography token', async () => {
         await demoAccountFileTest.step(`Click on detach button`, async () => {
+          await designPanelPage.hoverTypographyToken();
           await designPanelPage.clickOnDetachTokenButton();
           await designPanelPage.textOptionsAreVisible();
         });
