@@ -136,7 +136,8 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     // Import Penpot Files Modal
     this.importModal = page.locator('.main_ui_dashboard_import__modal-container');
     this.modalTitle = this.importModal.getByRole('heading', {
-      name: 'Import Penpot files',
+      name: 'Import file',
+      exact: true,
     });
     this.modalContinueButton = this.importModal.getByRole('button', {
       name: 'Continue',
@@ -936,8 +937,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async confirmFileImport() {
-    await expect(this.modalTitle).toBeVisible();
-    await expect(this.modalTitle).toHaveText('Import Penpot files');
+    await expect(this.modalTitle, 'Import file modal is visible').toBeVisible();
     await this.modalContinueButton.click();
     await this.feedbackBannerMessage.waitFor({ timeout: 60000 });
     await expect(this.feedbackBannerMessage).toHaveText(
@@ -951,8 +951,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.fileImport.click();
     const fileChooser = await fileChooserPromise;
     await fileChooser.setFiles(file);
-    await expect(this.modalTitle).toBeVisible();
-    await expect(this.modalTitle).toHaveText('Import Penpot files');
+    await expect(this.modalTitle, 'Import file modal is visible').toBeVisible();
     await expect(this.importWarningMessageText).toHaveText(
       'Some files containted invalid objects that have been removed.',
     );
@@ -964,8 +963,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.fileImport.click();
     const fileChooser = await fileChooserPromise;
     await fileChooser.setFiles(file);
-    await expect(this.modalTitle).toBeVisible();
-    await expect(this.modalTitle).toHaveText('Import Penpot files');
+    await expect(this.modalTitle, 'Import file modal is visible').toBeVisible();
     await this.modalContinueButton.click();
     await this.feedbackBannerMessage.waitFor({ timeout: 60000 });
     await expect(this.feedbackBannerMessage).toHaveText(
