@@ -329,18 +329,23 @@ Then:
 
 Resolve the field and option IDs from `qase_project_context`.
 
-If an affected case is automated (automation = Automated), find its spec:
+If an affected case is automated (automation = Automated), find its spec.
+`qase()` calls are often wrapped over several lines (`qase(\n  [2485],\n
+'…',\n)`), which a line-by-line `grep` misses, so search each file as a
+whole:
 
 ```bash
-grep -rnE "qase\(\s*\[?[^)]*\b<case id>\b" tests/
+find tests -name '*.spec.*' -exec perl -0777 -ne 'while (/qase\(\s*\[?[^)]*?\b<case id>\b/g) { print "$ARGV:", 1 + (substr($_, 0, $-[0]) =~ tr/\n//), "\n" }' {} +
 ```
 
-and list it in the preview. Its Playwright test then needs Part 2 of the
-protocol in a separate penpotqa branch and PR (one per release that only
-marks tests): `.skip` with `@outdated` for an update, or `@deprecated` +
-`@to-delete` for a deprecation, plus an annotation saying the release, what
-changed and what happens next. This skill doesn't edit specs; it tells the
-user which ones need marking and how.
+and list it in the preview. Only an **update** or a **deprecate** changes
+what the test should check, so only those need Part 2 of the protocol in a
+separate penpotqa branch and PR (one per release that only marks tests):
+`.skip` with `@outdated` for an update, or `@deprecated` + `@to-delete` for
+a deprecation, plus an annotation saying the release, what changed and what
+happens next. A **move** or **reorganize** only changes the case's suite:
+its test still matches the product, so leave it running and unmarked. This
+skill doesn't edit specs; it tells the user which ones need marking and how.
 
 ### Placement
 
@@ -497,9 +502,11 @@ of a drag or a scroll). Each person runs a manual case a bit differently and
 notices things around it, so it checks more than its steps say — an
 assertion can't.
 
-Changing an automated case always follows
+Updating or deprecating an automated case always follows
 `references/outdated-cases.md` ("Handling outdated tests after a Penpot
-release"): the Qase flags in Part 1 and the spec marking in Part 2.
+release"): the Qase flags in Part 1 and the spec marking in Part 2. Moving
+or reorganizing one doesn't: it changes only the suite, and its spec keeps
+running.
 
 Label the PR line by the kind of issue: **Implemented in:** for a feature or
 enhancement, **Fix:** only for a bug.
@@ -735,8 +742,10 @@ raw arguments without the table and can't tell what they're approving.
    two, one `qase_case_bulk_create` call for more. A batch is validated as a
    whole, so one bad field means nothing is created — fix it and retry the
    whole batch.
-3. `qase_get` each new case (or one `qql_search` for several) and check the
-   fields read back as shown.
+3. `qase_get` each new case by the ID the create returned, with a `fields`
+   projection, and check the fields read back as shown. Not `qql_search`,
+   not even for a batch: its index lags behind a create, so new cases look
+   missing for a while (see `references/qase-notes.md`).
 
 ### Apply the agreed actions to existing cases (one at a time)
 
@@ -781,6 +790,14 @@ Each write asks the user for permission. If a write is denied or blocked by
 the permission rules, stop writing, say which call was blocked, and offer the
 CSV instead. If the suite was created but the cases failed, say so plainly
 with the suite ID, so nobody re-runs the skill and gets a second suite.
+
+Keep track of what each write actually created (the returned IDs). If a
+write failed in a way that leaves its outcome unclear (a timeout, a dropped
+connection), find out before counting it as created or not: search its
+suite by title with `qql_search` once the index has caught up (a few
+minutes), or ask the user to check the suite in Qase. When the run falls back to the CSV after some cases were created, the
+CSV holds only the cases that weren't: importing the full set would create
+the others a second time.
 
 ### Report
 
@@ -861,7 +878,8 @@ to create it by hand in Qase (Requirements › + Requirement):
 
 When Qase is unavailable, writes are blocked, or the user asks for the CSV:
 read `references/csv-format.md` and produce the import file from the full
-cases written in step 6. Save it as `qase-<issue number>.csv` in the
+cases written in step 6, leaving out any case this run already created in
+Qase (see "When something fails" in step 7). Save it as `qase-<issue number>.csv` in the
 scratchpad (or where the user says), not in the repo, and tell the user to
 import it with Source Type **Qase.io** (V2), not the deprecated CSV option.
 The CSV only creates cases: the custom fields (Is smoke, Penpot Release…)
