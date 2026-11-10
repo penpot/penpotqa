@@ -211,7 +211,7 @@ exports.MainPage = class MainPage extends BasePage {
 
     //Header
     this.usersSection = page.locator('div[class*="users-section"]');
-    this.projectNameSpan = page.locator('div[class*="project-name"]');
+    this.projectNameSpan = page.locator('[class*="left_header__project-name"]');
     this.fileNameSpan = page.locator('div[class*="file-name"]');
 
     //History panel
