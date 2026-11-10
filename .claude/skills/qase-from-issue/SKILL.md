@@ -665,11 +665,20 @@ release, so never reuse a value from an earlier run. Find it in this order:
    gh api graphql -f query='query($o:String!,$r:String!,$n:Int!){repository(owner:$o,name:$r){issue(number:$n){projectItems(first:10){nodes{project{title} fieldValues(first:30){nodes{... on ProjectV2ItemFieldSingleSelectValue{name field{... on ProjectV2SingleSelectField{name}}}}}}}}}}' -f o=penpot -f r=<repo> -F n=<issue number>
    ```
 
-   It needs the `read:project` scope. If `gh` answers `INSUFFICIENT_SCOPES`,
-   tell the user they can add it with `gh auth refresh -s read:project`, and
-   ask them for the release meanwhile.
+   It needs the `read:project` scope, which `gh` tokens often lack. If `gh`
+   answers `INSUFFICIENT_SCOPES`, don't guess and don't fall back to the
+   milestone: ask the user to read the **Release** field in the issue's
+   sidebar on GitHub (the project section, under the status and design
+   fields; a screenshot works), and mention that
+   `gh auth refresh -s read:project` lets the skill read it next time. Cases
+   already created for earlier stories of the same epic carry the release
+   too (their Penpot Release in Qase); use them to suggest a value in the
+   question, not as the answer.
 
-2. **The issue's milestone**, when it names a release (2.20.0).
+2. **The issue's milestone**, only when it names a release (2.20.0). A
+   Nitrate phase milestone ("Phase 2 🛸 — Matching Release 2.21") doesn't:
+   penpot-nitrate#494 sat in that milestone while its Release field said
+   2.20.
 3. **Otherwise, ask the user.** Ask too when the project field and the
    milestone disagree.
 
