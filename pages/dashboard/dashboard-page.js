@@ -252,7 +252,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.refererOtherInput = page.locator('#referer-other[type="text"]');
     this.nextButton = page.locator('button[label="Next"]');
     this.previousButton = page.getByRole('button', { name: 'Previous' });
-    this.startButton = page.getByRole('button', { name: 'Start' });
+    this.startButton = page.getByRole('button', { name: 'Start', exact: true });
     this.figmaTool = page.locator('//input[@id="experience-design-tool-figma"]/..');
     this.toolsButton = page.locator(
       'label[class*="components_forms__radio-label-image"]',
