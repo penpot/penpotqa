@@ -50,8 +50,11 @@ A read returns a multiselect as **one entry per value** (`{"id": 2, "value":
 ## Writing cases
 
 - `qase_case_upsert` with `id` **replaces the whole step list**. Send every
-  step, unchanged ones included; each step gets a new internal hash, which
-  only matters for results recorded against old steps.
+  step, unchanged ones included, with all its writable properties
+  (`action`, `expected_result`, `data`, `attachments` hashes,
+  `shared_step_hash`, nested `steps`): a step sent as a bare action /
+  expected pair loses its test data and attachments. Each step gets a new
+  internal hash, which only matters for results recorded against old steps.
 - Fields you leave out of an update kept their value (seen with description
   and preconditions). Whether leaving out a custom field keeps it hasn't been
   tested, so always send the case's other custom fields unchanged.

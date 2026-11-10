@@ -332,10 +332,12 @@ Resolve the field and option IDs from `qase_project_context`.
 If an affected case is automated (automation = Automated), find its spec.
 `qase()` calls are often wrapped over several lines (`qase(\n  [2485],\n
 '…',\n)`), which a line-by-line `grep` misses, so search each file as a
-whole:
+whole. Match only the ID argument (a number, or the numbers in its array),
+never the title: a search for 250 must not hit
+`qase(2276, '…limited to 250 characters…')`:
 
 ```bash
-find tests -name '*.spec.*' -exec perl -0777 -ne 'while (/qase\(\s*\[?[^)]*?\b<case id>\b/g) { print "$ARGV:", 1 + (substr($_, 0, $-[0]) =~ tr/\n//), "\n" }' {} +
+find tests -name '*.spec.*' -exec perl -0777 -ne 'while (/qase\(\s*(?:\[[\d\s,]*?\b<case id>\b[\d\s,]*\]|<case id>\b)/g) { print "$ARGV:", 1 + (substr($_, 0, $-[0]) =~ tr/\n//), "\n" }' {} +
 ```
 
 and list it in the preview. Only an **update** or a **deprecate** changes
@@ -758,9 +760,19 @@ through `qase_case_upsert` with its `id`, one case per call, like this:
    to it, save `qase-case-<id>-restore.json`: the `qase_case_upsert`
    arguments that put the case back as it was (title, description,
    preconditions, suite, enums, every custom field with multiselect values
-   joined by commas, and the steps as action / expected result pairs).
+   joined by commas, and every step with all its writable properties:
+   `action`, `expected_result`, `data`, `attachments` as their hashes,
+   `shared_step_hash` and nested `steps`).
    Restoring is then one `qase_case_upsert` call with that file's contents,
    after showing the user what it changes back.
+
+   An upsert with steps replaces the whole step list, so any write that
+   sends steps (an update, or a restore) carries every step with all those
+   properties, unchanged ones included. If a step holds something the
+   upsert can't send back (an attachment without a hash, a property the
+   schema doesn't list), stop before replacing the steps and tell the user:
+   the write would lose it.
+
 2. Show the change table (above), wait for the yes, and change only what
    the action needs, following the field summary in
    `references/outdated-cases.md`:
@@ -858,14 +870,14 @@ they're in (e.g. [REQ-1](https://app.qase.io/requirement/PENPOT?requirement=1)).
 The MCP has no tool for requirements, so give its fields ready for the user
 to create it by hand in Qase (Requirements › + Requirement):
 
-| Field       | Value                                                                                                                                  |
-| ----------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| Parent      | the release's Epic, e.g. `Penpot 2.20` (same release as Penpot Release)                                                                |
-| Title       | the issue title and its number: `<title> #<n>` for `penpot/penpot`, `<title> penpot-nitrate#<n>` for Nitrate (a bare `#` is ambiguous) |
-| Type        | from the GitHub issue type: Feature → **User Story**, Enhancement → **Feature**                                                        |
-| Status      | Valid                                                                                                                                  |
-| Description | the issue URL, nothing else                                                                                                            |
-| Cases       | every new, updated and moved case of this run (not kept or deprecated ones), as `PENPOT-<id>` with their suite                         |
+| Field       | Value                                                                                                                                                                                                                                          |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Parent      | the release's Epic, e.g. `Penpot 2.20` (same release as Penpot Release)                                                                                                                                                                        |
+| Title       | the issue title and its number: `<title> #<n>` for `penpot/penpot`, `<title> penpot-nitrate#<n>` for Nitrate (a bare `#` is ambiguous)                                                                                                         |
+| Type        | from the GitHub issue type: Feature → **User Story**, Enhancement → **Feature**                                                                                                                                                                |
+| Status      | Valid                                                                                                                                                                                                                                          |
+| Description | the issue URL, nothing else                                                                                                                                                                                                                    |
+| Cases       | every case that covers the issue, as `PENPOT-<id>` with their suite: the new, updated and moved ones, and the existing cases a scenario was dropped for as a duplicate. Not the merely related cases kept as they are, nor the deprecated ones |
 
 - **The release's Epic doesn't exist yet**: say so; the user creates it
   first (type Epic, title `Penpot <release>`).
