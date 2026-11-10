@@ -21,6 +21,46 @@ let designPanelPage: DesignPanelPage;
 let colorPalettePage: ColorPalettePage;
 let pagesPanelPage: PagesPanelPage;
 
+/**
+ * Creates a new file from the dashboard, links the shared library to it, adds the
+ * library's Ellipse and Rectangle components to the canvas and goes back to the
+ * dashboard. Waits until the library is listed in the Assets tab before reloading:
+ * reloading earlier can drop the link.
+ * @param {string} libraryName Shared library to link.
+ * @param {string} expectedFileCount Dashboard file count afterwards, e.g. '2 files'.
+ */
+async function createFileUsingLibraryComponents(
+  libraryName: string,
+  expectedFileCount: string,
+) {
+  await demoAccountApiFixture.step(
+    `Create a file that uses components from "${libraryName}"`,
+    async () => {
+      await dashboardPage.createFileViaTitlePanel();
+      await assetsPanelPage.clickAssetsTab();
+      await assetsPanelPage.clickLibrariesButton();
+      await assetsPanelPage.isSharedLibraryVisibleByName(libraryName);
+      await assetsPanelPage.clickSharedLibraryImportButton(libraryName);
+      await assetsPanelPage.clickCloseModalButton();
+      await assetsPanelPage.checkLibraryTitleVisible(libraryName);
+      await mainPage.reloadPage();
+      await mainPage.waitForViewportVisible();
+      await assetsPanelPage.clickAssetsTab();
+      await mainPage.clickMoveButton();
+      await assetsPanelPage.clickLibraryTitleWithName(libraryName);
+      await assetsPanelPage.clickLibraryComponentsTitle();
+      await assetsPanelPage.dragAndDropComponentToViewport('Ellipse');
+      await designPanelPage.changeAxisXAndYForLayer('300', '400');
+      await mainPage.waitForChangeIsSaved();
+      await assetsPanelPage.dragAndDropComponentToViewport('Rectangle');
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.clickPencilBoxButton();
+      await dashboardPage.isHeaderDisplayed('Projects');
+      await dashboardPage.checkNumberOfFiles(expectedFileCount);
+    },
+  );
+}
+
 demoAccountApiFixture.beforeEach(async ({ page }) => {
   mainPage = new MainPage(page);
   dashboardPage = new DashboardPage(page);
@@ -241,46 +281,8 @@ demoAccountApiFixture.describe(() => {
     await dashboardPage.addFileAsSharedLibraryViaRightclick();
     await dashboardPage.isSharedLibraryIconDisplayed();
 
-    await dashboardPage.createFileViaTitlePanel();
-    await assetsPanelPage.clickAssetsTab();
-    await assetsPanelPage.clickLibrariesButton();
-    await assetsPanelPage.isSharedLibraryVisibleByName('New File 1');
-    await assetsPanelPage.clickSharedLibraryImportButton('New File 1');
-    await assetsPanelPage.clickCloseModalButton();
-    await dashboardPage.reloadPage();
-    await assetsPanelPage.clickAssetsTab();
-    await mainPage.clickMoveButton();
-    await assetsPanelPage.clickLibraryTitleWithName('New File 1');
-    await assetsPanelPage.clickLibraryComponentsTitle();
-    await assetsPanelPage.dragAndDropComponentToViewport('Ellipse');
-    await designPanelPage.changeAxisXAndYForLayer('300', '400');
-    await mainPage.waitForChangeIsSaved();
-    await assetsPanelPage.dragAndDropComponentToViewport('Rectangle');
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.clickPencilBoxButton();
-    await dashboardPage.isHeaderDisplayed('Projects');
-    await dashboardPage.isFileVisibleByName('New File 2');
-    await dashboardPage.checkNumberOfFiles('2 files');
-
-    await dashboardPage.createFileViaTitlePanel();
-    await assetsPanelPage.clickAssetsTab();
-    await assetsPanelPage.clickLibrariesButton();
-    await assetsPanelPage.isSharedLibraryVisibleByName('New File 1');
-    await assetsPanelPage.clickSharedLibraryImportButton('New File 1');
-    await assetsPanelPage.clickCloseModalButton();
-    await dashboardPage.reloadPage();
-    await assetsPanelPage.clickAssetsTab();
-    await mainPage.clickMoveButton();
-    await assetsPanelPage.clickLibraryTitleWithName('New File 1');
-    await assetsPanelPage.clickLibraryComponentsTitle();
-    await assetsPanelPage.dragAndDropComponentToViewport('Ellipse');
-    await designPanelPage.changeAxisXAndYForLayer('300', '400');
-    await mainPage.waitForChangeIsSaved();
-    await assetsPanelPage.dragAndDropComponentToViewport('Rectangle');
-    await mainPage.waitForChangeIsSaved();
-    await mainPage.clickPencilBoxButton();
-    await dashboardPage.isHeaderDisplayed('Projects');
-    await dashboardPage.checkNumberOfFiles('3 files');
+    await createFileUsingLibraryComponents('New File 1', '2 files');
+    await createFileUsingLibraryComponents('New File 1', '3 files');
   });
 
   demoAccountApiFixture(
