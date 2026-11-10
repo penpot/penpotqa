@@ -702,12 +702,21 @@ export class TokensComponent {
     }
   }
 
+  /**
+   * Expands a token type section in the Tokens panel and checks it is expanded.
+   * Retries the click: right after an import the section can re-render collapsed
+   * and drop the first one.
+   */
   async expandTokenByName(tokenClass: TokenClass) {
     const tokenTreeButton = this.getTokenTreeButton(tokenClass);
-    const isExpanded = await tokenTreeButton.getAttribute('aria-expanded');
-    if (isExpanded !== 'true') {
-      await tokenTreeButton.click();
-    }
+    await expect(async () => {
+      if ((await tokenTreeButton.getAttribute('aria-expanded')) !== 'true') {
+        await tokenTreeButton.click();
+      }
+      await expect(tokenTreeButton).toHaveAttribute('aria-expanded', 'true', {
+        timeout: 2000,
+      });
+    }, `Token section "${tokenClass}" is expanded`).toPass();
   }
 
   async isRemapTokenModalVisible() {
