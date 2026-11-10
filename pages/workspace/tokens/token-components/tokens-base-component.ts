@@ -213,11 +213,31 @@ export class TokensComponent {
     await this.tokenNameInput.click();
   }
 
+  /**
+   * Opens the context menu of a token pill. The mouse is then moved away, so the
+   * pill tooltip (large for composite tokens such as Typography) closes and
+   * doesn't cover the menu items.
+   * @param name - Token name, as shown on its pill.
+   */
   async rightClickOnTokenWithName(name: string) {
     await this.page
       .getByRole('button')
       .locator(`span[aria-label="${name}"]`)
       .click({ button: 'right', force: true });
+    await expect(
+      this.tokenContextMenu,
+      'Token context menu is visible',
+    ).toBeVisible();
+    await this.closeTokenTooltip();
+  }
+
+  /** Moves the mouse to a neutral corner and waits for any token tooltip to close. */
+  async closeTokenTooltip() {
+    await this.page.mouse.move(0, 0);
+    await expect(
+      this.page.getByRole('tooltip'),
+      'Token tooltip is closed',
+    ).toBeHidden();
   }
 
   async clickOnAddTokenAndFillData(
@@ -305,14 +325,23 @@ export class TokensComponent {
     await this.duplicateButton.click();
   }
 
+  /**
+   * Opens the edit modal of a token from its context menu.
+   * @param updatedToken - Token to edit; only its `name` is used to find the pill.
+   */
   async clickEditToken(
     updatedToken:
       TypographyToken<TokenClass> | ShadowToken<TokenClass> | MainToken<TokenClass>,
   ) {
     await this.rightClickOnTokenWithName(updatedToken.name);
     await this.editTokenMenuItem.click();
+    await expect(this.createTokenModal, 'Edit token modal is visible').toBeVisible();
   }
 
+  /**
+   * Opens the edit modal of a token and fills it with the new data, without saving.
+   * @param updatedToken - Token name (to find the pill) and the values to fill.
+   */
   async editTokenViaRightClickByName(
     updatedToken:
       TypographyToken<TokenClass> | ShadowToken<TokenClass> | MainToken<TokenClass>,
@@ -321,6 +350,10 @@ export class TokensComponent {
     await this.fillTokenData(updatedToken);
   }
 
+  /**
+   * Edits a token from its context menu and clicks Save.
+   * @param updatedToken - Token name (to find the pill) and the values to fill.
+   */
   async editTokenViaRightClickAndSave(
     updatedToken:
       TypographyToken<TokenClass> | ShadowToken<TokenClass> | MainToken<TokenClass>,
@@ -355,13 +388,18 @@ export class TokensComponent {
     await this.isTokenAppliedWithName(name);
   }
 
+  /**
+   * Checks whether a token pill shows as applied to the current selection.
+   * @param name - Token name, as shown on its pill.
+   * @param applied - `true` (default) to expect it applied, `false` to expect it not.
+   */
   async isTokenAppliedWithName(name: string, applied = true) {
     const token = this.page.locator(
       `button[class*="token-pill-applied"] span[aria-label="${name}"]`,
     );
     applied
-      ? await expect(token).toBeVisible()
-      : await expect(token).not.toBeVisible();
+      ? await expect(token, `Token "${name}" is applied`).toBeVisible()
+      : await expect(token, `Token "${name}" is not applied`).not.toBeVisible();
   }
 
   async isTokenDisabledWithName(name: string, disabled = true) {
@@ -589,8 +627,7 @@ export class TokensComponent {
       }
     }
     // Move away so the tooltip closes and doesn't cover the next interaction.
-    await this.page.mouse.move(0, 0);
-    await expect(tooltip).toBeHidden();
+    await this.closeTokenTooltip();
   }
 
   async checkAppliedTokenTitle(text: string) {
@@ -665,12 +702,21 @@ export class TokensComponent {
     }
   }
 
+  /**
+   * Expands a token type section in the Tokens panel and checks it is expanded.
+   * Retries the click: right after an import the section can re-render collapsed
+   * and drop the first one.
+   */
   async expandTokenByName(tokenClass: TokenClass) {
     const tokenTreeButton = this.getTokenTreeButton(tokenClass);
-    const isExpanded = await tokenTreeButton.getAttribute('aria-expanded');
-    if (isExpanded !== 'true') {
-      await tokenTreeButton.click();
-    }
+    await expect(async () => {
+      if ((await tokenTreeButton.getAttribute('aria-expanded')) !== 'true') {
+        await tokenTreeButton.click();
+      }
+      await expect(tokenTreeButton).toHaveAttribute('aria-expanded', 'true', {
+        timeout: 2000,
+      });
+    }, `Token section "${tokenClass}" is expanded`).toPass();
   }
 
   async isRemapTokenModalVisible() {

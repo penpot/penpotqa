@@ -121,11 +121,11 @@ demoAccountFileTest.describe('Numeric inputs', () => {
       tokensPage = new TokensPage(page);
       designPanelPage = new DesignPanelPage(page);
 
-      const dimensionTokenA: MainToken<TokenClass> = {
+      const dimensionTokenA = {
         class: TokenClass.Dimension,
         name: 'dimension-A',
         value: '550.5',
-      };
+      } satisfies MainToken<TokenClass>;
 
       const dimensionTokenB: MainToken<TokenClass> = {
         class: TokenClass.Dimension,
@@ -235,7 +235,7 @@ demoAccountApiFixture.describe(
         const newHexColor: string = '#f1d0d0';
 
         await demoAccountApiFixture.step(
-          'Hover on fill color input and check token value in tootltip message',
+          'Hover on fill color input and check token value in tooltip message',
           async () => {
             const messageText = `Resolved value: ${hexColor}`;
             await designPanelPage.checkTooltipInFillColorInput(messageText);
@@ -262,7 +262,7 @@ demoAccountApiFixture.describe(
         });
 
         await demoAccountApiFixture.step(
-          'Hover on fill color input and check token value in tootltip message',
+          'Hover on fill color input and check token value in tooltip message',
           async () => {
             const messageText = `Resolved value: ${newHexColor}`;
             await designPanelPage.checkTooltipInFillColorInput(messageText);
@@ -280,7 +280,7 @@ demoAccountApiFixture.describe(
         const tokenName: string = 'red';
 
         await demoAccountApiFixture.step(
-          'Hover on fill color input and check token value in tootltip message',
+          'Hover on fill color input and check token value in tooltip message',
           async () => {
             const messageText = `Resolved value: ${hexColor}`;
             await designPanelPage.checkTooltipInFillColorInput(messageText);
@@ -303,7 +303,7 @@ demoAccountApiFixture.describe(
         );
 
         await demoAccountApiFixture.step(
-          'Hover on fill color input and check error in tootltip message',
+          'Hover on fill color input and check error in tooltip message',
           async () => {
             const messageText: string = `{${tokenName}} token is not in any active set or has an invalid value.`;
             await designPanelPage.checkTooltipInFillColorInput(messageText);
@@ -460,6 +460,7 @@ demoAccountFileTest.describe('Typography token', () => {
 
       await demoAccountFileTest.step('(3021) Detach typography token', async () => {
         await demoAccountFileTest.step(`Click on detach button`, async () => {
+          await designPanelPage.hoverTypographyToken();
           await designPanelPage.clickOnDetachTokenButton();
           await designPanelPage.textOptionsAreVisible();
         });
