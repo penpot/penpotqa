@@ -180,8 +180,16 @@ export class PathEditorPage extends ToolbarPage {
 
   /** Names of the actions shown in the path toolbar, in display order. */
   async getToolbarActions(): Promise<string[]> {
+    // Design-system buttons are named by their tooltip trigger, referenced
+    // through `aria-labelledby` and carrying the name in its `aria-label`.
     return this.pathToolbarButtons.evaluateAll((buttons) =>
-      buttons.map((b) => b.getAttribute('title')!),
+      buttons.map((b) => {
+        const id = b.getAttribute('aria-labelledby');
+        const label = id && document.getElementById(id);
+        return label
+          ? label.getAttribute('aria-label') || label.textContent!.trim()
+          : (b.getAttribute('aria-label') ?? b.getAttribute('title'))!;
+      }),
     );
   }
 
@@ -207,14 +215,10 @@ export class PathEditorPage extends ToolbarPage {
    * @param toggled Expected state; `true` (default) = toggled, `false` = not toggled.
    */
   async isToolbarButtonToggled(button: Locator, toggled = true) {
-    toggled
-      ? await expect(button, 'Path toolbar button should be toggled').toHaveClass(
-          /is-toggled/,
-        )
-      : await expect(
-          button,
-          'Path toolbar button should not be toggled',
-        ).not.toHaveClass(/is-toggled/);
+    await expect(
+      button,
+      `Path toolbar button should ${toggled ? '' : 'not '}be toggled`,
+    ).toHaveAttribute('aria-pressed', String(toggled));
   }
 
   /**
