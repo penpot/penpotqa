@@ -362,6 +362,7 @@ demoAccountFileTest(qase([691], 'Change scale'), async ({ mainPage }) => {
     'Reset scale and upscale board and verify',
     async () => {
       await viewModePage.clickResetScaleButton();
+      await viewModePage.openScaleDropdown();
       await viewModePage.clickUpscaleButton();
       await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
         'upscale-board-view-mode-page-image.png',
@@ -377,6 +378,7 @@ demoAccountFileTest(qase([691], 'Change scale'), async ({ mainPage }) => {
   });
 
   await demoAccountFileTest.step('Select Fill scale option and verify', async () => {
+    await viewModePage.openScaleDropdown();
     await viewModePage.selectFillScaleOptions();
     await expect(viewModePage.viewerLayoutSection).toHaveScreenshot(
       'fill-scale-board-view-mode-page-image.png',
@@ -386,6 +388,7 @@ demoAccountFileTest(qase([691], 'Change scale'), async ({ mainPage }) => {
   await demoAccountFileTest.step(
     'Select Full screen scale option and verify',
     async () => {
+      await viewModePage.openScaleDropdown();
       await viewModePage.selectFullScreenScaleOptions();
       await expect(viewModePage.fullScreenSection).toHaveScreenshot(
         'full-screen-scale-board-view-mode-page-image.png',
@@ -396,6 +399,8 @@ demoAccountFileTest(qase([691], 'Change scale'), async ({ mainPage }) => {
   await demoAccountFileTest.step(
     'Reset scale from full screen mode and verify default scale',
     async () => {
+      await viewModePage.showFullScreenHeader();
+      await viewModePage.openScaleDropdown();
       await viewModePage.clickResetScaleButton();
       await expect(viewModePage.fullScreenSection).toHaveScreenshot(
         'full-screen-default-scale-board-view-mode-page-image.png',

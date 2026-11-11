@@ -13,7 +13,7 @@ exports.ViewModePage = class ViewModePage extends BasePage {
     super(page);
 
     //Assets panel
-    this.viewModeButton = page.getByTitle('View mode (G V)');
+    this.viewModeButton = page.getByRole('button', { name: 'View mode (G V)' });
     this.viewerLayoutSection = page.locator('#viewer-layout');
     this.inspectButton = page.getByRole('button', { name: 'Inspect' });
     this.rightSidebar = page.locator(`aside[class*='inspect_right_sidebar']`);
@@ -22,13 +22,21 @@ exports.ViewModePage = class ViewModePage extends BasePage {
       page,
       getExportSectionRoot(this.rightSidebar),
     );
-    this.fullScreenButton = page.getByTitle('Full Screen', { exact: true });
+    this.fullScreenButton = page.getByRole('button', {
+      name: 'Full Screen',
+      exact: true,
+    });
     this.fullScreenSection = page.locator(
       `section[class*="main_ui_viewer__fullscreen"]`,
     );
-    this.prevBoardButton = page.locator(`button[class*="viewer-go-prev"]`);
-    this.nextBoardButton = page.locator(`button[class*="viewer-go-next"]`);
-    this.resetBoardButton = page.locator(`button[class*="reset-button"]`);
+    this.prevBoardButton = page.getByRole('button', {
+      name: 'Previous',
+      exact: true,
+    });
+    this.nextBoardButton = page.getByRole('button', { name: 'Next', exact: true });
+    this.resetBoardButton = page.getByRole('button', {
+      name: 'Go to the first board',
+    });
     this.selectBoardDropdown = page.locator('#current-frame');
     this.boardTitle = page.locator('div[class*="thumbnail-info"]');
     this.interactionsArrow = page.locator('.interactions .selected');
@@ -49,8 +57,8 @@ exports.ViewModePage = class ViewModePage extends BasePage {
       .filter({ hasText: 'Show interactions on click' });
     this.boardCounter = page.locator('.main_ui_viewer__counter');
     this.scaleDropdown = page.locator('div[class*="header__zoom-widget"]');
-    this.upscaleButton = page.locator('button[class*="zoom-btn"] .icon-remove');
-    this.downscaleButton = page.locator('button[class*="zoom-btn"] .icon-add');
+    this.upscaleButton = page.getByRole('button', { name: 'Zoom out' });
+    this.downscaleButton = page.getByRole('button', { name: 'Zoom in' });
     this.scaleResetButton = page.getByRole('button', { name: 'Reset' });
     this.scaleFitOptions = page
       .getByRole('listitem')
@@ -90,7 +98,7 @@ exports.ViewModePage = class ViewModePage extends BasePage {
     );
     this.interactionsButton = page.getByRole('button', { name: 'Interactions' });
     this.widthCopyButton = page.locator('button[class*="copy_button"]').first();
-    this.editButton = page.locator('span[class*="edit-btn"]');
+    this.editButton = page.getByRole('button', { name: 'Edit', exact: true });
     this.shareButton = page.getByRole('button', { name: 'Share' });
     this.shareLinkDialog = page.locator('div[class*="share-link-dialog"]');
     this.getLinkButton = page.getByRole('button', { name: 'Get link' });
@@ -138,6 +146,18 @@ exports.ViewModePage = class ViewModePage extends BasePage {
     await this.fullScreenButton.click();
     await this.fullScreenSection.hover();
     await expect(this.fullScreenSection).toBeVisible();
+  }
+
+  /**
+   * Shows the viewer header in full screen mode, where it stays hidden above the
+   * screen until the pointer hovers the top edge.
+   */
+  async showFullScreenHeader() {
+    await this.page.mouse.move(100, 5);
+    await expect(
+      this.scaleDropdown,
+      'Viewer header should be visible',
+    ).toBeInViewport();
   }
 
   async exitFullScreenMode() {
