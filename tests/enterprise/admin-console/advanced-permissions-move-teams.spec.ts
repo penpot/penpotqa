@@ -1,8 +1,11 @@
 /**
  * Qase suite: Admin Console > Sidebar Menu > Advanced Permissions > Move teams across organizations (Permission)
  *
- * Stubs below (`test.skip`) await automation — see the Enterprise Plan
- * automation plan.
+ * The permission is a dropdown: "Team owners" (the old 'Always allowed'), or
+ * "Only me, from the Admin Console" (the old 'Never allowed'). Under "Team
+ * owners", the "Only between organizations under this Enterprise
+ * subscription" checkbox is the old 'Only within my own organizations'. The
+ * Qase titles still use the old option names.
  *
  * Base: `enterpriseActivatedPageTest` (see enterprise-fixtures.ts) for a
  * single actor — Enterprise-entitled via activation code, no Stripe
@@ -43,29 +46,28 @@ enterpriseActivatedPageTest.describe(
         );
 
         await enterpriseActivatedPageTest.step(
-          'Admin Console > Advanced Permissions > Move Teams Across Organizations → all 3 options available',
+          'Admin Console > Advanced Permissions > Move Teams Across Organizations → both options and the same subscription checkbox available',
           async () => {
             await advancedPermissionsPage.isPermissionVisible(
-              MoveTeamsPermission.NeverAllowed,
+              MoveTeamsPermission.TeamOwners,
             );
             await advancedPermissionsPage.isPermissionVisible(
-              MoveTeamsPermission.OnlyWithinOwnOrganizations,
+              MoveTeamsPermission.OnlyMeFromAdminConsole,
             );
-            await advancedPermissionsPage.isPermissionVisible(
-              MoveTeamsPermission.AlwaysAllowed,
-            );
+            await advancedPermissionsPage.isSameSubscriptionOnlyVisible();
           },
         );
 
         await enterpriseActivatedPageTest.step(
-          "Select 'Never allowed' → option becomes selected (autosaved), persists after reload",
+          "Select 'Only me, from the Admin Console' → option becomes selected (autosaved), persists after reload, and hides the checkbox",
           async () => {
             await advancedPermissionsPage.selectPermission(
-              MoveTeamsPermission.NeverAllowed,
+              MoveTeamsPermission.OnlyMeFromAdminConsole,
             );
             await advancedPermissionsPage.isPermissionSelected(
-              MoveTeamsPermission.NeverAllowed,
+              MoveTeamsPermission.OnlyMeFromAdminConsole,
             );
+            await advancedPermissionsPage.isSameSubscriptionOnlyVisible(false);
           },
         );
       },
@@ -88,14 +90,13 @@ enterpriseActivatedPageTest.describe(
         );
 
         await enterpriseActivatedPageTest.step(
-          "Select 'Only within my own organizations' → option becomes selected (autosaved), persists after reload",
+          "Check 'Only between organizations under this Enterprise subscription' → stays checked under 'Team owners' (autosaved) after reload",
           async () => {
-            await advancedPermissionsPage.selectPermission(
-              MoveTeamsPermission.OnlyWithinOwnOrganizations,
-            );
+            await advancedPermissionsPage.setSameSubscriptionOnly(true);
             await advancedPermissionsPage.isPermissionSelected(
-              MoveTeamsPermission.OnlyWithinOwnOrganizations,
+              MoveTeamsPermission.TeamOwners,
             );
+            await advancedPermissionsPage.isSameSubscriptionOnlyChecked();
           },
         );
       },
@@ -115,23 +116,21 @@ enterpriseActivatedPageTest.describe(
             await createOrgForLicensedAccount(orgPage, orgName);
             await adminConsolePage.openAdvancedPermissionsTab();
             await advancedPermissionsPage.selectPermission(
-              MoveTeamsPermission.NeverAllowed,
-            );
-            await advancedPermissionsPage.isPermissionSelected(
-              MoveTeamsPermission.NeverAllowed,
+              MoveTeamsPermission.OnlyMeFromAdminConsole,
             );
           },
         );
 
         await enterpriseActivatedPageTest.step(
-          "Select 'Always allowed' → option becomes selected (autosaved), persists after reload",
+          "Select 'Team owners' → option becomes selected (autosaved), persists after reload, with the same subscription checkbox unchecked",
           async () => {
             await advancedPermissionsPage.selectPermission(
-              MoveTeamsPermission.AlwaysAllowed,
+              MoveTeamsPermission.TeamOwners,
             );
             await advancedPermissionsPage.isPermissionSelected(
-              MoveTeamsPermission.AlwaysAllowed,
+              MoveTeamsPermission.TeamOwners,
             );
+            await advancedPermissionsPage.isSameSubscriptionOnlyChecked(false);
           },
         );
       },
@@ -155,12 +154,12 @@ enterpriseActivatedPageTest.describe(
         let teamId = '';
 
         await enterpriseActivatedPageTest.step(
-          "Setup: create OrgA, and set 'Move teams across organizations' to 'Never allowed'",
+          "Setup: create OrgA, and set 'Move teams across organizations' to 'Only me, from the Admin Console'",
           async () => {
             await createOrgForLicensedAccount(orgPage, orgAName);
             await adminConsolePage.openAdvancedPermissionsTab();
             await advancedPermissionsPage.selectPermission(
-              MoveTeamsPermission.NeverAllowed,
+              MoveTeamsPermission.OnlyMeFromAdminConsole,
             );
           },
         );
@@ -220,15 +219,13 @@ enterpriseActivatedPageTest.describe(
         const inviteeTeamPage = new TeamPage(invitee.page);
 
         await ownerAndInviteeTest.step(
-          "Setup: create OrgD, set 'Move teams across organizations' to 'Only within my own organizations', and invite the second account",
+          "Setup: create OrgD, limit 'Move teams across organizations' to organizations under this Enterprise subscription, and invite the second account",
           async () => {
             await activateEnterpriseLicense(ownerPage.context().request);
             await ownerPage.goto('/');
             await createOrgForLicensedAccount(orgPage, orgDName);
             await adminConsolePage.openAdvancedPermissionsTab();
-            await advancedPermissionsPage.selectPermission(
-              MoveTeamsPermission.OnlyWithinOwnOrganizations,
-            );
+            await advancedPermissionsPage.setSameSubscriptionOnly(true);
             await adminConsolePage.invitePersonToOrganization(invitee.email);
           },
         );
@@ -293,13 +290,11 @@ enterpriseActivatedPageTest.describe(
         let teamId = '';
 
         await enterpriseActivatedPageTest.step(
-          "Setup: create OrgA, and set 'Move teams across organizations' to 'Only within my own organizations'",
+          "Setup: create OrgA, and limit 'Move teams across organizations' to organizations under this Enterprise subscription",
           async () => {
             await createOrgForLicensedAccount(orgPage, orgAName);
             await adminConsolePage.openAdvancedPermissionsTab();
-            await advancedPermissionsPage.selectPermission(
-              MoveTeamsPermission.OnlyWithinOwnOrganizations,
-            );
+            await advancedPermissionsPage.setSameSubscriptionOnly(true);
           },
         );
 
@@ -348,15 +343,16 @@ enterpriseActivatedPageTest.describe(
         const inviteeTeamPage = new TeamPage(invitee.page);
 
         await ownerAndInviteeTest.step(
-          "Setup: create OrgD (kept at the default 'Always allowed'), and invite the second account",
+          "Setup: create OrgD (kept at the default 'Team owners', with no destination limit), and invite the second account",
           async () => {
             await activateEnterpriseLicense(ownerPage.context().request);
             await ownerPage.goto('/');
             await createOrgForLicensedAccount(orgPage, orgDName);
             await adminConsolePage.openAdvancedPermissionsTab();
             await advancedPermissionsPage.isPermissionSelected(
-              MoveTeamsPermission.AlwaysAllowed,
+              MoveTeamsPermission.TeamOwners,
             );
+            await advancedPermissionsPage.isSameSubscriptionOnlyChecked(false);
             await adminConsolePage.invitePersonToOrganization(invitee.email);
           },
         );
@@ -412,12 +408,12 @@ enterpriseActivatedPageTest.describe(
         const teamName = createTeamName();
 
         await enterpriseActivatedPageTest.step(
-          "Setup: create an org with a team in it, and set 'Move teams across organizations' to 'Never allowed'",
+          "Setup: create an org with a team in it, and set 'Move teams across organizations' to 'Only me, from the Admin Console'",
           async () => {
             await createOrgForLicensedAccount(orgPage, orgName);
             await adminConsolePage.openAdvancedPermissionsTab();
             await advancedPermissionsPage.selectPermission(
-              MoveTeamsPermission.NeverAllowed,
+              MoveTeamsPermission.OnlyMeFromAdminConsole,
             );
 
             await adminConsolePage.goToFiles(orgName);
@@ -429,7 +425,7 @@ enterpriseActivatedPageTest.describe(
         );
 
         await enterpriseActivatedPageTest.step(
-          "Under 'Never allowed', 'Remove team from organization' → blocking modal names the organization",
+          "Under 'Only me, from the Admin Console', 'Remove team from organization' → blocking modal names the organization",
           async () => {
             await teamPage.openRemoveTeamFromOrgDialog();
             await teamPage.isMoveTeamBlockedModalVisible(orgName);
@@ -438,19 +434,20 @@ enterpriseActivatedPageTest.describe(
         );
 
         await enterpriseActivatedPageTest.step(
-          "Org owner switches the setting to 'Only within my own organizations'",
+          "Org owner switches the setting to 'Team owners', only between organizations under this Enterprise subscription",
           async () => {
             await orgPage.openOrgSwitcher();
             await orgPage.clickGoToAdminConsole();
             await adminConsolePage.openAdvancedPermissionsTab();
             await advancedPermissionsPage.selectPermission(
-              MoveTeamsPermission.OnlyWithinOwnOrganizations,
+              MoveTeamsPermission.TeamOwners,
             );
+            await advancedPermissionsPage.setSameSubscriptionOnly(true);
           },
         );
 
         await enterpriseActivatedPageTest.step(
-          "Under 'Only within my own organizations', 'Remove team from organization' → the same blocking modal appears again",
+          "Under the same subscription limit, 'Remove team from organization' → the same blocking modal appears again",
           async () => {
             await adminConsolePage.goToFiles(orgName);
             await teamPage.switchTeam(teamName);
