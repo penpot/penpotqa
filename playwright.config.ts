@@ -92,6 +92,8 @@ export default defineConfig({
     video: process.env.CI ? 'on-first-retry' : 'on',
     /* Capture screenshot on failure */
     screenshot: 'only-on-failure',
+    /* Dark UI: profiles keep Penpot's `system` theme, which follows this */
+    colorScheme: 'dark',
     /* Default viewport for all projects */
     viewport: {
       height: 969,
