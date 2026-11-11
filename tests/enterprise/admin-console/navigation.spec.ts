@@ -127,6 +127,9 @@ enterprisePageTest.describe(
               orgPage,
               secondOrgName,
             );
+            // The last-visited org is saved once its page renders, not when
+            // the URL changes: leaving earlier lands on the first org.
+            await adminConsolePage.isDisplayingOrganization(secondOrgName);
           },
         );
 
