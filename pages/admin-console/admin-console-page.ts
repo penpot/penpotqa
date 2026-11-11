@@ -244,13 +244,9 @@ export class AdminConsolePage extends BasePage {
       name: 'Save changes',
     });
     this.settingsSavedMessage = page.getByText('Your changes were saved.');
-    // No accessible name at all — the only button in this
-    // modal with neither visible text nor an aria-label (the "Close
-    // notification" button next to the saved-message banner has an
-    // aria-label, so it's excluded by this XPath condition).
-    this.settingsModalCloseButton = this.settingsModal.locator(
-      'xpath=.//button[not(@aria-label) and not(normalize-space())]',
-    );
+    this.settingsModalCloseButton = this.settingsModal.getByRole('button', {
+      name: 'Close dialog',
+    });
     this.orgLogoUploadInput = page.getByLabel('Upload avatar');
 
     // Same "Delete organization" text as deleteOrganizationNavItem above —
