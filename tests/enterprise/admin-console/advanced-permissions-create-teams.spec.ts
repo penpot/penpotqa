@@ -182,11 +182,12 @@ enterprisePageTest.describe(
         advancedPermissionsPage,
       }) => {
         const orgName = createOrgName();
+        const teamName = createTeamName();
         const inviteeOrgPage = new OrganizationPage(invitee.page);
         const inviteeTeamPage = new TeamPage(invitee.page);
 
         await ownerAndInviteeTest.step(
-          "Setup: subscribe to Enterprise, create an organization, set Create Teams permission to 'Only me', and invite the second account",
+          'Setup: subscribe to Enterprise, create an organization, and invite the second account',
           async () => {
             await subscribeAndCreateOrg(
               orgPage,
@@ -194,26 +195,38 @@ enterprisePageTest.describe(
               stripePage,
               orgName,
             );
-            await adminConsolePage.openAdvancedPermissionsTab();
-            await advancedPermissionsPage.selectPermission(
-              CreateTeamsPermission.OnlyMe,
-            );
             await adminConsolePage.invitePersonToOrganization(invitee.email);
           },
         );
 
         await ownerAndInviteeTest.step(
-          'Invitee accepts the org invite from their inbox and becomes a non-owner org member',
+          'Setup: invitee accepts the org invite and creates a team in the org, while any member still can',
           async () => {
             await inviteeOrgPage.acceptOrgInviteFromInbox(invitee.email, orgName);
+            // The restriction modal names the org of the current team, so the
+            // invitee needs a team inside the org, not just their Personal Projects.
+            await invitee.page.goto('/');
+            await inviteeOrgPage.switchToOrg(orgName);
+            await inviteeTeamPage.createTeam(teamName);
+            await inviteeTeamPage.openTeamSettingsPageViaOptionsMenu();
+            await inviteeTeamPage.isTeamPartOfOrganization(orgName);
+          },
+        );
+
+        await ownerAndInviteeTest.step(
+          "Setup: org owner sets Create Teams permission to 'Only me'",
+          async () => {
+            await adminConsolePage.openAdvancedPermissionsTab();
+            await advancedPermissionsPage.selectPermission(
+              CreateTeamsPermission.OnlyMe,
+            );
           },
         );
 
         await ownerAndInviteeTest.step(
           'Non-owner member attempts to create a team within the org → restriction modal is shown',
           async () => {
-            await invitee.page.goto('/');
-            await inviteeOrgPage.switchToOrg(orgName);
+            await invitee.page.reload();
             await inviteeTeamPage.clickCreateNewTeamMenuItem();
             await inviteeTeamPage.isNoPermissionToCreateTeamMessageVisible(orgName);
           },

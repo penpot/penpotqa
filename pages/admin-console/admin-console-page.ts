@@ -424,6 +424,17 @@ export class AdminConsolePage extends BasePage {
   }
 
   async openAdvancedPermissionsTab() {
+    // Right after switching or creating an org, the sidebar link can still
+    // point to the previous org, so wait for it to match the current one.
+    const orgPath = new URL(this.page.url()).pathname.match(
+      /^\/admin-console\/organization\/[^/]+\/[^/]+/,
+    )?.[0];
+    if (orgPath) {
+      await expect(
+        this.advancedPermissionsNavLink,
+        'Advanced Permissions link points to the current organization',
+      ).toHaveAttribute('href', `${orgPath}/permissions`);
+    }
     await this.advancedPermissionsNavLink.click();
     await expect(this.page, 'On the Advanced Permissions tab').toHaveURL(
       /\/permissions$/,
