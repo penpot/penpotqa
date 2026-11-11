@@ -169,9 +169,10 @@ ownerAndInviteeActivatedTest.describe(
             // Load by id, not reload: the invite link may have left a project URL.
             await inviteeTeamPage.goToTeamDashboard(teamId);
             await inviteeTeamPage.openInvitationsPageViaOptionsMenu();
-            // Empty state hides the button (it's only disabled with pending invites).
-            await inviteeTeamPage.isInviteMembersToTeamButtonHidden();
+            // The empty state's button stays enabled and shows a no-permission modal instead.
+            await inviteeTeamPage.clickInviteMembersToTeamButton();
             await inviteeTeamPage.isNoPermissionToInviteMessageVisible();
+            await inviteeTeamPage.closeNoPermissionToInviteModal();
           },
         );
 
