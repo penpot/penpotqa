@@ -378,6 +378,24 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.page.getByRole('option', { name: orgName }).click();
   }
 
+  /** Clicks "Create new team" without filling the form: inside an org whose
+   * Create Teams permission blocks the user, it opens a restriction modal
+   * instead (see isNoPermissionToCreateTeamMessageVisible()). */
+  async clickCreateNewTeamMenuItem() {
+    await this.openTeamsListIfClosed();
+    await this.createNewTeamMenuItem.click();
+  }
+
+  async isNoPermissionToCreateTeamMessageVisible(orgName) {
+    await expect(
+      this.page.getByText(
+        `You are not allowed to create teams within ${orgName} organization.`,
+      ),
+      `No-permission-to-create-team modal names "${orgName}"`,
+    ).toBeVisible();
+    await expect(this.teamNameInput, 'Create team form is not shown').toHaveCount(0);
+  }
+
   async isNoPermissionToAddTeamMessageVisible() {
     await expect(
       this.noPermissionToAddTeamMessage,
@@ -986,6 +1004,36 @@ exports.TeamPage = class TeamPage extends BasePage {
     await expect(
       this.noPermissionToInviteMessage,
       'No-permission-to-invite message is shown',
+    ).toBeVisible();
+  }
+
+  /** The modal a team admin blocked by the org's Send invitations permission
+   * gets from the empty state's Invite people button. Its overlay otherwise
+   * intercepts every later click on the page. */
+  async closeNoPermissionToInviteModal() {
+    await this.clickOnESC();
+    await expect(
+      this.noPermissionToInviteMessage,
+      'No-permission-to-invite modal is closed',
+    ).not.toBeVisible();
+  }
+
+  async isResendInvitationButtonVisible(visible = true) {
+    visible
+      ? await expect(
+          this.resendInvitationButton,
+          'Resend invitation button is visible',
+        ).toBeVisible()
+      : await expect(
+          this.resendInvitationButton,
+          'Resend invitation button is not visible',
+        ).not.toBeVisible();
+  }
+
+  async isDeleteInvitationButtonVisible() {
+    await expect(
+      this.deleteInvitationButton,
+      'Delete invitation button is visible',
     ).toBeVisible();
   }
 
