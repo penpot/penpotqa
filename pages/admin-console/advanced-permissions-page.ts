@@ -2,22 +2,23 @@ import { type Locator, type Page, expect } from '@playwright/test';
 import { BasePage } from '../base-page';
 
 /**
- * Named option labels for each Advanced Permissions radio group, for typed
- * use with AdvancedPermissionsPage's selectPermission()/isPermissionSelected()
- * instead of hardcoding option text in each test. All 4
- * groups share the exact same UI pattern (real `role="radio"` inputs,
- * autosave on click — see the class doc comment) so one generic
- * select/check pair, typed against the union of all 4, covers every group.
+ * Named option labels for each Advanced Permissions dropdown, for typed use
+ * with AdvancedPermissionsPage's selectPermission()/isPermissionSelected()
+ * instead of hardcoding option text in each test.
  */
 export const CreateTeamsPermission = {
   AnyMember: 'Any member of the organization',
   OnlyMe: 'Only me',
 } as const;
 
+/**
+ * "Team owners" alone allows moving teams to any organization. Under it, the
+ * "Only between organizations under this Enterprise subscription" checkbox
+ * (see setSameSubscriptionOnly()) limits the destination.
+ */
 export const MoveTeamsPermission = {
-  AlwaysAllowed: 'Always allowed',
-  OnlyWithinOwnOrganizations: 'Only within my own organizations',
-  NeverAllowed: 'Never allowed',
+  TeamOwners: 'Team owners',
+  OnlyMeFromAdminConsole: 'Only me, from the Admin Console',
 } as const;
 
 export const SendInvitationsPermission = {
@@ -36,22 +37,34 @@ export type AdvancedPermissionValue =
   | (typeof SendInvitationsPermission)[keyof typeof SendInvitationsPermission]
   | (typeof NewTeamMembersPermission)[keyof typeof NewTeamMembersPermission];
 
+const PERMISSION_TITLES: Record<AdvancedPermissionValue, string> = {
+  [CreateTeamsPermission.AnyMember]: 'Create Teams',
+  [CreateTeamsPermission.OnlyMe]: 'Create Teams',
+  [MoveTeamsPermission.TeamOwners]: 'Move teams across organizations',
+  [MoveTeamsPermission.OnlyMeFromAdminConsole]: 'Move teams across organizations',
+  [SendInvitationsPermission.OwnersAndAdmins]: 'Send invitations',
+  [SendInvitationsPermission.OwnersOnly]: 'Send invitations',
+  [NewTeamMembersPermission.AnyoneIncludingExternal]: 'New team members',
+  [NewTeamMembersPermission.OrganizationMembersOnly]: 'New team members',
+};
+
+const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 /**
  * Covers the Admin Console's Advanced Permissions tab
- * (/admin-console/organization/{slug}/{id}/permissions) — 4 org-level
- * policy radio groups: Create Teams, Move teams across organizations, Send
- * invitations, New team members. Every group autosaves on
- * click — no explicit Save button anywhere on this page — showing a real
- * "Permissions updated successfully." toast, and the change survives a
- * reload.
+ * (/admin-console/organization/{slug}/{id}/permissions): 4 org-level
+ * permissions (Create Teams, Move teams across organizations, Send
+ * invitations, New team members), each a dropdown. Every change autosaves,
+ * with no Save button, showing a "Permissions updated successfully." toast,
+ * and survives a reload.
  */
 export class AdvancedPermissionsPage extends BasePage {
   readonly permissionsSavedToast: Locator;
+  readonly sameSubscriptionOnlyCheckbox: Locator;
 
-  // New team members' "Organization members only" option — uniquely among
-  // the 4 permission groups, selecting it while the org has pending
-  // invitations to non-members shows this inline warning panel (not a
-  // modal, no role="dialog") instead of autosaving immediately.
+  // New team members' "Organization members only" option: selecting it while
+  // the org has pending invitations to non-members shows this inline warning
+  // panel (not a modal, no role="dialog") instead of autosaving.
   readonly revokeInvitationsWarning: Locator;
   readonly cancelRevokeInvitationsButton: Locator;
   readonly applyAndRevokeInvitationsButton: Locator;
@@ -60,6 +73,9 @@ export class AdvancedPermissionsPage extends BasePage {
     super(page);
 
     this.permissionsSavedToast = page.getByText('Permissions updated successfully.');
+    this.sameSubscriptionOnlyCheckbox = page.getByRole('checkbox', {
+      name: 'Only between organizations under this Enterprise subscription',
+    });
 
     this.revokeInvitationsWarning = page.getByText(
       'Switching will permanently cancel all pending invitations to people outside your organization.',
@@ -78,17 +94,21 @@ export class AdvancedPermissionsPage extends BasePage {
    * Locator helpers
    * ------------------------------------------------- */
 
-  private getPermissionRadio(value: AdvancedPermissionValue): Locator {
-    return this.page.getByRole('radio', { name: value, exact: true });
+  /** The dropdown's accessible name is "<selected option> <permission title>". */
+  private getPermissionDropdown(value: AdvancedPermissionValue): Locator {
+    return this.page.getByRole('button', {
+      name: new RegExp(`${escapeRegExp(PERMISSION_TITLES[value])}$`),
+    });
   }
 
-  /** The radio's own label text — this is the real click
-   * target. The underlying `role="radio"` input itself is visually covered
-   * by its own decorative custom-styled circle (a sibling element), which
-   * intercepts pointer events on the input directly; clicking the label
-   * (as a real user would) avoids that entirely. */
-  private getPermissionLabel(value: AdvancedPermissionValue): Locator {
-    return this.page.getByText(value, { exact: true });
+  private selectedName(value: AdvancedPermissionValue): RegExp {
+    return new RegExp(
+      `^${escapeRegExp(value)} ${escapeRegExp(PERMISSION_TITLES[value])}$`,
+    );
+  }
+
+  private getPermissionOption(value: AdvancedPermissionValue): Locator {
+    return this.page.getByRole('option', { name: value, exact: true });
   }
 
   /* -------------------------------------------------
@@ -96,53 +116,72 @@ export class AdvancedPermissionsPage extends BasePage {
    * ------------------------------------------------- */
 
   /**
-   * Clicks a permission's label and confirms the change actually persisted
-   * (reload, then check), re-clicking if it didn't. Retrying the whole
-   * click is more reliable here than trusting a single click + toast. Skips
-   * the click (and its toast wait) once the radio already reflects `value`
-   * — re-clicking an already-selected option is a no-op that shows no new
-   * toast, which would otherwise fail a retry even though the desired
-   * state was already reached.
+   * Picks a permission option and confirms it persisted (reload, then check),
+   * picking it again if it didn't: while the page hydrates, a click can land
+   * on a node that is replaced right away. Skips the pick once the dropdown
+   * already shows `value`, since picking the selected option shows no toast.
    */
   async selectPermission(value: AdvancedPermissionValue) {
+    const dropdown = this.getPermissionDropdown(value);
     await expect(async () => {
-      if (!(await this.getPermissionRadio(value).isChecked())) {
-        await this.getPermissionLabel(value).click();
+      if ((await dropdown.innerText()).trim() !== value) {
+        await dropdown.click({ timeout: 5000 });
+        await this.getPermissionOption(value).click({ timeout: 5000 });
         await expect(
-          this.permissionsSavedToast,
+          this.permissionsSavedToast.last(),
           'Permissions updated successfully toast is shown',
         ).toBeVisible({ timeout: 5000 });
         await this.page.reload();
       }
       await expect(
-        this.getPermissionRadio(value),
+        dropdown,
         `"${value}" permission is selected after reload`,
-      ).toBeChecked({ timeout: 5000 });
-    }).toPass({ timeout: 30000 });
+      ).toHaveAccessibleName(this.selectedName(value), { timeout: 5000 });
+    }).toPass({ timeout: 45000 });
   }
 
   /**
-   * Clicks "Organization members only" and waits for the warning panel to
-   * appear, retrying if it doesn't (same hydration-race rationale as
-   * selectPermission()). Assumes the org actually has pending invitations
-   * to non-members — otherwise this option autosaves immediately like every
-   * other permission (see selectPermission() instead). Skips re-clicking
-   * once the radio is already checked (like selectPermission()), but always
-   * re-verifies the warning on every attempt — confirmed live that the
-   * radio can check before the warning has actually rendered, so checking
-   * it only inside the click branch let a retry silently "succeed" without
-   * ever confirming the warning was shown.
+   * Checks or unchecks "Only between organizations under this Enterprise
+   * subscription", shown under Move teams' "Team owners" option, and confirms
+   * it persisted after a reload, retrying like selectPermission().
+   */
+  async setSameSubscriptionOnly(checked: boolean) {
+    await expect(async () => {
+      if ((await this.sameSubscriptionOnlyCheckbox.isChecked()) !== checked) {
+        await this.sameSubscriptionOnlyCheckbox.setChecked(checked, {
+          force: true,
+          timeout: 5000,
+        });
+        await expect(
+          this.permissionsSavedToast.last(),
+          'Permissions updated successfully toast is shown',
+        ).toBeVisible({ timeout: 5000 });
+        await this.page.reload();
+      }
+      checked
+        ? await expect(
+            this.sameSubscriptionOnlyCheckbox,
+            'Same subscription only is checked after reload',
+          ).toBeChecked({ timeout: 5000 })
+        : await expect(
+            this.sameSubscriptionOnlyCheckbox,
+            'Same subscription only is unchecked after reload',
+          ).not.toBeChecked({ timeout: 5000 });
+    }).toPass({ timeout: 45000 });
+  }
+
+  /**
+   * Picks "Organization members only" and waits for the warning panel,
+   * retrying if it doesn't show (same hydration race as selectPermission()).
+   * Assumes the org has pending invitations to non-members; otherwise the
+   * option autosaves like any other (use selectPermission() instead).
    */
   async clickOrganizationMembersOnlyExpectingWarning() {
+    const value = NewTeamMembersPermission.OrganizationMembersOnly;
     await expect(async () => {
-      if (
-        !(await this.getPermissionRadio(
-          NewTeamMembersPermission.OrganizationMembersOnly,
-        ).isChecked())
-      ) {
-        await this.getPermissionLabel(
-          NewTeamMembersPermission.OrganizationMembersOnly,
-        ).click();
+      if (!(await this.revokeInvitationsWarning.isVisible())) {
+        await this.getPermissionDropdown(value).click({ timeout: 5000 });
+        await this.getPermissionOption(value).click({ timeout: 5000 });
       }
       await expect(
         this.revokeInvitationsWarning,
@@ -182,38 +221,59 @@ export class AdvancedPermissionsPage extends BasePage {
         ).not.toBeVisible();
   }
 
-  async isPermissionVisible(value: AdvancedPermissionValue, visible = true) {
-    const radio = this.getPermissionRadio(value);
-    visible
-      ? await expect(radio, `"${value}" permission option is visible`).toBeVisible()
-      : await expect(
-          radio,
-          `"${value}" permission option is not visible`,
-        ).not.toBeVisible();
+  /** Opens the permission's dropdown, checks the option is listed, and closes it. */
+  async isPermissionVisible(value: AdvancedPermissionValue) {
+    await this.getPermissionDropdown(value).click();
+    await expect(
+      this.getPermissionOption(value),
+      `"${value}" permission option is listed`,
+    ).toBeVisible();
+    await this.page.keyboard.press('Escape');
+    await expect(this.getPermissionOption(value)).toHaveCount(0);
   }
 
   /**
-   * Checks the PERSISTED state — reloads before reading the radio, rather
-   * than trusting the client-side re-render right after clicking. Confirmed
-   * live under heavy load this radio's own client-side re-render can get
-   * stuck showing stale `checked` state well past any reasonable retry
-   * window, even though the setting genuinely saved (the toast fired, and a
-   * reload always reflects the real, correct state). This is arguably the
-   * more meaningful check anyway — it matches what "autosaved" is actually
-   * claiming (persisted server-side), not just an instantaneous UI update.
+   * Checks the PERSISTED state: reloads before reading the dropdown, since
+   * under load the client-side re-render can stay stale even though the
+   * setting saved.
    */
   async isPermissionSelected(value: AdvancedPermissionValue, selected = true) {
-    const radio = this.getPermissionRadio(value);
+    const dropdown = this.getPermissionDropdown(value);
     await expect(async () => {
       await this.page.reload();
       selected
-        ? await expect(radio, `"${value}" permission is selected`).toBeChecked({
-            timeout: 5000,
-          })
+        ? await expect(
+            dropdown,
+            `"${value}" permission is selected`,
+          ).toHaveAccessibleName(this.selectedName(value), { timeout: 5000 })
         : await expect(
-            radio,
+            dropdown,
             `"${value}" permission is not selected`,
-          ).not.toBeChecked({ timeout: 5000 });
+          ).not.toHaveAccessibleName(this.selectedName(value), { timeout: 5000 });
     }).toPass({ timeout: 20000 });
+  }
+
+  async isSameSubscriptionOnlyChecked(checked = true) {
+    checked
+      ? await expect(
+          this.sameSubscriptionOnlyCheckbox,
+          'Same subscription only is checked',
+        ).toBeChecked()
+      : await expect(
+          this.sameSubscriptionOnlyCheckbox,
+          'Same subscription only is unchecked',
+        ).not.toBeChecked();
+  }
+
+  async isSameSubscriptionOnlyVisible(visible = true) {
+    visible
+      ? await expect(
+          this.sameSubscriptionOnlyCheckbox,
+          'Same subscription only checkbox is shown',
+        ).toBeVisible()
+      : await expect(
+          this.sameSubscriptionOnlyCheckbox,
+          'Same subscription only checkbox is not shown',
+        ).toHaveCount(0);
   }
 }
