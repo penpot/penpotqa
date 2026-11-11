@@ -182,7 +182,6 @@ enterprisePageTest.describe(
         advancedPermissionsPage,
       }) => {
         const orgName = createOrgName();
-        const teamName = createTeamName();
         const inviteeOrgPage = new OrganizationPage(invitee.page);
         const inviteeTeamPage = new TeamPage(invitee.page);
 
@@ -211,13 +210,12 @@ enterprisePageTest.describe(
         );
 
         await ownerAndInviteeTest.step(
-          'Non-owner member creates their own team, then attempts to add it to the org → restriction modal is shown',
+          'Non-owner member attempts to create a team within the org → restriction modal is shown',
           async () => {
             await invitee.page.goto('/');
-            await inviteeTeamPage.createTeam(teamName);
-            await inviteeTeamPage.openTeamSettingsPageViaOptionsMenu();
-            await inviteeTeamPage.openAddTeamToOrgModal();
-            await inviteeTeamPage.isNoPermissionToAddTeamMessageVisible();
+            await inviteeOrgPage.switchToOrg(orgName);
+            await inviteeTeamPage.clickCreateNewTeamMenuItem();
+            await inviteeTeamPage.isNoPermissionToCreateTeamMessageVisible(orgName);
           },
         );
       },
