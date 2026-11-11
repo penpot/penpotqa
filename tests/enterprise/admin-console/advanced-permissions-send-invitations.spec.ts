@@ -218,6 +218,12 @@ enterprisePageTest.describe(
             // Since penpot/penpot#12892 the permission only gates inviting
             // and resending: the list, deleting and the role stay with any
             // team admin.
+            // TODO: changing the role and copying the link of a pending
+            // invitation are still offered to this admin. Asked whether that's
+            // intended: https://chat.kaleidos.net/kaleidos/pl/guw5miayw7ft5femsbt3n3pw1o
+            // If it is, check both are available here; if not, check they
+            // aren't (isInvitationRoleInPopUpNotDisplayed(),
+            // isCopyInvitationLinkButtonVisible(pendingEmail, false)).
             await inviteeTeamPage.selectInvitationByEmail(pendingEmail);
             await inviteeTeamPage.isResendInvitationButtonVisible(false);
             await inviteeTeamPage.isDeleteInvitationButtonVisible();
