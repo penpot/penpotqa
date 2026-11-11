@@ -202,30 +202,25 @@ enterprisePageTest.describe(
         );
 
         await ownerAndInviteeTest.step(
-          '3362: Team admin > Members > Invitations → no invite button, permission message shown instead',
+          '3362: Team admin > Members > Invitations → Invite people button is disabled',
           async () => {
             // The invitee's session predates the permission switch above —
             // reload to pick up the now-restrictive permission.
             await invitee.page.reload();
             await inviteeTeamPage.openInvitationsPageViaOptionsMenu();
             await inviteeTeamPage.isInviteMembersToTeamButtonDisabled();
-            await inviteeTeamPage.isNoPermissionToInviteMessageVisible();
           },
         );
 
         await ownerAndInviteeTest.step(
-          '3364: Team admin cannot change role, resend, delete, or copy the link of the existing pending invitation — preview only',
+          '3364: Team admin cannot resend the existing pending invitation, but can still delete it',
           async () => {
-            await inviteeTeamPage.isInvitationRoleInPopUpNotDisplayed(
-              pendingEmail,
-              'Admin',
-            );
-            await inviteeTeamPage.isInvitationSelectionDisabled(pendingEmail);
-            await inviteeTeamPage.isInvitationRecordOptionsDisabled(pendingEmail);
-            await inviteeTeamPage.isCopyInvitationLinkButtonVisible(
-              pendingEmail,
-              false,
-            );
+            // Since penpot/penpot#12892 the permission only gates inviting
+            // and resending: the list, deleting and the role stay with any
+            // team admin.
+            await inviteeTeamPage.selectInvitationByEmail(pendingEmail);
+            await inviteeTeamPage.isResendInvitationButtonVisible(false);
+            await inviteeTeamPage.isDeleteInvitationButtonVisible();
           },
         );
       },
