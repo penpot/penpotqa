@@ -61,6 +61,9 @@ const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\
 export class AdvancedPermissionsPage extends BasePage {
   readonly permissionsSavedToast: Locator;
   readonly sameSubscriptionOnlyCheckbox: Locator;
+  // The checkbox's <input> is visually hidden inside its <label>: click the
+  // label text, as a real user would, and keep the checkbox for assertions.
+  readonly sameSubscriptionOnlyLabel: Locator;
 
   // New team members' "Organization members only" option: selecting it while
   // the org has pending invitations to non-members shows this inline warning
@@ -76,6 +79,10 @@ export class AdvancedPermissionsPage extends BasePage {
     this.sameSubscriptionOnlyCheckbox = page.getByRole('checkbox', {
       name: 'Only between organizations under this Enterprise subscription',
     });
+    this.sameSubscriptionOnlyLabel = page.getByText(
+      'Only between organizations under this Enterprise subscription',
+      { exact: true },
+    );
 
     this.revokeInvitationsWarning = page.getByText(
       'Switching will permanently cancel all pending invitations to people outside your organization.',
@@ -152,10 +159,7 @@ export class AdvancedPermissionsPage extends BasePage {
     await expect(async () => {
       await this.page.reload();
       if ((await this.sameSubscriptionOnlyCheckbox.isChecked()) !== checked) {
-        await this.sameSubscriptionOnlyCheckbox.setChecked(checked, {
-          force: true,
-          timeout: 5000,
-        });
+        await this.sameSubscriptionOnlyLabel.click({ timeout: 5000 });
         await expect(
           this.permissionsSavedToast,
           'Permissions updated successfully toast is shown',
