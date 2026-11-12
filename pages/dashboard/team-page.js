@@ -1030,11 +1030,15 @@ exports.TeamPage = class TeamPage extends BasePage {
         ).not.toBeVisible();
   }
 
-  async isDeleteInvitationButtonVisible() {
+  /**
+   * The selection actions (Resend, Delete) render from the same state as the
+   * row's checkbox: wait for it before asserting any of them is absent.
+   */
+  async isInvitationSelected(email) {
     await expect(
-      this.deleteInvitationButton,
-      'Delete invitation button is visible',
-    ).toBeVisible();
+      this.page.locator(`label:has([value="${email}"]) input[type="checkbox"]`),
+      `Invitation for ${email} is selected`,
+    ).toBeChecked();
   }
 
   async selectMember(name) {

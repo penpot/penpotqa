@@ -66,7 +66,7 @@ enterprisePageTest.describe(
         );
 
         await ownerAndInviteeTest.step(
-          '3359: Team owner > Members > Invitations → invite option is available and the invite flow starts',
+          '3359: Team owner can invite members under default configuration',
           async () => {
             await teamPage.openInvitationsPageViaOptionsMenu();
             await teamPage.clickInviteMembersToTeamButton();
@@ -75,7 +75,7 @@ enterprisePageTest.describe(
         );
 
         await ownerAndInviteeTest.step(
-          '3360: Team admin > Members > Invitations → invite option is available and the invite flow starts',
+          '3360: Team admin can invite members under default configuration',
           async () => {
             await inviteeTeamPage.openInvitationsPageViaOptionsMenu();
             await inviteeTeamPage.clickInviteMembersToTeamButton();
@@ -202,7 +202,7 @@ enterprisePageTest.describe(
         );
 
         await ownerAndInviteeTest.step(
-          '3362: Team admin > Members > Invitations → Invite people button is disabled',
+          '3362: Team owners only setting restricts team admins from inviting',
           async () => {
             // The invitee's session predates the permission switch above —
             // reload to pick up the now-restrictive permission.
@@ -213,20 +213,16 @@ enterprisePageTest.describe(
         );
 
         await ownerAndInviteeTest.step(
-          '3364: Team admin cannot resend the existing pending invitation, but can still delete it',
+          '3364: Restricted team admin can only view invitations under Team owners only',
           async () => {
-            // Since penpot/penpot#12892 the permission only gates inviting
-            // and resending: the list, deleting and the role stay with any
-            // team admin.
-            // TODO: changing the role and copying the link of a pending
-            // invitation are still offered to this admin. Asked whether that's
-            // intended: https://chat.kaleidos.net/kaleidos/pl/guw5miayw7ft5femsbt3n3pw1o
-            // If it is, check both are available here; if not, check they
-            // aren't (isInvitationRoleInPopUpNotDisplayed(),
-            // isCopyInvitationLinkButtonVisible(pendingEmail, false)).
+            // TODO: penpot/penpot-nitrate#807: this admin can still change the
+            // role, delete and copy the link of a pending invitation. Once
+            // fixed, also check none of them is available
+            // (isInvitationRoleInPopUpNotDisplayed(), the Delete invitation
+            // button, isCopyInvitationLinkButtonVisible(pendingEmail, false)).
             await inviteeTeamPage.selectInvitationByEmail(pendingEmail);
+            await inviteeTeamPage.isInvitationSelected(pendingEmail);
             await inviteeTeamPage.isResendInvitationButtonVisible(false);
-            await inviteeTeamPage.isDeleteInvitationButtonVisible();
           },
         );
       },
