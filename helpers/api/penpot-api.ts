@@ -11,6 +11,9 @@ export type PenpotApiMethod =
   | 'create-team'
   | 'create-team-invitations'
   | 'verify-token'
+  | 'add-team-to-organization'
+  | 'delete-team-member'
+  | 'delete-team'
   | 'get-file-libraries'
   | 'import-binfile';
 
@@ -34,5 +37,7 @@ export async function callPenpotApi<T = any>(
   });
   if (!res.ok())
     throw new Error(`${method} failed: ${res.status()} ${await res.text()}`);
-  return res.json();
+  // Some methods (e.g. add-team-to-organization) answer with an empty body.
+  const body = await res.text();
+  return body ? JSON.parse(body) : undefined;
 }
