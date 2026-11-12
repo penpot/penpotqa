@@ -244,13 +244,9 @@ export class AdminConsolePage extends BasePage {
       name: 'Save changes',
     });
     this.settingsSavedMessage = page.getByText('Your changes were saved.');
-    // No accessible name at all — the only button in this
-    // modal with neither visible text nor an aria-label (the "Close
-    // notification" button next to the saved-message banner has an
-    // aria-label, so it's excluded by this XPath condition).
-    this.settingsModalCloseButton = this.settingsModal.locator(
-      'xpath=.//button[not(@aria-label) and not(normalize-space())]',
-    );
+    this.settingsModalCloseButton = this.settingsModal.getByRole('button', {
+      name: 'Close dialog',
+    });
     this.orgLogoUploadInput = page.getByLabel('Upload avatar');
 
     // Same "Delete organization" text as deleteOrganizationNavItem above —
@@ -428,6 +424,17 @@ export class AdminConsolePage extends BasePage {
   }
 
   async openAdvancedPermissionsTab() {
+    // Right after switching or creating an org, the sidebar link can still
+    // point to the previous org, so wait for it to match the current one.
+    const orgPath = new URL(this.page.url()).pathname.match(
+      /^\/admin-console\/organization\/[^/]+\/[^/]+/,
+    )?.[0];
+    if (orgPath) {
+      await expect(
+        this.advancedPermissionsNavLink,
+        'Advanced Permissions link points to the current organization',
+      ).toHaveAttribute('href', `${orgPath}/permissions`);
+    }
     await this.advancedPermissionsNavLink.click();
     await expect(this.page, 'On the Advanced Permissions tab').toHaveURL(
       /\/permissions$/,
@@ -1292,13 +1299,13 @@ export class AdminConsolePage extends BasePage {
     ).toHaveText(`Remove ${teamName} from ${orgName}?`);
     await expect(
       this.removeTeamDialog.getByText(
-        `${teamName} will leave ${orgName}. The team, its projects and files are not deleted and will keep working. You will find them under 'Other teams'`,
+        `Team ${teamName} won't be deleted, and its members will find it under "Other teams". Its projects and files will keep working.`,
         { exact: true },
       ),
       'Remove team dialog explains the team keeps working',
     ).toBeVisible();
     const accessWarning = this.removeTeamDialog.getByText(
-      `You are not a member of ${teamName}, so you will lose access to its projects and files.`,
+      `You are not a member of team ${teamName}, so you will lose access to its projects and files.`,
       { exact: true },
     );
     notMember

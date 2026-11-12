@@ -187,7 +187,7 @@ enterprisePageTest.describe(
         const inviteeTeamPage = new TeamPage(invitee.page);
 
         await ownerAndInviteeTest.step(
-          "Setup: subscribe to Enterprise, create an organization, set Create Teams permission to 'Only me', and invite the second account",
+          'Setup: subscribe to Enterprise, create an organization, and invite the second account',
           async () => {
             await subscribeAndCreateOrg(
               orgPage,
@@ -195,29 +195,40 @@ enterprisePageTest.describe(
               stripePage,
               orgName,
             );
-            await adminConsolePage.openAdvancedPermissionsTab();
-            await advancedPermissionsPage.selectPermission(
-              CreateTeamsPermission.OnlyMe,
-            );
             await adminConsolePage.invitePersonToOrganization(invitee.email);
           },
         );
 
         await ownerAndInviteeTest.step(
-          'Invitee accepts the org invite from their inbox and becomes a non-owner org member',
+          'Setup: invitee accepts the org invite and creates a team in the org, while any member still can',
           async () => {
             await inviteeOrgPage.acceptOrgInviteFromInbox(invitee.email, orgName);
+            // The restriction modal names the org of the current team, so the
+            // invitee needs a team inside the org, not just their Personal Projects.
+            await invitee.page.goto('/');
+            await inviteeOrgPage.switchToOrg(orgName);
+            await inviteeTeamPage.createTeam(teamName);
+            await inviteeTeamPage.openTeamSettingsPageViaOptionsMenu();
+            await inviteeTeamPage.isTeamPartOfOrganization(orgName);
           },
         );
 
         await ownerAndInviteeTest.step(
-          'Non-owner member creates their own team, then attempts to add it to the org → restriction modal is shown',
+          "Setup: org owner sets Create Teams permission to 'Only me'",
           async () => {
-            await invitee.page.goto('/');
-            await inviteeTeamPage.createTeam(teamName);
-            await inviteeTeamPage.openTeamSettingsPageViaOptionsMenu();
-            await inviteeTeamPage.openAddTeamToOrgModal();
-            await inviteeTeamPage.isNoPermissionToAddTeamMessageVisible();
+            await adminConsolePage.openAdvancedPermissionsTab();
+            await advancedPermissionsPage.selectPermission(
+              CreateTeamsPermission.OnlyMe,
+            );
+          },
+        );
+
+        await ownerAndInviteeTest.step(
+          'Non-owner member attempts to create a team within the org → restriction modal is shown',
+          async () => {
+            await invitee.page.reload();
+            await inviteeTeamPage.clickCreateNewTeamMenuItem();
+            await inviteeTeamPage.isNoPermissionToCreateTeamMessageVisible(orgName);
           },
         );
       },
@@ -251,8 +262,8 @@ enterprisePageTest.describe(
             );
             await adminConsolePage.openAdvancedPermissionsTab();
             // "Any member" is the real default — switch away and back so
-            // the click actually registers a change (an already-selected
-            // radio fires no confirmation toast to wait on).
+            // the pick actually registers a change (picking the selected
+            // option shows no toast to wait on).
             await advancedPermissionsPage.selectPermission(
               CreateTeamsPermission.OnlyMe,
             );
@@ -271,12 +282,13 @@ enterprisePageTest.describe(
         );
 
         await ownerAndInviteeTest.step(
-          'Non-owner member creates their own team and adds it to the org → succeeds, no restriction',
+          'Non-owner member creates a team within the org → succeeds, no restriction modal',
           async () => {
             await invitee.page.goto('/');
+            await inviteeOrgPage.switchToOrg(orgName);
             await inviteeTeamPage.createTeam(teamName);
             await inviteeTeamPage.openTeamSettingsPageViaOptionsMenu();
-            await inviteeTeamPage.addTeamToOrganization(orgName);
+            await inviteeTeamPage.isTeamPartOfOrganization(orgName);
           },
         );
       },
