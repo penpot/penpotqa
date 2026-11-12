@@ -262,8 +262,8 @@ enterprisePageTest.describe(
             );
             await adminConsolePage.openAdvancedPermissionsTab();
             // "Any member" is the real default — switch away and back so
-            // the click actually registers a change (an already-selected
-            // radio fires no confirmation toast to wait on).
+            // the pick actually registers a change (picking the selected
+            // option shows no toast to wait on).
             await advancedPermissionsPage.selectPermission(
               CreateTeamsPermission.OnlyMe,
             );
@@ -282,12 +282,13 @@ enterprisePageTest.describe(
         );
 
         await ownerAndInviteeTest.step(
-          'Non-owner member creates their own team and adds it to the org → succeeds, no restriction',
+          'Non-owner member creates a team within the org → succeeds, no restriction modal',
           async () => {
             await invitee.page.goto('/');
+            await inviteeOrgPage.switchToOrg(orgName);
             await inviteeTeamPage.createTeam(teamName);
             await inviteeTeamPage.openTeamSettingsPageViaOptionsMenu();
-            await inviteeTeamPage.addTeamToOrganization(orgName);
+            await inviteeTeamPage.isTeamPartOfOrganization(orgName);
           },
         );
       },

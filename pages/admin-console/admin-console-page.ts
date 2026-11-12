@@ -1299,13 +1299,13 @@ export class AdminConsolePage extends BasePage {
     ).toHaveText(`Remove ${teamName} from ${orgName}?`);
     await expect(
       this.removeTeamDialog.getByText(
-        `${teamName} will leave ${orgName}. The team, its projects and files are not deleted and will keep working. You will find them under 'Other teams'`,
+        `Team ${teamName} won't be deleted, and its members will find it under "Other teams". Its projects and files will keep working.`,
         { exact: true },
       ),
       'Remove team dialog explains the team keeps working',
     ).toBeVisible();
     const accessWarning = this.removeTeamDialog.getByText(
-      `You are not a member of ${teamName}, so you will lose access to its projects and files.`,
+      `You are not a member of team ${teamName}, so you will lose access to its projects and files.`,
       { exact: true },
     );
     notMember
