@@ -131,7 +131,7 @@ export class AdvancedPermissionsPage extends BasePage {
         await dropdown.click({ timeout: 5000 });
         await this.getPermissionOption(value).click({ timeout: 5000 });
         await expect(
-          this.permissionsSavedToast.last(),
+          this.permissionsSavedToast,
           'Permissions updated successfully toast is shown',
         ).toBeVisible({ timeout: 5000 });
         await this.page.reload();
@@ -157,7 +157,7 @@ export class AdvancedPermissionsPage extends BasePage {
           timeout: 5000,
         });
         await expect(
-          this.permissionsSavedToast.last(),
+          this.permissionsSavedToast,
           'Permissions updated successfully toast is shown',
         ).toBeVisible({ timeout: 5000 });
         await this.page.reload();
