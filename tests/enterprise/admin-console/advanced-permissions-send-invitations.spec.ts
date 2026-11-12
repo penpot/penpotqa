@@ -208,6 +208,14 @@ enterprisePageTest.describe(
             // reload to pick up the now-restrictive permission.
             await invitee.page.reload();
             await inviteeTeamPage.openInvitationsPageViaOptionsMenu();
+            // The invitations list briefly renders its empty state while
+            // loading, whose "Invite people" button duplicates the header one
+            // and makes the disabled check ambiguous. Waiting for the pending
+            // record gates on the list being rendered (and asserts it, as
+            // Qase 3364 requires).
+            await inviteeTeamPage.isInvitationRecordDisplayed([
+              { email: pendingEmail, role: 'Editor', status: 'Pending' },
+            ]);
             await inviteeTeamPage.isInviteMembersToTeamButtonDisabled();
           },
         );
