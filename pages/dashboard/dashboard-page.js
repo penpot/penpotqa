@@ -90,9 +90,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.downloadFilePenpotMenuItem = page.getByTestId('download-binary-file');
     this.dashboardSection = page.locator('[class="main_ui_dashboard__dashboard"]');
     this.downloadFileTickIcon = page.locator('use[href="#icon-status-tick"]');
-    this.downloadFileCloseButton = page
-      .getByRole('button', { name: 'Close' })
-      .getByText('Close', { exact: true });
+    this.downloadFileCloseButton = page.getByRole('button', {
+      name: 'Done',
+      exact: true,
+    });
     this.fileNameInput = page.locator('div[class*="edit-wrapper"]');
     this.fileOptionsMenuButton = this.fileTile
       .first()
@@ -201,12 +202,15 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.fontStyleTableCell = this.installedFontsTable.locator(
       'div[class*="table-row"] div[class*="dashboard_fonts__variants"]',
     );
-    this.fontOptionsMenuButton = page.locator(
-      'div[class*="fonts__options"] svg[class="icon-menu"]',
-    );
+    this.fontOptionsMenuButton = page
+      .locator('div[class*="fonts__options"]')
+      .getByRole('button', { name: 'Options', exact: true });
     this.editFontMenuItem = page.locator('#font-edit');
     this.deleteFontMenuItem = page.locator('#font-delete');
-    this.deleteFontButton = page.getByRole('button', { name: 'Delete' });
+    this.deleteFontButton = page.getByRole('button', {
+      name: 'Delete',
+      exact: true,
+    });
     this.cancelDeleteFontButton = page.getByRole('button', { name: 'Cancel' });
     this.fontsTablePlaceholder = page.locator(
       'div[class*="fonts-placeholder"] div[class*="label"]',
@@ -223,7 +227,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.librariesShowButton = page.getByRole('button', {
       name: 'Libraries & Templates Show',
     });
-    this.librariesCard = page.locator('a[class*="template-card"]');
+    this.librariesCard = page.locator('[class*="template-card"]');
     this.librariesContainer = page.locator(
       '.main_ui_dashboard_libraries__dashboard-container',
     );
