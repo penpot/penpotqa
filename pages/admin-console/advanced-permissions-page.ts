@@ -118,12 +118,15 @@ export class AdvancedPermissionsPage extends BasePage {
   /**
    * Picks a permission option and confirms it persisted (reload, then check),
    * picking it again if it didn't: while the page hydrates, a click can land
-   * on a node that is replaced right away. Skips the pick once the dropdown
-   * already shows `value`, since picking the selected option shows no toast.
+   * on a node that is replaced right away. Every attempt starts with a reload,
+   * so it reads the saved state and never trusts a pick that wasn't saved.
+   * Skips the pick when `value` is already saved, since picking the selected
+   * option shows no toast.
    */
   async selectPermission(value: AdvancedPermissionValue) {
     const dropdown = this.getPermissionDropdown(value);
     await expect(async () => {
+      await this.page.reload();
       if ((await dropdown.innerText()).trim() !== value) {
         await dropdown.click({ timeout: 5000 });
         await this.getPermissionOption(value).click({ timeout: 5000 });
@@ -147,6 +150,7 @@ export class AdvancedPermissionsPage extends BasePage {
    */
   async setSameSubscriptionOnly(checked: boolean) {
     await expect(async () => {
+      await this.page.reload();
       if ((await this.sameSubscriptionOnlyCheckbox.isChecked()) !== checked) {
         await this.sameSubscriptionOnlyCheckbox.setChecked(checked, {
           force: true,
