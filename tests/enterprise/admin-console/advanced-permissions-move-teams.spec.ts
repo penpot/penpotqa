@@ -4,8 +4,7 @@
  * The permission is a dropdown: "Team owners" (the old 'Always allowed'), or
  * "Only me, from the Admin Console" (the old 'Never allowed'). Under "Team
  * owners", the "Only between organizations under this Enterprise
- * subscription" checkbox is the old 'Only within my own organizations'. The
- * Qase titles still use the old option names.
+ * subscription" checkbox is the old 'Only within my own organizations'.
  *
  * Base: `enterpriseActivatedPageTest` (see enterprise-fixtures.ts) for a
  * single actor — Enterprise-entitled via activation code, no Stripe
@@ -32,7 +31,7 @@ enterpriseActivatedPageTest.describe(
     enterpriseActivatedPageTest(
       qase(
         [3342],
-        "Set team movement permission to 'Never allowed' and verify setting is autosaved",
+        "Set team movement permission to 'Only me, from the Admin Console' and verify setting is autosaved",
       ),
       async ({ orgPage, adminConsolePage, advancedPermissionsPage }) => {
         const orgName = createOrgName();
@@ -76,7 +75,7 @@ enterpriseActivatedPageTest.describe(
     enterpriseActivatedPageTest(
       qase(
         [3343],
-        "Set team movement permission to 'Only within my own organizations' and verify setting is autosaved",
+        'Limit team movement to organizations under the same Enterprise subscription and verify it is autosaved',
       ),
       async ({ orgPage, adminConsolePage, advancedPermissionsPage }) => {
         const orgName = createOrgName();
@@ -105,7 +104,7 @@ enterpriseActivatedPageTest.describe(
     enterpriseActivatedPageTest(
       qase(
         [3344],
-        "Set team movement permission to 'Always allowed' and verify setting is autosaved",
+        "Set team movement permission to 'Team owners' and verify setting is autosaved",
       ),
       async ({ orgPage, adminConsolePage, advancedPermissionsPage }) => {
         const orgName = createOrgName();
@@ -139,7 +138,7 @@ enterpriseActivatedPageTest.describe(
     enterpriseActivatedPageTest(
       qase(
         [3345],
-        "Restricted move attempt under 'Never allowed' shows modal with correct organization name",
+        "Restricted move attempt under 'Only me, from the Admin Console' shows modal with correct organization name",
       ),
       async ({
         page,
@@ -201,7 +200,7 @@ enterpriseActivatedPageTest.describe(
     ownerAndInviteeTest(
       qase(
         [3346],
-        "Restricted move attempt under 'Only within my own organizations' shows modal when moving from OrgD",
+        "Restricted move attempt under 'Team owners' limited to the same subscription shows modal when moving from OrgD",
       ),
       async ({
         ownerPage,
@@ -275,7 +274,7 @@ enterpriseActivatedPageTest.describe(
     enterpriseActivatedPageTest(
       qase(
         [3348],
-        "Allowed move under 'Only within my own organizations' from OrgA to OrgB succeeds",
+        "Allowed move under 'Team owners' limited to the same subscription from OrgA to OrgB succeeds",
       ),
       async ({
         page,
@@ -326,7 +325,7 @@ enterpriseActivatedPageTest.describe(
     );
 
     ownerAndInviteeTest(
-      qase([3349], "Allowed move under 'Always allowed' from OrgD to OrgA succeeds"),
+      qase([3349], "Allowed move under 'Team owners' from OrgD to OrgA succeeds"),
       async ({
         ownerPage,
         invitee,
@@ -401,7 +400,7 @@ enterpriseActivatedPageTest.describe(
     enterpriseActivatedPageTest(
       qase(
         [3626],
-        "'Remove team from organization' is blocked under both restriction settings ('Never allowed' and 'Only within my own organizations')",
+        "'Remove team from organization' is blocked under both restriction settings ('Only me, from the Admin Console' and 'Team owners' limited to the same subscription)",
       ),
       async ({ orgPage, adminConsolePage, advancedPermissionsPage, teamPage }) => {
         const orgName = createOrgName();
