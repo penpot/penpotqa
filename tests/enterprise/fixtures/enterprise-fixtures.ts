@@ -15,6 +15,10 @@
  *     │   │                                PRE/dev environments only — skips
  *     │   │                                otherwise.
  *     │   └─ enterpriseActivatedPageTest — adds the same 5 page objects.
+ *     │       └─ orgMatrixTest           — builds the orgs, teams, roles and
+ *     │                                    attributes described by the
+ *     │                                    `orgMatrix` option, with demo
+ *     │                                    accounts only (no email).
  *     ├─ ownerAndInviteeTest             — owner + a second, real invitee
  *     │                                    account, as sibling fixtures.
  *     │                                    Owner entitled via Stripe. Also
@@ -41,6 +45,11 @@ import { StripePage } from '@pages/dashboard/stripe-page';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { AdvancedPermissionsPage } from '@pages/admin-console/advanced-permissions-page';
 import { OrganizationSsoPage } from '@pages/admin-console/organization-sso-page';
+import {
+  buildOrgMatrix,
+  type BuiltOrgMatrix,
+  type OrgMatrix,
+} from 'helpers/organizations/org-matrix';
 
 type EnterprisePageFixtures = {
   orgPage: OrganizationPage;
@@ -256,5 +265,58 @@ export const ownerAndInviteeActivatedTest = ownerAndInviteeTest.extend({
 
     await createActivatedDemoUser(page);
     await use(page);
+  },
+});
+
+// --- orgMatrixTest -------------------------------------------------------------
+
+type OrgMatrixFixtures = {
+  /** What to build: set it per file or describe with `orgMatrixTest.use()`. */
+  orgMatrix: OrgMatrix | undefined;
+  /** The built matrix: each user's session and lazily opened page, and the
+   * ids and names of the orgs and teams, keyed as in `orgMatrix`. */
+  matrix: BuiltOrgMatrix;
+};
+
+/**
+ * `enterpriseActivatedPageTest` plus a whole set-up of organizations, teams,
+ * roles and attributes, described declaratively, for cases with several
+ * actors (e.g. penpot-nitrate#508's six users across three teams):
+ *
+ * ```ts
+ * orgMatrixTest.use({
+ *   orgMatrix: {
+ *     users: ['user1', 'user2', 'user3'],
+ *     orgOwner: 'user1',
+ *     orgs: {
+ *       orgA: {
+ *         teams: { apple: { user2: 'owner', user3: 'admin' } },
+ *         attributes: { Legal: ['user2'] },
+ *       },
+ *       orgB: {},
+ *     },
+ *   },
+ * });
+ *
+ * orgMatrixTest('…', async ({ matrix }) => {
+ *   const user3 = await matrix.users.user3.page();
+ *   matrix.orgs.orgA.teams.apple.name;
+ * });
+ * ```
+ *
+ * `page` is `orgOwner`, left in the Admin Console of the first org. Every
+ * other user is a demo account in its own browser context; their pages only
+ * open when a test asks for them. See `helpers/organizations/org-matrix.ts`
+ * for how memberships are made without email.
+ */
+export const orgMatrixTest = enterpriseActivatedPageTest.extend<OrgMatrixFixtures>({
+  orgMatrix: [undefined, { option: true }],
+  matrix: async ({ page, browser, orgMatrix }, use) => {
+    if (!orgMatrix) {
+      throw new Error('orgMatrixTest: set the `orgMatrix` option with .use()');
+    }
+    const built = await buildOrgMatrix(browser, page, orgMatrix);
+    await use(built);
+    await built.close();
   },
 });

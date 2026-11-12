@@ -5,46 +5,73 @@ import {
   type Page,
   expect,
 } from '@playwright/test';
+import { OrganizationPage } from '@pages/dashboard/organization-page';
+import { AdminConsolePage } from '@pages/admin-console/admin-console-page';
 import { callPenpotApi } from 'helpers/api/penpot-api';
 import { createDemoUser } from 'helpers/accounts/create-demo-user';
 import { setDemoUserName } from 'helpers/accounts/set-demo-user-name';
 import { openDashboardAfterApiLogin } from 'helpers/accounts/login-as-demo-account';
 import { createTeamInvitations } from 'helpers/teams/create-team-invitations';
 import { InvitationRole } from 'helpers/teams/invitation-role';
+import { createOrgForLicensedAccount } from 'helpers/organizations/create-org-for-licensed-account';
+import { createSecondOrgFromAdminConsole } from 'helpers/organizations/create-second-org-from-admin-console';
+import { createOrgName } from 'helpers/organizations/create-org-name';
 import { random } from 'helpers/string-generator';
 
 /** A member's role in a team. `owner` is the team's creator. */
 export type MatrixTeamRole = 'owner' | 'admin' | 'editor' | 'viewer';
 
+/** One organization of the matrix. Every key is a user key of `OrgMatrix.users`. */
+export type MatrixOrg = {
+  /** Teams of the organization: team key → { user key → role }. Each team has
+   * exactly one owner. */
+  teams?: Record<string, Record<string, MatrixTeamRole>>;
+  /** Organization members who belong to none of its teams. */
+  members?: string[];
+  /** Attributes of the organization: attribute name → user keys holding it.
+   * Every holder must be a member of this organization. */
+  attributes?: Record<string, string[]>;
+};
+
 /**
- * Declarative description of the people, teams and roles a test needs, keyed
- * by the names the Qase case uses ('user2', 'apple'…). Every user is a demo
- * account, so no email is involved. Each team must have exactly one owner.
+ * Declarative description of the people, organizations, teams, roles and
+ * attributes a test needs, keyed by the names the Qase case uses ('user2',
+ * 'orgA', 'apple'…). Every user is a demo account, so no email is involved.
+ *
+ * All organizations belong to `orgOwner`, the licensed account the test is
+ * logged in with, so they share its Enterprise subscription.
  */
 export type OrgMatrix = {
-  /** Every user key the matrix uses, the org owner included. */
+  /** Every user key the matrix uses, `orgOwner` included. */
   users: string[];
-  /** The user that owns the organization (the logged-in licensed account). */
+  /** The user that owns every organization (the test's licensed account). */
   orgOwner: string;
-  /** Teams of the organization: team key → { user key → role }. */
-  teams: Record<string, Record<string, MatrixTeamRole>>;
-  /** Attributes of the organization: attribute name → user keys holding it. */
-  attributes?: Record<string, string[]>;
+  /** Organizations, created in this order. */
+  orgs: Record<string, MatrixOrg>;
 };
 
 export type MatrixUser = {
   key: string;
   id: string;
+  /** Display name, `<key>-<random>`, as the Admin Console lists it. */
   name: string;
   email: string;
   request: APIRequestContext;
-  /** Opens (once) a page logged in as this user, on its dashboard. */
+  /** Opens (once) a page logged in as this user, on its dashboard. For the
+   * org owner, the test's own page. */
   page: () => Promise<Page>;
+};
+
+export type BuiltMatrixOrg = {
+  id: string;
+  name: string;
+  teams: Record<string, { id: string; name: string }>;
 };
 
 export type BuiltOrgMatrix = {
   users: Record<string, MatrixUser>;
-  teams: Record<string, { id: string; name: string }>;
+  orgs: Record<string, BuiltMatrixOrg>;
+  /** Closes the browser contexts of the users other than the org owner. */
   close: () => Promise<void>;
 };
 
@@ -54,6 +81,46 @@ const roleToInvitation: Record<Exclude<MatrixTeamRole, 'owner'>, InvitationRole>
   viewer: InvitationRole.Viewer,
 };
 
+function ownerOf(teamKey: string, members: Record<string, MatrixTeamRole>) {
+  const owners = Object.entries(members).filter(([, role]) => role === 'owner');
+  if (owners.length !== 1) {
+    throw new Error(`Org matrix: team '${teamKey}' needs exactly one owner`);
+  }
+  return owners[0][0];
+}
+
+/** Throws on a matrix that can't be built, before anything is created. */
+function validateMatrix(matrix: OrgMatrix) {
+  const known = new Set(matrix.users);
+  const check = (key: string, where: string) => {
+    if (!known.has(key)) {
+      throw new Error(`Org matrix: unknown user '${key}' in ${where}`);
+    }
+  };
+  check(matrix.orgOwner, 'orgOwner');
+  for (const [orgKey, org] of Object.entries(matrix.orgs)) {
+    const orgMembers = new Set([matrix.orgOwner, ...(org.members ?? [])]);
+    (org.members ?? []).forEach((u) => check(u, `${orgKey}.members`));
+    for (const [teamKey, members] of Object.entries(org.teams ?? {})) {
+      ownerOf(teamKey, members);
+      Object.keys(members).forEach((u) => {
+        check(u, `${orgKey}.teams.${teamKey}`);
+        orgMembers.add(u);
+      });
+    }
+    for (const [attribute, holders] of Object.entries(org.attributes ?? {})) {
+      for (const u of holders) {
+        check(u, `${orgKey}.attributes.${attribute}`);
+        if (!orgMembers.has(u)) {
+          throw new Error(
+            `Org matrix: '${u}' holds '${attribute}' in ${orgKey} but isn't a member of it`,
+          );
+        }
+      }
+    }
+  }
+}
+
 async function joinTeam(
   inviter: APIRequestContext,
   member: MatrixUser,
@@ -61,31 +128,49 @@ async function joinTeam(
   role: InvitationRole,
 ) {
   const [token] = await createTeamInvitations(inviter, teamId, [member.email], role);
-  if (!token) throw new Error(`No invitation token for ${member.key}`);
+  if (!token) throw new Error(`Org matrix: no invitation token for ${member.key}`);
   await callPenpotApi(member.request, 'verify-token', { token });
 }
 
 /**
- * Builds the teams and memberships of `matrix` inside an existing organization
- * owned by `ownerPage`'s account. All through Penpot's API:
+ * Builds `matrix` for the licensed account logged in on `ownerPage`, which
+ * must be on its dashboard with no organization yet:
  *
+ * - the organizations are created through the UI (the first from the
+ *   dashboard, the others from the Admin Console's org switcher);
  * - every other user is a new demo account in its own browser context, named
  *   `<key>-<random>` so it can be told apart in the UI;
- * - a user joins the organization by accepting an invitation (token, no
- *   email) to one of its teams;
- * - a team owned by someone other than the org owner is created by that user,
- *   who first joins the org through a temporary team of the org owner, then
- *   leaves it, so the temporary team leaves no trace in roles.
+ * - teams and memberships go through Penpot's API. A user joins an
+ *   organization by accepting an invitation (token, no email) to one of its
+ *   teams. Team owners other than the org owner, and members with no team,
+ *   join first through a temporary team of the org owner, which is deleted
+ *   afterwards: leaving a team keeps the organization membership;
+ * - attributes are created and assigned through the Admin Console UI, since
+ *   they have no Penpot API.
+ *
+ * Leaves `ownerPage` in the Admin Console of the first organization.
  */
 export async function buildOrgMatrix(
   browser: Browser,
   ownerPage: Page,
-  organizationId: string,
   matrix: OrgMatrix,
 ): Promise<BuiltOrgMatrix> {
+  validateMatrix(matrix);
+  const orgPage = new OrganizationPage(ownerPage);
+  const adminConsolePage = new AdminConsolePage(ownerPage);
   const contexts: BrowserContext[] = [];
   const users: Record<string, MatrixUser> = {};
   const suffix = random().slice(0, 6);
+
+  // Organizations first: creating one routes the owner's page into it.
+  const orgs: Record<string, BuiltMatrixOrg> = {};
+  for (const [index, orgKey] of Object.keys(matrix.orgs).entries()) {
+    const name = createOrgName();
+    if (index === 0) await createOrgForLicensedAccount(orgPage, name);
+    else await createSecondOrgFromAdminConsole(adminConsolePage, orgPage, name);
+    const id = new URL(ownerPage.url()).pathname.split('/')[4];
+    orgs[orgKey] = { id, name, teams: {} };
+  }
 
   const ownerRequest = ownerPage.context().request;
   const ownerProfile = await callPenpotApi(ownerRequest, 'get-profile');
@@ -122,40 +207,58 @@ export async function buildOrgMatrix(
     };
   }
 
-  const ownerOf = (teamKey: string) => {
-    const owners = Object.entries(matrix.teams[teamKey]).filter(
-      ([, role]) => role === 'owner',
-    );
-    if (owners.length !== 1)
-      throw new Error(`Team ${teamKey} needs exactly one owner`);
-    return owners[0][0];
+  for (const [orgKey, org] of Object.entries(matrix.orgs)) {
+    await buildOrgTeams(orgs[orgKey], org, matrix.orgOwner, users, suffix);
+  }
+
+  for (const [orgKey, org] of Object.entries(matrix.orgs)) {
+    if (!org.attributes || !Object.keys(org.attributes).length) continue;
+    await openOrgAdminConsole(adminConsolePage, orgs[orgKey]);
+    await createMatrixAttributes(ownerPage, org.attributes, users);
+  }
+  await openOrgAdminConsole(adminConsolePage, Object.values(orgs)[0]);
+
+  return {
+    users,
+    orgs,
+    close: async () => {
+      await Promise.all(contexts.map((c) => c.close()));
+    },
   };
+}
+
+async function buildOrgTeams(
+  built: BuiltMatrixOrg,
+  org: MatrixOrg,
+  orgOwner: string,
+  users: Record<string, MatrixUser>,
+  suffix: string,
+) {
+  const ownerRequest = users[orgOwner].request;
+  const teams = Object.entries(org.teams ?? {});
 
   const createOrgTeam = async (owner: MatrixUser, name: string) => {
     const { id } = await callPenpotApi(owner.request, 'create-team', { name });
     await callPenpotApi(owner.request, 'add-team-to-organization', {
       teamId: id,
-      organizationId,
+      organizationId: built.id,
     });
     return id as string;
   };
 
-  // Team owners other than the org owner must be org members before they can
-  // add their own team: let them in through a temporary team of the org owner.
-  const otherOwners = [
-    ...new Set(
-      Object.keys(matrix.teams)
-        .map(ownerOf)
-        .filter((u) => u !== matrix.orgOwner),
-    ),
-  ];
+  // Who must already be an org member before the teams exist: owners of their
+  // own team (to add it to the org), and members with no team at all.
+  const toBootstrap = [
+    ...new Set([
+      ...teams.map(([teamKey, members]) => ownerOf(teamKey, members)),
+      ...(org.members ?? []),
+    ]),
+  ].filter((u) => u !== orgOwner);
+
   let bootstrapTeamId: string | undefined;
-  if (otherOwners.length) {
-    bootstrapTeamId = await createOrgTeam(
-      users[matrix.orgOwner],
-      `bootstrap-${suffix}`,
-    );
-    for (const key of otherOwners) {
+  if (toBootstrap.length) {
+    bootstrapTeamId = await createOrgTeam(users[orgOwner], `bootstrap-${suffix}`);
+    for (const key of toBootstrap) {
       await joinTeam(
         ownerRequest,
         users[key],
@@ -165,12 +268,11 @@ export async function buildOrgMatrix(
     }
   }
 
-  const teams: BuiltOrgMatrix['teams'] = {};
-  for (const [teamKey, members] of Object.entries(matrix.teams)) {
-    const owner = users[ownerOf(teamKey)];
+  for (const [teamKey, members] of teams) {
+    const owner = users[ownerOf(teamKey, members)];
     const name = `${teamKey}-${suffix}`;
     const id = await createOrgTeam(owner, name);
-    teams[teamKey] = { id, name };
+    built.teams[teamKey] = { id, name };
     for (const [userKey, role] of Object.entries(members)) {
       if (role === 'owner') continue;
       await joinTeam(owner.request, users[userKey], id, roleToInvitation[role]);
@@ -178,7 +280,7 @@ export async function buildOrgMatrix(
   }
 
   if (bootstrapTeamId) {
-    for (const key of otherOwners) {
+    for (const key of toBootstrap) {
       await callPenpotApi(ownerRequest, 'delete-team-member', {
         teamId: bootstrapTeamId,
         memberId: users[key].id,
@@ -186,24 +288,26 @@ export async function buildOrgMatrix(
     }
     await callPenpotApi(ownerRequest, 'delete-team', { id: bootstrapTeamId });
   }
+}
 
-  if (matrix.attributes) {
-    await createMatrixAttributes(ownerPage, matrix.attributes, users);
+async function openOrgAdminConsole(
+  adminConsolePage: AdminConsolePage,
+  org: BuiltMatrixOrg,
+) {
+  if (!adminConsolePage.page.url().includes(org.id)) {
+    await adminConsolePage.switchToOrg(org.name);
+    await expect(adminConsolePage.page).toHaveURL(new RegExp(org.id));
   }
-
-  return {
-    users,
-    teams,
-    close: async () => {
-      await Promise.all(contexts.map((c) => c.close()));
-    },
-  };
+  // After a switch (or creating another org) the Admin Console can still read
+  // the previous org's cached data, e.g. its members: reload to drop it.
+  await adminConsolePage.page.reload();
+  await adminConsolePage.isOnOrganizationAdminConsole(org.name);
 }
 
 /**
  * Creates the attributes and assigns their holders through the Admin Console
- * UI, as the org owner (attributes have no Penpot API). Expects `ownerPage` to
- * be inside the organization's Admin Console; leaves it on Attributes.
+ * UI, as the org owner. Expects `ownerPage` in the organization's Admin
+ * Console; leaves it on Attributes.
  */
 async function createMatrixAttributes(
   ownerPage: Page,
@@ -215,7 +319,14 @@ async function createMatrixAttributes(
   await expect(ownerPage).toHaveURL(/\/attributes$/);
 
   for (const [attribute, holders] of Object.entries(attributes)) {
-    await ownerPage.getByRole('button', { name: 'New attribute' }).first().click();
+    // Right after a reload a click can land before the page is interactive:
+    // retry until the name field of the new attribute has the focus.
+    await expect(async () => {
+      await ownerPage.getByRole('button', { name: 'New attribute' }).first().click();
+      await expect(ownerPage.getByRole('textbox').first()).toBeFocused({
+        timeout: 2000,
+      });
+    }).toPass({ timeout: 15000 });
     await ownerPage.keyboard.type(attribute);
     await ownerPage.keyboard.press('Enter');
     const cell = ownerPage.getByRole('cell', { name: attribute, exact: true });

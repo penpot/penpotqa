@@ -26,6 +26,7 @@ objects (`orgPage`, `adminConsolePage`, `stripePage`, `teamPage`,
 | `enterpriseActivatedPageTest`  | one demo account                                   | activation code |
 | `ownerAndInviteeTest`          | demo owner + real invitee (`ownerPage`, `invitee`) | Stripe checkout |
 | `ownerAndInviteeActivatedTest` | demo owner + real invitee                          | activation code |
+| `orgMatrixTest`                | demo owner + demo users, orgs, teams, attributes   | activation code |
 
 - **Stripe checkout** drives the real test-mode checkout in the UI (~15-20s).
   Keep it for cases that test the checkout or trial itself.
@@ -35,6 +36,10 @@ objects (`orgPage`, `adminConsolePage`, `stripePage`, `teamPage`,
   `createOrgForLicensedAccount()` instead of `subscribeAndCreateOrg()`.
 - **Demo accounts can't read email**, so any actor that has to accept an
   invite must be the real `invitee` account.
+- **`orgMatrixTest`** builds several actors without email: set the
+  `orgMatrix` option (users, orgs, teams with roles, attributes and holders)
+  with `.use()`, and the test gets `matrix` (each user's session and page,
+  and the org and team ids). See `helpers/organizations/org-matrix.ts`.
 - Demo profiles and everything they own are purged after 7 days, so no
   cleanup is needed.
 
