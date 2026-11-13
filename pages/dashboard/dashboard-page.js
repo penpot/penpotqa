@@ -207,7 +207,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     });
     this.editFontMenuItem = page.locator('#font-edit');
     this.deleteFontMenuItem = page.locator('#font-delete');
-    this.deleteFontButton = page.getByRole('button', { name: 'Delete' });
+    this.deleteFontButton = page.getByRole('button', {
+      name: 'Delete',
+      exact: true,
+    });
     this.cancelDeleteFontButton = page.getByRole('button', { name: 'Cancel' });
     this.fontsTablePlaceholder = page.locator(
       'div[class*="fonts-placeholder"] div[class*="label"]',
