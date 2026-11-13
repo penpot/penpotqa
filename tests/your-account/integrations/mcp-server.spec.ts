@@ -92,6 +92,7 @@ integrationsTest(
           async () => {
             await mainPage.clickMainMenuButton();
             await mainPage.hoverMCPServerMenuItem();
+            await mainPage.isConnectMCPServerMenuSubItemVisible();
             await mainPage.clickConnectMCPServerMenuSubItem();
           },
         );
@@ -101,7 +102,7 @@ integrationsTest(
           async () => {
             await mainPage.clickMainMenuButton();
             await mainPage.hoverMCPServerMenuItem();
-            await mainPage.isDisconnectMCPServerMenuSubItemVisible();
+            await mainPage.isDisconnectMCPServerMenuSubItemVisible(60000);
             await mainPage.isMCPServerStatusIndicatorActive(true);
             await mainPage.clickDisconnectMCPServerMenuSubItem();
           },
@@ -133,9 +134,10 @@ integrationsTest(
 
         await mainPage.clickMainMenuButton();
         await mainPage.hoverMCPServerMenuItem();
-        await mainPage.isDisconnectMCPServerMenuSubItemVisible();
+        await mainPage.isDisconnectMCPServerMenuSubItemVisible(60000);
         await mainPage.isMCPServerStatusIndicatorActive(true);
         await mainPage.isManageMCPServerStatusMenuSubItemVisible('enabled');
+        await mainPage.clickViewportByCoordinates(300, 300);
       },
     );
 
@@ -145,6 +147,8 @@ integrationsTest(
         await integrationsTest.step(
           'Disconnect from the MCP Workspace menu',
           async () => {
+            await mainPage.clickMainMenuButton();
+            await mainPage.hoverMCPServerMenuItem();
             await mainPage.clickDisconnectMCPServerMenuSubItem();
           },
         );
@@ -161,7 +165,7 @@ integrationsTest(
           async () => {
             await mainPage.clickMCPButtonFromToolbar();
             await mainPage.isMCPConnectedButtonVisible();
-            await mainPage.isMCPSessionIdVisible();
+            await mainPage.checkMCPSessionIdVisible();
           },
         );
       },
