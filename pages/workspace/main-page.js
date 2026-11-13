@@ -62,8 +62,12 @@ exports.MainPage = class MainPage extends BasePage {
     });
 
     this.MCPButton = this.toolBarWindow.getByRole('button', { name: 'MCP' });
-    this.connectHereMCPButton = page.getByRole('menuitem', { name: 'Connect here' });
+    this.connectMCPToolbarMenuItem = this.toolBarWindow.getByRole('menuitem', {
+      name: 'Connect',
+      exact: true,
+    });
     this.connectedMCPButton = page.getByText('MCP connected');
+    this.mcpSessionIdText = page.getByText('Session ID:');
     this.colorsPaletteButton = page.locator('button[title^="Color Palette"]');
     this.designTab = page.getByRole('tab', { name: 'design' });
     this.createPathPointer = page.locator('#viewport-controls.cursor-draw.drawing');
@@ -166,9 +170,10 @@ exports.MainPage = class MainPage extends BasePage {
     this.shortcutsMenuSubItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Shortcuts' });
-    this.connectMCPServerMenuSubItem = page
-      .getByRole('menuitem')
-      .filter({ hasText: 'Connect' });
+    this.connectMCPServerMenuSubItem = page.getByRole('menuitem', {
+      name: 'Connect',
+      exact: true,
+    });
     this.disconnectMCPServerMenuSubItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Disconnect' });
@@ -684,12 +689,26 @@ exports.MainPage = class MainPage extends BasePage {
     await this.shortcutsMenuSubItem.click();
   }
 
-  async isDisconnectMCPServerMenuSubItemVisible() {
-    await expect(this.disconnectMCPServerMenuSubItem).toBeVisible();
+  /**
+   * Checks that the "Disconnect" option is visible in the MCP server submenu.
+   * @param {number} [timeout] - Max wait in ms; connecting to the MCP server can
+   *   take longer than the default expect timeout.
+   */
+  async isDisconnectMCPServerMenuSubItemVisible(timeout) {
+    await expect(
+      this.disconnectMCPServerMenuSubItem,
+      'The MCP server submenu shows the "Disconnect" option',
+    ).toBeVisible({ timeout });
   }
 
+  /**
+   * Checks that the "Connect" option is visible in the MCP server submenu (no active connection).
+   */
   async isConnectMCPServerMenuSubItemVisible() {
-    await expect(this.connectMCPServerMenuSubItem).toBeVisible();
+    await expect(
+      this.connectMCPServerMenuSubItem,
+      'The MCP server submenu shows the "Connect" option',
+    ).toBeVisible();
   }
 
   async isMCPServerStatusIndicatorActive(active = true, timeout = 10000) {
@@ -1472,10 +1491,20 @@ exports.MainPage = class MainPage extends BasePage {
 
   async connectMCPButtonFromToolbar() {
     await this.clickMCPButtonFromToolbar();
-    await this.connectHereMCPButton.click();
+    await this.connectMCPToolbarMenuItem.click();
   }
 
   async isMCPConnectedButtonVisible() {
     await this.connectedMCPButton.waitFor({ state: 'visible', timeout: 60000 });
+  }
+
+  /**
+   * Checks that the MCP toolbar menu shows the "Session ID:" text of the active connection.
+   */
+  async checkMCPSessionIdVisible() {
+    await expect(
+      this.mcpSessionIdText,
+      'The MCP toolbar menu shows the session ID',
+    ).toBeVisible();
   }
 };
