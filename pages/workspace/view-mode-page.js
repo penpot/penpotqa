@@ -133,9 +133,12 @@ exports.ViewModePage = class ViewModePage extends BasePage {
     return popupPromise;
   }
 
+  /** Opens the Inspect tab and moves the pointer off the header button. */
   async openInspectTab() {
     await this.inspectButton.click();
     await expect(this.rightSidebar).toBeVisible();
+    // The DS tooltip of the hovered button would end up in snapshots.
+    await this.page.mouse.move(500, 700);
   }
 
   async openInteractionsTab() {
