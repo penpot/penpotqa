@@ -72,7 +72,7 @@ exports.ViewModePage = class ViewModePage extends BasePage {
     this.scaleDropdownOptions = page.locator('ul[class*="header__dropdown"]');
     this.pageDropdown = page.locator('span[class*="header__breadcrumb-text"]');
     this.pageDropdownOptions = page.locator('ul[class*="dropdown-sitemap"]');
-    this.commentsButton = page.getByRole('button', { name: 'Comments' });
+    this.commentsButton = page.getByRole('button', { name: /^Comments \(/ });
     this.commentsContainer = page.locator('div[class*="viewer-comments-container"]');
     this.commentsDropdown = page.getByTestId('viewer-comments-dropdown');
     this.commentsDropdownOptions = page.locator(
