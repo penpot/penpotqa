@@ -64,7 +64,9 @@ exports.MainPage = class MainPage extends BasePage {
     this.MCPButton = this.toolBarWindow.getByRole('button', { name: 'MCP' });
     this.connectHereMCPButton = page.getByRole('menuitem', { name: 'Connect here' });
     this.connectedMCPButton = page.getByText('MCP connected');
-    this.colorsPaletteButton = page.locator('button[title^="Color Palette"]');
+    this.colorsPaletteButton = page
+      .getByRole('region', { name: 'Palette bar' })
+      .getByRole('button', { name: /^Color Palette/ });
     this.designTab = page.getByRole('tab', { name: 'design' });
     this.createPathPointer = page.locator('#viewport-controls.cursor-draw.drawing');
 
@@ -211,7 +213,9 @@ exports.MainPage = class MainPage extends BasePage {
 
     //Header
     this.usersSection = page.locator('div[class*="users-section"]');
-    this.projectNameSpan = page.locator('div[class*="project-name"]');
+    this.workspaceLeftHeader = page.locator(
+      'header[class*="workspace-header-left"]',
+    );
     this.fileNameSpan = page.locator('div[class*="file-name"]');
 
     //History panel
@@ -495,9 +499,20 @@ exports.MainPage = class MainPage extends BasePage {
     await expect(this.viewport).toBeVisible();
   }
 
+  /**
+   * Checks the workspace header shows the project and file names.
+   * @param {string} projectName Project name, shown as a link
+   * @param {string} fileName File name
+   */
   async isProjectAndFileNameExistInFile(projectName, fileName) {
-    await expect(this.projectNameSpan).toContainText(projectName);
-    await expect(this.fileNameSpan.last()).toHaveText(fileName);
+    await expect(
+      this.workspaceLeftHeader.getByRole('link', { name: projectName }),
+      `Header shows the project "${projectName}"`,
+    ).toBeVisible();
+    await expect(
+      this.fileNameSpan.last(),
+      `Header shows the file "${fileName}"`,
+    ).toHaveText(fileName);
   }
 
   async pressFlexLayoutShortcut() {
