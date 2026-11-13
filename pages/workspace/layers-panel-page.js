@@ -85,7 +85,9 @@ exports.LayersPanelPage = class LayersPanelPage extends MainPage {
    * @returns A locator
    */
   getArrowButtonFromLayerWithName(layerName) {
-    return this.layersRows.filter({ hasText: layerName }).locator('.icon-arrow');
+    return this.layersRows
+      .filter({ hasText: layerName })
+      .getByTestId('toggle-content');
   }
 
   /**
