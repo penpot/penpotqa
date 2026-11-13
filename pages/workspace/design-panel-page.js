@@ -52,18 +52,30 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     );
     this.verticalOrientationButton = page.locator('label[for="size-vertical"]');
     this.horizontalOrientationButton = page.locator('label[for="size-horizontal"]');
-    this.alignLeftButton = page.getByTitle('Align left');
-    this.alignHorizontalCenterButton = page.getByTitle('Align horizontal center');
-    this.alignRightButton = page.getByTitle('Align right');
-    this.alignTopButton = page.getByTitle('Align top');
-    this.alignVerticalCenterButton = page.getByTitle('Align vertical center');
-    this.alignBottomButton = page.getByTitle('Align bottom');
-    this.distributeHorizontalSpacingButton = page.getByTitle(
-      'Distribute horizontal spacing',
-    );
-    this.distributeVerticalSpacingButton = page.getByTitle(
-      'Distribute vertical spacing',
-    );
+    this.alignLeftButton = page.getByRole('button', {
+      name: /^Align left \(/,
+    });
+    this.alignHorizontalCenterButton = page.getByRole('button', {
+      name: /^Align horizontal center \(/,
+    });
+    this.alignRightButton = page.getByRole('button', {
+      name: /^Align right \(/,
+    });
+    this.alignTopButton = page.getByRole('button', {
+      name: /^Align top \(/,
+    });
+    this.alignVerticalCenterButton = page.getByRole('button', {
+      name: /^Align vertical center \(/,
+    });
+    this.alignBottomButton = page.getByRole('button', {
+      name: /^Align bottom \(/,
+    });
+    this.distributeHorizontalSpacingButton = page.getByRole('button', {
+      name: /^Distribute horizontal spacing \(/,
+    });
+    this.distributeVerticalSpacingButton = page.getByRole('button', {
+      name: /^Distribute vertical spacing \(/,
+    });
 
     //Design panel - Fill section
     this.fillSection = page.getByLabel('Fill section');
@@ -214,8 +226,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
       'Justify content space-evenly',
       { exact: true },
     );
-    this.layoutWrapBtn = page.getByTitle('Wrap', { exact: true });
-    this.layoutNoWrapBtn = page.getByTitle('No wrap', { exact: true });
+    this.layoutWrapBtn = page.getByRole('button', {
+      name: 'Wrap',
+      exact: true,
+    });
     // "Content" (align-content) subsection, only shown while the layout wraps;
     // its first button tells whether the row is there
     this.layoutContentSection =
@@ -454,9 +468,10 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
 
     //Design panel - Component section
     this.componentContent = page.locator('div[class*="component-content"]');
-    this.componentMenuButton = this.componentContent.locator(
-      'div[class*="component__pill-actions"]',
-    );
+    this.componentMenuButton = this.componentContent.getByRole('button', {
+      name: 'Options',
+      exact: true,
+    });
     this.componentMenuDropdownItem = page
       .getByRole('listitem')
       .and(page.locator('[class*="pill-actions-dropdown-item"]'));
@@ -471,10 +486,22 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.annotationCreateTitle = page
       .locator('div[class*="component__annotation-title"]')
       .first();
-    this.createAnnotationTick = this.componentContent.getByTitle('Create');
-    this.saveAnnotationTick = this.componentContent.getByTitle('Save');
-    this.editAnnotationTick = this.componentContent.getByTitle('Edit');
-    this.deleteAnnotationTick = this.componentContent.getByTitle('Delete');
+    this.createAnnotationTick = this.componentContent.getByRole('button', {
+      name: 'Create',
+      exact: true,
+    });
+    this.saveAnnotationTick = this.componentContent.getByRole('button', {
+      name: 'Save',
+      exact: true,
+    });
+    this.editAnnotationTick = this.componentContent.getByRole('button', {
+      name: 'Edit',
+      exact: true,
+    });
+    this.deleteAnnotationTick = this.componentContent.getByRole('button', {
+      name: 'Delete',
+      exact: true,
+    });
     this.deleteAnnotationModalContainer = page
       .locator('.main_ui_confirm__modal-container')
       .filter({ hasText: 'Delete annotation' });
@@ -1036,13 +1063,15 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.distributeHorizontalSpacingButton.click();
   }
 
-  /** The tooltip is the button's title. */
+  /** Checks the DS tooltip of the distribute button shows its shortcut. */
   async checkDistributeHorizontalSpacingTooltip() {
     await this.distributeHorizontalSpacingButton.hover();
     await expect(
-      this.distributeHorizontalSpacingButton,
+      this.page
+        .getByRole('tooltip')
+        .filter({ hasText: 'Distribute horizontal spacing' }),
       'Distribute horizontal spacing tooltip shows its shortcut',
-    ).toHaveAttribute('title', 'Distribute horizontal spacing (Shift+Ctrl+Alt+H)');
+    ).toHaveText('Distribute horizontal spacing (Shift+Ctrl+Alt+H)');
   }
 
   /** @param {string} hex without # */
@@ -1391,12 +1420,21 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await expect(this.gridLayoutMenu).toBeVisible();
   }
 
-  /** @param {'Wrap' | 'No wrap'} wrap */
+  /**
+   * Toggles the layout wrap setting when the current state differs from the expected one.
+   * @param {'Wrap' | 'No wrap'} wrap Expected wrap state
+   */
   async changeLayoutWrap(wrap) {
     await this.expandFlexLayoutMenu();
-    wrap === 'Wrap'
-      ? await this.layoutWrapBtn.click()
-      : await this.layoutNoWrapBtn.click();
+    const pressed =
+      (await this.layoutWrapBtn.getAttribute('aria-pressed')) === 'true';
+    if (pressed !== (wrap === 'Wrap')) {
+      await this.layoutWrapBtn.click();
+    }
+    await expect(
+      this.layoutWrapBtn,
+      `Layout wrap is ${wrap === 'Wrap' ? 'on' : 'off'}`,
+    ).toHaveAttribute('aria-pressed', String(wrap === 'Wrap'));
   }
 
   async isLayoutContentSectionVisible(visible = true) {
