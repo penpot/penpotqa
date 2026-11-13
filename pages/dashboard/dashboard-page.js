@@ -201,12 +201,16 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.fontStyleTableCell = this.installedFontsTable.locator(
       'div[class*="table-row"] div[class*="dashboard_fonts__variants"]',
     );
-    this.fontOptionsMenuButton = page.locator(
-      'div[class*="fonts__options"] svg[class="icon-menu"]',
-    );
+    this.fontOptionsMenuButton = this.installedFontsTable.getByRole('button', {
+      name: 'Options',
+      exact: true,
+    });
     this.editFontMenuItem = page.locator('#font-edit');
     this.deleteFontMenuItem = page.locator('#font-delete');
-    this.deleteFontButton = page.getByRole('button', { name: 'Delete' });
+    this.deleteFontButton = page.getByRole('button', {
+      name: 'Delete',
+      exact: true,
+    });
     this.cancelDeleteFontButton = page.getByRole('button', { name: 'Cancel' });
     this.fontsTablePlaceholder = page.locator(
       'div[class*="fonts-placeholder"] div[class*="label"]',
@@ -223,7 +227,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.librariesShowButton = page.getByRole('button', {
       name: 'Libraries & Templates Show',
     });
-    this.librariesCard = page.locator('a[class*="template-card"]');
+    this.templatesSection = page.locator(
+      'div[class*="dashboard-templates-section"]',
+    );
     this.librariesContainer = page.locator(
       '.main_ui_dashboard_libraries__dashboard-container',
     );
@@ -592,8 +598,8 @@ exports.DashboardPage = class DashboardPage extends BasePage {
   }
 
   async downloadFromLibrariesAndTemplates(libraryAndTemplateName) {
-    const libraryAndTemplate = this.librariesCard.filter({
-      hasText: libraryAndTemplateName,
+    const libraryAndTemplate = this.templatesSection.getByRole('button', {
+      name: libraryAndTemplateName,
     });
     await expect(libraryAndTemplate).toBeVisible();
     await libraryAndTemplate.click();

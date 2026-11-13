@@ -72,7 +72,7 @@ exports.ViewModePage = class ViewModePage extends BasePage {
     this.scaleDropdownOptions = page.locator('ul[class*="header__dropdown"]');
     this.pageDropdown = page.locator('span[class*="header__breadcrumb-text"]');
     this.pageDropdownOptions = page.locator('ul[class*="dropdown-sitemap"]');
-    this.commentsButton = page.getByRole('button', { name: 'Comments' });
+    this.commentsButton = page.getByRole('button', { name: /^Comments \(/ });
     this.commentsContainer = page.locator('div[class*="viewer-comments-container"]');
     this.commentsDropdown = page.getByTestId('viewer-comments-dropdown');
     this.commentsDropdownOptions = page.locator(
@@ -133,9 +133,12 @@ exports.ViewModePage = class ViewModePage extends BasePage {
     return popupPromise;
   }
 
+  /** Opens the Inspect tab and moves the pointer off the header button. */
   async openInspectTab() {
     await this.inspectButton.click();
     await expect(this.rightSidebar).toBeVisible();
+    // The DS tooltip of the hovered button would end up in snapshots.
+    await this.page.mouse.move(500, 700);
   }
 
   async openInteractionsTab() {
