@@ -62,8 +62,12 @@ exports.MainPage = class MainPage extends BasePage {
     });
 
     this.MCPButton = this.toolBarWindow.getByRole('button', { name: 'MCP' });
-    this.connectHereMCPButton = page.getByRole('menuitem', { name: 'Connect here' });
+    this.connectMCPToolbarMenuItem = page.getByRole('menuitem', {
+      name: 'Connect',
+      exact: true,
+    });
     this.connectedMCPButton = page.getByText('MCP connected');
+    this.mcpSessionIdText = page.getByText('Session ID:');
     this.colorsPaletteButton = page.locator('button[title^="Color Palette"]');
     this.designTab = page.getByRole('tab', { name: 'design' });
     this.createPathPointer = page.locator('#viewport-controls.cursor-draw.drawing');
@@ -166,9 +170,10 @@ exports.MainPage = class MainPage extends BasePage {
     this.shortcutsMenuSubItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Shortcuts' });
-    this.connectMCPServerMenuSubItem = page
-      .getByRole('menuitem')
-      .filter({ hasText: 'Connect' });
+    this.connectMCPServerMenuSubItem = page.getByRole('menuitem', {
+      name: 'Connect',
+      exact: true,
+    });
     this.disconnectMCPServerMenuSubItem = page
       .getByRole('menuitem')
       .filter({ hasText: 'Disconnect' });
@@ -1472,10 +1477,14 @@ exports.MainPage = class MainPage extends BasePage {
 
   async connectMCPButtonFromToolbar() {
     await this.clickMCPButtonFromToolbar();
-    await this.connectHereMCPButton.click();
+    await this.connectMCPToolbarMenuItem.click();
   }
 
   async isMCPConnectedButtonVisible() {
     await this.connectedMCPButton.waitFor({ state: 'visible', timeout: 60000 });
+  }
+
+  async isMCPSessionIdVisible() {
+    await expect(this.mcpSessionIdText).toBeVisible();
   }
 };

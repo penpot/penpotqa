@@ -88,6 +88,15 @@ integrationsTest(
         );
 
         await integrationsTest.step(
+          'Connect from the MCP Workspace menu',
+          async () => {
+            await mainPage.clickMainMenuButton();
+            await mainPage.hoverMCPServerMenuItem();
+            await mainPage.clickConnectMCPServerMenuSubItem();
+          },
+        );
+
+        await integrationsTest.step(
           'Disconnect from the MCP Workspace menu',
           async () => {
             await mainPage.clickMainMenuButton();
@@ -122,13 +131,10 @@ integrationsTest(
         await mainPage.hoverMCPServerMenuItem();
         await mainPage.clickConnectMCPServerMenuSubItem();
 
-        // The status indicator can take a while to be updated after connecting
-        await mainPage.refreshPage();
-        await mainPage.isMainPageLoaded();
-
         await mainPage.clickMainMenuButton();
         await mainPage.hoverMCPServerMenuItem();
         await mainPage.isDisconnectMCPServerMenuSubItemVisible();
+        await mainPage.isMCPServerStatusIndicatorActive(true);
         await mainPage.isManageMCPServerStatusMenuSubItemVisible('enabled');
       },
     );
@@ -144,7 +150,7 @@ integrationsTest(
         );
 
         await integrationsTest.step(
-          'Click MCP button from toolbar and click Connect here',
+          'Click MCP button from toolbar and click Connect',
           async () => {
             await mainPage.connectMCPButtonFromToolbar();
           },
@@ -153,9 +159,9 @@ integrationsTest(
         await integrationsTest.step(
           'Assert MCP Connected message is visible',
           async () => {
-            await mainPage.reloadPage();
             await mainPage.clickMCPButtonFromToolbar();
             await mainPage.isMCPConnectedButtonVisible();
+            await mainPage.isMCPSessionIdVisible();
           },
         );
       },
