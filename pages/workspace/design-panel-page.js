@@ -245,9 +245,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.layoutHorizontalPaddingInput = page.locator(
       'div[aria-label="Horizontal padding"] input',
     );
-    this.layoutIndepPaddingsIcon = page
-      .getByLabel('Layout container section')
-      .getByRole('button', { name: 'Show 4 sided padding options' });
+    this.layoutIndepPaddingsIcon = page.getByRole('button', {
+      name: 'Show 4 sided padding options',
+    });
     this.layoutPaddingTopInput = page.locator('div[aria-label="Top padding"] input');
     this.layoutPaddingRightInput = page.locator(
       'div[aria-label="Right padding"] input',
