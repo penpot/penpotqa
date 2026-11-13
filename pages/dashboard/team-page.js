@@ -171,7 +171,9 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.invitationRecordStatusCell = page.locator(
       'div[class*="dashboard_team__field-status"] aside',
     );
-    this.memberRows = page.locator('div[class*="table-row"]');
+    this.memberRows = page.locator(
+      'div[class*="team__table-row"]:not([class*="table-rows"])',
+    );
     this.resendInvitationButton = page
       .getByRole('button')
       .filter({ hasText: 'Resend invitation' });
