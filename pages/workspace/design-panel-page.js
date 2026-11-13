@@ -245,7 +245,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.layoutHorizontalPaddingInput = page.locator(
       'div[aria-label="Horizontal padding"] input',
     );
-    this.layoutIndepPaddingsIcon = page.locator('button[class*="padding-toggle"]');
+    this.layoutIndepPaddingsIcon = page
+      .getByLabel('Layout container section')
+      .getByRole('button', { name: 'Show 4 sided padding options' });
     this.layoutPaddingTopInput = page.locator('div[aria-label="Top padding"] input');
     this.layoutPaddingRightInput = page.locator(
       'div[aria-label="Right padding"] input',
@@ -448,9 +450,9 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     this.guidesOpacityInput = page.locator(
       'div[class*="grid__advanced-row"] input[class*="opacity-input"]',
     );
-    this.guidesMoreOptionsButton = page.locator(
-      'div[class*="grid__advanced-row"] button[class*="show-more-options"]',
-    );
+    this.guidesMoreOptionsButton = page.getByRole('button', {
+      name: 'Guide defaults',
+    });
     this.useDefaultGuidesButton = page.getByRole('menuitem', {
       name: 'Use default',
     });
