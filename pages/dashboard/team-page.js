@@ -165,13 +165,13 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.invitationRecordRoleCell = page.locator(
       'span[class*="dashboard_team__rol-label"]',
     );
-    this.invitationRecordRoleSelector = page.locator('div[class*="team__has-priv"]');
+    this.invitationRecordRoleSelector = page
+      .locator('div[class*="field-roles"]')
+      .getByRole('button');
     this.invitationRecordStatusCell = page.locator(
       'div[class*="dashboard_team__field-status"] aside',
     );
-    this.invitationRecordOptionsMenuButton = page.locator(
-      'div[class*="main_ui_dashboard_team__table-field"] button',
-    );
+    this.memberRows = page.locator('div[class*="table-row"]');
     this.resendInvitationButton = page
       .getByRole('button')
       .filter({ hasText: 'Resend invitation' });
@@ -878,8 +878,19 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.continueButton.click();
   }
 
+  /**
+   * Opens the options menu of a member row.
+   * @param {string} hasText Text that identifies the row (member name, or "(you)")
+   * @returns The member row locator
+   */
+  async openMemberOptionsMenu(hasText) {
+    const row = this.memberRows.filter({ hasText });
+    await row.getByRole('button', { name: 'Options', exact: true }).click();
+    return row;
+  }
+
   async leaveTeam(teamName, role = 'Admin', name) {
-    await this.invitationRecordOptionsMenuButton.first().click();
+    await this.openMemberOptionsMenu('(you)');
     await this.memberRecordLeaveTeamMenuItem.click();
     role === 'Owner'
       ? await this.selectMember(name)
@@ -960,14 +971,15 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.teamInfoHeader.hover();
   }
 
+  /**
+   * Removes a member from the team through its row options menu.
+   * @param {string} name Member name
+   */
   async deleteTeamMember(name) {
-    const locator = await this.page.locator(
-      `//div[contains(@class, 'team__member-name') and contains(text(), '${name}')]/../../following-sibling::div/button`,
-    );
-    await locator.click();
+    const row = await this.openMemberOptionsMenu(name);
     await this.memberRecordDeleteMemberMenuItem.click();
     await this.clickOnDeleteMemberButton();
-    await expect(locator).not.toBeVisible();
+    await expect(row, `Member "${name}" is removed from the team`).toBeHidden();
   }
 
   async isDeleteTeamMemberDisabled(name) {
