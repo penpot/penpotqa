@@ -61,12 +61,12 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     this.confirmDeleteImageButton = page
       .locator('#portal-container-modal')
       .getByRole('button', { name: 'Delete' });
-    this.changeEmailBtn = page.locator('div[class="change-email"]');
+    this.changeEmailBtn = page.getByRole('button', { name: 'Change email' });
     this.newEmailInput = page.locator('#email-1');
     this.confirmNewEmailInput = page.locator('#email-2');
     this.confirmChangeEmailBtn = page
-      .getByRole('button')
-      .filter({ hasText: 'Change email' });
+      .getByTestId('change-email-submit')
+      .getByRole('button', { name: 'Change email' });
 
     //Feedback
     this.feedbackTypeDropdown = page.locator('[role="combobox"]');
