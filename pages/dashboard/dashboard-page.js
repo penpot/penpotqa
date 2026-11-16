@@ -90,9 +90,10 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     this.downloadFilePenpotMenuItem = page.getByTestId('download-binary-file');
     this.dashboardSection = page.locator('[class="main_ui_dashboard__dashboard"]');
     this.downloadFileTickIcon = page.locator('use[href="#icon-status-tick"]');
-    this.downloadFileCloseButton = page
-      .getByRole('button', { name: 'Close' })
-      .getByText('Close', { exact: true });
+    this.downloadFileCloseButton = page.getByRole('button', {
+      name: 'Done',
+      exact: true,
+    });
     this.fileNameInput = page.locator('div[class*="edit-wrapper"]');
     this.fileOptionsMenuButton = this.fileTile
       .first()
