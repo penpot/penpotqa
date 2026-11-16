@@ -184,11 +184,14 @@ exports.MainPage = class MainPage extends BasePage {
     this.downloadFilesModalContainer = page.locator(
       '.main_ui_exports_files__modal-container',
     );
-    this.downloadFileTickIcon = this.downloadFilesModalContainer.locator(
-      '.main_ui_notifications_context_notification__icon > use',
+    this.downloadFileConfirmText = this.downloadFilesModalContainer.getByText(
+      'Exported',
+      { exact: true },
     );
-    this.downloadFileCloseButton =
-      this.downloadFilesModalContainer.getByText('Close');
+    this.downloadFileCloseButton = this.downloadFilesModalContainer.getByText(
+      'Done',
+      { exact: true },
+    );
 
     //Zoom
     this.zoomButton = page.getByTitle('Zoom', { exact: true });
@@ -803,7 +806,7 @@ exports.MainPage = class MainPage extends BasePage {
       this.page.waitForEvent('download'),
       this.downloadPenpotFileMenuSubItem.click(),
     ]);
-    await expect(this.downloadFileTickIcon).toBeVisible();
+    await expect(this.downloadFileConfirmText).toBeVisible();
     await this.downloadFileCloseButton.click();
   }
 
