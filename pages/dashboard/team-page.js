@@ -112,6 +112,9 @@ exports.TeamPage = class TeamPage extends BasePage {
       '.main_ui_dashboard_team__modal-team-container',
     );
     this.invitationsMenuItem = page.getByRole('menuitem', { name: 'Invitations' });
+    this.invitationsNoPermissionMessage = page.getByText(
+      /You don.t have permission to invite people to join this team/,
+    );
     this.inviteMembersToTeamButton = page.getByTestId('invite-member');
     this.inviteMembersPopUpHeader = page.getByRole('heading', {
       name: 'Invite members to the team',
@@ -656,6 +659,52 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.isHeaderDisplayed('Invitations');
   }
 
+  /**
+   * Opens the team options menu and checks it has no Invitations item (only
+   * admins and the owner get it since Penpot 2.19.1), then closes the menu.
+   */
+  async isInvitationsMenuItemHidden() {
+    await expect(async () => {
+      if (!(await this.membersMenuItem.isVisible())) {
+        await this.teamOptionsMenuButton.click();
+      }
+      await expect(this.membersMenuItem).toBeVisible({ timeout: 5000 });
+    }).toPass({ timeout: 30000 });
+    await expect(
+      this.invitationsMenuItem,
+      'Team options menu has no Invitations item',
+    ).toBeHidden();
+    await this.page.keyboard.press('Escape');
+  }
+
+  /**
+   * Opens the team's Invitations page by URL, the only way in for members
+   * who don't get the Invitations item in the team options menu.
+   * @param {string} teamId Team id
+   */
+  async openInvitationsPageByUrl(teamId) {
+    await this.page.goto(`/?screen=dashboard-invitations&team-id=${teamId}`);
+    await this.isHeaderDisplayed('Invitations');
+  }
+
+  /**
+   * Checks the Invitations page shows the no-permission message instead of
+   * the list of pending invitations.
+   * @param {string} email Email of a pending invitation that must not be listed
+   */
+  async isInvitationsListNotPermitted(email) {
+    await expect(
+      this.invitationsNoPermissionMessage,
+      'Invitations page shows the no-permission message',
+    ).toBeVisible();
+    await expect(
+      this.page
+        .locator('[class*="table-row-invitations"]')
+        .filter({ hasText: email }),
+      `Pending invitation "${email}" is not listed`,
+    ).toBeHidden();
+  }
+
   async clickInviteMembersToTeamButton() {
     await this.inviteMembersToTeamButton.click();
   }
@@ -991,13 +1040,6 @@ exports.TeamPage = class TeamPage extends BasePage {
     await expect(locator).not.toBeVisible();
   }
 
-  async isInvitationRecordOptionsDisabled(email) {
-    const locator = await this.page.locator(
-      `//div[contains(@class, 'dashboard_team__field-email') and contains(text(), '${email}')]/following-sibling::div/button`,
-    );
-    await expect(locator).not.toBeVisible();
-  }
-
   async isCopyInvitationLinkButtonVisible(email, visible = true) {
     const emailSelector = `[class*="dashboard_team__field-email"]:has-text("${email}")`;
     const locator = this.page
@@ -1199,12 +1241,5 @@ exports.TeamPage = class TeamPage extends BasePage {
 
   async selectInvitationByEmail(email) {
     await this.page.locator(`label:has([value="${email}"])`).click();
-  }
-
-  async isInvitationSelectionDisabled(email) {
-    const checkboxLocator = this.page.locator(
-      `label:has([value="${email}"]) input[type="checkbox"]`,
-    );
-    await expect(checkboxLocator).not.toBeVisible();
   }
 };

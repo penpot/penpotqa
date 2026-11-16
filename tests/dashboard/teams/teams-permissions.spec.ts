@@ -170,16 +170,18 @@ demoTeamWithMembersTest.describe('Roles permissions (Owner, Admin, Editor)', () 
         );
 
         await demoTeamWithMembersTest.step(
-          'Editor cannot manage invitations',
+          'Editor does not get the Invitations option in the team menu',
           async () => {
-            await editorTeamPage.openInvitationsPageViaOptionsMenu();
+            await editorTeamPage.isInvitationsMenuItemHidden();
+          },
+        );
+
+        await demoTeamWithMembersTest.step(
+          'Editor opening the Invitations page by URL cannot see or manage invitations',
+          async () => {
+            await editorTeamPage.openInvitationsPageByUrl(team.id);
+            await editorTeamPage.isInvitationsListNotPermitted(email);
             await editorTeamPage.isInviteMembersToTeamButtonHidden();
-            await editorTeamPage.isInvitationRecordOptionsDisabled(email);
-            await editorTeamPage.isInvitationRoleInPopUpNotDisplayed(
-              email,
-              'Editor',
-            );
-            await editorTeamPage.isInvitationSelectionDisabled(email);
           },
         );
       },
