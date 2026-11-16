@@ -664,12 +664,8 @@ exports.TeamPage = class TeamPage extends BasePage {
    * admins and the owner get it since Penpot 2.19.1), then closes the menu.
    */
   async isInvitationsMenuItemHidden() {
-    await expect(async () => {
-      if (!(await this.membersMenuItem.isVisible())) {
-        await this.teamOptionsMenuButton.click();
-      }
-      await expect(this.membersMenuItem).toBeVisible({ timeout: 5000 });
-    }).toPass({ timeout: 30000 });
+    await this.openTeamOptionsMenu();
+    await expect(this.membersMenuItem, 'Team options menu is open').toBeVisible();
     await expect(
       this.invitationsMenuItem,
       'Team options menu has no Invitations item',
