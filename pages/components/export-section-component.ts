@@ -7,6 +7,7 @@ import {
   type Page,
   type Request,
 } from '@playwright/test';
+import AdmZip from 'adm-zip';
 
 /** Options of the format select in the Export section. */
 export const ExportFormat = {
@@ -230,6 +231,22 @@ export class ExportSectionComponent extends BaseComponent {
     expect(download.suggestedFilename(), 'Downloaded file name').toBe(fileName);
   }
 
+  /**
+   * The ZIP download holds exactly one entry per file name given, in any
+   * order.
+   * @param download the ZIP file download to inspect
+   * @param fileNames entry names the ZIP must contain
+   */
+  async checkZipFileNames(download: Download, fileNames: string[]) {
+    const names = new AdmZip(await download.path())
+      .getEntries()
+      .map((entry) => entry.entryName)
+      .sort();
+    expect(names, 'ZIP holds one entry per exported element').toEqual(
+      [...fileNames].sort(),
+    );
+  }
+
   /** The file was generated in the browser (WebGL renderer), not by the backend. */
   checkExportedInBrowser({ exporterRequests }: ExportResult) {
     expect(
@@ -238,14 +255,11 @@ export class ExportSectionComponent extends BaseComponent {
     ).toEqual([]);
   }
 
-  /** The backend exporter generated the file, through `/api/export/jobs` when given. */
-  checkExportedByBackend(
-    { exporterRequests }: ExportResult,
-    endpoint: '/api/export' | '/api/export/jobs' = '/api/export',
-  ) {
+  /** The backend exporter generated the file, through `/api/export`. */
+  checkExportedByBackend({ exporterRequests }: ExportResult) {
     expect(
-      exporterRequests.some((path) => path.startsWith(endpoint)),
-      `A request to the backend exporter (${endpoint}) is made; got [${exporterRequests}]`,
+      exporterRequests.some((path) => path.startsWith('/api/export')),
+      `A request to the backend exporter (/api/export) is made; got [${exporterRequests}]`,
     ).toBe(true);
   }
 }

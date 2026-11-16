@@ -115,7 +115,11 @@ exportTest(
           result.download,
           `${ExporterPage.Boards}.zip`,
         );
-        exportSection.checkExportedByBackend(result, '/api/export/jobs');
+        await exportSection.checkZipFileNames(
+          result.download,
+          layers.map((layer) => `${layer}.svg`),
+        );
+        exportSection.checkExportedInBrowser(result);
       },
     );
   },
