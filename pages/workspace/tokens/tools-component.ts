@@ -1,4 +1,19 @@
-import { type Locator, type Page, expect } from '@playwright/test';
+import { type Download, type Locator, type Page, expect } from '@playwright/test';
+import { readFile } from 'fs/promises';
+
+/**
+ * Applies to an imported tokens JSON what Penpot adds on export: shadows get `inset: false`.
+ * @param node Parsed JSON, or a part of it; it is changed in place.
+ */
+function addExportDefaults(node: unknown) {
+  if (!node || typeof node !== 'object') return;
+  const token = node as { $type?: string; $value?: unknown };
+  if (token.$type === 'shadow' && Array.isArray(token.$value)) {
+    token.$value = token.$value.map((shadow) => ({ inset: false, ...shadow }));
+    return;
+  }
+  Object.values(node).forEach(addExportDefaults);
+}
 
 export class ToolsComponent {
   readonly page: Page;
@@ -11,6 +26,7 @@ export class ToolsComponent {
   readonly chooseZipButton: Locator;
   readonly exportButton: Locator;
   readonly multipleFilesButton: Locator;
+  readonly singleFileTab: Locator;
   readonly showOptionsButton: Locator;
   readonly exportTokensMessage: Locator;
   readonly confirmExportButton: Locator;
@@ -35,6 +51,7 @@ export class ToolsComponent {
     this.chooseZipButton = page.getByRole('button', { name: 'Import ZIP file' });
     this.exportButton = page.getByRole('menuitem', { name: 'Export' });
     this.multipleFilesButton = page.getByRole('tab', { name: 'Multiple files' });
+    this.singleFileTab = page.getByRole('tab', { name: 'Single file' });
     this.showOptionsButton = page.getByRole('button', { name: 'Show options' });
     this.exportTokensMessage = page.locator(
       '[class*="tokens_export_modal__disabled-message"]',
@@ -111,11 +128,16 @@ export class ToolsComponent {
       : await expect(this.multipleFilesButton).toBeVisible();
   }
 
-  async exportToken() {
-    await Promise.all([
+  /**
+   * Confirms the export tokens modal and waits for the file.
+   * @returns The download, to check the exported file.
+   */
+  async exportToken(): Promise<Download> {
+    const [download] = await Promise.all([
       this.page.waitForEvent('download'),
       this.confirmExportButton.click(),
     ]);
+    return download;
   }
 
   async checkExportFileItemCount(expectedCount: number) {
@@ -124,5 +146,30 @@ export class ToolsComponent {
 
   async ifExportFileExists(name: string) {
     await expect(this.exportFileItem.filter({ hasText: name })).toBeVisible();
+  }
+
+  /** Checks that the export tokens modal shows its "Single file" option, selected. */
+  async checkSingleFileTabSelected() {
+    await expect(
+      this.singleFileTab,
+      '"Single file" export is selected',
+    ).toHaveAttribute('aria-selected', 'true');
+  }
+
+  /**
+   * Checks a single-file export: tokens.json equal to the imported file, every token's
+   * type and value included (shadows get `inset: false`).
+   * @param download The downloaded export.
+   * @param importedFile Path of the JSON file the tokens were imported from.
+   */
+  async checkExportedTokensFile(download: Download, importedFile: string) {
+    expect(download.suggestedFilename(), 'Exported file name').toBe('tokens.json');
+    const exported = JSON.parse(await readFile(await download.path(), 'utf8'));
+    const imported = JSON.parse(await readFile(importedFile, 'utf8'));
+    addExportDefaults(imported);
+    // toEqual ignores key order; the set order is checked in $metadata.tokenSetOrder
+    expect(exported, 'Exported sets, tokens, $themes and $metadata').toEqual(
+      imported,
+    );
   }
 }

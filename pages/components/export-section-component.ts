@@ -1,4 +1,5 @@
 import { BaseComponent } from '@pages/base-component';
+import { imageSize } from 'image-size';
 import { ExportModalComponent } from '@pages/components/export-modal-component';
 import {
   expect,
@@ -20,6 +21,21 @@ export const ExportFormat = {
 
 export type ExportFormatName = (typeof ExportFormat)[keyof typeof ExportFormat];
 
+/** Settings of one export row; the ones left out are not changed. */
+export type ExportRowSettings = {
+  format?: ExportFormatName;
+  /** Scale option as shown, e.g. '0.5x'. */
+  scale?: string;
+  suffix?: string;
+};
+
+/** A file expected in an export: its name and, for images, its pixel size. */
+export type ExpectedExportedFile = {
+  name: string;
+  width?: number;
+  height?: number;
+};
+
 /** A finished export: the downloaded file and the backend exporter calls it made. */
 export type ExportResult = {
   download: Download;
@@ -28,6 +44,8 @@ export type ExportResult = {
 };
 
 const EXPORTER_PATH = /\/api\/export/;
+// Scale options read like '0.5x' or '3x'
+const SCALE_OPTION = /^\d+(\.\d+)?x$/;
 
 // Not scoped: `filter({ has })` matches them inside each candidate, and the
 // component scopes them with `root.locator()`
@@ -79,7 +97,7 @@ export class ExportSectionComponent extends BaseComponent {
     });
     this.exportScaleSelect = root
       .getByRole('combobox')
-      .filter({ hasText: /^\d+(\.\d+)?x$/ });
+      .filter({ hasText: SCALE_OPTION });
     this.exportSuffixInput = root.getByPlaceholder('Suffix');
     this.exportMixedRow = root
       .getByText('Mixed', { exact: true })
@@ -261,5 +279,102 @@ export class ExportSectionComponent extends BaseComponent {
       exporterRequests.some((path) => path.startsWith('/api/export')),
       `A request to the backend exporter (/api/export) is made; got [${exporterRequests}]`,
     ).toBe(true);
+  }
+
+  /**
+   * Returns an export row (no role or label, so found by class).
+   * @param index Position of the row, from 0.
+   */
+  getExportRow(index: number): Locator {
+    return this.root
+      .locator('[class*="exports__element-group"]')
+      .filter({ has: getRemoveExportButton(this.page) })
+      .nth(index);
+  }
+
+  /**
+   * Sets the format, scale and/or suffix of one row (the single-row methods match every row).
+   * @param index Position of the row, from 0.
+   * @param settings Values to set; the ones left out are not changed.
+   */
+  async setExportRow(index: number, { format, scale, suffix }: ExportRowSettings) {
+    const row = this.getExportRow(index);
+    if (format) {
+      const formatSelect = row.getByRole('combobox').first();
+      await formatSelect.click();
+      await this.page.getByRole('option', { name: format, exact: true }).click();
+      await expect(
+        formatSelect,
+        `Export ${index + 1} format is ${format}`,
+      ).toHaveText(format);
+    }
+    if (scale) {
+      const scaleSelect = row
+        .getByRole('combobox')
+        .filter({ hasText: SCALE_OPTION });
+      await scaleSelect.click();
+      await this.page.getByRole('option', { name: scale, exact: true }).click();
+      await expect(scaleSelect, `Export ${index + 1} scale is ${scale}`).toHaveText(
+        scale,
+      );
+    }
+    if (suffix !== undefined) {
+      const suffixInput = row.getByPlaceholder('Suffix');
+      await suffixInput.fill(suffix);
+      await suffixInput.press('Enter');
+      await expect(
+        suffixInput,
+        `Export ${index + 1} suffix is "${suffix}"`,
+      ).toHaveValue(suffix);
+    }
+  }
+
+  /**
+   * Checks the scale and/or suffix of one export row.
+   * @param index Position of the row, from 0.
+   * @param settings Expected values; the ones left out are not checked.
+   */
+  async checkExportRowSettings(
+    index: number,
+    { scale, suffix }: Pick<ExportRowSettings, 'scale' | 'suffix'>,
+  ) {
+    const row = this.getExportRow(index);
+    if (scale) {
+      await expect(
+        row.getByRole('combobox').filter({ hasText: SCALE_OPTION }),
+        `Export ${index + 1} scale is ${scale}`,
+      ).toHaveText(scale);
+    }
+    if (suffix !== undefined) {
+      await expect(
+        row.getByPlaceholder('Suffix'),
+        `Export ${index + 1} suffix is "${suffix}"`,
+      ).toHaveValue(suffix);
+    }
+  }
+
+  /**
+   * Checks a zip export's file names, PNG/JPEG pixel sizes and that .pdf files are PDFs.
+   * @param download The downloaded zip.
+   * @param files Expected files, in any order.
+   */
+  async checkExportedZip(download: Download, files: ExpectedExportedFile[]) {
+    await this.checkZipFileNames(
+      download,
+      files.map(({ name }) => name),
+    );
+    const zip = new AdmZip(await download.path());
+    for (const { name, width, height } of files) {
+      const data = zip.readFile(name)!;
+      if (name.endsWith('.pdf')) {
+        expect(data.toString('latin1', 0, 5), `${name} is a PDF`).toBe('%PDF-');
+      } else if (width !== undefined && height !== undefined) {
+        const size = imageSize(data);
+        expect({ width: size.width, height: size.height }, `${name} size`).toEqual({
+          width,
+          height,
+        });
+      }
+    }
   }
 }

@@ -87,3 +87,28 @@ demoAccountFileTest(
     );
   },
 );
+
+demoAccountFileTest(
+  qase([1400], 'Create a component copy (by pressing ALT+drag)'),
+  async ({ mainPage }) => {
+    await demoAccountFileTest.step(
+      'Create an ellipse and make it a main component with Ctrl+K',
+      async () => {
+        await mainPage.createDefaultEllipseByCoordinates(300, 300);
+        await mainPage.createComponentViaShortcut();
+        await mainPage.waitForChangeIsSaved();
+        await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Ellipse');
+      },
+    );
+
+    await demoAccountFileTest.step(
+      'Hold Alt and drag the component: a copy is created',
+      async () => {
+        await mainPage.copyElementViaAltDragAndDrop(900, 500);
+        await mainPage.waitForChangeIsSaved();
+        await layersPanelPage.isMainComponentOnLayersTabVisibleWithName('Ellipse');
+        await layersPanelPage.checkCopyComponentLayerCount(1);
+      },
+    );
+  },
+);

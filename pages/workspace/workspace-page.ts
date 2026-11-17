@@ -1,8 +1,12 @@
 import { expect, type Locator, type Page } from '@playwright/test';
 import { BasePage } from '@pages/base-page';
+import { ColorPickerComponent } from '@pages/components/color-picker-component';
+import { ContextMenuComponent } from '@pages/components/context-menu-component';
 import { ExportModalComponent } from '@pages/components/export-modal-component';
 import { LeftSidebarComponent } from '@pages/workspace/left-sidebar/left-sidebar-component';
+import { type LayerPosition } from '@pages/workspace/right-sidebar/design-tab/measures-section-component';
 import { RightSidebarComponent } from '@pages/workspace/right-sidebar/right-sidebar-component';
+import { ViewportComponent } from '@pages/workspace/viewport/viewport-component';
 import { PrototypeOverlayComponent } from '@pages/workspace/viewport/prototype-overlay-component';
 
 /** The file workspace. Exposes one component per UI region. */
@@ -10,6 +14,9 @@ export class WorkspacePage extends BasePage {
   readonly leftSidebar: LeftSidebarComponent;
   readonly rightSidebar: RightSidebarComponent;
   readonly exportModal: ExportModalComponent;
+  readonly contextMenu: ContextMenuComponent;
+  readonly colorPicker: ColorPickerComponent;
+  readonly canvas: ViewportComponent;
   readonly prototypeOverlay: PrototypeOverlayComponent;
   /** Canvas the WebGL renderer draws the shapes on; absent with the classic renderer. */
   readonly webglCanvas: Locator;
@@ -25,6 +32,9 @@ export class WorkspacePage extends BasePage {
       page.getByTestId('right-sidebar'),
     );
     this.exportModal = new ExportModalComponent(page);
+    this.contextMenu = new ContextMenuComponent(page);
+    this.colorPicker = new ColorPickerComponent(page);
+    this.canvas = new ViewportComponent(page, page.getByTestId('viewport'));
     this.prototypeOverlay = new PrototypeOverlayComponent(
       page,
       page.getByTestId('viewport'),
@@ -50,5 +60,17 @@ export class WorkspacePage extends BasePage {
     ).toHaveCount(enabled ? 1 : 0);
     await this.waitForViewportVisible();
     await expect(this.viewport).toBeVisible();
+  }
+
+  /**
+   * Checks the position of several layers: selects each one in the Layers panel and reads
+   * its X axis / Y axis in the Design tab. The last one stays selected.
+   * @param positions Expected position by layer name, e.g. { Ellipse: { x: 0, y: 100 } }.
+   */
+  async checkLayerPositions(positions: Record<string, LayerPosition>) {
+    for (const [name, position] of Object.entries(positions)) {
+      await this.leftSidebar.layers.selectLayer(name);
+      await this.rightSidebar.design.measures.checkPosition(position);
+    }
   }
 }

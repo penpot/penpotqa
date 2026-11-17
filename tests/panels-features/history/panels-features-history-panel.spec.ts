@@ -1,5 +1,6 @@
 import { HistoryPanelPage } from '@pages/workspace/history-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { WorkspacePage } from '@pages/workspace/workspace-page';
 import { demoAccountFileTest, demoTeamWithInviteeTest } from 'fixtures';
 import { InvitationRole } from 'helpers/teams/invitation-role';
 import { openTeamFile } from 'helpers/teams/open-team-file';
@@ -7,10 +8,12 @@ import { qase } from 'playwright-qase-reporter/playwright';
 
 let historyPage: HistoryPanelPage;
 let layersPanelPage: LayersPanelPage;
+let workspacePage: WorkspacePage;
 
 demoAccountFileTest.beforeEach(async ({ page }) => {
   historyPage = new HistoryPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
+  workspacePage = new WorkspacePage(page);
 });
 
 demoAccountFileTest(
@@ -32,6 +35,53 @@ demoAccountFileTest(
     await mainPage.clickHistoryPanelButton();
     await mainPage.clickHistoryActionsButton();
     await mainPage.isActionDisplayedOnHistoryPanel('New board');
+  },
+);
+
+demoAccountFileTest(
+  qase([891, 892], 'Undo and redo recent changes via history panel'),
+  async ({ mainPage }) => {
+    const { historyActions } = workspacePage.rightSidebar;
+
+    await demoAccountFileTest.step('Create a board and a rectangle', async () => {
+      // Wait for the board, or on a slow run the next tool click cancels it
+      await mainPage.createDefaultBoardByCoordinates(200, 200);
+      await layersPanelPage.isNumLayerNameVisible('Board', 1);
+      await mainPage.createDefaultRectangleByCoordinates(600, 300);
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.isNumLayerNameVisible('Rectangle', 1);
+    });
+
+    await demoAccountFileTest.step(
+      'Open the History panel and its Actions tab',
+      async () => {
+        // The case expects "There are no versions yet", but an autosave can already be listed
+        await mainPage.clickHistoryPanelButton();
+        await mainPage.clickHistoryActionsButton();
+        await historyActions.checkEntriesAreVisible(['New rectangle', 'New board']);
+        await historyActions.checkCurrentEntry('New rectangle');
+      },
+    );
+
+    await demoAccountFileTest.step(
+      'Click the "New board" action: the rectangle is undone',
+      async () => {
+        await historyActions.clickEntry('New board');
+        await historyActions.checkCurrentEntry('New board');
+        await layersPanelPage.isNumLayerNameVisible('Rectangle', 0);
+        await layersPanelPage.isNumLayerNameVisible('Board', 1);
+      },
+    );
+
+    await demoAccountFileTest.step(
+      'Click the "New rectangle" action: the rectangle is redone',
+      async () => {
+        await historyActions.clickEntry('New rectangle');
+        await historyActions.checkCurrentEntry('New rectangle');
+        await layersPanelPage.isNumLayerNameVisible('Rectangle', 1);
+        await layersPanelPage.isNumLayerNameVisible('Board', 1);
+      },
+    );
   },
 );
 

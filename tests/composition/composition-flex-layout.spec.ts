@@ -4,6 +4,7 @@ import { demoAccountFileTest } from 'fixtures';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import {
+  AlignContent,
   LayoutContainerSectionComponent,
   LayoutDirection,
 } from '@pages/workspace/right-sidebar/design-tab/layout-container-section-component';
@@ -18,10 +19,12 @@ let layersPanelPage: LayersPanelPage;
 let designPanelPage: DesignPanelPage;
 let layoutContainer: LayoutContainerSectionComponent;
 let layoutItem: LayoutItemSectionComponent;
+let workspacePage: WorkspacePage;
 
 demoAccountFileTest.beforeEach(async ({ page }) => {
   designPanelPage = new DesignPanelPage(page);
-  ({ layoutContainer, layoutItem } = new WorkspacePage(page).rightSidebar.design);
+  workspacePage = new WorkspacePage(page);
+  ({ layoutContainer, layoutItem } = workspacePage.rightSidebar.design);
   layersPanelPage = new LayersPanelPage(page);
 });
 
@@ -215,6 +218,114 @@ demoAccountFileTest.describe(() => {
         );
       });
     });
+
+    demoAccountFileTest(
+      qase([623], 'Change content alignment'),
+      async ({ mainPage }) => {
+        // X/Y are relative to the 300x300 board; the rectangle is 100x100, the ellipse 50x50
+        const oneRow = [
+          {
+            alignment: AlignContent.Center,
+            rectangle: { x: 0, y: 100 },
+            ellipse: { x: 100, y: 100 },
+          },
+          {
+            alignment: AlignContent.End,
+            rectangle: { x: 0, y: 200 },
+            ellipse: { x: 100, y: 200 },
+          },
+        ];
+        // Two wrapped rows (100 + 50 high) share 150px of free space
+        const twoRows = [
+          {
+            alignment: AlignContent.SpaceBetween,
+            rectangle: { x: 0, y: 0 },
+            ellipse: { x: 0, y: 250 },
+          },
+          {
+            alignment: AlignContent.SpaceAround,
+            rectangle: { x: 0, y: 37.5 },
+            ellipse: { x: 0, y: 212.5 },
+          },
+          {
+            alignment: AlignContent.SpaceEvenly,
+            rectangle: { x: 0, y: 50 },
+            ellipse: { x: 0, y: 200 },
+          },
+          {
+            alignment: AlignContent.Start,
+            rectangle: { x: 0, y: 0 },
+            ellipse: { x: 0, y: 100 },
+          },
+        ];
+
+        await demoAccountFileTest.step(
+          'Make the ellipse 50x50 (rectangle 100x100): both stay at the top left',
+          async () => {
+            await layersPanelPage.selectBoardChildLayer('Ellipse');
+            await designPanelPage.changeHeightAndWidthForLayer('50', '50');
+            await mainPage.waitForChangeIsSaved();
+            await workspacePage.checkLayerPositions({
+              Rectangle: { x: 0, y: 0 },
+              Ellipse: { x: 100, y: 0 },
+            });
+          },
+        );
+
+        await demoAccountFileTest.step(
+          'Turn on Wrap: the "Content" subsection appears',
+          async () => {
+            await layersPanelPage.selectLayerByExactName('Board');
+            await layoutContainer.expand();
+            await designPanelPage.changeLayoutWrap('Wrap');
+            await mainPage.waitForChangeIsSaved();
+            await designPanelPage.isLayoutContentSectionVisible();
+          },
+        );
+
+        for (const { alignment, rectangle, ellipse } of oneRow) {
+          await demoAccountFileTest.step(`${alignment}: the row moves`, async () => {
+            await layersPanelPage.selectLayerByExactName('Board');
+            await layoutContainer.changeAlignContent(alignment);
+            await mainPage.waitForChangeIsSaved();
+            await layoutContainer.checkAlignContent(alignment);
+            await workspacePage.checkLayerPositions({
+              Rectangle: rectangle,
+              Ellipse: ellipse,
+            });
+          });
+        }
+
+        await demoAccountFileTest.step(
+          'Make the board narrower: the shapes wrap into a column',
+          async () => {
+            await layersPanelPage.selectLayerByExactName('Board');
+            // Wait for the Design tab to show the board, or the width goes to the ellipse
+            await designPanelPage.isWidthValue(300);
+            await designPanelPage.changeWidthForLayer('120');
+            await mainPage.waitForChangeIsSaved();
+            await designPanelPage.isWidthValue(120);
+            await workspacePage.checkLayerPositions({
+              Rectangle: { x: 0, y: 150 },
+              Ellipse: { x: 0, y: 250 },
+            });
+          },
+        );
+
+        for (const { alignment, rectangle, ellipse } of twoRows) {
+          await demoAccountFileTest.step(`${alignment}: the rows move`, async () => {
+            await layersPanelPage.selectLayerByExactName('Board');
+            await layoutContainer.changeAlignContent(alignment);
+            await mainPage.waitForChangeIsSaved();
+            await layoutContainer.checkAlignContent(alignment);
+            await workspacePage.checkLayerPositions({
+              Rectangle: rectangle,
+              Ellipse: ellipse,
+            });
+          });
+        }
+      },
+    );
 
     demoAccountFileTest(qase([615], 'Change alignment'), async ({ mainPage }) => {
       await demoAccountFileTest.step('Change alignment to Center', async () => {

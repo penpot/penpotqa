@@ -2,6 +2,7 @@ import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 import { ColorPalettePage } from '@pages/workspace/color-palette-page';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { WorkspacePage } from '@pages/workspace/workspace-page';
 import { expect } from '@playwright/test';
 import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
@@ -87,5 +88,72 @@ demoAccountFileTest(
     await mainPage.clickOnVariantsTitle('Rectangle');
     await mainPage.clickOnAddVariantViewportButton();
     await layersPanelPage.checkVariantLayerCount(3);
+  },
+);
+
+demoAccountFileTest(
+  qase(
+    [2395, 2400],
+    'Create variants from two components on canvas and remove one by dragging it out',
+  ),
+  async ({ page, mainPage }) => {
+    const workspacePage = new WorkspacePage(page);
+    const first = { x: 200, y: 300 };
+    const second = { x: 400, y: 300 };
+
+    await demoAccountFileTest.step(
+      'Create two rectangles and make each a main component',
+      async () => {
+        for (const [index, { x, y }] of [first, second].entries()) {
+          await mainPage.createDefaultRectangleByCoordinates(x, y);
+          // Ctrl+K right after drawing is sometimes lost (covered by PENPOT-1400)
+          await workspacePage.canvas.openContextMenuAt(x, y);
+          await workspacePage.contextMenu.clickItem('Create component');
+          await mainPage.waitForChangeIsSaved();
+          await workspacePage.leftSidebar.layers.checkMainComponentCount(index + 1);
+        }
+        await layersPanelPage.isNumLayerNameVisible('Rectangle', 2);
+        await layersPanelPage.checkVariantLayerCount(0);
+      },
+    );
+
+    await demoAccountFileTest.step(
+      'The components have the default fill #B1B2B5',
+      async () => {
+        await layersPanelPage.selectLayerByExactName('Rectangle');
+        await designPanelPage.isFillHexCodeSetComponent('#B1B2B5');
+      },
+    );
+
+    await demoAccountFileTest.step(
+      'Open the Assets tab, select both components and combine them as variants from the right-click menu',
+      async () => {
+        await assetsPanelPage.clickAssetsTab();
+        await mainPage.pressSelectAllShortcut();
+        await workspacePage.canvas.openContextMenuAt(second.x, second.y);
+        await workspacePage.contextMenu.clickItem('Combine as variants');
+        await mainPage.waitForChangeIsSaved();
+        await assetsPanelPage.expandComponentsBlockOnAssetsTab();
+        await assetsPanelPage.isVariantsAddedToFileLibraryComponents();
+        await layersPanelPage.openLayersTab();
+        await layersPanelPage.checkVariantLayerCount(2);
+      },
+    );
+
+    await demoAccountFileTest.step(
+      'Drag the first variant out of the variants frame: it becomes a separate main component',
+      async () => {
+        await mainPage.dragAndDropComponentOutOfVariantContainerViaCanvas(
+          'Value 1',
+          'Rectangle',
+        );
+        await mainPage.waitForChangeIsSaved();
+        await layersPanelPage.checkVariantLayerCount(1);
+        await layersPanelPage.isLayerWithNameSelected('Rectangle / Value 1');
+        await layersPanelPage.isMainComponentOnLayersTabVisibleWithName(
+          'Rectangle / Value 1',
+        );
+      },
+    );
   },
 );
