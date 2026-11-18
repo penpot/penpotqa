@@ -216,3 +216,9 @@ It is possible to open workflows (both passed and failed) and look through the _
 - Artifacts
 
 In _Artifacts_ section there will be a _'playwright-report.zip'_ file. It is possible to download it, extract and open _index.html_ file with the default playwright report.
+
+**12. Running the suite against another environment (e.g. a dev branch).**
+
+The [`run-penpotqa`](.github/actions/run-penpotqa) action runs the `chrome` project against any Penpot URL, so development branches can be tested on a temporary environment. You pick the folders, specs or Qase IDs to run; tests tagged `@external` (Gmail, SSO) are always skipped and nothing is reported to Qase.
+
+See its [README](.github/actions/run-penpotqa/README.md) for the requirements, the inputs and how to read the results. Tag any new test that needs Gmail, SSO, Stripe or the licenses manager with `@external`.
