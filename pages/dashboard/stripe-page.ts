@@ -39,7 +39,6 @@ export class StripePage extends BasePage {
   // Plan page: a link to the review page. Review page: the confirm button.
   readonly cancelPlanLink: Locator;
   readonly cancelPlanButton: Locator;
-  readonly cancellationReasonDropdown: Locator;
   readonly cancellationReasonOption: Locator;
   readonly reviewChangesHeading: Locator;
   readonly planCanceledHeading: Locator;
@@ -121,10 +120,9 @@ export class StripePage extends BasePage {
     this.updatePlanLink = page.getByRole('link', { name: 'Update plan' });
     this.cancelPlanLink = page.getByRole('link', { name: 'Cancel plan' });
     this.cancelPlanButton = page.getByRole('button', { name: 'Cancel plan' });
-    this.cancellationReasonDropdown = page.getByRole('button', {
-      name: 'Reason for cancellation (optional)',
+    this.cancellationReasonOption = page.getByRole('radio', {
+      name: "It's too expensive",
     });
-    this.cancellationReasonOption = page.getByRole('option').first();
     this.reviewChangesHeading = page.getByRole('heading', {
       name: 'Review your changes',
     });
@@ -426,7 +424,6 @@ export class StripePage extends BasePage {
   }
 
   async selectCancellationReason() {
-    await this.cancellationReasonDropdown.click();
     await this.cancellationReasonOption.click();
   }
 
