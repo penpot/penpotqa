@@ -223,14 +223,12 @@ enterprisePageTest.describe(
         await ownerAndInviteeTest.step(
           '3364: Restricted team admin can only view invitations under Team owners only',
           async () => {
-            // TODO: penpot/penpot-nitrate#807: this admin can still change the
-            // role, delete and copy the link of a pending invitation. Once
-            // fixed, also check none of them is available
-            // (isInvitationRoleInPopUpNotDisplayed(), the Delete invitation
-            // button, isCopyInvitationLinkButtonVisible(pendingEmail, false)).
-            await inviteeTeamPage.selectInvitationByEmail(pendingEmail);
-            await inviteeTeamPage.isInvitationSelected(pendingEmail);
-            await inviteeTeamPage.isResendInvitationButtonVisible(false);
+            await inviteeTeamPage.isInvitationSelectable(pendingEmail, false);
+            await inviteeTeamPage.isInvitationRoleEditable(pendingEmail, false);
+            await inviteeTeamPage.isCopyInvitationLinkButtonVisible(
+              pendingEmail,
+              false,
+            );
           },
         );
       },
