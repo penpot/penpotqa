@@ -865,31 +865,6 @@ exports.TeamPage = class TeamPage extends BasePage {
     await expect(roleLoc).not.toBeVisible();
   }
 
-  async isInvitationRoleInPopUpNotDisplayed(email, role) {
-    const emailSelector = `[class*="dashboard_team__field-email"]:has-text("${email}")`;
-    await this.page
-      .locator(
-        `[class*="table-row-invitations"]:has(${emailSelector}) [class*="dashboard_team__field-roles"] span`,
-      )
-      .click();
-    let roleLoc;
-    switch (role) {
-      case 'Admin':
-        roleLoc = await this.adminRoleSelector;
-        break;
-      case 'Editor':
-        roleLoc = await this.editorRoleSelector;
-        break;
-      case 'Owner':
-        roleLoc = await this.ownerRoleSelector;
-        break;
-      case 'Viewer':
-        roleLoc = await this.viewerRoleSelector;
-        break;
-    }
-    await expect(roleLoc).not.toBeVisible();
-  }
-
   async clickOnTransferOwnershipButton() {
     await this.transferOwnershipButton.click();
   }
@@ -1036,6 +1011,12 @@ exports.TeamPage = class TeamPage extends BasePage {
     await expect(locator).not.toBeVisible();
   }
 
+  /**
+   * Checks whether the per-row Copy link button of a pending invitation is
+   * visible.
+   * @param {string} email Email of the pending invitation's row
+   * @param {boolean} [visible=true] Whether the button is expected to be visible
+   */
   async isCopyInvitationLinkButtonVisible(email, visible = true) {
     const emailSelector = `[class*="dashboard_team__field-email"]:has-text("${email}")`;
     const locator = this.page
@@ -1070,27 +1051,44 @@ exports.TeamPage = class TeamPage extends BasePage {
     ).not.toBeVisible();
   }
 
-  async isResendInvitationButtonVisible(visible = true) {
-    visible
-      ? await expect(
-          this.resendInvitationButton,
-          'Resend invitation button is visible',
-        ).toBeVisible()
-      : await expect(
-          this.resendInvitationButton,
-          'Resend invitation button is not visible',
-        ).not.toBeVisible();
+  /**
+   * Row of a pending invitation in the invitations table.
+   * @param {string} email Email of the invitation
+   */
+  invitationRow(email) {
+    return this.page
+      .locator('[class*="table-row-invitations"]')
+      .filter({ hasText: email });
   }
 
   /**
-   * The selection actions (Resend, Delete) render from the same state as the
-   * row's checkbox: wait for it before asserting any of them is absent.
+   * Checks whether a pending invitation's row can be selected (has a checkbox).
+   * Selecting it is the only way to Resend or Delete the invitation.
+   * @param {string} email Email of the pending invitation's row
+   * @param {boolean} [selectable=true] Whether the row is expected to be selectable
    */
-  async isInvitationSelected(email) {
+  async isInvitationSelectable(email, selectable = true) {
+    const checkbox = this.invitationRow(email).locator('input[type="checkbox"]');
     await expect(
-      this.page.locator(`label:has([value="${email}"]) input[type="checkbox"]`),
-      `Invitation for ${email} is selected`,
-    ).toBeChecked();
+      checkbox,
+      `Invitation for ${email} is ${selectable ? '' : 'not '}selectable`,
+    ).toHaveCount(selectable ? 1 : 0);
+  }
+
+  /**
+   * Checks whether a pending invitation's role can be changed (the role is a
+   * button that opens the role options).
+   * @param {string} email Email of the pending invitation's row
+   * @param {boolean} [editable=true] Whether the role is expected to be editable
+   */
+  async isInvitationRoleEditable(email, editable = true) {
+    const roleButton = this.invitationRow(email)
+      .locator('[class*="field-roles"]')
+      .getByRole('button');
+    await expect(
+      roleButton,
+      `Role of the invitation for ${email} is ${editable ? '' : 'not '}editable`,
+    ).toHaveCount(editable ? 1 : 0);
   }
 
   async selectMember(name) {
