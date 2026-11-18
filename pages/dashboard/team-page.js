@@ -184,10 +184,6 @@ exports.TeamPage = class TeamPage extends BasePage {
     this.deleteInvitationButton = page.locator('button:has([href="#icon-delete"])');
     // Per-row action, not gated behind the options menu.
     this.copyInvitationLinkButton = page.getByRole('button', { name: 'Copy link' });
-    // Substring without the apostrophe — the live UI uses a curly one (’).
-    this.noPermissionToInviteMessage = page.getByText(
-      'have permission to invite people to join this team or to edit or delete invitations',
-    );
     this.memberRecordLeaveTeamMenuItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Leave team' });
@@ -1031,24 +1027,6 @@ exports.TeamPage = class TeamPage extends BasePage {
           locator,
           `Copy link button is not visible for ${email}`,
         ).not.toBeVisible();
-  }
-
-  async isNoPermissionToInviteMessageVisible() {
-    await expect(
-      this.noPermissionToInviteMessage,
-      'No-permission-to-invite message is shown',
-    ).toBeVisible();
-  }
-
-  /** The modal a team admin blocked by the org's Send invitations permission
-   * gets from the empty state's Invite people button. Its overlay otherwise
-   * intercepts every later click on the page. */
-  async closeNoPermissionToInviteModal() {
-    await this.clickOnESC();
-    await expect(
-      this.noPermissionToInviteMessage,
-      'No-permission-to-invite modal is closed',
-    ).not.toBeVisible();
   }
 
   /**
