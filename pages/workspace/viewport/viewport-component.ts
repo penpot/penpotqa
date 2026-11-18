@@ -50,6 +50,22 @@ export class ViewportComponent extends BaseComponent {
   }
 
   /**
+   * Zooms the canvas with Ctrl + mouse wheel, with the pointer on the canvas' center.
+   * @param direction 'in' scrolls the wheel up, 'out' scrolls it down.
+   * @param steps Number of wheel scrolls.
+   */
+  async zoomWithCtrlWheel(direction: 'in' | 'out', steps = 3) {
+    const box = await this.root.boundingBox();
+    if (!box) throw new Error('Viewport is not visible');
+    await this.hover({ x: box.width / 2, y: box.height / 2 });
+    await this.page.keyboard.down('Control');
+    for (let i = 0; i < steps; i++) {
+      await this.page.mouse.wheel(0, direction === 'in' ? -100 : 100);
+    }
+    await this.page.keyboard.up('Control');
+  }
+
+  /**
    * Moves the mouse onto a point of the canvas, so the shape under it gets hovered.
    * @param point Point relative to the canvas.
    * @returns The point in page coordinates.

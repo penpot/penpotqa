@@ -1,5 +1,5 @@
 import { BaseComponent } from '@pages/base-component';
-import { type Locator, type Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 import { DesignTabComponent } from '@pages/workspace/right-sidebar/design-tab/design-tab-component';
 import { HistoryActionsTabComponent } from '@pages/workspace/right-sidebar/history-actions-tab-component';
 import { ExportProgressComponent } from '@pages/workspace/right-sidebar/export-progress-component';
@@ -13,6 +13,7 @@ export class RightSidebarComponent extends BaseComponent {
   readonly exportProgress: ExportProgressComponent;
   readonly viewerInspectComponent: InspectTabComponent;
   readonly historyActions: HistoryActionsTabComponent;
+  readonly zoomWidget: Locator;
 
   constructor(page: Page, root: Locator) {
     super(page, root);
@@ -39,6 +40,38 @@ export class RightSidebarComponent extends BaseComponent {
       page,
       root.getByRole('tabpanel', { name: 'Actions' }),
     );
+    // Header button that shows the zoom level, e.g. "100%"
+    this.zoomWidget = root.getByTitle('Zoom', { exact: true });
+  }
+
+  /**
+   * Returns the zoom level shown in the header.
+   * @returns The zoom percentage, e.g. 100.
+   */
+  private async getZoomPercent(): Promise<number> {
+    return parseFloat(await this.zoomWidget.innerText());
+  }
+
+  /**
+   * Checks the zoom level shown in the header.
+   * @param percent Expected zoom percentage, e.g. 100.
+   */
+  async checkZoom(percent: number) {
+    await expect(this.zoomWidget, `Zoom is ${percent}%`).toHaveText(`${percent}%`);
+  }
+
+  /**
+   * Checks that the zoom level shown in the header is above or below a value.
+   * @param comparison 'above' or 'below'.
+   * @param percent Zoom percentage to compare with, e.g. 100.
+   */
+  async checkZoomIs(comparison: 'above' | 'below', percent: number) {
+    const poll = expect.poll(() => this.getZoomPercent(), {
+      message: `Zoom is ${comparison} ${percent}%`,
+    });
+    await (comparison === 'above'
+      ? poll.toBeGreaterThan(percent)
+      : poll.toBeLessThan(percent));
   }
 
   /**

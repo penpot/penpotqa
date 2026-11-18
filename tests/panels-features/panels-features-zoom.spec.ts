@@ -1,6 +1,7 @@
 import { expect } from '@playwright/test';
 import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
+import { WorkspacePage } from '@pages/workspace/workspace-page';
 
 demoAccountFileTest.use({ inNewTeam: true });
 
@@ -126,5 +127,26 @@ demoAccountFileTest(
         );
       },
     );
+  },
+);
+
+demoAccountFileTest(
+  qase([848], 'Zoom in/out via mouse control (CTRL wheel)'),
+  async ({ page }) => {
+    const { canvas, rightSidebar } = new WorkspacePage(page);
+
+    await demoAccountFileTest.step('The file opens at 100% zoom', async () => {
+      await rightSidebar.checkZoom(100);
+    });
+
+    await demoAccountFileTest.step('Ctrl + mouse wheel up zooms in', async () => {
+      await canvas.zoomWithCtrlWheel('in');
+      await rightSidebar.checkZoomIs('above', 100);
+    });
+
+    await demoAccountFileTest.step('Ctrl + mouse wheel down zooms out', async () => {
+      await canvas.zoomWithCtrlWheel('out', 6);
+      await rightSidebar.checkZoomIs('below', 100);
+    });
   },
 );
