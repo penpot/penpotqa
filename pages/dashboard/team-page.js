@@ -1052,16 +1052,23 @@ exports.TeamPage = class TeamPage extends BasePage {
   }
 
   /**
+   * Row of a pending invitation in the invitations table.
+   * @param {string} email Email of the invitation
+   */
+  invitationRow(email) {
+    return this.page
+      .locator('[class*="table-row-invitations"]')
+      .filter({ hasText: email });
+  }
+
+  /**
    * Checks whether a pending invitation's row can be selected (has a checkbox).
    * Selecting it is the only way to Resend or Delete the invitation.
    * @param {string} email Email of the pending invitation's row
    * @param {boolean} [selectable=true] Whether the row is expected to be selectable
    */
   async isInvitationSelectable(email, selectable = true) {
-    const checkbox = this.page
-      .locator('[class*="table-row-invitations"]')
-      .filter({ hasText: email })
-      .locator('input[type="checkbox"]');
+    const checkbox = this.invitationRow(email).locator('input[type="checkbox"]');
     await expect(
       checkbox,
       `Invitation for ${email} is ${selectable ? '' : 'not '}selectable`,
@@ -1075,9 +1082,7 @@ exports.TeamPage = class TeamPage extends BasePage {
    * @param {boolean} [editable=true] Whether the role is expected to be editable
    */
   async isInvitationRoleEditable(email, editable = true) {
-    const roleButton = this.page
-      .locator('[class*="table-row-invitations"]')
-      .filter({ hasText: email })
+    const roleButton = this.invitationRow(email)
       .locator('[class*="field-roles"]')
       .getByRole('button');
     await expect(
