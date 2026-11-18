@@ -50,3 +50,34 @@ demoAccountFileTest(
     );
   },
 );
+
+demoAccountFileTest(qase([2217], 'Export tokens'), async () => {
+  const importedFile = 'documents/tokens-example.json';
+
+  await demoAccountFileTest.step(
+    'Import tokens from a single JSON file (PENPOT-2213)',
+    async () => {
+      await tokensPage.toolsComp.importTokens(importedFile);
+      await tokensPage.themesComp.checkSelectedTheme('2 active themes');
+      await tokensPage.setsComp.isSetNameVisible('client_theme_template');
+    },
+  );
+
+  await demoAccountFileTest.step(
+    'Open Tools > Export: the modal shows the "Single file" option',
+    async () => {
+      await tokensPage.toolsComp.clickOnTokenToolsButton();
+      await tokensPage.toolsComp.clickOnExportButton();
+      await tokensPage.toolsComp.checkSingleFileTabSelected();
+    },
+  );
+
+  await demoAccountFileTest.step(
+    'Export: tokens.json is downloaded with the imported tokens, and the modal stays open',
+    async () => {
+      const download = await tokensPage.toolsComp.exportToken();
+      await tokensPage.toolsComp.checkExportedTokensFile(download, importedFile);
+      await tokensPage.toolsComp.isExportWindowClosed(false);
+    },
+  );
+});

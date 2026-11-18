@@ -4,6 +4,9 @@ import {
   ExportSectionComponent,
   getExportSectionRoot,
 } from '@pages/components/export-section-component';
+import { BooleanSectionComponent } from '@pages/workspace/right-sidebar/design-tab/boolean-section-component';
+import { MeasuresSectionComponent } from '@pages/workspace/right-sidebar/design-tab/measures-section-component';
+import { FillSectionComponent } from '@pages/workspace/right-sidebar/design-tab/fill-section-component';
 import { BlurSectionComponent } from '@pages/workspace/right-sidebar/design-tab/blur-section-component';
 import { GridCellSectionComponent } from '@pages/workspace/right-sidebar/design-tab/grid-cell-section-component';
 import { LayoutContainerSectionComponent } from '@pages/workspace/right-sidebar/design-tab/layout-container-section-component';
@@ -12,7 +15,10 @@ import { RadiusSectionComponent } from '@pages/workspace/right-sidebar/design-ta
 import { StrokeSectionComponent } from '@pages/workspace/right-sidebar/design-tab/stroke-section-component';
 
 export class DesignTabComponent extends BaseComponent {
+  readonly boolean: BooleanSectionComponent;
+  readonly measures: MeasuresSectionComponent;
   readonly radius: RadiusSectionComponent;
+  readonly fill: FillSectionComponent;
   readonly stroke: StrokeSectionComponent;
   readonly blur: BlurSectionComponent;
   readonly layoutContainer: LayoutContainerSectionComponent;
@@ -25,9 +31,22 @@ export class DesignTabComponent extends BaseComponent {
 
   constructor(page: Page, root: Locator) {
     super(page, root);
+    // The boolean buttons have no region or accessible name
+    this.boolean = new BooleanSectionComponent(
+      page,
+      root.locator('[class*="bool__boolean-options"]'),
+    );
+    this.measures = new MeasuresSectionComponent(
+      page,
+      root.getByRole('region', { name: 'shape-measures-section' }),
+    );
     this.radius = new RadiusSectionComponent(
       page,
       root.getByRole('region', { name: 'Border radius section' }),
+    );
+    this.fill = new FillSectionComponent(
+      page,
+      root.getByRole('region', { name: 'Fill section' }),
     );
     this.stroke = new StrokeSectionComponent(
       page,

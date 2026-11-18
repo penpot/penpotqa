@@ -1,5 +1,6 @@
 import { MainPage } from '@pages/workspace/main-page';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { FilesGridComponent } from '@pages/dashboard/files-grid-component';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { demoAccountApiFixture } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
@@ -186,6 +187,43 @@ demoAccountApiFixture.describe('Files management', () => {
           const newPage = await dashboardPage.openFileInNewTabViaOptionsIcon();
           await new MainPage(newPage).isMainPageLoaded();
           await newPage.close();
+        },
+      );
+    },
+  );
+
+  demoAccountApiFixture(
+    qase([1132], 'Download Penpot files (.penpot) (multiselect, in Project)'),
+    async ({ page }) => {
+      const filesGrid = new FilesGridComponent(page);
+      const fileNames = ['New File 1', 'New File 2', 'New File 3'];
+
+      await demoAccountApiFixture.step(
+        'Create two more files in the project (3 in total)',
+        async () => {
+          // The "New file" placeholder is only shown while the project is empty
+          for (let i = 0; i < 2; i++) {
+            await dashboardPage.createFileViaTitlePanel();
+            await mainPage.clickPencilBoxButton();
+          }
+          await dashboardPage.checkNumberOfFiles('3 files');
+        },
+      );
+
+      await demoAccountApiFixture.step(
+        'Open "Projects" and select the 3 files with Shift',
+        async () => {
+          await dashboardPage.openSidebarItem('Projects');
+          await dashboardPage.clickShiftAndSelectFilesByName(fileNames);
+        },
+      );
+
+      await demoAccountApiFixture.step(
+        'Right-click > "Download 3 Penpot files (.penpot)", then close the dialog: each file is a .penpot zip',
+        async () => {
+          const downloads =
+            await filesGrid.downloadSelectedFilesViaRightClick(fileNames);
+          await filesGrid.checkDownloadedPenpotFiles(downloads, fileNames);
         },
       );
     },

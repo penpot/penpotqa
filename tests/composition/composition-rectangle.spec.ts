@@ -256,3 +256,94 @@ demoAccountFileTest(
     });
   },
 );
+
+demoAccountFileTest(
+  qase(
+    [312, 313],
+    'Change the order of rectangles (Bring forward/to front, Send backward/to back) from right-click and shortcuts',
+  ),
+  async ({ mainPage }) => {
+    const { layers } = workspacePage.leftSidebar;
+    const { contextMenu } = workspacePage;
+
+    await demoAccountFileTest.step(
+      'Create 3 rectangles and name them by creation order',
+      async () => {
+        // Wait for each rectangle, or on a slow run the next tool click cancels it
+        for (const [index, x] of [200, 400, 600].entries()) {
+          await mainPage.createDefaultRectangleByCoordinates(x, 200);
+          await layersPanelPage.isNumLayerNameVisible(
+            defaultNameRectangle,
+            index + 1,
+          );
+        }
+        // The newest layer is on top, so renaming top-down names them 3, 2, 1
+        for (const name of ['Rect 3', 'Rect 2', 'Rect 1']) {
+          await layers.renameLayer(defaultNameRectangle, name);
+        }
+        await mainPage.waitForChangeIsSaved();
+        await layers.checkLayerOrder(['Rect 3', 'Rect 2', 'Rect 1']);
+      },
+    );
+
+    // Each step either right-clicks the layer and picks a menu item, or selects it and
+    // presses a shortcut; then checks the layers order, top first
+    const steps = [
+      {
+        layer: 'Rect 2',
+        menuItem: 'Send backward',
+        order: ['Rect 3', 'Rect 1', 'Rect 2'],
+      },
+      {
+        layer: 'Rect 2',
+        menuItem: 'Bring forward',
+        order: ['Rect 3', 'Rect 2', 'Rect 1'],
+      },
+      {
+        layer: 'Rect 1',
+        shortcut: 'Control+ArrowUp',
+        order: ['Rect 3', 'Rect 1', 'Rect 2'],
+      },
+      {
+        layer: 'Rect 1',
+        shortcut: 'Control+ArrowDown',
+        order: ['Rect 3', 'Rect 2', 'Rect 1'],
+      },
+      {
+        layer: 'Rect 2',
+        menuItem: 'Send to back',
+        order: ['Rect 3', 'Rect 1', 'Rect 2'],
+      },
+      {
+        layer: 'Rect 2',
+        menuItem: 'Bring to front',
+        order: ['Rect 2', 'Rect 3', 'Rect 1'],
+      },
+      {
+        layer: 'Rect 1',
+        shortcut: 'Control+Shift+ArrowUp',
+        order: ['Rect 1', 'Rect 2', 'Rect 3'],
+      },
+      {
+        layer: 'Rect 1',
+        shortcut: 'Control+Shift+ArrowDown',
+        order: ['Rect 2', 'Rect 3', 'Rect 1'],
+      },
+    ];
+
+    for (const { layer, menuItem, shortcut, order } of steps) {
+      const via = menuItem ? `"${menuItem}" (right-click)` : shortcut;
+      await demoAccountFileTest.step(`${layer}: ${via}`, async () => {
+        if (menuItem) {
+          await layers.openLayerContextMenu(layer);
+          await contextMenu.clickItem(menuItem);
+        } else {
+          await layersPanelPage.selectLayerByExactName(layer);
+          await mainPage.pressKeyboardShortcut(shortcut!);
+        }
+        await mainPage.waitForChangeIsSaved();
+        await layers.checkLayerOrder(order);
+      });
+    }
+  },
+);

@@ -5,6 +5,7 @@ import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { WorkspacePage } from '@pages/workspace/workspace-page';
 
 let colorPalettePage: ColorPalettePage;
 let designPanelPage: DesignPanelPage;
@@ -203,6 +204,128 @@ demoAccountFileTest.describe('Color Picker', () => {
         async () => {
           await colorPalettePage.colorPaletteRemoveStop(1);
           await colorPalettePage.checkGradientStops(2);
+        },
+      );
+    },
+  );
+
+  demoAccountFileTest(
+    qase(
+      [2025, 2279],
+      'Change fill from Gradient to Solid and back, and from Gradient to Image',
+    ),
+    async ({ page, mainPage }) => {
+      const workspacePage = new WorkspacePage(page);
+      const { colorPicker } = workspacePage;
+
+      await demoAccountFileTest.step(
+        'Create a rectangle with a linear gradient fill (PENPOT-1042)',
+        async () => {
+          await mainPage.createDefaultRectangleByCoordinates(300, 300);
+          await designPanelPage.clickFillColorIcon();
+          await colorPalettePage.isColorPalettePopUpOpened();
+          await colorPalettePage.setHex('#304d6a');
+          await mainPage.waitForChangeIsSaved();
+          await colorPicker.selectFillType('Gradient');
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.isGradientFillSetByIndex(0, 'Linear');
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Switch from Gradient to Solid: the fill is solid',
+        async () => {
+          await colorPicker.selectFillType('Solid');
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.isFillHexCodeSet('#304d6a');
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Switch from Solid to Gradient: the fill is a gradient again',
+        async () => {
+          await colorPicker.selectFillType('Gradient');
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.isGradientFillSetByIndex(0, 'Linear');
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Switch from Gradient to Image and upload an image: the fill is the image',
+        async () => {
+          await colorPicker.selectFillType('Image');
+          await colorPicker.uploadImage('images/images.png');
+          await mainPage.waitForChangeIsSaved();
+          await workspacePage.rightSidebar.design.fill.checkImageFillIsVisible(
+            'images.png',
+          );
+          // Deselect, so the picker and the handles aren't in the snapshot
+          await mainPage.clickViewportTwice();
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'rectangle-image-fill.png',
+            {
+              mask: mainPage.maskViewport(),
+            },
+          );
+        },
+      );
+    },
+  );
+
+  demoAccountFileTest(
+    qase([2010], "Reorder radial gradient's stop (from color picker's stops list)"),
+    async ({ page, mainPage }) => {
+      const { colorPicker } = new WorkspacePage(page);
+
+      await demoAccountFileTest.step('Create a text and select it', async () => {
+        await mainPage.createTextLayerByCoordinates(300, 300, 'Gradient text');
+        await layersPanelPage.selectLayerByExactName('Gradient text');
+      });
+
+      await demoAccountFileTest.step(
+        'Open the Fill color picker, pick a color and switch to a radial gradient',
+        async () => {
+          await designPanelPage.clickFillColorIcon();
+          await colorPalettePage.isColorPalettePopUpOpened();
+          await colorPalettePage.setHex('#304d6a');
+          await mainPage.waitForChangeIsSaved();
+          await colorPalettePage.selectColorGradient();
+          await colorPalettePage.selectGradientType('Radial');
+          await mainPage.waitForChangeIsSaved();
+          await designPanelPage.isGradientFillSetByIndex(0, 'Radial');
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Give the second stop another color, to tell the stops apart',
+        async () => {
+          await colorPicker.setGradientStopColor(1, 'ff0000');
+          await mainPage.waitForChangeIsSaved();
+          await colorPicker.checkGradientStopColors(['304d6a', 'ff0000']);
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Drag the second stop above the first one: the stops swap positions',
+        async () => {
+          await colorPicker.reorderGradientStop(1, 0);
+          await mainPage.waitForChangeIsSaved();
+          await colorPicker.checkGradientStopColors(['ff0000', '304d6a']);
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Change the opacity of the center stop from 100% to 50%',
+        async () => {
+          await colorPicker.setGradientStopOpacity(0, '50');
+          await mainPage.waitForChangeIsSaved();
+          await colorPicker.checkGradientStopOpacity(0, '50');
+          await designPanelPage.isGradientFillSetByIndex(0, 'Radial');
+          await mainPage.clickViewportTwice();
+          await expect(mainPage.viewport).toHaveScreenshot(
+            'text-radial-gradient-reordered-stops.png',
+            { mask: mainPage.maskViewport() },
+          );
         },
       );
     },

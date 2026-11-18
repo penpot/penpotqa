@@ -42,6 +42,68 @@ export class LayersPanelComponent extends BaseComponent {
   }
 
   /**
+   * Selects a layer by clicking its name (its parent must be expanded).
+   * @param name Layer name exactly as shown in the panel; the first match is used.
+   */
+  async selectLayer(name: string) {
+    await this.getLayerRow(name).first().getByText(name, { exact: true }).click();
+    await expect(
+      this.getLayerRow(name).first(),
+      `Layer "${name}" is selected`,
+    ).toBeChecked();
+  }
+
+  /**
+   * Opens the shape context menu of a layer with a right-click on its row.
+   * @param name Layer name exactly as shown in the panel; the first match is used.
+   */
+  async openLayerContextMenu(name: string) {
+    await this.getLayerRow(name)
+      .first()
+      .getByText(name, { exact: true })
+      .click({ button: 'right' });
+  }
+
+  /**
+   * Renames a layer by double-clicking its name and typing the new one. Unlike
+   * LayersPanelPage.renameLayerViaRightClick, it works when several layers share the name.
+   * @param name Current layer name exactly as shown; the first (topmost) match is renamed.
+   * @param newName Name to give the layer.
+   */
+  async renameLayer(name: string, newName: string) {
+    await this.getLayerRow(name).first().getByText(name, { exact: true }).dblclick();
+    const input = this.layerRows.getByRole('textbox');
+    await input.fill(newName);
+    await input.press('Enter');
+    await expect(
+      this.getLayerRow(newName),
+      `Layer "${name}" is renamed to "${newName}"`,
+    ).toHaveCount(1);
+  }
+
+  /**
+   * Checks how many layers in the tree are main components (rows with the component icon).
+   * @param count Expected number of main components.
+   */
+  async checkMainComponentCount(count: number) {
+    await expect(
+      this.layerRows.filter({ has: this.page.getByTestId('icon-component') }),
+      `${count} main component(s) in the layers tree`,
+    ).toHaveCount(count);
+  }
+
+  /**
+   * Checks the order of the layer rows in the tree, from top to bottom.
+   * @param names Expected layer names of every row, top first.
+   */
+  async checkLayerOrder(names: string[]) {
+    await expect(
+      this.layerRows,
+      `Layers are ordered ${names.join(', ')} from top to bottom`,
+    ).toHaveText(names);
+  }
+
+  /**
    * Returns the lock button of a layer row, found by its `title` (its only accessible name, see LayerLockTitle).
    * @param name Layer name exactly as shown in the panel.
    * @param locked Whether the layer is currently locked.

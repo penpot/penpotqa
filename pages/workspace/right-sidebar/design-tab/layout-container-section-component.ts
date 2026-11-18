@@ -12,6 +12,18 @@ export const LayoutDirection = {
 export type LayoutDirectionName =
   (typeof LayoutDirection)[keyof typeof LayoutDirection];
 
+/** Align content options of a wrapped flex layout, as their titles show them. */
+export const AlignContent = {
+  Start: 'Align content start',
+  Center: 'Align content center',
+  End: 'Align content end',
+  SpaceBetween: 'Align content space-between',
+  SpaceAround: 'Align content space-around',
+  SpaceEvenly: 'Align content space-evenly',
+} as const;
+
+export type AlignContentName = (typeof AlignContent)[keyof typeof AlignContent];
+
 /** Layout types a board can have. */
 export const LayoutType = {
   Flex: 'flex',
@@ -89,5 +101,25 @@ export class LayoutContainerSectionComponent extends BaseComponent {
       this.root.getByTestId(`${other}-direction-row`),
       `Layout type is not ${other}`,
     ).toHaveCount(0);
+  }
+
+  /**
+   * Changes how the lines of a wrapped flex layout are aligned (shown only when Wrap is on).
+   * @param alignment Alignment, see AlignContent.
+   */
+  async changeAlignContent(alignment: AlignContentName) {
+    await this.expand();
+    await this.root.getByTitle(alignment, { exact: true }).click();
+  }
+
+  /**
+   * Checks which align content option is selected.
+   * @param alignment Expected alignment, see AlignContent.
+   */
+  async checkAlignContent(alignment: AlignContentName) {
+    await expect(
+      this.root.getByTitle(alignment, { exact: true }),
+      `"${alignment}" is selected`,
+    ).toBeChecked();
   }
 }
