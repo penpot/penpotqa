@@ -14,6 +14,7 @@ demoTeamWithMembersTest.describe('Roles permissions (Owner, Admin, Editor)', () 
 
     demoTeamWithMembersTest(
       qase([1177], 'Team. Invitations - resend invitation via admin'),
+      { tag: '@external' },
       async ({ members: [admin] }) => {
         const adminTeamPage = new TeamPage(admin.page);
         const email = createInviteEmail('admin');

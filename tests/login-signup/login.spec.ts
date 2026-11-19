@@ -54,6 +54,7 @@ demoCredentialsTest(
     2639,
     'Attempt to log in with a Custom SSO email using standard Penpot login form',
   ),
+  { tag: '@external' },
   async ({ demoAccount }) => {
     // Start with a non-SSO email: typing the SSO one here would redirect to the
     // identity provider. Then swap in the SSO account's Penpot credentials, which
