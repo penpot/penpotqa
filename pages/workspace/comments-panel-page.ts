@@ -273,6 +273,14 @@ export class CommentsPanelPage extends BasePage {
   }
 
   /** The open thread has exactly one comment, with this text. */
+  /**
+   * Opens a comment's thread by clicking it in the Comments section of the sidebar.
+   * @param text Text of the comment.
+   */
+  async openCommentFromCommentsPanel(text: string) {
+    await this.commentCommentsPanelText.filter({ hasText: text }).click();
+  }
+
   async isCommentDisplayedInPopUp(text: string) {
     await this.hasCommentsInPopUp([text]);
   }

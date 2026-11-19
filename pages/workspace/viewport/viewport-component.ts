@@ -1,5 +1,5 @@
 import { BaseComponent } from '@pages/base-component';
-import { type Locator, type Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 
 /** A point of the canvas, relative to its top-left corner. */
 export type CanvasPoint = { x: number; y: number };
@@ -63,6 +63,29 @@ export class ViewportComponent extends BaseComponent {
       await this.page.mouse.wheel(0, direction === 'in' ? -100 : 100);
     }
     await this.page.keyboard.up('Control');
+  }
+
+  /**
+   * Moves the pointer across the canvas between two points, e.g. so other users see it.
+   * @param from Start point, relative to the canvas.
+   * @param to End point, relative to the canvas.
+   */
+  async movePointer(from: CanvasPoint, to: CanvasPoint) {
+    await this.hover(from);
+    const end = await this.toPagePoint(to.x, to.y);
+    await this.page.mouse.move(end.x, end.y, { steps: 10 });
+  }
+
+  /**
+   * Checks that another user's pointer, labeled with their name, is shown on the canvas.
+   * @param name User name, e.g. 'QA Editor'.
+   */
+  async checkUserPointerIsVisible(name: string) {
+    await expect(
+      // Drawn in the viewport's SVG controls, not by the WebGL renderer
+      this.root.locator('[class*="multiuser-cursor"]').filter({ hasText: name }),
+      `${name}'s pointer is shown on the canvas`,
+    ).toBeVisible();
   }
 
   /**

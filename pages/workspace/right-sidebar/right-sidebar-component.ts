@@ -14,6 +14,7 @@ export class RightSidebarComponent extends BaseComponent {
   readonly viewerInspectComponent: InspectTabComponent;
   readonly historyActions: HistoryActionsTabComponent;
   readonly zoomWidget: Locator;
+  readonly activeUsers: Locator;
 
   constructor(page: Page, root: Locator) {
     super(page, root);
@@ -42,6 +43,8 @@ export class RightSidebarComponent extends BaseComponent {
     );
     // Header button that shows the zoom level, e.g. "100%"
     this.zoomWidget = root.getByTitle('Zoom', { exact: true });
+    // Header avatars of the users who have the file open, named by user name
+    this.activeUsers = root.getByTestId('active-users-list').getByRole('listitem');
   }
 
   /**
@@ -80,5 +83,20 @@ export class RightSidebarComponent extends BaseComponent {
    */
   async clickTab(name: 'design' | 'prototype' | 'inspect') {
     await this.root.getByRole('tab', { name }).click();
+  }
+
+  /**
+   * Checks that users are shown in the header as having the file open (one avatar each).
+   * @param names User names, e.g. ['QA Tester', 'QA Editor'].
+   */
+  async checkActiveUsersAreVisible(names: string[]) {
+    for (const name of names) {
+      await expect(
+        this.activeUsers.filter({
+          has: this.page.getByAltText(name, { exact: true }),
+        }),
+        `${name} is shown as having the file open`,
+      ).toBeVisible();
+    }
   }
 }
