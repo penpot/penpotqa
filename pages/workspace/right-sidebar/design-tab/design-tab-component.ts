@@ -172,11 +172,17 @@ export class DesignTabComponent extends BaseComponent {
   }
 
   /**
-   * Clicks a number input without dragging and checks it gets focus for typing.
+   * Clicks a number input's icon without dragging and checks the input gets focus for typing.
    * @param name Input name, e.g. 'Width'.
    */
   async checkNumberInputFocusedOnClick(name: string) {
-    await this.getNumberInput(name).click();
+    // Blur first so the focus comes from the click, not from a previous drag
+    await this.getNumberInput(name).blur();
+    await expect(
+      this.getNumberInput(name),
+      `${name} is not focused`,
+    ).not.toBeFocused();
+    await this.getNumberInputIcon(name).click();
     await expect(this.getNumberInput(name), `${name} is focused`).toBeFocused();
   }
 }
