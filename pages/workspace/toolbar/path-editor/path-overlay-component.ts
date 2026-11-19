@@ -95,6 +95,22 @@ export class PathOverlayComponent {
     await this.dragBy(node, delta);
   }
 
+  /**
+   * Drags a node and checks that only that node moved (the others stay where they were).
+   * @param node Node to drag, as returned by getNodes().
+   * @param delta Distance to drag it, e.g. { x: 0, y: -40 } (40px up).
+   * @returns The path's nodes after the move.
+   */
+  async moveNode(node: Point, delta: Point): Promise<Point[]> {
+    const moved = { x: node.x + delta.x, y: node.y + delta.y };
+    const expected = (await this.getNodes()).map((point) =>
+      point.x === node.x && point.y === node.y ? moved : point,
+    );
+    await this.dragNode(node, delta);
+    await this.checkNodes(expected);
+    return expected;
+  }
+
   /** Drags the handler whose end is at `handler`. */
   async dragHandler(handler: Point, delta: Point) {
     await this.dragBy(handler, delta);

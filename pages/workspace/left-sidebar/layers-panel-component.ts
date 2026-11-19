@@ -173,14 +173,13 @@ export class LayersPanelComponent extends BaseComponent {
   }
 
   /**
-   * Checks that a layer is inside another one. A collapsed parent doesn't render its
+   * Returns the child layer rows of a layer. A collapsed parent doesn't render its
    * children, so it is expanded first; they sit in a `children-<id>` container next
    * to the parent's row.
-   * @param child Child layer name exactly as shown in the panel.
-   * @param parent Parent layer name exactly as shown in the panel.
+   * @param parent Parent layer name exactly as shown in the panel; the first match is used.
    * @param parentIcon Icon id (without the `icon-` prefix, e.g. `board`) the parent row must show, to tell apart layers with the same name; default: any.
    */
-  async checkLayerIsChildOf(child: string, parent: string, parentIcon?: string) {
+  private async getChildLayerRows(parent: string, parentIcon?: string) {
     const parentRows = this.getLayerRow(parent);
     const parentRow = (
       parentIcon
@@ -193,13 +192,33 @@ export class LayersPanelComponent extends BaseComponent {
       await toggle.click();
     }
     const parentId = await parentRow.getAttribute('id');
+    return this.root.getByTestId(`children-${parentId}`).getByTestId('layer-row');
+  }
+
+  /**
+   * Checks that a layer is inside another one.
+   * @param child Child layer name exactly as shown in the panel.
+   * @param parent Parent layer name exactly as shown in the panel.
+   * @param parentIcon Icon id (without the `icon-` prefix, e.g. `board`) the parent row must show, to tell apart layers with the same name; default: any.
+   */
+  async checkLayerIsChildOf(child: string, parent: string, parentIcon?: string) {
+    const children = await this.getChildLayerRows(parent, parentIcon);
     await expect(
-      this.root
-        .getByTestId(`children-${parentId}`)
-        .getByTestId('layer-row')
-        .filter({ has: this.page.getByText(child, { exact: true }) }),
+      children.filter({ has: this.page.getByText(child, { exact: true }) }),
       `Layer "${child}" is inside "${parent}"`,
     ).not.toHaveCount(0);
+  }
+
+  /**
+   * Checks how many layers are inside another one (all levels below it).
+   * @param parent Parent layer name exactly as shown in the panel; the first (topmost) match is used.
+   * @param count Expected number of layers inside it.
+   */
+  async checkChildLayerCount(parent: string, count: number) {
+    await expect(
+      await this.getChildLayerRows(parent),
+      `${count} layer(s) inside "${parent}"`,
+    ).toHaveCount(count);
   }
 
   /**
