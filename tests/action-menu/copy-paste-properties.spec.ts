@@ -241,6 +241,81 @@ demoAccountFileTest.describe(() => {
       });
     },
   );
+
+  demoAccountFileTest(
+    qase([1971], 'Copypaste CSS as nested layers'),
+    async ({ page, mainPage }) => {
+      const workspacePage = new WorkspacePage(page);
+
+      await demoAccountFileTest.step(
+        'Create a board with a rectangle and an ellipse inside',
+        async () => {
+          await mainPage.createDefaultBoardByCoordinates(200, 300);
+          await designPanelPage.changeHeightAndWidthForLayer('300', '300');
+          await mainPage.createDefaultEllipseByCoordinates(200, 300, true);
+          await mainPage.createDefaultRectangleByCoordinates(200, 300, true);
+          await mainPage.waitForChangeIsSaved();
+          await workspacePage.leftSidebar.layers.checkLayerIsChildOf(
+            'Ellipse',
+            'Board',
+          );
+          await workspacePage.leftSidebar.layers.checkLayerIsChildOf(
+            'Rectangle',
+            'Board',
+          );
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Right-click the board > Copy/Paste as ... > Copy as CSS (nested layers): the CSS has the board, ellipse and rectangle',
+        async () => {
+          await workspacePage.leftSidebar.layers.openLayerContextMenu('Board');
+          await workspacePage.contextMenu.copyAs('Copy as CSS (nested layers)');
+          await workspacePage.checkCopiedCssLayers([
+            'Board',
+            'Ellipse',
+            'Rectangle',
+          ]);
+        },
+      );
+    },
+  );
+
+  demoAccountFileTest(
+    qase([1979], 'Copypaste CSS properties of 3 different layers'),
+    async ({ page, mainPage }) => {
+      const workspacePage = new WorkspacePage(page);
+      const { layers } = workspacePage.leftSidebar;
+
+      await demoAccountFileTest.step(
+        'Create a text, a path and a board',
+        async () => {
+          await mainPage.createDefaultTextLayerByCoordinates(700, 300);
+          await mainPage.createSmallClosedPathByCoordinates(900, 300);
+          await mainPage.createDefaultBoardByCoordinates(200, 300);
+          await mainPage.waitForChangeIsSaved();
+          await layersPanelPage.isNumLayerNameVisible('Hello world!', 1);
+          await layersPanelPage.isNumLayerNameVisible('Path', 1);
+          await layersPanelPage.isNumLayerNameVisible('Board', 1);
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Select the 3 layers, right-click > Copy/Paste as ... > Copy as CSS: the CSS has the 3 layers',
+        async () => {
+          await mainPage.pressSelectAllShortcut();
+          await layers.checkSelectedLayersCount(3);
+          await layers.openLayerContextMenu('Board');
+          await workspacePage.contextMenu.copyAs('Copy as CSS');
+          await workspacePage.checkCopiedCssLayers([
+            'Hello world!',
+            'Path',
+            'Board',
+          ]);
+        },
+      );
+    },
+  );
 });
 
 demoAccountFileTest.describe(() => {

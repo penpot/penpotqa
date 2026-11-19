@@ -73,4 +73,21 @@ export class WorkspacePage extends BasePage {
       await this.rightSidebar.design.measures.checkPosition(position);
     }
   }
+
+  /**
+   * Checks which layers the CSS in the clipboard has (each block starts with a
+   * comment with the layer name, e.g. a Board comment followed by its .board-… class).
+   * @param layerNames Expected layer names, in clipboard order.
+   */
+  async checkCopiedCssLayers(layerNames: string[]) {
+    await expect
+      .poll(
+        async () => {
+          const css = await this.page.evaluate(() => navigator.clipboard.readText());
+          return [...css.matchAll(/^\/\* (.+) \*\/$/gm)].map(([, name]) => name);
+        },
+        { message: `Copied CSS has the layers ${layerNames.join(', ')}` },
+      )
+      .toEqual(layerNames);
+  }
 }
