@@ -6,6 +6,7 @@ import { ExportModalComponent } from '@pages/components/export-modal-component';
 import { LeftSidebarComponent } from '@pages/workspace/left-sidebar/left-sidebar-component';
 import { type LayerPosition } from '@pages/workspace/right-sidebar/design-tab/measures-section-component';
 import { RightSidebarComponent } from '@pages/workspace/right-sidebar/right-sidebar-component';
+import { GridEditorComponent } from '@pages/workspace/viewport/grid-editor-component';
 import { ViewportComponent } from '@pages/workspace/viewport/viewport-component';
 import { PrototypeOverlayComponent } from '@pages/workspace/viewport/prototype-overlay-component';
 
@@ -17,6 +18,7 @@ export class WorkspacePage extends BasePage {
   readonly contextMenu: ContextMenuComponent;
   readonly colorPicker: ColorPickerComponent;
   readonly canvas: ViewportComponent;
+  readonly gridEditor: GridEditorComponent;
   readonly prototypeOverlay: PrototypeOverlayComponent;
   /** Canvas the WebGL renderer draws the shapes on; absent with the classic renderer. */
   readonly webglCanvas: Locator;
@@ -35,6 +37,7 @@ export class WorkspacePage extends BasePage {
     this.contextMenu = new ContextMenuComponent(page);
     this.colorPicker = new ColorPickerComponent(page);
     this.canvas = new ViewportComponent(page, page.getByTestId('viewport'));
+    this.gridEditor = new GridEditorComponent(page, page.getByTestId('viewport'));
     this.prototypeOverlay = new PrototypeOverlayComponent(
       page,
       page.getByTestId('viewport'),

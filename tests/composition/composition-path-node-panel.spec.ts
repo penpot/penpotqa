@@ -326,6 +326,73 @@ demoAccountFileTest.describe(() => {
       });
     },
   );
+
+  demoAccountFileTest(
+    qase([543], 'Draw/Move nodes (via M and P shorcuts)'),
+    async () => {
+      const { overlayComp } = pathEditorPage;
+      const newNodes = [
+        { x: nodes.right.x + 100, y: nodes.top.y },
+        { x: nodes.right.x + 200, y: nodes.top.y },
+      ];
+      let expectedNodes: Point[];
+
+      await demoAccountFileTest.step(
+        'Press P: "Draw nodes" is selected and "Move nodes" is not',
+        async () => {
+          await pathEditorPage.pressKeyboardShortcut('P');
+          await pathEditorPage.isToolbarButtonToggled(
+            pathEditorPage.nodePanelDrawNodesButton,
+          );
+          await pathEditorPage.isToolbarButtonToggled(
+            pathEditorPage.nodePanelMoveNodesButton,
+            false,
+          );
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Click on 2 points of the canvas: 2 nodes and a line between them are created',
+        async () => {
+          for (const node of newNodes) {
+            await overlayComp.clickAt(node);
+          }
+          await overlayComp.checkNodeCount(6);
+          // Fails if there's no segment between them, not only if it's curved
+          await overlayComp.checkSegmentIsCurve(newNodes[0], newNodes[1], false);
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Press M: "Move nodes" is selected and "Draw nodes" is not',
+        async () => {
+          await pathEditorPage.pressKeyboardShortcut('M');
+          await pathEditorPage.isToolbarButtonToggled(
+            pathEditorPage.nodePanelMoveNodesButton,
+          );
+          await pathEditorPage.isToolbarButtonToggled(
+            pathEditorPage.nodePanelDrawNodesButton,
+            false,
+          );
+        },
+      );
+
+      await demoAccountFileTest.step('Drag the top node: it moves', async () => {
+        expectedNodes = await overlayComp.moveNode(nodes.top, { x: 0, y: -40 });
+      });
+
+      await demoAccountFileTest.step(
+        'Click on an empty area of the canvas: no node is created',
+        async () => {
+          await overlayComp.clickAt({
+            x: nodes.left.x - 150,
+            y: nodes.bottom.y + 150,
+          });
+          await overlayComp.checkNodes(expectedNodes);
+        },
+      );
+    },
+  );
 });
 
 demoAccountFileTest(

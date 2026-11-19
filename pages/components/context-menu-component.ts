@@ -1,5 +1,5 @@
 import { BaseComponent } from '@pages/base-component';
-import { type Locator, type Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 
 /** Options of the "Copy/Paste as ..." submenu that copy the selection. */
 export type CopyAsOption =
@@ -32,6 +32,16 @@ export class ContextMenuComponent extends BaseComponent {
    */
   async clickItem(name: string) {
     await this.getItem(name).click();
+  }
+
+  /**
+   * Checks that the menu shows some items.
+   * @param names Item labels exactly as shown, e.g. ['Copy rows', 'Paste'].
+   */
+  async checkItemsAreVisible(names: string[]) {
+    for (const name of names) {
+      await expect(this.getItem(name), `Menu has "${name}"`).toBeVisible();
+    }
   }
 
   /**

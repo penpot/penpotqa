@@ -166,9 +166,6 @@ exports.BasePage = class BasePage {
     this.deleteAndShapesColumnMenuItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Delete column and shapes' });
-    this.mergeGridCellMenuItem = page
-      .getByRole('listitem')
-      .filter({ hasText: 'Merge cells' });
     this.copyPasteAsMenuItem = page
       .getByRole('listitem')
       .filter({ hasText: 'Copy/Paste as ...' });

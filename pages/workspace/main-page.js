@@ -1195,32 +1195,6 @@ exports.MainPage = class MainPage extends BasePage {
     await this.addColumnRightMenuItem.click();
   }
 
-  async selectGridCellMultiple(startCell, endCell) {
-    const startCellLocator = await this.page.locator(
-      `rect[class*="grid-cell-outline"] >>nth=${startCell - 1}`,
-    );
-    const endCellLocator = await this.page.locator(
-      `rect[class*="grid-cell-outline"] >>nth=${endCell - 1}`,
-    );
-    await startCellLocator.click();
-    await endCellLocator.click({ modifiers: ['Shift'] });
-  }
-
-  async mergeGridCellViaRightClick(cell) {
-    const cellLocator = await this.page.locator(
-      `rect[class*="grid-cell-outline"] >>nth=${cell - 1}`,
-    );
-    await cellLocator.click({ button: 'right', force: true });
-    await this.mergeGridCellMenuItem.click();
-  }
-
-  async clickOnGridCell(cell) {
-    const cellLocator = await this.page.locator(
-      `rect[class*="grid-cell-outline"] >>nth=${cell - 1}`,
-    );
-    await cellLocator.click();
-  }
-
   /** @param {string} tool The shape tool shown in the toolbar, e.g. 'arrow'. */
   async isShapeToolActive(tool) {
     await expect(this.shapeToolButton, `${tool} tool is active`).toHaveAttribute(
