@@ -320,6 +320,53 @@ demoAccountFileTest.describe('Comment bubbles', () => {
 
   demoAccountFileTest(
     qase(
+      [2164],
+      'Expand a bubble group by clicking comment name in "Comments" section',
+    ),
+    async ({ mainPage }) => {
+      const comments = ['First comment', 'Second comment', 'Third comment'];
+      // Right to left: each thread pop-up opens to the right of its bubble
+      const xAxisCommentsCoordinates = [300, 200, 100];
+      const yAxisCommentsCoordinates = [100, 100, 100];
+
+      await demoAccountFileTest.step(
+        'Create three comments close together',
+        async () => {
+          await mainPage.pressKeyboardShortcut('C');
+          for (let i = 0; i < comments.length; i++) {
+            await mainPage.clickViewportByCoordinates(
+              xAxisCommentsCoordinates[i],
+              yAxisCommentsCoordinates[i],
+              2,
+            );
+            await commentsPanelPage.postComment(comments[i]);
+            await commentsPanelPage.checkCommentCountInList(i + 1);
+          }
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Zoom out until the comments form one group bubble',
+        async () => {
+          await commentsPanelPage.areCommentBubblesVisible(['1', '2', '3']);
+          await mainPage.zoom(100, 100, 5);
+          await commentsPanelPage.areCommentBubblesVisible(['1-2-3']);
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Click the second comment in the Comments section: its thread opens',
+        async () => {
+          await commentsPanelPage.openCommentFromCommentsPanel(comments[1]);
+          await commentsPanelPage.isCommentThreadPopUpVisible();
+          await commentsPanelPage.isCommentDisplayedInPopUp(comments[1]);
+        },
+      );
+    },
+  );
+
+  demoAccountFileTest(
+    qase(
       [3638],
       'Hover over an avatar in an expanded comment cluster shows a comment preview',
     ),
