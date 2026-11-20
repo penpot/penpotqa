@@ -117,15 +117,10 @@ export class WorkspacePage extends BasePage {
   // Text
   // ---------------------------------------------------------------------------
 
-  /**
-   * Opens the editor on the selected text, selects a range by character offset and
-   * copies it.
-   * @param start Offset of the first copied character.
-   * @param length Number of characters to copy.
-   */
-  async copyTextRange(start: number, length: number) {
+  /** Opens the editor on the selected text, selects all of it and copies it. */
+  async copyAllText() {
     await this.clickOnEnter();
-    await this.textEditor.selectTextRange(start, length);
+    await this.textEditor.selectAll();
     await this.textEditor.copySelection();
   }
 

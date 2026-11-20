@@ -28,6 +28,23 @@ export class TextEditorComponent extends BaseComponent {
   }
 
   /**
+   * Selects a range of the edited text counting back from its end, which takes fewer
+   * key presses than selectTextRange() for a range in the second half of the text.
+   * @param after Number of characters between the end of the range and the end of the text.
+   * @param length Number of characters to select.
+   */
+  async selectTextRangeFromEnd(after: number, length: number) {
+    await this.checkTextEditorIsFocused();
+    await this.page.keyboard.press('ControlOrMeta+End');
+    for (let i = 0; i < after; i++) {
+      await this.page.keyboard.press('ArrowLeft');
+    }
+    for (let i = 0; i < length; i++) {
+      await this.page.keyboard.press('Shift+ArrowLeft');
+    }
+  }
+
+  /**
    * Selects the next range after the current selection, which saves the key presses
    * of going back to the start of the text when walking through it.
    * @param gap Characters between the end of the current selection and the range.
@@ -47,6 +64,12 @@ export class TextEditorComponent extends BaseComponent {
     for (let i = 0; i < length; i++) {
       await this.page.keyboard.press('Shift+ArrowRight');
     }
+  }
+
+  /** Selects the whole edited text with Ctrl+A. */
+  async selectAll() {
+    await this.checkTextEditorIsFocused();
+    await this.page.keyboard.press('ControlOrMeta+A');
   }
 
   /** Copies the selected text with Ctrl+C. */
