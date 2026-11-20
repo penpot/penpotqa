@@ -434,3 +434,49 @@ layoutTest.describe('Empty 300x400 grid board for cells and areas', () => {
     },
   );
 });
+
+layoutTest(
+  qase([1712], 'Add grid lines, change px for all columns and rows'),
+  async ({ mainPage, design, designPanelPage }) => {
+    await layoutTest.step('Create board with grid layout', async () => {
+      await mainPage.createDefaultBoardByCoordinates(400, 300);
+      await designPanelPage.changeHeightAndWidthForLayer('500', '600');
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.addGridLayoutViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.isLayoutRemoveButtonExists();
+      await mainPage.clickBoardOnCanvas();
+      await mainPage.doubleClickBoardOnCanvas();
+    });
+
+    await layoutTest.step(
+      'Change all columns and rows to PX and set values',
+      async () => {
+        await designPanelPage.clickOnGridExpandColumnUnitButton();
+        await designPanelPage.selectGridCellUnit(1, 'PX');
+        await designPanelPage.selectGridCellUnit(2, 'PX');
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.enterGridCellValue(1, '200');
+        await designPanelPage.enterGridCellValue(2, '200');
+        await designPanelPage.clickOnGridExpandColumnUnitButton();
+        await designPanelPage.clickOnGridExpandRowUnitButton();
+        await designPanelPage.selectGridCellUnit(1, 'PX');
+        await designPanelPage.selectGridCellUnit(2, 'PX');
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.enterGridCellValue(1, '200');
+        await designPanelPage.enterGridCellValue(2, '200');
+        await mainPage.waitForChangeIsSaved();
+        await design.checkGridEditModePanel(['200px', '200px'], ['200px', '200px']);
+      },
+    );
+
+    await layoutTest.step('Verify grid layout with PX columns', async () => {
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'grid-with-px-all-column.png',
+        {
+          mask: mainPage.maskViewport({ gridEditorToolbar: true }),
+        },
+      );
+    });
+  },
+);

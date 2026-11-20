@@ -353,6 +353,70 @@ layoutTest(
 
 layoutTest(
   qase(
+    [1697, 1735],
+    'Check if the grid layout is resized automatically, Autoscale while resizing',
+  ),
+  async ({ mainPage, designPanelPage, layersPanelPage }) => {
+    await layoutTest.step('Create board with grid layout', async () => {
+      await mainPage.createDefaultBoardByCoordinates(200, 200);
+      await designPanelPage.changeHeightAndWidthForLayer('300', '400');
+      await mainPage.addGridLayoutViaRightClick();
+      await mainPage.waitForChangeIsSaved();
+      await designPanelPage.isLayoutRemoveButtonExists();
+      await mainPage.clickViewportOnce();
+      await mainPage.clickCreatedBoardTitleOnCanvas();
+    });
+
+    await layoutTest.step(
+      '(1697) Resize board and verify layout adapts',
+      async () => {
+        await designPanelPage.changeHeightAndWidthForLayer('400', '600');
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkSizeWidth('600');
+        await designPanelPage.checkSizeHeight('400');
+        await mainPage.isCornerHandleVisible();
+        await expect(mainPage.viewport).toHaveScreenshot(
+          'resized-board-with-grid-layout.png',
+          {
+            mask: mainPage.maskViewport(),
+          },
+        );
+      },
+    );
+
+    await layoutTest.step(
+      '(1735) Add rectangles, resize board smaller and verify',
+      async () => {
+        await mainPage.createDefaultRectangleByCoordinates(210, 210, true);
+        await mainPage.createDefaultRectangleByCoordinates(320, 210, true);
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.clickViewportOnce();
+        await mainPage.clickCreatedBoardTitleOnCanvas();
+        await designPanelPage.changeHeightAndWidthForLayer('200', '300');
+        await mainPage.waitForChangeIsSaved();
+        await designPanelPage.checkSizeWidth('300');
+        await designPanelPage.checkSizeHeight('200');
+        await layersPanelPage.clickLayerOnLayersTab('Rectangle');
+        await designPanelPage.checkSizeWidth('100');
+        await designPanelPage.checkSizeHeight('100');
+        await mainPage.clickViewportOnce();
+        await mainPage.clickCreatedBoardTitleOnCanvas();
+        await mainPage.isCornerHandleVisible();
+        await mainPage.waitForChangeIsSaved();
+        await mainPage.movePointerToViewportBottomRight();
+        await expect(mainPage.viewport).toHaveScreenshot(
+          'resized-board-with-rectangle.png',
+          {
+            mask: mainPage.maskViewport(),
+          },
+        );
+      },
+    );
+  },
+);
+
+layoutTest(
+  qase(
     [1707, 1741],
     'Add grid lines, and upload the images, check removed some image, Undo element creation',
   ),
