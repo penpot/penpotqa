@@ -31,6 +31,9 @@ on:
           - tests/composition/image
           - tests/composition/comments
           - tests/composition/path-editor
+          - tests/composition/layouts
+          - tests/composition/layouts/flex
+          - tests/composition/layouts/grid
           - tests/dashboard
           - tests/dashboard/teams
           - tests/dashboard/teams/settings
