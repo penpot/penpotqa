@@ -1,4 +1,4 @@
-import { expect, type Locator, type Page } from '@playwright/test';
+import { expect, type Locator, type Page, test } from '@playwright/test';
 import { BasePage } from '@pages/base-page';
 import { ColorPickerComponent } from '@pages/components/color-picker-component';
 import { ContextMenuComponent } from '@pages/components/context-menu-component';
@@ -6,25 +6,45 @@ import { ExportModalComponent } from '@pages/components/export-modal-component';
 import { LeftSidebarComponent } from '@pages/workspace/left-sidebar/left-sidebar-component';
 import { type LayerPosition } from '@pages/workspace/right-sidebar/design-tab/measures-section-component';
 import { RightSidebarComponent } from '@pages/workspace/right-sidebar/right-sidebar-component';
+import { type TextTypography } from '@pages/workspace/right-sidebar/design-tab/text-section-component';
 import { GridEditorComponent } from '@pages/workspace/viewport/grid-editor-component';
 import { ViewportComponent } from '@pages/workspace/viewport/viewport-component';
 import { PrototypeOverlayComponent } from '@pages/workspace/viewport/prototype-overlay-component';
+import { TextEditorComponent } from '@pages/workspace/viewport/text-editor-component';
+
+/** A range of a text, by character offset, with its expected styles. */
+export type TextRangeStyle = {
+  /** Name for the report, e.g. the word in the range. */
+  label: string;
+  start: number;
+  length: number;
+  typography: TextTypography;
+  /** Name of the image fill the Fill section shows, if the range has one. */
+  imageFill?: string;
+};
 
 /** The file workspace. Exposes one component per UI region. */
 export class WorkspacePage extends BasePage {
+  // Sidebars
   readonly leftSidebar: LeftSidebarComponent;
   readonly rightSidebar: RightSidebarComponent;
-  readonly exportModal: ExportModalComponent;
-  readonly contextMenu: ContextMenuComponent;
-  readonly colorPicker: ColorPickerComponent;
+
+  // Viewport: the canvas and what is drawn over it
   readonly canvas: ViewportComponent;
   readonly gridEditor: GridEditorComponent;
   readonly prototypeOverlay: PrototypeOverlayComponent;
+  readonly textEditor: TextEditorComponent;
   /** Canvas the WebGL renderer draws the shapes on; absent with the classic renderer. */
   readonly webglCanvas: Locator;
 
+  // Menus and dialogs shown over the workspace
+  readonly contextMenu: ContextMenuComponent;
+  readonly colorPicker: ColorPickerComponent;
+  readonly exportModal: ExportModalComponent;
+
   constructor(page: Page) {
     super(page);
+    // Sidebars
     this.leftSidebar = new LeftSidebarComponent(
       page,
       page.getByTestId('left-sidebar'),
@@ -33,17 +53,29 @@ export class WorkspacePage extends BasePage {
       page,
       page.getByTestId('right-sidebar'),
     );
-    this.exportModal = new ExportModalComponent(page);
-    this.contextMenu = new ContextMenuComponent(page);
-    this.colorPicker = new ColorPickerComponent(page);
+
+    // Viewport
     this.canvas = new ViewportComponent(page, page.getByTestId('viewport'));
     this.gridEditor = new GridEditorComponent(page, page.getByTestId('viewport'));
     this.prototypeOverlay = new PrototypeOverlayComponent(
       page,
       page.getByTestId('viewport'),
     );
+    this.textEditor = new TextEditorComponent(
+      page,
+      page.getByTestId('text-editor-container'),
+    );
     this.webglCanvas = page.getByTestId('canvas-wasm-shapes');
+
+    // Menus and dialogs
+    this.contextMenu = new ContextMenuComponent(page);
+    this.colorPicker = new ColorPickerComponent(page);
+    this.exportModal = new ExportModalComponent(page);
   }
+
+  // ---------------------------------------------------------------------------
+  // Renderer
+  // ---------------------------------------------------------------------------
 
   /**
    * Toggles "WebGL rendering (beta)" in Main menu > Preferences. The workspace
@@ -65,6 +97,10 @@ export class WorkspacePage extends BasePage {
     await expect(this.viewport).toBeVisible();
   }
 
+  // ---------------------------------------------------------------------------
+  // Layers
+  // ---------------------------------------------------------------------------
+
   /**
    * Checks the position of several layers: selects each one in the Layers panel and reads
    * its X axis / Y axis in the Design tab. The last one stays selected.
@@ -76,6 +112,51 @@ export class WorkspacePage extends BasePage {
       await this.rightSidebar.design.measures.checkPosition(position);
     }
   }
+
+  // ---------------------------------------------------------------------------
+  // Text
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Opens the editor on the selected text, selects a range by character offset and
+   * copies it.
+   * @param start Offset of the first copied character.
+   * @param length Number of characters to copy.
+   */
+  async copyTextRange(start: number, length: number) {
+    await this.clickOnEnter();
+    await this.textEditor.selectTextRange(start, length);
+    await this.textEditor.copySelection();
+  }
+
+  /**
+   * Opens the editor on the selected text and checks the typography (and image fill)
+   * of several ranges, walking the text from start to end in one pass.
+   * @param ranges Ranges by character offset with their expected styles.
+   */
+  async checkTextRangeStyles(ranges: TextRangeStyle[]) {
+    const { text, fill } = this.rightSidebar.design;
+    // Opening the decoration options takes the focus, so it's done before editing
+    await text.openOptions();
+    await this.clickOnEnter();
+    let selectionEnd: number | undefined;
+    for (const { label, start, length, typography, imageFill } of [...ranges].sort(
+      (a, b) => a.start - b.start,
+    )) {
+      await test.step(`"${label}" has its style`, async () => {
+        selectionEnd === undefined
+          ? await this.textEditor.selectTextRange(start, length)
+          : await this.textEditor.selectNextTextRange(start - selectionEnd, length);
+        selectionEnd = start + length;
+        await text.checkTypography(typography);
+        if (imageFill) await fill.checkImageFillIsVisible(imageFill);
+      });
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Clipboard
+  // ---------------------------------------------------------------------------
 
   /**
    * Checks which layers the CSS in the clipboard has (each block starts with a

@@ -12,7 +12,10 @@ export type PenpotApiMethod =
   | 'create-team-invitations'
   | 'verify-token'
   | 'get-file-libraries'
-  | 'import-binfile';
+  | 'import-binfile'
+  | 'create-upload-session'
+  | 'upload-chunk'
+  | 'create-font-variant';
 
 /** Path of a Penpot main API method, e.g. to match it in `waitForResponse`. */
 export const penpotApiPath = (method: PenpotApiMethod) =>
