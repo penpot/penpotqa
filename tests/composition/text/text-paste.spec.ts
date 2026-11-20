@@ -15,6 +15,8 @@ const SOURCE_TEXT =
   'word that uses the team font. The rest of the paragraph keeps the default ' +
   'style, so a selection can start or end anywhere and still cross several ' +
   'style boundaries.';
+// Name of a layer with that text: Penpot cuts it at 280 characters
+const TEXT_LAYER_NAME = SOURCE_TEXT.slice(0, 280).trim();
 const CUSTOM_FONT = 'Nekophilia';
 // Name the Fill section shows for the image of the "Image" word
 const IMAGE_FILL = 'sample';
@@ -48,17 +50,13 @@ const FORMATTED_WORDS: FormattedWord[] = [
 
 // Empty area of the canvas below the source text, where the copy is pasted
 const PASTE_X = 240;
-const PASTE_Y = 680;
+const PASTE_Y = 640;
 
-// The copied chunk goes from "Bold" to "Custom", so it crosses every style
-const CHUNK_START = SOURCE_TEXT.indexOf('Bold');
-const CHUNK_END = SOURCE_TEXT.indexOf('Custom') + 'Custom'.length;
-
-// Where each formatted word sits in the pasted chunk, with its expected styles
+// Where each formatted word sits in the (pasted) text, with its expected styles
 const PASTED_WORD_STYLES: TextRangeStyle[] = FORMATTED_WORDS.map(
   ({ word, imageFill, ...typography }) => ({
     label: word,
-    start: SOURCE_TEXT.indexOf(word) - CHUNK_START,
+    start: SOURCE_TEXT.indexOf(word),
     length: word.length,
     typography,
     imageFill: imageFill ? IMAGE_FILL : undefined,
@@ -74,6 +72,9 @@ demoAccountFileTest.use({
 });
 
 demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
+  // The v3 editor only selects by key press (~850 per test, plus the file and font
+  // setup), which takes about 100s in CI, too close to the default timeout
+  demoAccountFileTest.slow();
   workspacePage = new WorkspacePage(page);
   layersPanelPage = new LayersPanelPage(page);
 
@@ -82,8 +83,9 @@ demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
     async () => {
       await layersPanelPage.selectLayerByExactName(SOURCE_LAYER);
       await mainPage.clickOnEnter();
-      await workspacePage.textEditor.selectTextRange(
-        SOURCE_TEXT.indexOf('Custom'),
+      // "Custom" is in the second half of the text, so it's reached from the end
+      await workspacePage.textEditor.selectTextRangeFromEnd(
+        SOURCE_TEXT.length - SOURCE_TEXT.indexOf('Custom') - 'Custom'.length,
         'Custom'.length,
       );
       await workspacePage.rightSidebar.design.text.changeFont(CUSTOM_FONT);
@@ -99,10 +101,10 @@ demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
 demoAccountFileTest(
   qase(4013, 'Paste formatted text onto the canvas in the same file'),
   async ({ mainPage }) => {
-    await demoAccountFileTest.step('Copy the formatted chunk', async () => {
+    await demoAccountFileTest.step('Copy the formatted text', async () => {
       // The source text is still selected after the beforeEach (editing it renamed
       // its layer after the content)
-      await workspacePage.copyTextRange(CHUNK_START, CHUNK_END - CHUNK_START);
+      await workspacePage.copyAllText();
     });
 
     await demoAccountFileTest.step(
@@ -113,9 +115,8 @@ demoAccountFileTest(
         await mainPage.pressPasteShortcut();
         await mainPage.waitForChangeIsSaved();
         await mainPage.isErrorScreenNotDisplayed();
-        await layersPanelPage.isLayerNameDisplayed(
-          SOURCE_TEXT.slice(CHUNK_START, CHUNK_END),
-        );
+        // The copy is named after its content, like the source
+        await layersPanelPage.isNumLayerNameVisible(TEXT_LAYER_NAME, 2);
       },
     );
 
@@ -149,10 +150,10 @@ demoAccountFileTest(
     'Paste formatted text at the caret of a new text shape in the same file',
   ),
   async ({ mainPage }) => {
-    await demoAccountFileTest.step('Copy the formatted chunk', async () => {
+    await demoAccountFileTest.step('Copy the formatted text', async () => {
       // The source text is still selected after the beforeEach (editing it renamed
       // its layer after the content)
-      await workspacePage.copyTextRange(CHUNK_START, CHUNK_END - CHUNK_START);
+      await workspacePage.copyAllText();
     });
 
     await demoAccountFileTest.step(
@@ -170,9 +171,8 @@ demoAccountFileTest(
       await workspacePage.textEditor.paste();
       await mainPage.waitForChangeIsSaved();
       await mainPage.isErrorScreenNotDisplayed();
-      await layersPanelPage.isLayerNameDisplayed(
-        SOURCE_TEXT.slice(CHUNK_START, CHUNK_END),
-      );
+      // The copy is named after its content, like the source
+      await layersPanelPage.isNumLayerNameVisible(TEXT_LAYER_NAME, 2);
       // Leaves the editor with the new text selected
       await mainPage.clickOnESC();
     });
