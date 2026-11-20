@@ -1,20 +1,11 @@
 import { BaseComponent } from '@pages/base-component';
-import { type Locator, type Page } from '@playwright/test';
-
-/**
- * Returns the root of the value options of a composite token form (Typography,
- * Shadow): the "Use individual tokens" / "Use a reference" toggle. The toggle has
- * no role or label, so it is matched by class.
- * @param tokenModal - The create/edit token modal.
- * @returns The toggle's radio button wrapper.
- */
-export function getTokenValueOptionsRoot(tokenModal: Locator): Locator {
-  return tokenModal.locator('[class*="listing-options"]');
-}
+import { type Locator, type Page, expect } from '@playwright/test';
 
 /**
  * The "Use individual tokens" / "Use a reference" toggle of a composite token
- * form, shared by the Typography and Shadow token forms.
+ * form, shared by the Typography and Shadow token forms. Its root is the
+ * create/edit token modal: the toggle has no role or label, and its test IDs are
+ * unique there.
  */
 export class TokenValueOptionsComponent extends BaseComponent {
   readonly useCompositeButton: Locator;
@@ -34,5 +25,13 @@ export class TokenValueOptionsComponent extends BaseComponent {
   /** Clicks the "Use individual tokens" option, which shows the individual fields. */
   async clickOnUseCompositeButton() {
     await this.useCompositeButton.click();
+  }
+
+  /** Checks that "Use individual tokens" is the selected option. */
+  async checkUseCompositeOptionIsSelected() {
+    await expect(
+      this.useCompositeButton,
+      '"Use individual tokens" is selected',
+    ).toBeChecked();
   }
 }

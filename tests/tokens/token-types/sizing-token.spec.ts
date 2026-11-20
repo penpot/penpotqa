@@ -238,7 +238,7 @@ demoAccountFileTest(
     await demoAccountFileTest.step(
       'Cancel token creation by clicking on Cancel button',
       async () => {
-        await tokensPage.tokensComp.clickCancelButton();
+        await tokensPage.tokensComp.baseComp.clickOnCancelButton();
       },
     );
   },

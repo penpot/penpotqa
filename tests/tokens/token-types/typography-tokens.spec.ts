@@ -198,7 +198,7 @@ demoAccountFileTest.describe(() => {
           await tokensPage.typoTokensComp.referenceField.fillAliasInput(
             BAD_TOKEN_ALIAS,
           );
-          await tokensPage.typoTokensComp.referenceField.isAliasInputErrorVisible();
+          await tokensPage.typoTokensComp.referenceField.checkAliasInputErrorIsVisible();
           await tokensPage.tokensComp.baseComp.clickOnCancelButton();
         },
       );
@@ -371,7 +371,7 @@ demoAccountFileTest.describe(() => {
         'Detach the reference and check the copied values',
         async () => {
           await referenceField.clickOnDetachReferenceButton();
-          await tokensPage.typoTokensComp.checkIndividualTokensOptionIsSelected();
+          await tokensPage.typoTokensComp.valueOptions.checkUseCompositeOptionIsSelected();
           await tokensPage.typoTokensComp.checkTokenFieldHasExpectedValue(
             BASE_TOKEN,
           );
@@ -411,11 +411,11 @@ demoAccountFileTest.describe(() => {
         'Check the alias keeps its own values and the base is unchanged',
         async () => {
           await tokensPage.tokensComp.clickEditToken(ALIAS_TOKEN);
-          await tokensPage.typoTokensComp.checkIndividualTokensOptionIsSelected();
+          await tokensPage.typoTokensComp.valueOptions.checkUseCompositeOptionIsSelected();
           await tokensPage.typoTokensComp.checkTokenFieldHasExpectedValue(
             DETACHED_TOKEN,
           );
-          await tokensPage.tokensComp.clickCancelButton();
+          await tokensPage.tokensComp.baseComp.clickOnCancelButton();
           await tokensPage.tokensComp.clickEditToken(BASE_TOKEN);
           await tokensPage.typoTokensComp.checkTokenFieldHasExpectedValue(
             BASE_TOKEN,

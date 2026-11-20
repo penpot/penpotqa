@@ -3,14 +3,8 @@ import {
   TokenClass,
   BasicTokenData,
 } from '@pages/workspace/tokens/token-components/tokens-base-component';
-import {
-  TokenReferenceFieldComponent,
-  getTokenReferenceFieldRoot,
-} from '@pages/workspace/tokens/token-components/token-reference-field-component';
-import {
-  TokenValueOptionsComponent,
-  getTokenValueOptionsRoot,
-} from '@pages/workspace/tokens/token-components/token-value-options-component';
+import { TokenReferenceFieldComponent } from '@pages/workspace/tokens/token-components/token-reference-field-component';
+import { TokenValueOptionsComponent } from '@pages/workspace/tokens/token-components/token-value-options-component';
 
 export interface TypographyToken<TokenClass> extends BasicTokenData {
   class: TokenClass;
@@ -62,13 +56,10 @@ export class TypographyTokensComponent {
     this.textCaseInput = this.createTokenModal.getByRole('textbox', {
       name: 'Text case',
     });
-    this.valueOptions = new TokenValueOptionsComponent(
-      page,
-      getTokenValueOptionsRoot(this.createTokenModal),
-    );
+    this.valueOptions = new TokenValueOptionsComponent(page, this.createTokenModal);
     this.referenceField = new TokenReferenceFieldComponent(
       page,
-      getTokenReferenceFieldRoot(this.createTokenModal),
+      this.createTokenModal,
     );
   }
 
@@ -94,18 +85,6 @@ export class TypographyTokensComponent {
     if (typographyToken.textCase !== undefined) {
       await this.textCaseInput.fill(typographyToken.textCase);
     }
-  }
-
-  /**
-   * Checks that the form shows the "Use individual tokens" option: the
-   * individual fields instead of the Reference field.
-   */
-  async checkIndividualTokensOptionIsSelected() {
-    await expect(this.fontFamilyInput, 'Font family field is visible').toBeVisible();
-    await expect(
-      this.referenceField.referenceInput,
-      'Reference field is hidden',
-    ).toBeHidden();
   }
 
   async checkTokenFieldHasExpectedValue(

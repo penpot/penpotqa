@@ -2,19 +2,9 @@ import { BaseComponent } from '@pages/base-component';
 import { type Locator, type Page, expect } from '@playwright/test';
 
 /**
- * Returns the root of the Reference field of a composite token form (Typography,
- * Shadow): the row with the Reference input and its detach button. The row has
- * no role or label, so it is matched by class.
- * @param tokenModal - The create/edit token modal.
- * @returns The Reference field row.
- */
-export function getTokenReferenceFieldRoot(tokenModal: Locator): Locator {
-  return tokenModal.locator('[class*="reference-row"]');
-}
-
-/**
  * The Reference field of a composite token form ("Use a reference" option), shared
- * by the Typography and Shadow token forms.
+ * by the Typography and Shadow token forms. Its root is the create/edit token
+ * modal: the field's row has no role or label, and its controls are unique there.
  */
 export class TokenReferenceFieldComponent extends BaseComponent {
   readonly referenceInput: Locator;
@@ -40,18 +30,18 @@ export class TokenReferenceFieldComponent extends BaseComponent {
 
   /**
    * Checks whether the Reference field shows the "Missing token references" error.
-   * @param boolean - `true` (default) to expect the error, `false` to expect none.
+   * @param visible - `true` (default) to expect the error, `false` to expect none.
    */
-  async isAliasInputErrorVisible(boolean = true) {
-    return boolean
-      ? expect(
+  async checkAliasInputErrorIsVisible(visible = true) {
+    visible
+      ? await expect(
           this.aliasInputError,
-          'Missing token reference expected, but not found',
+          'Missing token references error is visible',
         ).toBeVisible()
-      : expect(
+      : await expect(
           this.aliasInputError,
-          'Missing token reference not expected, but found',
-        ).not.toBeVisible();
+          'Missing token references error is hidden',
+        ).toBeHidden();
   }
 
   /** Hovers the Reference field, which reveals its detach button. */

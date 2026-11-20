@@ -298,10 +298,6 @@ export class TokensComponent {
     ).toBeEnabled();
   }
 
-  async clickCancelButton() {
-    await this.baseComp.clickOnCancelButton();
-  }
-
   async isCreateTokenModalClosed() {
     await expect(this.createTokenModal).not.toBeVisible();
   }
