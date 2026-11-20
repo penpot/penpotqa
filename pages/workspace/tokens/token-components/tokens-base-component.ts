@@ -205,6 +205,17 @@ export class TokensComponent {
     await this.mainTokensComp.tokenValueInput.clear();
   }
 
+  /**
+   * Checks the value of the Description field of the token modal.
+   * @param description - Expected description.
+   */
+  async checkTokenDescriptionHasValue(description: string) {
+    await expect(
+      this.tokenDescriptionInput,
+      `Token description is "${description}"`,
+    ).toHaveValue(description);
+  }
+
   async clickOnTokenDescription() {
     await this.tokenDescriptionInput.click();
   }
