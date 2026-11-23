@@ -231,4 +231,16 @@ export class LayersPanelComponent extends BaseComponent {
       `${count} layer(s) are selected in the layers panel`,
     ).toHaveCount(count);
   }
+
+  /**
+   * Checks whether a layer is in the tree (its parent must be expanded).
+   * @param name Layer name exactly as shown in the panel.
+   * @param visible Whether the layer should be in the tree; default: true.
+   */
+  async checkLayerRowVisible(name: string, visible = true) {
+    await expect(
+      this.getLayerRow(name),
+      `Layer "${name}" is ${visible ? '' : 'not '}in the layers panel`,
+    ).toHaveCount(visible ? 1 : 0);
+  }
 }
