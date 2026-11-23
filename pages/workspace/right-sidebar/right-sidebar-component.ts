@@ -93,10 +93,16 @@ export class RightSidebarComponent extends BaseComponent {
     await this.root.getByRole('tab', { name }).click();
   }
 
-  /** Opens the History panel with the header's History button, on its History tab (the saved versions). */
+  /**
+   * Opens the History tab (the saved versions) of the History panel. The header's History
+   * button toggles the panel, so it's only clicked when the panel is closed.
+   */
   async openHistoryVersionsTab() {
-    await this.historyButton.click();
-    await this.root.getByRole('tab', { name: 'History' }).click();
+    const historyTab = this.root.getByRole('tab', { name: 'History' });
+    if (!(await historyTab.isVisible())) {
+      await this.historyButton.click();
+    }
+    await historyTab.click();
     await expect(
       this.historyVersions.root,
       'History tab of the History panel is open',
