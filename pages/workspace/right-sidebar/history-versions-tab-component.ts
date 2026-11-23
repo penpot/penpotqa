@@ -21,6 +21,7 @@ export type VersionMenuOptionName =
 export class HistoryVersionsTabComponent extends BaseComponent {
   readonly saveVersionButton: Locator;
   readonly versionEntries: Locator;
+  readonly previewBanner: Locator;
   readonly restoreDialog: Locator;
   readonly restoreDialogRestoreButton: Locator;
 
@@ -31,7 +32,10 @@ export class HistoryVersionsTabComponent extends BaseComponent {
     this.versionEntries = root
       .getByRole('listitem')
       .filter({ has: page.getByTestId('milestone') });
-    // The restore confirmation is a notification rendered outside the sidebar
+    // The preview banner and the restore confirmation are notifications rendered outside the sidebar
+    this.previewBanner = page
+      .getByTestId('actionable')
+      .filter({ hasText: 'Previewing version' });
     this.restoreDialog = page
       .getByTestId('actionable')
       .filter({ hasText: 'Do you want to restore this version?' });
@@ -149,6 +153,12 @@ export class HistoryVersionsTabComponent extends BaseComponent {
       this.restoreDialogRestoreButton,
       'Restore confirmation has the "Restore" button',
     ).toBeVisible();
+  }
+
+  /** Clicks Restore in the "Previewing version" banner, which asks for confirmation. */
+  async clickPreviewBannerRestoreButton() {
+    await this.previewBanner.getByRole('button', { name: 'Restore' }).click();
+    await this.checkRestoreDialogVisible();
   }
 
   /** Clicks Restore in the restore confirmation, which reloads the file to that version. */
