@@ -1,8 +1,5 @@
 const { expect } = require('@playwright/test');
 const { MainPage } = require('./main-page');
-const {
-  HistoryVersionsTabComponent,
-} = require('./right-sidebar/history-versions-tab-component');
 
 exports.HistoryPanelPage = class HistoryPanelPage extends MainPage {
   /**
@@ -11,10 +8,6 @@ exports.HistoryPanelPage = class HistoryPanelPage extends MainPage {
   constructor(page) {
     super(page);
 
-    this.versionsTab = new HistoryVersionsTabComponent(
-      page,
-      page.getByTestId('right-sidebar').getByRole('tabpanel', { name: 'History' }),
-    );
     this.emptyVersionMessage = page.getByText('There are no versions yet');
     this.saveVersionButton = page.getByRole('button', { name: 'Save version' });
     this.versionEntry = page.getByTestId('milestone');
@@ -68,19 +61,6 @@ exports.HistoryPanelPage = class HistoryPanelPage extends MainPage {
       : await expect(this.historyPanel).toBeHidden();
   }
 
-  /** Delegates to HistoryVersionsTabComponent.clickSaveVersionButton. */
-  async clickSaveVersionButton() {
-    await this.versionsTab.clickSaveVersionButton();
-  }
-
-  /**
-   * Delegates to HistoryVersionsTabComponent.renameVersion.
-   * @param {string} name Name to give the version whose name input is open.
-   */
-  async renameVersion(name) {
-    await this.versionsTab.renameVersion(name);
-  }
-
   async checkVersionName(name) {
     await expect(
       this.getVersionEntryByName(name),
@@ -104,15 +84,6 @@ exports.HistoryPanelPage = class HistoryPanelPage extends MainPage {
 
   async openVersionOptionsMenu() {
     await this.optionsVersionButton.first().click();
-  }
-
-  /**
-   * Delegates to HistoryVersionsTabComponent.selectVersionOption.
-   * @param {'Rename' | 'Restore' | 'Delete' | 'Preview version'} option Option label.
-   * @param {string} [versionName] Version name; default: the newest version.
-   */
-  async selectVersionOption(option, versionName = '') {
-    await this.versionsTab.selectVersionOption(option, versionName || undefined);
   }
 
   async clickCancelRestoreVersionButton() {
@@ -190,15 +161,5 @@ exports.HistoryPanelPage = class HistoryPanelPage extends MainPage {
       previewVersionMessage,
       `Preview version notification is visible: ${value}`,
     ).toBeVisible();
-  }
-
-  /** Delegates to HistoryVersionsTabComponent.checkRestoreDialogVisible. */
-  async isRestoreConfirmationModalVisible() {
-    await this.versionsTab.checkRestoreDialogVisible();
-  }
-
-  /** Delegates to HistoryVersionsTabComponent.clickRestoreDialogRestoreButton. */
-  async clickRestoreVersionButton() {
-    await this.versionsTab.clickRestoreDialogRestoreButton();
   }
 };
