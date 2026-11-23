@@ -1,5 +1,9 @@
 import { HistoryPanelPage } from '@pages/workspace/history-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import {
+  type HistoryVersionsTabComponent,
+  VersionMenuOption,
+} from '@pages/workspace/right-sidebar/history-versions-tab-component';
 import { WorkspacePage } from '@pages/workspace/workspace-page';
 import { demoAccountFileTest, demoTeamWithInviteeTest } from 'fixtures';
 import { InvitationRole } from 'helpers/teams/invitation-role';
@@ -9,11 +13,13 @@ import { qase } from 'playwright-qase-reporter/playwright';
 let historyPage: HistoryPanelPage;
 let layersPanelPage: LayersPanelPage;
 let workspacePage: WorkspacePage;
+let historyVersions: HistoryVersionsTabComponent;
 
 demoAccountFileTest.beforeEach(async ({ page }) => {
   historyPage = new HistoryPanelPage(page);
   layersPanelPage = new LayersPanelPage(page);
   workspacePage = new WorkspacePage(page);
+  historyVersions = workspacePage.rightSidebar.historyVersions;
 });
 
 demoAccountFileTest(
@@ -110,8 +116,7 @@ demoAccountFileTest.describe(() => {
     await historyPage.createDefaultRectangleByCoordinates(200, 200);
     await historyPage.waitForChangeIsSaved();
     await historyPage.clickHistoryPanelButton();
-    await historyPage.clickSaveVersionButton();
-    await historyPage.renameVersion(versionName);
+    await historyVersions.saveVersion(versionName);
   });
 
   demoAccountFileTest(qase([1929], 'Save version via history panel'), async () => {
@@ -124,7 +129,7 @@ demoAccountFileTest.describe(() => {
     await historyPage.createDefaultRectangleByCoordinates(200, 200);
     await historyPage.waitForChangeIsSaved();
     await historyPage.clickHistoryPanelButton();
-    await historyPage.clickSaveVersionButton();
+    await historyVersions.clickSaveVersionButton();
     await historyPage.clickViewportTwice();
   });
 
@@ -134,12 +139,12 @@ demoAccountFileTest.describe(() => {
       await historyPage.pressDeleteKeyboardButton();
       await layersPanelPage.isLayerPresentOnLayersTab('Rectangle', false);
       await historyPage.clickHistoryPanelButton();
-      await historyPage.selectVersionOption('Restore');
+      await historyVersions.selectVersionOption(VersionMenuOption.Restore);
     });
 
     demoAccountFileTest.describe(() => {
       demoAccountFileTest.beforeEach(async () => {
-        await historyPage.clickRestoreVersionButton();
+        await historyVersions.clickRestoreDialogRestoreButton();
         await layersPanelPage.isLayerPresentOnLayersTab('Rectangle', true);
         await historyPage.isHistoryPanelVisible(false);
         await historyPage.clickHistoryPanelButton();
@@ -162,8 +167,7 @@ demoAccountFileTest.describe(() => {
           const versionName = 'pin version';
           await historyPage.clickOnAutosaveVersionsButton();
           await historyPage.selectSnapshotOption('Pin version');
-          await historyPage.renameVersion(versionName);
-          await historyPage.clickHistoryPanelButton();
+          await historyVersions.renameVersion(versionName);
           await historyPage.checkLastVersionName(versionName);
           await historyPage.checkAutosaveVersionsCount('1');
         },
@@ -173,17 +177,17 @@ demoAccountFileTest.describe(() => {
 
   demoAccountFileTest(qase([1934], 'Rename version via history panel'), async () => {
     const versionName = 'renamed version';
-    await historyPage.selectVersionOption('Rename');
-    await historyPage.renameVersion(versionName);
+    await historyVersions.selectVersionOption(VersionMenuOption.Rename);
+    await historyVersions.renameVersion(versionName);
     await historyPage.checkVersionName(versionName);
   });
 });
 
 demoAccountFileTest(qase([1935], 'Delete version via history panel'), async () => {
   await historyPage.clickHistoryPanelButton();
-  await historyPage.clickSaveVersionButton();
+  await historyVersions.clickSaveVersionButton();
   await historyPage.clickViewportTwice();
-  await historyPage.selectVersionOption('Delete');
+  await historyVersions.selectVersionOption(VersionMenuOption.Delete);
   await historyPage.isVersionListEmpty();
 });
 
@@ -204,6 +208,8 @@ demoTeamWithInviteeTest.describe(() => {
       layersPanelPage = new LayersPanelPage(page);
       const adminHistoryPage = new HistoryPanelPage(invitee.page);
       const adminLayersPanelPage = new LayersPanelPage(invitee.page);
+      const ownerVersions = new WorkspacePage(page).rightSidebar.historyVersions;
+      const adminVersions = invitee.workspacePage.rightSidebar.historyVersions;
 
       await demoTeamWithInviteeTest.step(
         `Owner: create a board, save version "${versionName}" and restore it`,
@@ -211,14 +217,13 @@ demoTeamWithInviteeTest.describe(() => {
           await historyPage.createDefaultBoardByCoordinates(200, 200);
           await historyPage.waitForChangeIsSaved();
           await historyPage.clickHistoryPanelButton();
-          await historyPage.clickSaveVersionButton();
-          await historyPage.renameVersion(versionName);
+          await ownerVersions.saveVersion(versionName);
           await layersPanelPage.selectLayerByName('Board');
           await historyPage.pressDeleteKeyboardButton();
           await historyPage.clickHistoryPanelButton();
           await layersPanelPage.isLayerPresentOnLayersTab('Board', false);
-          await historyPage.selectVersionOption('Restore');
-          await historyPage.clickRestoreVersionButton();
+          await ownerVersions.selectVersionOption(VersionMenuOption.Restore);
+          await ownerVersions.clickRestoreDialogRestoreButton();
           await layersPanelPage.isLayerPresentOnLayersTab('Board', true);
           await historyPage.waitForChangeIsSaved();
         },
@@ -231,14 +236,13 @@ demoTeamWithInviteeTest.describe(() => {
           await adminHistoryPage.createDefaultEllipseByCoordinates(400, 200);
           await adminHistoryPage.waitForChangeIsSaved();
           await adminHistoryPage.clickHistoryPanelButton();
-          await adminHistoryPage.clickSaveVersionButton();
-          await adminHistoryPage.renameVersion(versionName);
+          await adminVersions.saveVersion(versionName);
           await adminLayersPanelPage.selectLayerByName('Ellipse');
           await adminHistoryPage.pressDeleteKeyboardButton();
           await adminHistoryPage.clickHistoryPanelButton();
           await adminLayersPanelPage.isLayerPresentOnLayersTab('Ellipse', false);
-          await adminHistoryPage.selectVersionOption('Restore');
-          await adminHistoryPage.clickRestoreVersionButton();
+          await adminVersions.selectVersionOption(VersionMenuOption.Restore);
+          await adminVersions.clickRestoreDialogRestoreButton();
           await adminLayersPanelPage.isLayerPresentOnLayersTab('Ellipse', true);
           await adminHistoryPage.isHistoryPanelVisible(false);
           await adminHistoryPage.clickHistoryPanelButton();
