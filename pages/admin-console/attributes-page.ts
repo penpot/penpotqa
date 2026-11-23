@@ -42,11 +42,16 @@ export class AttributesPage extends BasePage {
    * @param name Attribute name, e.g. 'Legal'.
    */
   async createAttribute(name: string) {
-    await this.newAttributeButton.click();
-    await expect(
-      this.page.getByRole('textbox').first(),
-      'New attribute name field is focused',
-    ).toBeFocused();
+    const nameField = this.page.getByRole('textbox').first();
+    // A click before the page hydrates is dropped: click again until the row shows
+    await expect(async () => {
+      if (!(await nameField.isVisible())) {
+        await this.newAttributeButton.click();
+      }
+      await expect(nameField, 'New attribute name field is focused').toBeFocused({
+        timeout: 2000,
+      });
+    }).toPass();
     await this.page.keyboard.type(name);
     await this.page.keyboard.press('Enter');
     await expect(
