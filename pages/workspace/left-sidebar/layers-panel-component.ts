@@ -237,7 +237,7 @@ export class LayersPanelComponent extends BaseComponent {
    * @param name Layer name exactly as shown in the panel.
    * @param visible Whether the layer should be in the tree; default: true.
    */
-  async checkLayerRowVisible(name: string, visible = true) {
+  async checkLayerRowIsVisible(name: string, visible = true) {
     await expect(
       this.getLayerRow(name),
       `Layer "${name}" is ${visible ? '' : 'not '}in the layers panel`,

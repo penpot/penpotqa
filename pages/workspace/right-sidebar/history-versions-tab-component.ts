@@ -69,7 +69,7 @@ export class HistoryVersionsTabComponent extends BaseComponent {
     const input = this.versionEntries.getByRole('textbox');
     await input.fill(name);
     await input.press('Enter');
-    await this.checkVersionVisible(name);
+    await this.checkVersionIsVisible(name);
   }
 
   /**
@@ -85,7 +85,7 @@ export class HistoryVersionsTabComponent extends BaseComponent {
    * Checks that a version is in the list.
    * @param name Version name exactly as shown.
    */
-  async checkVersionVisible(name: string) {
+  async checkVersionIsVisible(name: string) {
     await expect(
       this.getVersionEntry(name),
       `Version "${name}" is in the version list`,
@@ -114,7 +114,7 @@ export class HistoryVersionsTabComponent extends BaseComponent {
    * Checks that an option shows in the open version menu.
    * @param option Option label, e.g. VersionMenuOption.Restore.
    */
-  async checkVersionMenuOptionVisible(option: VersionMenuOptionName) {
+  async checkVersionMenuOptionIsVisible(option: VersionMenuOptionName) {
     await expect(
       this.getVersionMenuOption(option),
       `Version menu shows the option "${option}"`,
@@ -140,7 +140,7 @@ export class HistoryVersionsTabComponent extends BaseComponent {
   }
 
   /** Checks that the "Do you want to restore this version?" message shows with its Dismiss and Restore buttons. */
-  async checkRestoreDialogVisible() {
+  async checkRestoreDialogIsVisible() {
     await expect(
       this.restoreDialog,
       'Restore confirmation is visible',
@@ -158,7 +158,7 @@ export class HistoryVersionsTabComponent extends BaseComponent {
   /** Clicks Restore in the "Previewing version" banner, which asks for confirmation. */
   async clickPreviewBannerRestoreButton() {
     await this.previewBanner.getByRole('button', { name: 'Restore' }).click();
-    await this.checkRestoreDialogVisible();
+    await this.checkRestoreDialogIsVisible();
   }
 
   /** Clicks Restore in the restore confirmation, which reloads the file to that version. */
