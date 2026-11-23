@@ -2,6 +2,7 @@ import { BaseComponent } from '@pages/base-component';
 import { expect, type Locator, type Page } from '@playwright/test';
 import { DesignTabComponent } from '@pages/workspace/right-sidebar/design-tab/design-tab-component';
 import { HistoryActionsTabComponent } from '@pages/workspace/right-sidebar/history-actions-tab-component';
+import { HistoryVersionsTabComponent } from '@pages/workspace/right-sidebar/history-versions-tab-component';
 import { ExportProgressComponent } from '@pages/workspace/right-sidebar/export-progress-component';
 import { InspectTabComponent } from '@pages/workspace/right-sidebar/inspect-tab-component';
 import { PrototypeTabComponent } from '@pages/workspace/right-sidebar/prototype-tab/prototype-tab-component';
@@ -13,6 +14,8 @@ export class RightSidebarComponent extends BaseComponent {
   readonly exportProgress: ExportProgressComponent;
   readonly viewerInspectComponent: InspectTabComponent;
   readonly historyActions: HistoryActionsTabComponent;
+  readonly historyVersions: HistoryVersionsTabComponent;
+  readonly historyButton: Locator;
   readonly zoomWidget: Locator;
   readonly activeUsers: Locator;
 
@@ -41,6 +44,11 @@ export class RightSidebarComponent extends BaseComponent {
       page,
       root.getByRole('tabpanel', { name: 'Actions' }),
     );
+    this.historyVersions = new HistoryVersionsTabComponent(
+      page,
+      root.getByRole('tabpanel', { name: 'History' }),
+    );
+    this.historyButton = root.getByRole('button', { name: /History/ });
     // Header button that shows the zoom level, e.g. "100%"
     this.zoomWidget = root.getByTitle('Zoom', { exact: true });
     // Header avatars of the users who have the file open, named by user name
@@ -83,6 +91,16 @@ export class RightSidebarComponent extends BaseComponent {
    */
   async clickTab(name: 'design' | 'prototype' | 'inspect') {
     await this.root.getByRole('tab', { name }).click();
+  }
+
+  /** Opens the History panel with the header's History button, on its History tab (the saved versions). */
+  async openHistoryVersionsTab() {
+    await this.historyButton.click();
+    await this.root.getByRole('tab', { name: 'History' }).click();
+    await expect(
+      this.historyVersions.root,
+      'History tab of the History panel is open',
+    ).toBeVisible();
   }
 
   /**
