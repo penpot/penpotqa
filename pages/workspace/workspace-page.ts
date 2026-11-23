@@ -3,6 +3,7 @@ import { BasePage } from '@pages/base-page';
 import { ColorPickerComponent } from '@pages/components/color-picker-component';
 import { ContextMenuComponent } from '@pages/components/context-menu-component';
 import { ExportModalComponent } from '@pages/components/export-modal-component';
+import { FileRestoredModalComponent } from '@pages/workspace/file-restored-modal-component';
 import { LeftSidebarComponent } from '@pages/workspace/left-sidebar/left-sidebar-component';
 import { type LayerPosition } from '@pages/workspace/right-sidebar/design-tab/measures-section-component';
 import { RightSidebarComponent } from '@pages/workspace/right-sidebar/right-sidebar-component';
@@ -17,6 +18,7 @@ export class WorkspacePage extends BasePage {
   readonly exportModal: ExportModalComponent;
   readonly contextMenu: ContextMenuComponent;
   readonly colorPicker: ColorPickerComponent;
+  readonly fileRestoredModal: FileRestoredModalComponent;
   readonly canvas: ViewportComponent;
   readonly gridEditor: GridEditorComponent;
   readonly prototypeOverlay: PrototypeOverlayComponent;
@@ -36,6 +38,7 @@ export class WorkspacePage extends BasePage {
     this.exportModal = new ExportModalComponent(page);
     this.contextMenu = new ContextMenuComponent(page);
     this.colorPicker = new ColorPickerComponent(page);
+    this.fileRestoredModal = new FileRestoredModalComponent(page);
     this.canvas = new ViewportComponent(page, page.getByTestId('viewport'));
     this.gridEditor = new GridEditorComponent(page, page.getByTestId('viewport'));
     this.prototypeOverlay = new PrototypeOverlayComponent(
