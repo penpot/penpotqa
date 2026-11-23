@@ -131,9 +131,18 @@ demoAccountFileTest.describe(() => {
 
     await designPanelPage.deleteVariantProperty('Property 2');
     await designPanelPage.isMainComponentPropertyVisible('Property 2', false);
-    await designPanelPage.checkVariantWarning(
-      'Some variants have identical properties and values',
-    );
+    await designPanelPage.isVariantWarningVisible(false);
+    await designPanelPage.checkMainComponentPropertyValues('Property 1', [
+      'Arrow',
+      'Arrow (1)',
+      'Arrow (2)',
+      'Ellipse',
+      'Ellipse (1)',
+      'Ellipse (2)',
+      'Rectangle',
+      'Rectangle (1)',
+      'Rectangle (2)',
+    ]);
   });
 });
 

@@ -2510,6 +2510,15 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await variantRow.getByRole('button').click();
   }
 
+  async checkMainComponentPropertyValues(propertyName, values) {
+    const variantRow = this.page.locator(
+      `[class*="variant-property-row"]:has([title*="${propertyName}:"])`,
+    );
+    await expect(variantRow, `${propertyName} values`).toContainText(
+      values.join(', '),
+    );
+  }
+
   async clickOnLocateDuplicatedVariantsButton() {
     await this.locateDuplicatedVariantsButton.click();
   }
