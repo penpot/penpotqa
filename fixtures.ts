@@ -1,20 +1,21 @@
-import { type Page, test } from '@playwright/test';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
-import { random } from './helpers/string-generator';
-import { openDashboardAfterApiLogin } from './helpers/accounts/login-as-demo-account';
-import { createDemoUser } from './helpers/accounts/create-demo-user';
-import { createFile } from './helpers/files/create-file';
-import { openFileInWorkspace } from 'helpers/files/open-file-in-workspace';
-import { importDraftFile } from 'helpers/files/import-draft-file';
-import { registerNewAccount } from './helpers/accounts/register-new-account';
 import { MainPage } from '@pages/workspace/main-page';
 import { WorkspacePage } from '@pages/workspace/workspace-page';
-import { createTeamName } from 'helpers/teams/create-team-name';
-import { createTeam } from 'helpers/teams/create-team';
-import { setDemoUserName } from 'helpers/accounts/set-demo-user-name';
+import { type Page, test } from '@playwright/test';
+import { createDemoUser } from 'helpers/accounts/create-demo-user';
 import { createDemoUserSession } from 'helpers/accounts/create-demo-user-session';
-import { InvitationRole } from 'helpers/teams/invitation-role';
+import { enableMcpServer } from 'helpers/accounts/enable-mcp-server';
+import { openDashboardAfterApiLogin } from 'helpers/accounts/login-as-demo-account';
+import { registerNewAccount } from 'helpers/accounts/register-new-account';
+import { setDemoUserName } from 'helpers/accounts/set-demo-user-name';
+import { createFile } from 'helpers/files/create-file';
+import { importDraftFile } from 'helpers/files/import-draft-file';
+import { openFileInWorkspace } from 'helpers/files/open-file-in-workspace';
+import { random } from 'helpers/string-generator';
 import { addTeamMember } from 'helpers/teams/add-team-member';
+import { createTeam } from 'helpers/teams/create-team';
+import { createTeamName } from 'helpers/teams/create-team-name';
+import { InvitationRole } from 'helpers/teams/invitation-role';
 import { type TeamFont, uploadTeamFonts } from 'helpers/teams/upload-team-fonts';
 
 type RegisterTestFixtures = {
@@ -54,6 +55,16 @@ export const demoAccountApiFixture = test.extend<DemoAccountFixtures>({
   page: async ({ page, demoAccount: _demoAccount }, use) => {
     await openDashboardAfterApiLogin(page);
     await use(page);
+  },
+});
+
+// Like `demoAccountApiFixture`, with the MCP server already enabled (MCP key
+// generated, switch on in Your account > Integrations) when the dashboard loads,
+// set via the API. Use it for tests whose precondition is "the MCP server is enabled".
+export const demoAccountMcpEnabledTest = demoAccountApiFixture.extend({
+  demoAccount: async ({ demoAccount, context }, use) => {
+    await enableMcpServer(context.request);
+    await use(demoAccount);
   },
 });
 

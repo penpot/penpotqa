@@ -1,4 +1,3 @@
-import { expect, type Locator, type Page, test } from '@playwright/test';
 import { BasePage } from '@pages/base-page';
 import { ColorPickerComponent } from '@pages/components/color-picker-component';
 import { ContextMenuComponent } from '@pages/components/context-menu-component';
@@ -8,10 +7,12 @@ import { LeftSidebarComponent } from '@pages/workspace/left-sidebar/left-sidebar
 import { type LayerPosition } from '@pages/workspace/right-sidebar/design-tab/measures-section-component';
 import { type TextTypography } from '@pages/workspace/right-sidebar/design-tab/text-section-component';
 import { RightSidebarComponent } from '@pages/workspace/right-sidebar/right-sidebar-component';
+import { ToolbarComponent } from '@pages/workspace/toolbar/toolbar-component';
 import { GridEditorComponent } from '@pages/workspace/viewport/grid-editor-component';
-import { ViewportComponent } from '@pages/workspace/viewport/viewport-component';
 import { PrototypeOverlayComponent } from '@pages/workspace/viewport/prototype-overlay-component';
 import { TextEditorComponent } from '@pages/workspace/viewport/text-editor-component';
+import { ViewportComponent } from '@pages/workspace/viewport/viewport-component';
+import { expect, type Locator, type Page, test } from '@playwright/test';
 
 /** A range of a text, by character offset, with its expected styles. */
 export type TextRangeStyle = {
@@ -29,6 +30,9 @@ export class WorkspacePage extends BasePage {
   // Sidebars
   readonly leftSidebar: LeftSidebarComponent;
   readonly rightSidebar: RightSidebarComponent;
+
+  // Toolbar
+  readonly toolbar: ToolbarComponent;
 
   // Viewport: the canvas and what is drawn over it
   readonly canvas: ViewportComponent;
@@ -54,6 +58,12 @@ export class WorkspacePage extends BasePage {
     this.rightSidebar = new RightSidebarComponent(
       page,
       page.getByTestId('right-sidebar'),
+    );
+
+    // Toolbar
+    this.toolbar = new ToolbarComponent(
+      page,
+      page.getByRole('toolbar', { name: 'Drawing tools' }),
     );
 
     // Viewport
