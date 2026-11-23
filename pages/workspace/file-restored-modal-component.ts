@@ -17,7 +17,7 @@ export class FileRestoredModalComponent extends BaseComponent {
    * Checks whether the modal is shown.
    * @param visible Whether it should be visible; default: true.
    */
-  async checkFileRestoredModalVisible(visible = true) {
+  async checkFileRestoredModalIsVisible(visible = true) {
     await expect(
       this.root,
       `"This file was restored" modal is ${visible ? 'visible' : 'hidden'}`,
@@ -49,6 +49,6 @@ export class FileRestoredModalComponent extends BaseComponent {
   /** Closes the modal with its "Got it" button. */
   async clickGotItButton() {
     await this.gotItButton.click();
-    await this.checkFileRestoredModalVisible(false);
+    await this.checkFileRestoredModalIsVisible(false);
   }
 }
