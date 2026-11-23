@@ -37,7 +37,7 @@ demoAccountFileTest(
 
     await test.step(`Create version and Save ${versionName[1]}`, async () => {
       await mainPage.createDefaultEllipseByCoordinates(100, 300);
-      await layers.checkLayerRowVisible('Ellipse');
+      await layers.checkLayerRowIsVisible('Ellipse');
       await mainPage.waitForChangeIsSaved();
       await historyPage.clickHistoryPanelButton();
       await historyVersions.saveVersion(versionName[1]);

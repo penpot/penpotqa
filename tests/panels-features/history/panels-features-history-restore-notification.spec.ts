@@ -6,13 +6,12 @@ import { qase } from 'playwright-qase-reporter/playwright';
 
 demoTeamWithInviteeTest(
   qase([4103], 'See who restored a saved version when a teammate restores it'),
-  async ({ page, mainPage, team, invitee }) => {
+  async ({ page, mainPage, team, invitee, ownerName }) => {
     const ownerWorkspacePage = new WorkspacePage(page);
     const { layers } = ownerWorkspacePage.leftSidebar;
     const { historyVersions } = ownerWorkspacePage.rightSidebar;
     // The fixture opened the owner in a new file of the team
     const fileId = new URL(page.url()).searchParams.get('file-id')!;
-    const ownerName = 'QA Tester';
     const boardName = 'Board A';
     const versionName = 'v1';
 
@@ -40,7 +39,7 @@ demoTeamWithInviteeTest(
       'User A opens the "History" tab in the right sidebar',
       async () => {
         await ownerWorkspacePage.rightSidebar.openHistoryVersionsTab();
-        await historyVersions.checkVersionVisible(versionName);
+        await historyVersions.checkVersionIsVisible(versionName);
       },
     );
 
@@ -48,7 +47,7 @@ demoTeamWithInviteeTest(
       `User A clicks the "Open version menu" button of "${versionName}"`,
       async () => {
         await historyVersions.openVersionMenu(versionName);
-        await historyVersions.checkVersionMenuOptionVisible(
+        await historyVersions.checkVersionMenuOptionIsVisible(
           VersionMenuOption.Restore,
         );
       },
@@ -56,19 +55,19 @@ demoTeamWithInviteeTest(
 
     await demoTeamWithInviteeTest.step('Click the "Restore" option', async () => {
       await historyVersions.clickVersionMenuOption(VersionMenuOption.Restore);
-      await historyVersions.checkRestoreDialogVisible();
+      await historyVersions.checkRestoreDialogIsVisible();
     });
 
     await demoTeamWithInviteeTest.step('Click the "Restore" button', async () => {
       await historyVersions.clickRestoreDialogRestoreButton();
-      await layers.checkLayerRowVisible(boardName);
-      await layers.checkLayerRowVisible('Rectangle', false);
+      await layers.checkLayerRowIsVisible(boardName);
+      await layers.checkLayerRowIsVisible('Rectangle', false);
     });
 
     await demoTeamWithInviteeTest.step(
       "Check the file in User B's browser window",
       async () => {
-        await invitee.workspacePage.fileRestoredModal.checkFileRestoredModalVisible();
+        await invitee.workspacePage.fileRestoredModal.checkFileRestoredModalIsVisible();
         await invitee.workspacePage.fileRestoredModal.checkRestoredVersionMessage(
           ownerName,
           versionName,
@@ -80,14 +79,16 @@ demoTeamWithInviteeTest(
       'Click on the viewport, outside the modal',
       async () => {
         await invitee.workspacePage.fileRestoredModal.clickOutside();
-        await invitee.workspacePage.fileRestoredModal.checkFileRestoredModalVisible();
+        await invitee.workspacePage.fileRestoredModal.checkFileRestoredModalIsVisible();
       },
     );
 
     await demoTeamWithInviteeTest.step('Click the "Got it" button', async () => {
       await invitee.workspacePage.fileRestoredModal.clickGotItButton();
-      await invitee.workspacePage.leftSidebar.layers.checkLayerRowVisible(boardName);
-      await invitee.workspacePage.leftSidebar.layers.checkLayerRowVisible(
+      await invitee.workspacePage.leftSidebar.layers.checkLayerRowIsVisible(
+        boardName,
+      );
+      await invitee.workspacePage.leftSidebar.layers.checkLayerRowIsVisible(
         'Rectangle',
         false,
       );
@@ -96,7 +97,7 @@ demoTeamWithInviteeTest(
     await demoTeamWithInviteeTest.step(
       "Check the file in User A's browser window",
       async () => {
-        await ownerWorkspacePage.fileRestoredModal.checkFileRestoredModalVisible(
+        await ownerWorkspacePage.fileRestoredModal.checkFileRestoredModalIsVisible(
           false,
         );
       },
