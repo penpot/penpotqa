@@ -3,6 +3,7 @@ import { BasePage } from '@pages/base-page';
 import { ColorPickerComponent } from '@pages/components/color-picker-component';
 import { ContextMenuComponent } from '@pages/components/context-menu-component';
 import { ExportModalComponent } from '@pages/components/export-modal-component';
+import { FileRestoredModalComponent } from '@pages/workspace/file-restored-modal-component';
 import { LeftSidebarComponent } from '@pages/workspace/left-sidebar/left-sidebar-component';
 import { type LayerPosition } from '@pages/workspace/right-sidebar/design-tab/measures-section-component';
 import { type TextTypography } from '@pages/workspace/right-sidebar/design-tab/text-section-component';
@@ -41,6 +42,7 @@ export class WorkspacePage extends BasePage {
   readonly contextMenu: ContextMenuComponent;
   readonly colorPicker: ColorPickerComponent;
   readonly exportModal: ExportModalComponent;
+  readonly fileRestoredModal: FileRestoredModalComponent;
 
   constructor(page: Page) {
     super(page);
@@ -71,6 +73,7 @@ export class WorkspacePage extends BasePage {
     this.contextMenu = new ContextMenuComponent(page);
     this.colorPicker = new ColorPickerComponent(page);
     this.exportModal = new ExportModalComponent(page);
+    this.fileRestoredModal = new FileRestoredModalComponent(page);
   }
 
   // ---------------------------------------------------------------------------

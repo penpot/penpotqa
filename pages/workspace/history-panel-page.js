@@ -1,6 +1,5 @@
 const { expect } = require('@playwright/test');
 const { MainPage } = require('./main-page');
-const { version } = require('prettier');
 
 exports.HistoryPanelPage = class HistoryPanelPage extends MainPage {
   /**
@@ -12,15 +11,8 @@ exports.HistoryPanelPage = class HistoryPanelPage extends MainPage {
     this.emptyVersionMessage = page.getByText('There are no versions yet');
     this.saveVersionButton = page.getByRole('button', { name: 'Save version' });
     this.versionEntry = page.getByTestId('milestone');
-    this.versionNameInput = page.locator('input[class*="controls_utilities_input"]');
     this.optionsVersionButton = this.versionEntry.getByRole('button', {
       name: 'Open version menu',
-    });
-    this.renameVersionButton = page.getByRole('button', { name: 'Rename' });
-    this.restoreVersionButton = page.getByRole('button', { name: 'Restore' });
-    this.deleteVersionButton = page.getByRole('button', { name: 'Delete' });
-    this.previewVersionButton = page.getByRole('button', {
-      name: 'Preview version',
     });
     this.cancelRestoreVersionButton = page.getByRole('button', { name: 'Dismiss' });
     this.autosaveVersionsButton = page.getByRole('button', {
@@ -29,9 +21,6 @@ exports.HistoryPanelPage = class HistoryPanelPage extends MainPage {
 
     // Preview notification message
     this.previewVersionNotification = page.getByTestId('actionable');
-    this.restoreButton = this.previewVersionNotification.getByRole('button', {
-      name: 'Restore',
-    });
 
     this.snapshotElement = page.locator(
       'div[class*="milestone_group"][class*="version-entry"]',
@@ -72,15 +61,6 @@ exports.HistoryPanelPage = class HistoryPanelPage extends MainPage {
       : await expect(this.historyPanel).toBeHidden();
   }
 
-  async clickSaveVersionButton() {
-    await this.saveVersionButton.click();
-  }
-
-  async renameVersion(name) {
-    await this.versionNameInput.fill(name);
-    await this.clickViewportTwice();
-  }
-
   async checkVersionName(name) {
     await expect(
       this.getVersionEntryByName(name),
@@ -104,31 +84,6 @@ exports.HistoryPanelPage = class HistoryPanelPage extends MainPage {
 
   async openVersionOptionsMenu() {
     await this.optionsVersionButton.first().click();
-  }
-
-  async selectVersionOption(option, versionName = '') {
-    const version = versionName
-      ? this.versionEntry.filter({ hasText: versionName })
-      : this.versionEntry.first();
-
-    const menuButton = version.getByRole('button', {
-      name: 'Open version menu',
-    });
-
-    const optionMap = {
-      'Rename': this.renameVersionButton,
-      'Restore': this.restoreVersionButton,
-      'Delete': this.deleteVersionButton,
-      'Preview version': this.previewVersionButton,
-    };
-
-    await version.hover();
-    await menuButton.click();
-    await optionMap[option].click();
-  }
-
-  async clickRestoreVersionButton() {
-    await this.restoreVersionButton.click();
   }
 
   async clickCancelRestoreVersionButton() {
@@ -206,19 +161,5 @@ exports.HistoryPanelPage = class HistoryPanelPage extends MainPage {
       previewVersionMessage,
       `Preview version notification is visible: ${value}`,
     ).toBeVisible();
-  }
-
-  async isRestoreConfirmationModalVisible() {
-    const previewVersionMessage = this.previewVersionNotification.getByText(
-      'Do you want to restore this version?',
-    );
-    await expect(
-      previewVersionMessage,
-      `Restore confirmation modal is visible`,
-    ).toBeVisible();
-  }
-
-  async clickRestoreVersionButton() {
-    await this.restoreButton.click();
   }
 };

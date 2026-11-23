@@ -111,6 +111,7 @@ export const demoAccountFileTest = test.extend<
 type DemoTeamWithInviteeFixtures = {
   dashboardPage: DashboardPage;
   mainPage: MainPage;
+  ownerName: string;
   team: { id: string; name: string; projectId: string };
   invitee: { page: Page; name: string; workspacePage: WorkspacePage };
 };
@@ -120,7 +121,7 @@ type DemoTeamWithInviteeOptions = {
 };
 
 // Two demo accounts sharing a team, all set up via the API: the owner (`page`, named
-// "QA Tester") with a blank file of the team open in the editor, and `invitee`
+// `ownerName`, "QA Tester") with a blank file of the team open in the editor, and `invitee`
 // (named "QA <role>") already a member, in its own browser context, on its dashboard;
 // its `workspacePage` drives the workspace once it opens a file there.
 // Set the `inviteeRole` option to change the invitee's role.
@@ -131,9 +132,12 @@ export const demoTeamWithInviteeTest = demoAccountApiFixture.extend<
   dashboardPage: async ({ page }, use) => {
     await use(new DashboardPage(page));
   },
-  team: async ({ page }, use) => {
+  ownerName: async ({}, use) => {
+    await use('QA Tester');
+  },
+  team: async ({ page, ownerName }, use) => {
     const request = page.context().request;
-    await setDemoUserName(request, 'QA Tester');
+    await setDemoUserName(request, ownerName);
     const name = createTeamName();
     const { teamId, projectId } = await createTeam(request, name);
     await use({ id: teamId, name, projectId });
