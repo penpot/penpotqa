@@ -372,7 +372,8 @@ enterpriseActivatedPageTest.describe(
               // context to an org — see goToOtherTeam()'s own comment.
               await goToOtherTeam(inviteeOrgPage, inviteeTeamPage, teamName);
               await inviteeTeamPage.openTeamSettingsPageViaOptionsMenu();
-              await inviteeTeamPage.openAddTeamToOrgComboboxOptions();
+              await inviteeTeamPage.openAddTeamToOrgModal();
+              await inviteeTeamPage.teamOrgModal.openOrgPicker();
               await inviteeTeamPage.isOrgPickerOptionDisabled(orgAName);
               await inviteeTeamPage.isOrgPickerOptionDisabled(orgBName, false);
               await invitee.page.keyboard.press('Escape');
@@ -467,7 +468,8 @@ enterpriseActivatedPageTest.describe(
         await ownerAndInviteeActivatedTest.step(
           "User2 selects the org (eligible — they're a member) in the picker → a cancellation warning appears but doesn't block the move; confirming moves the team and revokes the pending invitation",
           async () => {
-            await inviteeTeamPage.openAddTeamToOrgComboboxOptions();
+            await inviteeTeamPage.openAddTeamToOrgModal();
+            await inviteeTeamPage.teamOrgModal.openOrgPicker();
             await inviteeTeamPage.selectOrgInPicker(orgName);
             await inviteeTeamPage.isExternalInvitationsCancelWarningVisible();
 

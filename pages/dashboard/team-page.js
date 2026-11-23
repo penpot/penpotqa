@@ -1,5 +1,8 @@
 const { BasePage } = require('../base-page');
 const { expect } = require('@playwright/test');
+const {
+  TeamOrganizationModalComponent,
+} = require('./team-organization-modal-component');
 
 exports.TeamPage = class TeamPage extends BasePage {
   /**
@@ -65,7 +68,7 @@ exports.TeamPage = class TeamPage extends BasePage {
       'This team is not part of any organization',
     );
     this.addTeamToOrgLink = page.getByText('Add to an organization');
-    this.addTeamToOrgCombobox = page.getByRole('combobox');
+    this.teamOrgModal = new TeamOrganizationModalComponent(page);
     this.addTeamToOrgSubmitButton = page.getByRole('button', {
       name: 'Add to organization',
     });
@@ -300,7 +303,8 @@ exports.TeamPage = class TeamPage extends BasePage {
    * genuinely has no organization yet.
    */
   async addTeamToOrganization(orgName) {
-    await this.openAddTeamToOrgComboboxOptions();
+    await this.openAddTeamToOrgModal();
+    await this.teamOrgModal.openOrgPicker();
     await this.selectOrgInPicker(orgName);
     await this.submitAddToOrg();
   }
@@ -321,7 +325,7 @@ exports.TeamPage = class TeamPage extends BasePage {
    * Assumes Team Settings is open; reuses addedToOrgMessage's toast text. */
   async changeTeamOrganization(orgName) {
     await this.openChangeTeamOrgModal();
-    await this.addTeamToOrgCombobox.click();
+    await this.teamOrgModal.openOrgPicker();
     await this.selectOrgInPicker(orgName);
     await this.moveTeamSubmitButton.click();
     await expect(
@@ -361,14 +365,6 @@ exports.TeamPage = class TeamPage extends BasePage {
    * can short-circuit straight to a message here). */
   async openAddTeamToOrgModal() {
     await this.addTeamToOrgLink.click();
-  }
-
-  /** Opens "Add to an organization" up to its org combobox, without
-   * selecting anything — for inspecting picker option state (enabled/
-   * disabled, tooltip) before choosing one. */
-  async openAddTeamToOrgComboboxOptions() {
-    await this.openAddTeamToOrgModal();
-    await this.addTeamToOrgCombobox.click();
   }
 
   /** Picks an option from an already-open org combobox, without submitting
