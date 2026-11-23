@@ -137,7 +137,7 @@ demoAccountFileTest(
 
     await demoAccountFileTest.step('Close the Border Radius edit form', async () => {
       await tokensPage.mainTokensComp.closeValueDropdown();
-      await tokensPage.tokensComp.clickCancelButton();
+      await tokensPage.tokensComp.baseComp.clickOnCancelButton();
     });
 
     await demoAccountFileTest.step(

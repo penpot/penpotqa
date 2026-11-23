@@ -3,6 +3,8 @@ import {
   TokenClass,
   BasicTokenData,
 } from '@pages/workspace/tokens/token-components/tokens-base-component';
+import { TokenReferenceFieldComponent } from '@pages/workspace/tokens/token-components/token-reference-field-component';
+import { TokenValueOptionsComponent } from '@pages/workspace/tokens/token-components/token-value-options-component';
 
 export interface TypographyToken<TokenClass> extends BasicTokenData {
   class: TokenClass;
@@ -25,10 +27,8 @@ export class TypographyTokensComponent {
   private readonly letterSpacingInput: Locator;
   private readonly textDecorationInput: Locator;
   private readonly textCaseInput: Locator;
-  private readonly useAliasButton: Locator;
-  private readonly useCompositeButton: Locator;
-  private readonly aliasInput: Locator;
-  private readonly aliasInputError: Locator;
+  readonly valueOptions: TokenValueOptionsComponent;
+  readonly referenceField: TokenReferenceFieldComponent;
 
   constructor(page: Page) {
     this.page = page;
@@ -56,22 +56,11 @@ export class TypographyTokensComponent {
     this.textCaseInput = this.createTokenModal.getByRole('textbox', {
       name: 'Text case',
     });
-    this.useAliasButton = this.createTokenModal.getByTestId('reference-opt');
-    this.useCompositeButton = this.createTokenModal.getByTestId('composite-opt');
-    this.aliasInput = this.createTokenModal.getByRole('textbox', {
-      name: 'Reference',
-    });
-    this.aliasInputError = this.createTokenModal.getByText(
-      /^Missing token references:/,
+    this.valueOptions = new TokenValueOptionsComponent(page, this.createTokenModal);
+    this.referenceField = new TokenReferenceFieldComponent(
+      page,
+      this.createTokenModal,
     );
-  }
-
-  async clickOnUseReferenceButton() {
-    await this.useAliasButton.click();
-  }
-
-  async clickOnUseCompositeButton() {
-    await this.useCompositeButton.click();
   }
 
   async fillTokenData(typographyToken: TypographyToken<TokenClass>) {
@@ -96,22 +85,6 @@ export class TypographyTokensComponent {
     if (typographyToken.textCase !== undefined) {
       await this.textCaseInput.fill(typographyToken.textCase);
     }
-  }
-
-  async isAliasInputErrorVisible(boolean = true) {
-    return boolean
-      ? expect(
-          this.aliasInputError,
-          'Missing token reference expected, but not found',
-        ).toBeVisible()
-      : expect(
-          this.aliasInputError,
-          'Missing token reference not expected, but found',
-        ).not.toBeVisible();
-  }
-
-  async fillAliasInput(value: string) {
-    await this.aliasInput.fill(value);
   }
 
   async checkTokenFieldHasExpectedValue(

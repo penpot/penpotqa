@@ -182,8 +182,8 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step(
         '2606 Switch Between Individual and Reference Token Forms',
         async () => {
-          await tokensPage.typoTokensComp.clickOnUseReferenceButton();
-          await tokensPage.typoTokensComp.clickOnUseCompositeButton();
+          await tokensPage.typoTokensComp.valueOptions.clickOnUseReferenceButton();
+          await tokensPage.typoTokensComp.valueOptions.clickOnUseCompositeButton();
           // Fields should retain their values after switching modes
           await tokensPage.typoTokensComp.checkTokenFieldHasExpectedValue(
             TYPO_TOKEN,
@@ -194,9 +194,11 @@ demoAccountFileTest.describe(() => {
       await demoAccountFileTest.step(
         '2607 Validate Reference Token Form with Invalid References',
         async () => {
-          await tokensPage.typoTokensComp.clickOnUseReferenceButton();
-          await tokensPage.typoTokensComp.fillAliasInput(BAD_TOKEN_ALIAS);
-          await tokensPage.typoTokensComp.isAliasInputErrorVisible();
+          await tokensPage.typoTokensComp.valueOptions.clickOnUseReferenceButton();
+          await tokensPage.typoTokensComp.referenceField.fillAliasInput(
+            BAD_TOKEN_ALIAS,
+          );
+          await tokensPage.typoTokensComp.referenceField.checkAliasInputErrorIsVisible();
           await tokensPage.tokensComp.baseComp.clickOnCancelButton();
         },
       );
@@ -309,6 +311,115 @@ demoAccountFileTest.describe(() => {
               );
             }
           }
+        },
+      );
+    },
+  );
+});
+
+demoAccountFileTest.describe(() => {
+  let tokensPage: TokensPage;
+
+  demoAccountFileTest.use({ penpotFile: 'documents/tokens/detach-tokens.penpot' });
+
+  demoAccountFileTest.beforeEach(async ({ page }) => {
+    tokensPage = new TokensPage(page);
+    await tokensPage.tokensTab.click();
+    await tokensPage.tokensComp.expandTokenByName(TokenClass.Typography);
+  });
+
+  demoAccountFileTest(
+    qase([3989], 'Detach a typography token reference and save the copied values'),
+    async ({ mainPage }) => {
+      // Tokens of the imported file
+      const BASE_TOKEN: TypographyToken<TokenClass> = {
+        class: TokenClass.Typography,
+        name: 'typography.base',
+        fontFamily: 'Roboto',
+        fontSize: '18',
+        fontWeight: 'Bold Italic',
+        lineHeight: '1.4',
+        letterSpacing: '0',
+        textCase: 'none',
+        textDecoration: 'none',
+      };
+      const ALIAS_TOKEN: TypographyToken<TokenClass> = {
+        class: TokenClass.Typography,
+        name: 'typography.alias',
+      };
+      const ALIAS_DESCRIPTION = 'Alias of the base typography';
+      const DETACHED_TOKEN: TypographyToken<TokenClass> = {
+        ...BASE_TOKEN,
+        name: ALIAS_TOKEN.name,
+        fontSize: '24',
+      };
+      const referenceField = tokensPage.typoTokensComp.referenceField;
+
+      await demoAccountFileTest.step(
+        'Open the alias token and check the detach button shows on hover',
+        async () => {
+          await tokensPage.tokensComp.clickEditToken(ALIAS_TOKEN);
+          await referenceField.checkReferenceInputHasValue(`{${BASE_TOKEN.name}}`);
+          await referenceField.checkDetachReferenceButtonIsVisible(false);
+          await referenceField.hoverReferenceInput();
+          await referenceField.checkDetachReferenceButtonIsVisible();
+          await referenceField.checkDetachReferenceButtonTooltip();
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Detach the reference and check the copied values',
+        async () => {
+          await referenceField.clickOnDetachReferenceButton();
+          await tokensPage.typoTokensComp.valueOptions.checkUseCompositeOptionIsSelected();
+          await tokensPage.typoTokensComp.checkTokenFieldHasExpectedValue(
+            BASE_TOKEN,
+          );
+          await tokensPage.tokensComp.checkTokenDescriptionHasValue(
+            ALIAS_DESCRIPTION,
+          );
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Switch to the reference option and back to individual tokens',
+        async () => {
+          await tokensPage.typoTokensComp.valueOptions.clickOnUseReferenceButton();
+          await referenceField.checkReferenceInputHasValue('');
+          await tokensPage.typoTokensComp.valueOptions.clickOnUseCompositeButton();
+          await tokensPage.typoTokensComp.checkTokenFieldHasExpectedValue(
+            BASE_TOKEN,
+          );
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Change the font size and save the detached token',
+        async () => {
+          await tokensPage.typoTokensComp.fillTokenData({
+            class: TokenClass.Typography,
+            name: ALIAS_TOKEN.name,
+            fontSize: DETACHED_TOKEN.fontSize,
+          });
+          await tokensPage.tokensComp.baseComp.clickOnSaveButton();
+          await tokensPage.tokensComp.isCreateTokenModalClosed();
+          await mainPage.waitForChangeIsSaved();
+        },
+      );
+
+      await demoAccountFileTest.step(
+        'Check the alias keeps its own values and the base is unchanged',
+        async () => {
+          await tokensPage.tokensComp.clickEditToken(ALIAS_TOKEN);
+          await tokensPage.typoTokensComp.valueOptions.checkUseCompositeOptionIsSelected();
+          await tokensPage.typoTokensComp.checkTokenFieldHasExpectedValue(
+            DETACHED_TOKEN,
+          );
+          await tokensPage.tokensComp.baseComp.clickOnCancelButton();
+          await tokensPage.tokensComp.clickEditToken(BASE_TOKEN);
+          await tokensPage.typoTokensComp.checkTokenFieldHasExpectedValue(
+            BASE_TOKEN,
+          );
         },
       );
     },
