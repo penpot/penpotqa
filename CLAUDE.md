@@ -53,6 +53,7 @@ All page interactions are abstracted into page objects under `pages/`:
 Every test runs on a disposable account:
 
 - **`demoAccountApiFixture`** — Creates a demo account via the API and lands on the dashboard. Default choice.
+- **`demoAccountMcpEnabledTest`** — Same, with the MCP server already enabled via the API when the dashboard loads.
 - **`demoAccountFileTest`** — Demo account with a blank (or imported, via `penpotFile`) file open in the editor.
 - **`demoTeamWithInviteeTest`** / **`demoTeamWithMembersTest`** — Demo owner plus demo members in a shared team.
 - **`registerTest`** — Creates a fresh account via Gmail API, for flows that need to read email. Provides `name` and `email` fixtures.

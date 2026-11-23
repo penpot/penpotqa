@@ -1,5 +1,6 @@
 const { expect } = require('@playwright/test');
 const { BasePage } = require('../base-page');
+const { McpMenuComponent } = require('../components/mcp-menu-component');
 
 exports.DashboardPage = class DashboardPage extends BasePage {
   /**
@@ -19,6 +20,9 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     // Dashboard Header > Layout View
     this.layoutListViewButton = page.getByRole('button', { name: 'List view' });
     this.layoutGridViewButton = page.getByRole('button', { name: 'Grid view' });
+
+    // Dashboard Header > MCP (only on the Projects and Drafts pages)
+    this.mcpMenu = new McpMenuComponent(page, this.dashboardHeaderContainer);
 
     // Deleted Navigation
     this.recentTab = page.getByTestId('recent-tab');
@@ -722,7 +726,13 @@ exports.DashboardPage = class DashboardPage extends BasePage {
     await this.duplicateProjectMenuItem.click();
   }
 
-  async openSidebarItem(item) {
+  /**
+   * Opens a section from the dashboard sidebar and checks the page header.
+   * @param {'Projects' | 'Drafts' | 'Fonts' | 'Libraries'} item Sidebar option to click.
+   * @param {string} [header] Expected page header; defaults to `item`. The
+   *   Projects page of the personal team shows "Personal Projects".
+   */
+  async openSidebarItem(item, header = item) {
     switch (item) {
       case 'Projects':
         await this.projectsSidebarItem.click();
@@ -737,7 +747,7 @@ exports.DashboardPage = class DashboardPage extends BasePage {
         await this.librariesSidebarItem.click();
         break;
     }
-    await expect(this.header).toHaveText(item);
+    await expect(this.header).toHaveText(header);
   }
 
   async getProjectHeadingByName(projectName) {
