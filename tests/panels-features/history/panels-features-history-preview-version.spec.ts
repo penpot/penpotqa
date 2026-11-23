@@ -1,15 +1,23 @@
-import { demoAccountFileTest } from 'fixtures';
 import { HistoryPanelPage } from '@pages/workspace/history-panel-page';
-import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { type LayersPanelComponent } from '@pages/workspace/left-sidebar/layers-panel-component';
+import {
+  type HistoryVersionsTabComponent,
+  VersionMenuOption,
+} from '@pages/workspace/right-sidebar/history-versions-tab-component';
+import { WorkspacePage } from '@pages/workspace/workspace-page';
+import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { expect, test } from 'playwright/test';
 
 let historyPage: HistoryPanelPage;
-let layersPanelPage: LayersPanelPage;
+let historyVersions: HistoryVersionsTabComponent;
+let layers: LayersPanelComponent;
 
 demoAccountFileTest.beforeEach(async ({ page }) => {
+  const workspacePage = new WorkspacePage(page);
   historyPage = new HistoryPanelPage(page);
-  layersPanelPage = new LayersPanelPage(page);
+  historyVersions = workspacePage.rightSidebar.historyVersions;
+  layers = workspacePage.leftSidebar.layers;
 });
 
 demoAccountFileTest(
@@ -24,19 +32,22 @@ demoAccountFileTest(
     await test.step(`Create version and Save ${versionName[0]}`, async () => {
       await mainPage.createDefaultRectangleByCoordinates(100, 100);
       await historyPage.clickHistoryPanelButton();
-      await historyPage.clickSaveVersionButton();
-      await historyPage.renameVersion(versionName[0]);
+      await historyVersions.saveVersion(versionName[0]);
     });
 
     await test.step(`Create version and Save ${versionName[1]}`, async () => {
       await mainPage.createDefaultEllipseByCoordinates(100, 300);
+      await layers.checkLayerRowVisible('Ellipse');
+      await mainPage.waitForChangeIsSaved();
       await historyPage.clickHistoryPanelButton();
-      await historyPage.clickSaveVersionButton();
-      await historyPage.renameVersion(versionName[1]);
+      await historyVersions.saveVersion(versionName[1]);
     });
 
     await test.step(`Open Preview version ${versionName[0]} and validate notification`, async () => {
-      await historyPage.selectVersionOption('Preview version', versionName[0]);
+      await historyVersions.selectVersionOption(
+        VersionMenuOption.Preview,
+        versionName[0],
+      );
       await historyPage.isPreviewVersionNotificationVisible(versionName[0]);
       await expect(mainPage.viewport).toHaveScreenshot(
         'preview-version-snapshot-a.png',
@@ -47,7 +58,10 @@ demoAccountFileTest(
     });
 
     await test.step(`Open Preview version ${versionName[1]} and validate notification`, async () => {
-      await historyPage.selectVersionOption('Preview version', versionName[1]);
+      await historyVersions.selectVersionOption(
+        VersionMenuOption.Preview,
+        versionName[1],
+      );
       await historyPage.isPreviewVersionNotificationVisible(versionName[1]);
       await expect(mainPage.viewport).toHaveScreenshot(
         'preview-version-snapshot-b.png',
@@ -58,7 +72,10 @@ demoAccountFileTest(
     });
 
     await test.step(`Open Preview version ${versionName[0]} and validate notification`, async () => {
-      await historyPage.selectVersionOption('Preview version', versionName[0]);
+      await historyVersions.selectVersionOption(
+        VersionMenuOption.Preview,
+        versionName[0],
+      );
       await historyPage.isPreviewVersionNotificationVisible(versionName[0]);
       await expect(mainPage.viewport).toHaveScreenshot(
         'preview-version-snapshot-a.png',
@@ -69,9 +86,8 @@ demoAccountFileTest(
     });
 
     await test.step(`Click on RESTORE ${versionName[0]}, assert confirmation modal, click to confirm and validate snapshot`, async () => {
-      await historyPage.clickRestoreVersionButton();
-      await historyPage.isRestoreConfirmationModalVisible();
-      await historyPage.clickRestoreVersionButton();
+      await historyVersions.clickPreviewBannerRestoreButton();
+      await historyVersions.clickRestoreDialogRestoreButton();
       await expect(mainPage.viewport).toHaveScreenshot('restored-version-a.png', {
         mask: mainPage.maskViewport(),
       });
@@ -81,12 +97,14 @@ demoAccountFileTest(
       await historyPage.clickHistoryPanelButton();
       await historyPage.clickOnAutosaveVersionsButton();
       await historyPage.selectSnapshotOption('Pin version');
-      await historyPage.renameVersion('Pinned Version');
-      await historyPage.clickHistoryPanelButton();
+      await historyVersions.renameVersion('Pinned Version');
     });
 
     await test.step('Open preview of pinned version and verify banner matches sidebar label', async () => {
-      await historyPage.selectVersionOption('Preview version', 'Pinned Version');
+      await historyVersions.selectVersionOption(
+        VersionMenuOption.Preview,
+        'Pinned Version',
+      );
       await historyPage.isPreviewVersionNotificationVisible('Pinned Version');
     });
   },
