@@ -3,6 +3,8 @@ import {
   TokenClass,
   BasicTokenData,
 } from '@pages/workspace/tokens/token-components/tokens-base-component';
+import { TokenReferenceFieldComponent } from '@pages/workspace/tokens/token-components/token-reference-field-component';
+import { TokenValueOptionsComponent } from '@pages/workspace/tokens/token-components/token-value-options-component';
 
 /**
  * Represents a single shadow entry
@@ -29,8 +31,8 @@ export class ShadowTokensComponent {
   private readonly createTokenModal: Locator;
   private readonly shadowSelectDropdown: Locator;
   private readonly addShadowButton: Locator;
-  private readonly useAliasButton: Locator;
-  private readonly aliasInput: Locator;
+  readonly valueOptions: TokenValueOptionsComponent;
+  readonly referenceField: TokenReferenceFieldComponent;
 
   constructor(page: Page) {
     this.page = page;
@@ -39,10 +41,11 @@ export class ShadowTokensComponent {
     this.addShadowButton = this.createTokenModal.getByRole('button', {
       name: 'Add Shadow',
     });
-    this.useAliasButton = this.createTokenModal.getByTestId('reference-opt');
-    this.aliasInput = this.createTokenModal.getByRole('textbox', {
-      name: 'Reference',
-    });
+    this.valueOptions = new TokenValueOptionsComponent(page, this.createTokenModal);
+    this.referenceField = new TokenReferenceFieldComponent(
+      page,
+      this.createTokenModal,
+    );
   }
 
   /**
@@ -135,14 +138,6 @@ export class ShadowTokensComponent {
     const container = this.getShadowContainer(index);
     const removeButton = container.getByRole('button', { name: 'Remove Shadow' });
     await removeButton.click();
-  }
-
-  async clickOnUseReferenceButton() {
-    await this.useAliasButton.click();
-  }
-
-  async fillAliasInput(value: string) {
-    await this.aliasInput.fill(value);
   }
 }
 

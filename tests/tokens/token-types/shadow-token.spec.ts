@@ -273,8 +273,8 @@ demoAccountFileTest.describe(() => {
           await tokensPage.tokensComp.clickOnAddTokenAndFillData(
             SECOND_SHADOW_TOKEN,
           );
-          await tokensPage.tokensComp.shadowTokensComp.clickOnUseReferenceButton();
-          await tokensPage.tokensComp.shadowTokensComp.fillAliasInput(
+          await tokensPage.tokensComp.shadowTokensComp.valueOptions.clickOnUseReferenceButton();
+          await tokensPage.tokensComp.shadowTokensComp.referenceField.fillAliasInput(
             `{${SHADOW_TOKEN.name}}`,
           );
           await tokensPage.tokensComp.baseComp.clickOnSaveButton();

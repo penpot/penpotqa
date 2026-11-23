@@ -13,6 +13,7 @@ import { LayoutContainerSectionComponent } from '@pages/workspace/right-sidebar/
 import { LayoutItemSectionComponent } from '@pages/workspace/right-sidebar/design-tab/layout-item-section-component';
 import { RadiusSectionComponent } from '@pages/workspace/right-sidebar/design-tab/radius-section-component';
 import { StrokeSectionComponent } from '@pages/workspace/right-sidebar/design-tab/stroke-section-component';
+import { TextSectionComponent } from '@pages/workspace/right-sidebar/design-tab/text-section-component';
 
 export class DesignTabComponent extends BaseComponent {
   readonly boolean: BooleanSectionComponent;
@@ -20,6 +21,7 @@ export class DesignTabComponent extends BaseComponent {
   readonly radius: RadiusSectionComponent;
   readonly fill: FillSectionComponent;
   readonly stroke: StrokeSectionComponent;
+  readonly text: TextSectionComponent;
   readonly blur: BlurSectionComponent;
   readonly layoutContainer: LayoutContainerSectionComponent;
   readonly layoutItem: LayoutItemSectionComponent;
@@ -51,6 +53,10 @@ export class DesignTabComponent extends BaseComponent {
     this.stroke = new StrokeSectionComponent(
       page,
       root.getByRole('region', { name: 'Stroke' }),
+    );
+    this.text = new TextSectionComponent(
+      page,
+      root.getByRole('region', { name: 'Text section' }),
     );
     this.blur = new BlurSectionComponent(
       page,
