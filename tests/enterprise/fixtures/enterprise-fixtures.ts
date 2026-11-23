@@ -37,6 +37,7 @@ import {
 } from 'helpers/accounts/create-invitee-session';
 import { OrganizationPage } from '@pages/dashboard/organization-page';
 import { AdminConsolePage } from '@pages/admin-console/admin-console-page';
+import { AuditLogsPage } from '@pages/admin-console/audit-logs-page';
 import { StripePage } from '@pages/dashboard/stripe-page';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { AdvancedPermissionsPage } from '@pages/admin-console/advanced-permissions-page';
@@ -49,6 +50,7 @@ type EnterprisePageFixtures = {
   teamPage: TeamPage;
   advancedPermissionsPage: AdvancedPermissionsPage;
   ssoPage: OrganizationSsoPage;
+  auditLogsPage: AuditLogsPage;
 };
 
 // --- enterprisePageTest -------------------------------------------------------
@@ -83,6 +85,9 @@ export const enterprisePageTest =
     },
     ssoPage: async ({ page }, use) => {
       await use(new OrganizationSsoPage(page));
+    },
+    auditLogsPage: async ({ page }, use) => {
+      await use(new AuditLogsPage(page));
     },
   });
 
@@ -169,6 +174,9 @@ export const enterpriseActivatedPageTest =
     ssoPage: async ({ page }, use) => {
       await use(new OrganizationSsoPage(page));
     },
+    auditLogsPage: async ({ page }, use) => {
+      await use(new AuditLogsPage(page));
+    },
   });
 
 // --- ownerAndInviteeTest -----------------------------------------------------
@@ -229,6 +237,9 @@ export const ownerAndInviteeTest = base.extend<OwnerAndInviteeFixtures>({
   },
   ssoPage: async ({ ownerPage }, use) => {
     await use(new OrganizationSsoPage(ownerPage));
+  },
+  auditLogsPage: async ({ ownerPage }, use) => {
+    await use(new AuditLogsPage(ownerPage));
   },
 });
 
