@@ -33,10 +33,10 @@ export class TextSectionComponent extends BaseComponent {
     this.fontSearchInput = root.getByPlaceholder('Search font');
     // Custom fonts have no preview image, so results are picked by row
     this.fontResults = root.getByRole('grid').getByRole('row');
-    // The variant selector has no role or accessible name
-    this.fontStyleSelector = root.locator(
-      'div[class*="typography__font-variant-options"]',
-    );
+    // The combobox has no accessible name; its wrapper has the "Font Style" title
+    this.fontStyleSelector = root
+      .getByTitle('Font Style', { exact: true })
+      .getByRole('combobox');
     this.fontSizeInput = root.getByRole('textbox', { name: 'Font Size' });
     this.optionsButton = root.getByRole('button', { name: 'Options', exact: true });
     this.underlineCheckbox = root.getByTestId('underline-text-decoration');
@@ -51,7 +51,10 @@ export class TextSectionComponent extends BaseComponent {
   async changeFont(fontName: string) {
     await this.fontSelector.click();
     await this.fontSearchInput.fill(fontName);
-    await this.fontResults.filter({ hasText: fontName }).first().click();
+    // Exact name, so "Lobster" can't pick "Lobster Two"
+    await this.fontResults
+      .filter({ has: this.page.getByText(fontName, { exact: true }) })
+      .click();
     await expect(this.fontSelector, 'Font family').toHaveText(fontName);
   }
 

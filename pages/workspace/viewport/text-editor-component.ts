@@ -57,6 +57,12 @@ export class TextEditorComponent extends BaseComponent {
     await this.selectRangeFromCaret(gap, length);
   }
 
+  /**
+   * Moves the caret forward from where it is, then selects the characters after it.
+   * Each step is one key press, as the v3 editor has no DOM text to select.
+   * @param offset Characters to move the caret right before selecting.
+   * @param length Number of characters to select (Shift+ArrowRight).
+   */
   private async selectRangeFromCaret(offset: number, length: number) {
     for (let i = 0; i < offset; i++) {
       await this.page.keyboard.press('ArrowRight');

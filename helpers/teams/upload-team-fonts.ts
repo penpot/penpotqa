@@ -1,8 +1,8 @@
 import type { APIRequestContext } from '@playwright/test';
 import { randomUUID } from 'crypto';
 import fs from 'fs';
-import path from 'path';
 import { callPenpotApi, penpotApiPath } from 'helpers/api/penpot-api';
+import path from 'path';
 
 /** A font file to upload to a team as a custom font. */
 export interface TeamFont {

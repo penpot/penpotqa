@@ -1,11 +1,10 @@
-import { expect } from '@playwright/test';
-import { qase } from 'playwright-qase-reporter/playwright';
-import { demoAccountFileTest } from 'fixtures';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
-import { type TextRangeStyle, WorkspacePage } from '@pages/workspace/workspace-page';
 import { type TextTypography } from '@pages/workspace/right-sidebar/design-tab/text-section-component';
+import { type TextRangeStyle, WorkspacePage } from '@pages/workspace/workspace-page';
+import { expect } from '@playwright/test';
+import { demoAccountFileTest } from 'fixtures';
+import { qase } from 'playwright-qase-reporter/playwright';
 
-// "Setup A" page of the file: a text layer whose words each carry a different style
 const SOURCE_LAYER = 'Formatted source text';
 const SOURCE_TEXT =
   'This paragraph is the source text for the paste tests. It mixes a Bold word, ' +
@@ -15,15 +14,20 @@ const SOURCE_TEXT =
   'word that uses the team font. The rest of the paragraph keeps the default ' +
   'style, so a selection can start or end anywhere and still cross several ' +
   'style boundaries.';
-// Name of a layer with that text: Penpot cuts it at 280 characters
 const TEXT_LAYER_NAME = SOURCE_TEXT.slice(0, 280).trim();
 const CUSTOM_FONT = 'Nekophilia';
-// Name the Fill section shows for the image of the "Image" word
 const IMAGE_FILL = 'sample';
 
 type FormattedWord = TextTypography & { word: string; imageFill?: boolean };
 
 const SOURCE_SANS = 'Source Sans Pro';
+const CUSTOM_WORD: FormattedWord = {
+  word: 'Custom',
+  font: CUSTOM_FONT,
+  style: 'Regular',
+  size: '24',
+};
+
 const FORMATTED_WORDS: FormattedWord[] = [
   { word: 'Bold', font: SOURCE_SANS, style: '700', size: '24' },
   { word: 'Italic', font: SOURCE_SANS, style: '400 Italic', size: '24' },
@@ -45,14 +49,12 @@ const FORMATTED_WORDS: FormattedWord[] = [
   { word: 'Small', font: SOURCE_SANS, style: '400', size: '14' },
   { word: 'Large', font: SOURCE_SANS, style: '400', size: '48' },
   { word: 'Image', font: SOURCE_SANS, style: '900', size: '48', imageFill: true },
-  { word: 'Custom', font: CUSTOM_FONT, style: 'Regular', size: '24' },
+  CUSTOM_WORD,
 ];
 
-// Empty area of the canvas below the source text, where the copy is pasted
 const PASTE_X = 240;
 const PASTE_Y = 640;
 
-// Where each formatted word sits in the (pasted) text, with its expected styles
 const PASTED_WORD_STYLES: TextRangeStyle[] = FORMATTED_WORDS.map(
   ({ word, imageFill, ...typography }) => ({
     label: word,
@@ -72,26 +74,23 @@ demoAccountFileTest.use({
 });
 
 demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
-  // The v3 editor only selects by key press (~850 per test, plus the file and font
-  // setup), which takes about 100s in CI, too close to the default timeout
   demoAccountFileTest.slow();
   workspacePage = new WorkspacePage(page);
   layersPanelPage = new LayersPanelPage(page);
 
   await demoAccountFileTest.step(
-    `Apply the team font ${CUSTOM_FONT} to the word "Custom"`,
+    `Apply the team font ${CUSTOM_FONT} to the word "${CUSTOM_WORD.word}"`,
     async () => {
       await layersPanelPage.selectLayerByExactName(SOURCE_LAYER);
       await mainPage.clickOnEnter();
-      // "Custom" is in the second half of the text, so it's reached from the end
       await workspacePage.textEditor.selectTextRangeFromEnd(
-        SOURCE_TEXT.length - SOURCE_TEXT.indexOf('Custom') - 'Custom'.length,
-        'Custom'.length,
+        SOURCE_TEXT.length -
+          SOURCE_TEXT.indexOf(CUSTOM_WORD.word) -
+          CUSTOM_WORD.word.length,
+        CUSTOM_WORD.word.length,
       );
       await workspacePage.rightSidebar.design.text.changeFont(CUSTOM_FONT);
-      await workspacePage.rightSidebar.design.text.checkTypography(
-        FORMATTED_WORDS.find(({ word }) => word === 'Custom')!,
-      );
+      await workspacePage.rightSidebar.design.text.checkTypography(CUSTOM_WORD);
       await mainPage.clickOnESC();
       await mainPage.waitForChangeIsSaved();
     },
@@ -99,11 +98,9 @@ demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
 });
 
 demoAccountFileTest(
-  qase(4013, 'Paste formatted text onto the canvas in the same file'),
+  qase([4013], 'Paste formatted text onto the canvas in the same file'),
   async ({ mainPage }) => {
     await demoAccountFileTest.step('Copy the formatted text', async () => {
-      // The source text is still selected after the beforeEach (editing it renamed
-      // its layer after the content)
       await workspacePage.copyAllText();
     });
 
@@ -115,7 +112,6 @@ demoAccountFileTest(
         await mainPage.pressPasteShortcut();
         await mainPage.waitForChangeIsSaved();
         await mainPage.isErrorScreenNotDisplayed();
-        // The copy is named after its content, like the source
         await layersPanelPage.isNumLayerNameVisible(TEXT_LAYER_NAME, 2);
       },
     );
@@ -133,9 +129,7 @@ demoAccountFileTest(
       async () => {
         await mainPage.clickOnESC();
         await mainPage.clickOnESC();
-        // Parks the mouse on the (masked) ruler, so no layer or shape shows a hover
-        // outline and no tooltip opens
-        await mainPage.guides.first().hover();
+        await mainPage.movePointerToViewportBottomRight();
         await expect(mainPage.viewport).toHaveScreenshot('paste-onto-canvas.png', {
           mask: mainPage.maskViewport(),
         });
@@ -146,13 +140,11 @@ demoAccountFileTest(
 
 demoAccountFileTest(
   qase(
-    4014,
+    [4014],
     'Paste formatted text at the caret of a new text shape in the same file',
   ),
   async ({ mainPage }) => {
     await demoAccountFileTest.step('Copy the formatted text', async () => {
-      // The source text is still selected after the beforeEach (editing it renamed
-      // its layer after the content)
       await workspacePage.copyAllText();
     });
 
@@ -169,12 +161,10 @@ demoAccountFileTest(
 
     await demoAccountFileTest.step('Paste at the caret', async () => {
       await workspacePage.textEditor.paste();
+      await mainPage.clickOnESC();
       await mainPage.waitForChangeIsSaved();
       await mainPage.isErrorScreenNotDisplayed();
-      // The copy is named after its content, like the source
       await layersPanelPage.isNumLayerNameVisible(TEXT_LAYER_NAME, 2);
-      // Leaves the editor with the new text selected
-      await mainPage.clickOnESC();
     });
 
     await demoAccountFileTest.step('Each pasted word keeps its style', async () => {
@@ -186,9 +176,7 @@ demoAccountFileTest(
       async () => {
         await mainPage.clickOnESC();
         await mainPage.clickOnESC();
-        // Parks the mouse on the (masked) ruler, so no layer or shape shows a hover
-        // outline and no tooltip opens
-        await mainPage.guides.first().hover();
+        await mainPage.movePointerToViewportBottomRight();
         await expect(mainPage.viewport).toHaveScreenshot('paste-at-caret.png', {
           mask: mainPage.maskViewport(),
         });
