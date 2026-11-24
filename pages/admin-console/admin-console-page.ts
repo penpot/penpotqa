@@ -451,6 +451,24 @@ export class AdminConsolePage extends BasePage {
     );
   }
 
+  /**
+   * Opens an organization's Admin Console by its URL, optionally on one of its
+   * sections. A fresh load, so it never shows another organization's cached
+   * data, unlike the org switcher.
+   *
+   * @param organization - The organization's id, slug and name.
+   * @param section - Section path to open, e.g. 'attributes' (default: none,
+   * the organization's landing page).
+   */
+  async gotoOrganization(
+    organization: { id: string; slug: string; name: string },
+    section = '',
+  ) {
+    const orgPath = `/admin-console/organization/${organization.slug}/${organization.id}`;
+    await this.page.goto(section ? `${orgPath}/${section}` : orgPath);
+    await this.isDisplayingOrganization(organization.name);
+  }
+
   /** Opens the Attributes tab from the sidebar and waits for its URL. */
   async openAttributesTab() {
     await this.attributesNavLink.click();
