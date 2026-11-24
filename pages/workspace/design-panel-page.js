@@ -560,10 +560,18 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     await this.flexElementPositionAbsolute.click();
   }
 
+  /**
+   * Checks whether the flex element's "Absolute position" option is checked.
+   * @param {boolean} [checked=true] Expected state.
+   */
   async isFlexElementPositionAbsoluteChecked(checked = true) {
+    const message = `Absolute position is ${checked ? '' : 'not '}checked`;
     checked
-      ? await expect(this.flexElementPositionAbsoluteChecked).toBeVisible()
-      : await expect(this.flexElementPositionAbsoluteChecked).not.toBeVisible();
+      ? await expect(this.flexElementPositionAbsoluteChecked, message).toBeVisible()
+      : await expect(
+          this.flexElementPositionAbsoluteChecked,
+          message,
+        ).not.toBeVisible();
   }
 
   async clickAddStrokeButton() {
@@ -2370,17 +2378,28 @@ exports.DesignPanelPage = class DesignPanelPage extends BasePage {
     }
   }
 
+  /** Checks that the "Size presets" dropdown is shown in the Design tab. */
   async checkSizePresetsDropdownVisible() {
-    await expect(this.sizePresetsDropdown).toBeVisible();
+    await expect(
+      this.sizePresetsDropdown,
+      'Size presets dropdown is visible',
+    ).toBeVisible();
   }
 
   async openSizePresetsDropdown() {
     await this.sizePresetsDropdown.click();
   }
 
+  /**
+   * Opens the "Size presets" dropdown, checks its options and closes it.
+   * @param {string[]} options Expected option texts, in order (group titles included).
+   */
   async checkSizePresetsOptions(options) {
     await this.openSizePresetsDropdown();
-    await expect(this.sizePresetsOptions).toHaveText(options);
+    await expect(
+      this.sizePresetsOptions,
+      'Size presets dropdown lists the expected options',
+    ).toHaveText(options);
     await this.openSizePresetsDropdown();
   }
 
