@@ -5,11 +5,13 @@ import { type Locator, type Page, expect } from '@playwright/test';
 export type WebglRenderingStatus = 'Enabled' | 'Disabled';
 
 /** Options of the "UI theme" picker. */
-export enum UiTheme {
-  Dark = 'Penpot Dark (default)',
-  Light = 'Penpot Light',
-  System = 'System theme',
-}
+export const UiTheme = {
+  Dark: 'Penpot Dark (default)',
+  Light: 'Penpot Light',
+  System: 'System theme',
+} as const;
+
+export type UiThemeName = (typeof UiTheme)[keyof typeof UiTheme];
 
 /**
  * Your account > Settings (`?screen=settings-options`): language, UI theme and
@@ -57,7 +59,7 @@ export class SettingsPage extends BasePage {
    * Picks a UI theme and saves it with "Update settings".
    * @param theme Theme to pick, e.g. UiTheme.Light.
    */
-  async selectUiTheme(theme: UiTheme) {
+  async selectUiTheme(theme: UiThemeName) {
     await this.uiThemePicker.click();
     await this.settingsRegion
       .getByRole('option', { name: theme, exact: true })
