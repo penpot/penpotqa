@@ -37,6 +37,8 @@ export class AccessTokensComponent extends BaseComponent {
     this.tokenCreatedModalHeading = page.getByRole('heading', {
       name: 'Access token created',
     });
+    // The toast's and the modal's ✕ icons are also named "Close": match the
+    // modal's text button instead
     this.closeModalButton = page.getByRole('button').filter({ hasText: 'Close' });
     this.deleteTokenOption = page.getByTestId('token-delete');
     this.deleteTokenModalHeading = page.getByRole('heading', {

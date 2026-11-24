@@ -31,7 +31,6 @@ settingsTest(
               yourAccountPage.profileMenu.menuButton,
               teamPage.teamCurrentNameDiv,
             ],
-            maxDiffPixelRatio: 0.01,
           },
         );
       },

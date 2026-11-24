@@ -85,16 +85,24 @@ export class SubscriptionSectionComponent extends BaseComponent {
   }
 
   /**
+   * Card of a plan under "Other penpot plans". The cards have no role or label,
+   * so they're matched by their class and told apart by their heading.
+   * @param plan Plan whose card to return.
+   */
+  private getPlanCard(plan: TrialPlan): Locator {
+    return this.root
+      .locator('.main_ui_settings_subscription__plan-card')
+      .filter({ has: this.page.getByRole('heading', { name: plan, exact: true }) });
+  }
+
+  /**
    * Starts a free trial from a plan card, skipping payment details, and checks
    * the plan becomes the current one.
    * @param plan Plan to try; defaults to 'Unlimited'.
    * @param editors Number of editors to enter (Unlimited only).
    */
   async startTrial(plan: TrialPlan = 'Unlimited', editors?: string) {
-    await this.root
-      .locator(
-        `//*[contains(@class, "subscription__plan-card-title")][text()="${plan}"]/../../..`,
-      )
+    await this.getPlanCard(plan)
       .getByRole('button', { name: 'Try it free for 14 days' })
       .click();
     if (plan === 'Unlimited') {
@@ -183,7 +191,7 @@ export class SubscriptionSectionComponent extends BaseComponent {
       : await expect(
           this.downgradeWarningText,
           'Downgrade-to-Professional warning is not shown',
-        ).not.toBeVisible();
+        ).toBeHidden();
   }
 
   /**
@@ -200,6 +208,6 @@ export class SubscriptionSectionComponent extends BaseComponent {
       : await expect(
           contactSalesSignal,
           '"Contact Sales" modal is not shown',
-        ).not.toBeVisible();
+        ).toBeHidden();
   }
 }

@@ -32,13 +32,14 @@ export class PasswordSectionComponent extends BaseComponent {
   }
 
   /**
-   * Label of a field, which holds its show/hide icon.
+   * Label of a field, which wraps its input and its show/hide icon.
    * @param field Field, e.g. PasswordField.Old.
    */
   private getLabel(field: PasswordFieldName): Locator {
+    // `has` is resolved inside each label, so its locator starts from `page`
     return this.root
-      .locator('.main_ui_components_forms__input-wrapper')
-      .getByText(field, { exact: true });
+      .locator('label')
+      .filter({ has: this.page.getByPlaceholder(field) });
   }
 
   /**
@@ -71,7 +72,7 @@ export class PasswordSectionComponent extends BaseComponent {
    * @param field Field, e.g. PasswordField.Old.
    */
   async showPassword(field: PasswordFieldName) {
-    await this.getLabel(field).locator('.icon-shown').click();
+    await this.getLabel(field).locator('svg.icon-shown').click();
   }
 
   /**
@@ -79,7 +80,7 @@ export class PasswordSectionComponent extends BaseComponent {
    * @param field Field, e.g. PasswordField.Old.
    */
   async hidePassword(field: PasswordFieldName) {
-    await this.getLabel(field).locator('.icon-hide').click();
+    await this.getLabel(field).locator('svg.icon-hide').click();
   }
 
   /** Clicks "Change password". */

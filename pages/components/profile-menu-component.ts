@@ -1,5 +1,5 @@
 import { BaseComponent } from '@pages/base-component';
-import { type Locator, type Page, expect } from '@playwright/test';
+import { type Locator, type Page, type Route, expect } from '@playwright/test';
 
 /**
  * External links of the profile menu, each with the submenu that holds it.
@@ -108,14 +108,25 @@ export class ProfileMenuComponent extends BaseComponent {
 
   /**
    * Opens an external link of the profile menu and checks the URL of the tab
-   * it opens, then closes that tab.
+   * it opens, then closes that tab. The external site is answered with an
+   * empty page, so the check doesn't depend on it being up: what Penpot
+   * decides is the URL it opens, not the site's content.
    * @param link Link to open, e.g. 'HelpCenter'.
    * @param url URL the new tab must show.
    */
   async checkLinkOpensUrl(link: ProfileMenuLinkName, url: string) {
-    const popup = await this.openLink(link);
-    await expect(popup, `"${link}" opens ${url}`).toHaveURL(url);
-    await popup.close();
+    const context = this.page.context();
+    const externalSite = `${new URL(url).origin}/**`;
+    const emptyPage = (route: Route) =>
+      route.fulfill({ status: 200, contentType: 'text/html', body: '' });
+    await context.route(externalSite, emptyPage);
+    try {
+      const popup = await this.openLink(link);
+      await expect(popup, `"${link}" opens ${url}`).toHaveURL(url);
+      await popup.close();
+    } finally {
+      await context.unroute(externalSite, emptyPage);
+    }
   }
 
   /**

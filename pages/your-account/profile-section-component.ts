@@ -34,7 +34,7 @@ export class ProfileSectionComponent extends BaseComponent {
     this.saveSettingsButton = root.getByRole('button', { name: 'Save settings' });
     this.avatarBlock = root.locator('div.main_ui_settings_profile__form-container');
     this.imageInput = root.getByTestId('profile-image-input');
-    this.deleteImageButton = root.getByRole('button', { name: 'Delete' });
+    this.deleteImageButton = root.getByTestId('profile-image-delete');
     this.confirmDeleteImageButton = page
       .locator('#portal-container-modal')
       .getByRole('button', { name: 'Delete' });
@@ -71,9 +71,6 @@ export class ProfileSectionComponent extends BaseComponent {
    * @param newName New account name.
    */
   async changeName(newName: string) {
-    await this.nameInput.click();
-    await this.page.keyboard.press('Control+A');
-    await this.page.keyboard.press('Delete');
     await this.nameInput.fill(newName);
     await this.saveSettingsButton.click();
   }
@@ -95,18 +92,20 @@ export class ProfileSectionComponent extends BaseComponent {
    */
   async uploadImage(filePath: string) {
     const profileImage = this.imageInput.locator('../img');
-    const oldSrc = await profileImage.getAttribute('src');
-    await this.imageInput.setInputFiles(filePath);
-    await expect(
-      this.imageInput.locator(`../img[src="${oldSrc}"]`),
-      'Previous profile image is replaced',
-    ).toBeHidden();
-    await this.page.waitForResponse(
+    const oldSrc = (await profileImage.getAttribute('src')) ?? '';
+    // Wait for the save request itself, registered before the upload starts
+    const photoSaved = this.page.waitForResponse(
       (response) =>
-        response.url() ===
-          `${process.env.BASE_URL}api/main/methods/push-audit-events` &&
-        response.status() === 204,
+        response.url().includes('/api/main/methods/update-profile-photo') &&
+        response.request().method() === 'POST',
     );
+    await this.imageInput.setInputFiles(filePath);
+    const response = await photoSaved;
+    expect(response.ok(), 'Profile photo is saved').toBe(true);
+    await expect(
+      profileImage,
+      'Previous profile image is replaced',
+    ).not.toHaveAttribute('src', oldSrc);
   }
 
   /** Deletes the profile image and confirms it in the modal. */

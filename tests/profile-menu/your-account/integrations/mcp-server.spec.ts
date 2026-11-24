@@ -1,108 +1,105 @@
-import { integrationsTest } from '@tests/profile-menu/your-account/your-account-fixture';
+import {
+  integrationsTest,
+  yourAccountFileTest,
+  yourAccountMcpEnabledTest,
+} from '@tests/profile-menu/your-account/your-account-fixture';
+import { createFile } from 'helpers/files/create-file';
+import { openFileInWorkspace } from 'helpers/files/open-file-in-workspace';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 integrationsTest(
   qase(
-    [2771, 2770, 2775, 2782, 2783, 2784, 2787, 2791, 3065],
-    'Enable MCP generating key, disable MCP, enable MCP with an existing key and delete key',
+    [2771, 2787, 2770, 2775],
+    'Enable MCP generating a key, disable it, enable it again with the existing key and delete the key',
   ),
-  async ({ yourAccountPage, dashboardPage, mainPage }) => {
+  async ({ yourAccountPage }) => {
     const { mcpServer } = yourAccountPage.integrations;
+
     await integrationsTest.step(
-      '2771 Enable MCP integration generating MCP key',
+      '(2771) Enable MCP integration generating MCP key',
       async () => {
-        await integrationsTest.step('Enable MCP', async () => {
-          await mcpServer.enableWithoutKey();
-        });
-        await integrationsTest.step('Generate MCP key', async () => {
-          await mcpServer.generateKey();
-        });
+        await mcpServer.enableWithoutKey();
+        await mcpServer.generateKey();
       },
     );
 
-    await integrationsTest.step('2787 Disable MCP integration', async () => {
-      await integrationsTest.step('Disable MCP', async () => {
-        await mcpServer.disable();
-      });
+    await integrationsTest.step('(2787) Disable MCP integration', async () => {
+      await mcpServer.disable();
     });
 
     await integrationsTest.step(
-      '2782 MCP Workspace menu displays the "Disabled" status when the MCP server is not enabled',
+      '(2770) Enable MCP server with an existing MCP key',
       async () => {
-        await integrationsTest.step(
-          'Create a new file and open it in the workspace',
-          async () => {
-            await yourAccountPage.backToDashboard();
-            await dashboardPage.createFileViaPlaceholder();
-            await mainPage.isMainPageLoaded();
-          },
-        );
-
-        await integrationsTest.step(
-          'Check if MCP server status is disabled',
-          async () => {
-            await mainPage.clickMainMenuButton();
-            await mainPage.isMCPServerStatusIndicatorActive(false);
-          },
-        );
+        await mcpServer.enableWithKey();
       },
     );
 
-    await integrationsTest.step(
-      '2770 Enable MCP server with an existing MCP key',
-      async () => {
-        await integrationsTest.step(
-          'Go back to the integrations page from file editor',
-          async () => {
-            await mainPage.backToDashboardFromFileEditor('Personal Projects');
-            await yourAccountPage.open();
-            await yourAccountPage.openSection('Integrations');
-          },
-        );
+    await integrationsTest.step('(2775) Delete MCP key', async () => {
+      await mcpServer.deleteKey();
+    });
 
-        await integrationsTest.step('Enable MCP server', async () => {
-          await mcpServer.enableWithKey();
-        });
+    await integrationsTest.step(
+      'The key is still deleted after reloading',
+      async () => {
+        await yourAccountPage.reloadPage();
+        await mcpServer.checkNoKey();
+      },
+    );
+  },
+);
+
+// yourAccountFileTest: a new account, whose MCP server has never been enabled,
+// with a file open
+yourAccountFileTest(
+  qase(
+    [2782],
+    'MCP Workspace menu displays the "Disabled" status when the MCP server is not enabled',
+  ),
+  async ({ mainPage }) => {
+    await yourAccountFileTest.step(
+      'Open the main menu → MCP server status is disabled',
+      async () => {
+        await mainPage.clickMainMenuButton();
+        await mainPage.isMCPServerStatusIndicatorActive(false);
+      },
+    );
+  },
+);
+
+yourAccountMcpEnabledTest(
+  qase(
+    [2791, 2784, 2783, 3065],
+    'Connect to and disconnect from the MCP server from the workspace',
+  ),
+  async ({ page, mainPage }) => {
+    await yourAccountMcpEnabledTest.step(
+      'Setup: create a file and open it in the workspace',
+      async () => {
+        const request = page.context().request;
+        const { teamId, fileId } = await createFile(request);
+        await openFileInWorkspace(page, teamId, fileId);
+        await mainPage.isMainPageLoaded();
       },
     );
 
-    await integrationsTest.step(
-      '2791 Disconnect with the MCP Server from the MCP Workspace menu',
+    await yourAccountMcpEnabledTest.step(
+      '(2791) Connect and disconnect from the MCP Workspace menu',
       async () => {
-        await integrationsTest.step(
-          'Re-open the file from the Integrations page',
-          async () => {
-            await yourAccountPage.backToDashboard();
-            await dashboardPage.openFileWithName('New File 1');
-            await mainPage.isMainPageLoaded();
-          },
-        );
+        await mainPage.clickMainMenuButton();
+        await mainPage.hoverMCPServerMenuItem();
+        await mainPage.isConnectMCPServerMenuSubItemVisible();
+        await mainPage.clickConnectMCPServerMenuSubItem();
 
-        await integrationsTest.step(
-          'Connect from the MCP Workspace menu',
-          async () => {
-            await mainPage.clickMainMenuButton();
-            await mainPage.hoverMCPServerMenuItem();
-            await mainPage.isConnectMCPServerMenuSubItemVisible();
-            await mainPage.clickConnectMCPServerMenuSubItem();
-          },
-        );
-
-        await integrationsTest.step(
-          'Disconnect from the MCP Workspace menu',
-          async () => {
-            await mainPage.clickMainMenuButton();
-            await mainPage.hoverMCPServerMenuItem();
-            await mainPage.isDisconnectMCPServerMenuSubItemVisible(60000);
-            await mainPage.isMCPServerStatusIndicatorActive(true);
-            await mainPage.clickDisconnectMCPServerMenuSubItem();
-          },
-        );
+        await mainPage.clickMainMenuButton();
+        await mainPage.hoverMCPServerMenuItem();
+        await mainPage.isDisconnectMCPServerMenuSubItemVisible(60000);
+        await mainPage.isMCPServerStatusIndicatorActive(true);
+        await mainPage.clickDisconnectMCPServerMenuSubItem();
       },
     );
 
-    await integrationsTest.step(
-      '2784 MCP Workspace menu displays the "Enabled" status when the MCP server is enabled (with no active connection)',
+    await yourAccountMcpEnabledTest.step(
+      '(2784) MCP Workspace menu displays the "Enabled" status with no active connection',
       async () => {
         // The status indicator can take a while to be updated after disconnecting
         await mainPage.refreshPage();
@@ -116,8 +113,8 @@ integrationsTest(
       },
     );
 
-    await integrationsTest.step(
-      '2783 Connect with the MCP Server from the MCP Workspace menu',
+    await yourAccountMcpEnabledTest.step(
+      '(2783) Connect with the MCP Server from the MCP Workspace menu',
       async () => {
         await mainPage.clickMainMenuButton();
         await mainPage.hoverMCPServerMenuItem();
@@ -132,58 +129,19 @@ integrationsTest(
       },
     );
 
-    await integrationsTest.step(
-      '3065 Connect with the MCP Server from the MCP button in workspace toolbar',
+    await yourAccountMcpEnabledTest.step(
+      '(3065) Connect with the MCP Server from the MCP button in workspace toolbar',
       async () => {
-        await integrationsTest.step(
-          'Disconnect from the MCP Workspace menu',
-          async () => {
-            await mainPage.clickMainMenuButton();
-            await mainPage.hoverMCPServerMenuItem();
-            await mainPage.clickDisconnectMCPServerMenuSubItem();
-          },
-        );
+        await mainPage.clickMainMenuButton();
+        await mainPage.hoverMCPServerMenuItem();
+        await mainPage.clickDisconnectMCPServerMenuSubItem();
 
-        await integrationsTest.step(
-          'Click MCP button from toolbar and click Connect',
-          async () => {
-            await mainPage.connectMCPButtonFromToolbar();
-          },
-        );
+        await mainPage.connectMCPButtonFromToolbar();
 
-        await integrationsTest.step(
-          'Assert MCP Connected message is visible',
-          async () => {
-            await mainPage.clickMCPButtonFromToolbar();
-            await mainPage.isMCPConnectedButtonVisible();
-            await mainPage.checkMCPSessionIdVisible();
-          },
-        );
+        await mainPage.clickMCPButtonFromToolbar();
+        await mainPage.isMCPConnectedButtonVisible();
+        await mainPage.checkMCPSessionIdVisible();
       },
     );
-
-    await integrationsTest.step('2775 Delete MCP key', async () => {
-      await integrationsTest.step(
-        'Go back to the integrations page from file editor',
-        async () => {
-          await mainPage.backToDashboardFromFileEditor('Personal Projects');
-          await yourAccountPage.open();
-          await yourAccountPage.openSection('Integrations');
-        },
-      );
-
-      await integrationsTest.step('Delete MCP key', async () => {
-        await mcpServer.deleteKey();
-      });
-
-      await integrationsTest.step(
-        'Verify state persistence after reload',
-        async () => {
-          await yourAccountPage.reloadPage();
-          await mcpServer.checkNoKey();
-          await yourAccountPage.backToDashboard();
-        },
-      );
-    });
   },
 );

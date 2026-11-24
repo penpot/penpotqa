@@ -9,7 +9,12 @@ import {
   type PlaywrightTestArgs,
   type PlaywrightTestOptions,
 } from '@playwright/test';
-import { demoAccountApiFixture, demoAccountFileTest, registerTest } from 'fixtures';
+import {
+  demoAccountApiFixture,
+  demoAccountFileTest,
+  demoAccountMcpEnabledTest,
+  registerTest,
+} from 'fixtures';
 import { setDemoUserName } from 'helpers/accounts/set-demo-user-name';
 
 type AccountPageFixtures = {
@@ -48,6 +53,12 @@ const dashboardPages: PageFixtures<DashboardPageFixtures> = {
 
 // Fresh demo account (via the API) on its dashboard, plus the page objects
 export const yourAccountTest = demoAccountApiFixture.extend<
+  AccountPageFixtures & DashboardPageFixtures
+>({ ...accountPages, ...dashboardPages });
+
+// Like yourAccountTest, with the MCP server already enabled (key generated,
+// switch on) via the API
+export const yourAccountMcpEnabledTest = demoAccountMcpEnabledTest.extend<
   AccountPageFixtures & DashboardPageFixtures
 >({ ...accountPages, ...dashboardPages });
 

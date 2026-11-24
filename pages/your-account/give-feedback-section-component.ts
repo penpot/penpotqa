@@ -38,9 +38,7 @@ export class GiveFeedbackSectionComponent extends BaseComponent {
 
   /** Empties the subject. */
   async clearSubject() {
-    await this.subjectInput.click();
-    await this.page.keyboard.press('Control+A');
-    await this.page.keyboard.press('Delete');
+    await this.subjectInput.clear();
   }
 
   /**
