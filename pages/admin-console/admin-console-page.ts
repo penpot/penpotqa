@@ -1,3 +1,4 @@
+import { MemberProfileComponent } from '@pages/admin-console/member-profile-component';
 import { type Locator, type Page, type Response, expect } from '@playwright/test';
 import { BasePage } from '../base-page';
 
@@ -59,7 +60,8 @@ export enum PeopleTableColumn {
   User = 0,
   DateAdded = 1,
   Teams = 2,
-  Actions = 3,
+  Attributes = 3,
+  Actions = 4,
 }
 
 /**
@@ -180,6 +182,8 @@ export class AdminConsolePage extends BasePage {
   // lingering mid-transition can't be mistaken for it, and vice versa.
   readonly peopleNavLink: Locator;
   readonly peopleTable: Locator;
+  /** Panel opened by clicking a member's row (see `openMemberProfile()`). */
+  readonly memberProfile: MemberProfileComponent;
 
   // People tab's "invite to the organization" modal — org-level invites,
   // distinct from a single team's own invite flow (TeamPage's), which
@@ -301,6 +305,7 @@ export class AdminConsolePage extends BasePage {
     this.teamsEmptyState = page.getByText('There are no teams yet');
     this.peopleNavLink = page.getByRole('link', { name: 'People' });
     this.peopleTable = page.getByRole('table', { name: 'People' });
+    this.memberProfile = new MemberProfileComponent(page);
 
     // `.first()` — there are 2 identically-labelled "Invite
     // people" buttons when the People tab is in its empty state (the toolbar
@@ -464,6 +469,24 @@ export class AdminConsolePage extends BasePage {
       this.invitePeopleButton,
       '"Invite people" button is visible on the People tab',
     ).toBeVisible();
+  }
+
+  /**
+   * Opens a member's profile panel by clicking their row in the People table.
+   * Retries the click, which can be dropped right after the tab renders.
+   * @param memberName Member's display name, e.g. 'User2'.
+   */
+  async openMemberProfile(memberName: string) {
+    const heading = this.memberProfile.root.getByRole('heading', {
+      name: memberName,
+      exact: true,
+    });
+    await expect(async () => {
+      await this.getPeopleTableCell(memberName, PeopleTableColumn.User).click();
+      await expect(heading, `"${memberName}" profile is open`).toBeVisible({
+        timeout: 2000,
+      });
+    }).toPass({ timeout: 15000 });
   }
 
   /** Types one email into the invite modal's input and confirms it with
