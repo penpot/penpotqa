@@ -1,8 +1,16 @@
 import { BasePage } from '@pages/base-page';
 import { type Locator, type Page, expect } from '@playwright/test';
 
-/** Position of the People column in the attributes table (Attribute, Used in, Created, People). */
-const PEOPLE_COLUMN = 3;
+/**
+ * Column position (0-indexed) in the Attributes tab's table, for typed use with
+ * the AttributesPage checks instead of a magic number.
+ */
+export enum AttributesTableColumn {
+  Attribute = 0,
+  UsedIn = 1,
+  Created = 2,
+  People = 3,
+}
 
 /**
  * Covers the Admin Console's Attributes tab
@@ -112,7 +120,7 @@ export class AttributesPage extends BasePage {
    */
   async checkAttributePeopleCount(name: string, people: number) {
     await expect(
-      this.getAttributeRow(name).getByRole('cell').nth(PEOPLE_COLUMN),
+      this.getAttributeRow(name).getByRole('cell').nth(AttributesTableColumn.People),
       `"${name}" shows ${people} under People`,
     ).toHaveText(String(people));
   }

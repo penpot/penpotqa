@@ -1,5 +1,5 @@
 /**
- * Qase suite: Admin Console > Sidebar Menu > People > Member profile
+ * Qase suite: Admin Console > Sidebar Menu > People > Members (tab) > Member profile
  *
  * Base: `enterpriseActivatedPageTest` (see enterprise-fixtures.ts), with the
  * members as extra demo accounts that join the org via the API
@@ -13,7 +13,7 @@ import { joinOrganization } from 'helpers/organizations/join-organization';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 enterpriseActivatedPageTest.describe(
-  'Admin Console > Sidebar Menu > People > Member profile',
+  'Admin Console > Sidebar Menu > People > Members (tab) > Member profile',
   () => {
     enterpriseActivatedPageTest(
       qase([4080], "Assign an attribute from a member's profile"),
@@ -100,7 +100,7 @@ enterpriseActivatedPageTest.describe(
           async () => {
             await profile.assignAttribute(legal.name);
             await profile.checkAssignedAttributes([legal.name]);
-            await profile.checkNoConfirmationIsVisible();
+            await adminConsolePage.checkConfirmationIsVisible(false);
           },
         );
 
@@ -182,7 +182,7 @@ enterpriseActivatedPageTest.describe(
           async () => {
             await profile.removeAttribute(legal);
             await profile.checkAssignedAttributes([qaDepartment]);
-            await profile.checkNoConfirmationIsVisible();
+            await adminConsolePage.checkConfirmationIsVisible(false);
           },
         );
 

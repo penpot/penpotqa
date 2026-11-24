@@ -485,11 +485,38 @@ export class AdminConsolePage extends BasePage {
       exact: true,
     });
     await expect(async () => {
-      await this.getPeopleTableCell(memberName, PeopleTableColumn.User).click();
+      if (!(await heading.isVisible())) {
+        await this.getPeopleTableCell(memberName, PeopleTableColumn.User).click();
+      }
       await expect(heading, `"${memberName}" profile is open`).toBeVisible({
         timeout: 2000,
       });
     }).toPass({ timeout: 15000 });
+  }
+
+  /**
+   * Checks whether a confirmation dialog or a message (toast) is on the page.
+   * @param visible Whether one should be visible (default true).
+   */
+  async checkConfirmationIsVisible(visible = true) {
+    const dialog = this.page
+      .getByRole('dialog')
+      .or(this.page.getByRole('alertdialog'));
+    // Toasts render inside the page's (otherwise empty) "log" live regions
+    const message = this.page
+      .getByRole('alert')
+      .or(this.page.getByRole('log').filter({ hasText: /\S/ }));
+    if (visible) {
+      await expect(
+        dialog.or(message).first(),
+        'A confirmation dialog or message is shown',
+      ).toBeVisible();
+      return;
+    }
+    // A count of 0 passes at once: callers check after the UI has applied the
+    // change, which only happens once the server answers, so a toast would be there.
+    await expect(dialog, 'No confirmation dialog is shown').toHaveCount(0);
+    await expect(message, 'No message is shown').toHaveCount(0);
   }
 
   /** Types one email into the invite modal's input and confirms it with
