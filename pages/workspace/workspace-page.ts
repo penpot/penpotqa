@@ -94,6 +94,7 @@ export class WorkspacePage extends BasePage {
    * Toggles "WebGL rendering (beta)" in Main menu > Preferences. The workspace
    * reloads with the other renderer and the selection is cleared, so pending
    * changes are saved first (they would be lost otherwise).
+   * @param enabled `true` to enable WebGL rendering, `false` to disable it.
    */
   async toggleWebglRenderingViaMainMenu(enabled: boolean) {
     const { mainMenu } = this.leftSidebar;
@@ -102,10 +103,19 @@ export class WorkspacePage extends BasePage {
     await mainMenu.hoverPreferencesMainMenuItem();
     await mainMenu.checkWebglRenderingMenuSubItem(enabled ? 'Enable' : 'Disable');
     await mainMenu.clickWebglRenderingMenuSubItem();
+    await this.checkActiveRenderer(enabled);
+  }
+
+  /**
+   * Checks which renderer draws the canvas: WebGL draws on its own canvas, which
+   * the classic (SVG) renderer doesn't have.
+   * @param webgl `true` for the WebGL renderer, `false` for the classic one.
+   */
+  async checkActiveRenderer(webgl: boolean) {
     await expect(
       this.webglCanvas,
-      `Canvas is drawn with the ${enabled ? 'WebGL' : 'classic'} renderer`,
-    ).toHaveCount(enabled ? 1 : 0);
+      `Canvas is drawn with the ${webgl ? 'WebGL' : 'classic'} renderer`,
+    ).toHaveCount(webgl ? 1 : 0);
     await this.waitForViewportVisible();
     await expect(this.viewport).toBeVisible();
   }
