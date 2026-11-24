@@ -20,6 +20,17 @@ export class ColorPickerComponent extends BaseComponent {
   }
 
   /**
+   * Checks whether the color picker pop-up is open.
+   * @param visible Expected state; default true.
+   */
+  async checkColorPickerIsVisible(visible = true) {
+    await expect(
+      this.root,
+      visible ? 'Color picker is open' : 'Color picker is closed',
+    ).toBeVisible({ visible });
+  }
+
+  /**
    * Switches the fill type with the dropdown at the top of the picker.
    * @param type Fill type to select.
    */
