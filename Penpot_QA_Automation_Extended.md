@@ -141,10 +141,8 @@ penpotqa1/
 │   ├── login-signup/
 │   ├── panels-features/
 │   ├── plugins/
-│   ├── profile/
-│   ├── subscription-plans/
+│   ├── profile-menu/
 │   ├── tokens/
-│   ├── ui-theme/
 │   └── view-mode/
 ├── fixtures.js           # Custom test fixtures
 ├── playwright.config.js  # Playwright configuration

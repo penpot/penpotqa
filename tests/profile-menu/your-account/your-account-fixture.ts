@@ -1,6 +1,7 @@
-import { demoAccountApiFixture } from 'fixtures';
 import { ProfilePage } from '@pages/profile-page';
 import { ShortcutsPage } from '@pages/shortcuts-page';
+import { SettingsPage } from '@pages/your-account/settings-page';
+import { demoAccountApiFixture } from 'fixtures';
 import { setDemoUserName } from 'helpers/accounts/set-demo-user-name';
 
 type YourAccountFixtures = {
@@ -43,30 +44,6 @@ export const passwordTest = demoAccountApiFixture.extend<PasswordFixtures>({
   },
 });
 
-// Open Your Account > Integrations section
-// NOTE: This fixture involves creating a new Penpot account (via the API, as a demo account)
-export const integrationsTest = demoAccountApiFixture.extend<YourAccountFixtures>({
-  profilePage: async ({ page }, use) => {
-    const profilePage = new ProfilePage(page);
-
-    await profilePage.openYourAccountIntegrationsPage();
-
-    await use(profilePage);
-  },
-});
-
-// Open Your Account > Give Feedback section
-export const giveFeedbackTest = demoAccountApiFixture.extend<YourAccountFixtures>({
-  profilePage: async ({ page }, use) => {
-    const profilePage = new ProfilePage(page);
-
-    await profilePage.openGiveFeedbackPage();
-    await profilePage.isHeaderDisplayed('Your account');
-
-    await use(profilePage);
-  },
-});
-
 type ShortcutsFixtures = {
   shortcutsPage: ShortcutsPage;
 };
@@ -83,5 +60,32 @@ export const shortcutsTest = demoAccountApiFixture.extend<ShortcutsFixtures>({
     await shortcutsPage.openFromYourAccount();
 
     await use(shortcutsPage);
+  },
+});
+
+type SettingsFixtures = {
+  settingsPage: SettingsPage;
+};
+
+// Open Your Account > Settings section (language, UI theme, WebGL rendering)
+export const settingsTest = demoAccountApiFixture.extend<SettingsFixtures>({
+  settingsPage: async ({ page }, use) => {
+    const settingsPage = new SettingsPage(page);
+
+    await settingsPage.goto();
+
+    await use(settingsPage);
+  },
+});
+
+// Open Your Account > Integrations section
+// NOTE: This fixture involves creating a new Penpot account (via the API, as a demo account)
+export const integrationsTest = demoAccountApiFixture.extend<YourAccountFixtures>({
+  profilePage: async ({ page }, use) => {
+    const profilePage = new ProfilePage(page);
+
+    await profilePage.openYourAccountIntegrationsPage();
+
+    await use(profilePage);
   },
 });

@@ -1,8 +1,8 @@
-import { ProfilePage } from '@pages/profile-page';
-import { integrationsTest } from '../your-account-fixture';
-import { qase } from 'playwright-qase-reporter/playwright';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { ProfilePage } from '@pages/profile-page';
 import { MainPage } from '@pages/workspace/main-page';
+import { integrationsTest } from '@tests/profile-menu/your-account/your-account-fixture';
+import { qase } from 'playwright-qase-reporter/playwright';
 
 let mainPage: MainPage;
 let dashboardPage: DashboardPage;

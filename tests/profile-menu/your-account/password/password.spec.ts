@@ -1,6 +1,7 @@
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { LoginPage } from '@pages/login-page';
 import { ProfilePage } from '@pages/profile-page';
+import { passwordTest } from '@tests/profile-menu/your-account/your-account-fixture';
 import { registerTest } from 'fixtures';
 import {
   checkPasswordChangedText,
@@ -9,10 +10,9 @@ import {
   waitForMessageCount,
 } from 'helpers/gmail';
 import { qase } from 'playwright-qase-reporter/playwright';
-import { passwordTest } from './your-account-fixture';
 
 passwordTest(
-  qase(198, 'Change password to invalid'),
+  qase([198], 'Change password to invalid'),
   async ({ profilePage, currentPassword }) => {
     const newPassword = '1234567';
 
@@ -86,7 +86,7 @@ registerTest(
 );
 
 passwordTest(
-  qase(200, 'Show/hide password'),
+  qase([200], 'Show/hide password'),
   async ({ profilePage, currentPassword }) => {
     const newPassword = '1234567890';
 
@@ -133,7 +133,7 @@ passwordTest(
 );
 
 passwordTest(
-  qase(202, 'Fail to change password confirmation does not match'),
+  qase([202], 'Fail to change password confirmation does not match'),
   async ({ profilePage, currentPassword }) => {
     await passwordTest.step(
       'Enter current password and non-matching new passwords',

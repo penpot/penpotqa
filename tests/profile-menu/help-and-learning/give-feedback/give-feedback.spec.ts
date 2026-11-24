@@ -1,4 +1,4 @@
-import { giveFeedbackTest } from './your-account-fixture';
+import { giveFeedbackTest } from '@tests/profile-menu/help-and-learning/help-and-learning-fixture';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 giveFeedbackTest(

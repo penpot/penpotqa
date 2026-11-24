@@ -1,19 +1,19 @@
-import { expect } from '@playwright/test';
-import { demoAccountApiFixture, registerTest } from 'fixtures';
-import { profileTest } from './your-account-fixture';
-import { qase } from 'playwright-qase-reporter/playwright';
-import { random } from 'helpers/string-generator';
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { LoginPage } from '@pages/login-page';
 import { ProfilePage } from '@pages/profile-page';
+import { expect } from '@playwright/test';
+import { profileTest } from '@tests/profile-menu/your-account/your-account-fixture';
+import { demoAccountApiFixture, registerTest } from 'fixtures';
 import {
   getVerificationMessage,
   checkNewEmailText,
   waitSecondMessage,
 } from 'helpers/gmail';
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { random } from 'helpers/string-generator';
+import { qase } from 'playwright-qase-reporter/playwright';
 
 profileTest(
-  qase(187, 'Edit profile: profile name and image'),
+  qase([187], 'Edit profile: profile name and image'),
   async ({ profilePage }) => {
     const newName = random();
 
@@ -54,7 +54,7 @@ profileTest(
   },
 );
 
-profileTest(qase(205, 'Logout from Account'), async ({ page, profilePage }) => {
+profileTest(qase([205], 'Logout from Account'), async ({ page, profilePage }) => {
   const loginPage = new LoginPage(page);
 
   await profileTest.step('Logout from account', async () => {
@@ -110,7 +110,7 @@ demoAccountApiFixture(
   },
 );
 
-registerTest(qase(190, 'Change email to valid'), async ({ page, name, email }) => {
+registerTest(qase([190], 'Change email to valid'), async ({ page, name, email }) => {
   await registerTest.slow();
   const newEmail = `${process.env.GMAIL_NAME}+${random().concat(
     'autotest',

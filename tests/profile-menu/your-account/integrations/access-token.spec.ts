@@ -1,10 +1,10 @@
 import { ProfilePage } from '@pages/profile-page';
-import { integrationsTest } from '../your-account-fixture';
+import { integrationsTest } from '@tests/profile-menu/your-account/your-account-fixture';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 integrationsTest(
   qase(
-    2749,
+    [2749],
     'Delete an existing access token and verify it is removed from the list',
   ),
   async ({ profilePage }: { profilePage: ProfilePage }) => {

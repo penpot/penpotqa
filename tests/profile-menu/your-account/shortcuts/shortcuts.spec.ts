@@ -1,6 +1,6 @@
-import { qase } from 'playwright-qase-reporter/playwright';
 import { type ShortcutRef } from '@pages/shortcuts-page';
-import { shortcutsTest } from './your-account-fixture';
+import { shortcutsTest } from '@tests/profile-menu/your-account/your-account-fixture';
+import { qase } from 'playwright-qase-reporter/playwright';
 
 const cut: ShortcutRef = { context: 'workspace', subsection: 'Edit', action: 'Cut' };
 // "Copy" itself is not customizable, so "Copy properties" is the one disabled.
