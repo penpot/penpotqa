@@ -4,8 +4,17 @@ import { SettingsPage } from '@pages/your-account/settings-page';
 import { demoAccountApiFixture, demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
+let dashboardPage: DashboardPage;
+let settingsPage: SettingsPage;
+let workspacePage: WorkspacePage;
+
 demoAccountFileTest.describe('WebGL rendering from Settings', () => {
   demoAccountFileTest.use({ renderer: 'svg' });
+
+  demoAccountFileTest.beforeEach(async ({ page }) => {
+    settingsPage = new SettingsPage(page);
+    workspacePage = new WorkspacePage(page);
+  });
 
   demoAccountFileTest(
     qase(
@@ -13,8 +22,6 @@ demoAccountFileTest.describe('WebGL rendering from Settings', () => {
       'Toggle the renderer to WebGL and back to legacy SVG from Settings, and verify the immediate switch',
     ),
     async ({ page }) => {
-      const workspacePage = new WorkspacePage(page);
-      const settingsPage = new SettingsPage(page);
       const fileUrl = page.url();
 
       await demoAccountFileTest.step(
@@ -25,44 +32,54 @@ demoAccountFileTest.describe('WebGL rendering from Settings', () => {
       );
 
       await demoAccountFileTest.step(
-        '2793 Enable WebGL rendering in Your account > Settings',
+        '(2793) Toggle renderer to WebGL from Settings UI and verify immediate switch',
         async () => {
-          await settingsPage.goto();
-          await settingsPage.checkWebglRenderingStatus('Disabled');
-          await settingsPage.toggleWebglRendering(true);
+          await demoAccountFileTest.step(
+            'Enable WebGL rendering in Your account > Settings',
+            async () => {
+              await settingsPage.goto();
+              await settingsPage.checkWebglRenderingStatus('Disabled');
+              await settingsPage.toggleWebglRendering(true);
+            },
+          );
+
+          await demoAccountFileTest.step(
+            'The file is drawn with the WebGL renderer',
+            async () => {
+              await page.goto(fileUrl);
+              await workspacePage.checkActiveRenderer(true);
+            },
+          );
         },
       );
 
       await demoAccountFileTest.step(
-        '2793 The file is drawn with the WebGL renderer',
+        '(2794) Toggle renderer to legacy SVG from Settings UI and verify immediate switch',
         async () => {
-          await page.goto(fileUrl);
-          await workspacePage.checkActiveRenderer(true);
-        },
-      );
+          await demoAccountFileTest.step(
+            'Disable WebGL rendering in Your account > Settings',
+            async () => {
+              await settingsPage.goto();
+              await settingsPage.checkWebglRenderingStatus('Enabled');
+              await settingsPage.toggleWebglRendering(false);
+            },
+          );
 
-      await demoAccountFileTest.step(
-        '2794 Disable WebGL rendering in Your account > Settings',
-        async () => {
-          await settingsPage.goto();
-          await settingsPage.checkWebglRenderingStatus('Enabled');
-          await settingsPage.toggleWebglRendering(false);
-        },
-      );
+          await demoAccountFileTest.step(
+            'WebGL rendering is still disabled after reloading',
+            async () => {
+              await page.reload();
+              await settingsPage.checkWebglRenderingStatus('Disabled');
+            },
+          );
 
-      await demoAccountFileTest.step(
-        '2794 WebGL rendering is still disabled after reloading',
-        async () => {
-          await page.reload();
-          await settingsPage.checkWebglRenderingStatus('Disabled');
-        },
-      );
-
-      await demoAccountFileTest.step(
-        '2794 The file is drawn with the legacy SVG renderer',
-        async () => {
-          await page.goto(fileUrl);
-          await workspacePage.checkActiveRenderer(false);
+          await demoAccountFileTest.step(
+            'The file is drawn with the legacy SVG renderer',
+            async () => {
+              await page.goto(fileUrl);
+              await workspacePage.checkActiveRenderer(false);
+            },
+          );
         },
       );
     },
@@ -72,11 +89,14 @@ demoAccountFileTest.describe('WebGL rendering from Settings', () => {
 demoAccountApiFixture.describe('WebGL rendering on a new account', () => {
   demoAccountApiFixture.use({ renderer: 'default' });
 
+  demoAccountApiFixture.beforeEach(async ({ page }) => {
+    dashboardPage = new DashboardPage(page);
+    workspacePage = new WorkspacePage(page);
+  });
+
   demoAccountApiFixture(
     qase([4090], 'Start a new account with WebGL rendering enabled'),
-    async ({ page }) => {
-      const dashboardPage = new DashboardPage(page);
-      const workspacePage = new WorkspacePage(page);
+    async () => {
       const { mainMenu } = workspacePage.leftSidebar;
 
       await demoAccountApiFixture.step(

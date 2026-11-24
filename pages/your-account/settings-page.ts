@@ -91,9 +91,9 @@ export class SettingsPage extends BasePage {
       this.webglRenderingSwitch,
       `WebGL rendering is ${status.toLowerCase()} in Settings`,
     ).toHaveAccessibleName(status);
-    await expect(this.webglRenderingSwitch).toHaveAttribute(
-      'aria-checked',
-      String(status === 'Enabled'),
-    );
+    await expect(
+      this.webglRenderingSwitch,
+      `WebGL rendering switch is ${status === 'Enabled' ? 'on' : 'off'}`,
+    ).toHaveAttribute('aria-checked', String(status === 'Enabled'));
   }
 }
