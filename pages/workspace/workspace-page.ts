@@ -41,6 +41,8 @@ export class WorkspacePage extends BasePage {
   readonly textEditor: TextEditorComponent;
   /** Canvas the WebGL renderer draws the shapes on; absent with the classic renderer. */
   readonly webglCanvas: Locator;
+  /** SVG the classic renderer draws the shapes in; absent with the WebGL renderer. */
+  readonly classicRenderSvg: Locator;
 
   // Menus and dialogs shown over the workspace
   readonly contextMenu: ContextMenuComponent;
@@ -78,6 +80,8 @@ export class WorkspacePage extends BasePage {
       page.getByTestId('text-editor-container'),
     );
     this.webglCanvas = page.getByTestId('canvas-wasm-shapes');
+    // Both renderers draw into an element with id "render": a canvas or an svg
+    this.classicRenderSvg = page.getByTestId('viewport').locator('svg#render');
 
     // Menus and dialogs
     this.contextMenu = new ContextMenuComponent(page);
@@ -107,17 +111,24 @@ export class WorkspacePage extends BasePage {
   }
 
   /**
-   * Checks which renderer draws the canvas: WebGL draws on its own canvas, which
-   * the classic (SVG) renderer doesn't have.
+   * Checks which renderer draws the canvas: waits for the active renderer's own
+   * drawing surface (WebGL canvas or classic SVG), so it can't pass while the
+   * workspace is still loading, then checks the other one is absent.
    * @param webgl `true` for the WebGL renderer, `false` for the classic one.
    */
   async checkActiveRenderer(webgl: boolean) {
+    const [active, inactive] = webgl
+      ? [this.webglCanvas, this.classicRenderSvg]
+      : [this.classicRenderSvg, this.webglCanvas];
+    const renderer = webgl ? 'WebGL' : 'classic';
+    // Opening a file, or switching renderer, can take longer than the default
     await expect(
-      this.webglCanvas,
-      `Canvas is drawn with the ${webgl ? 'WebGL' : 'classic'} renderer`,
-    ).toHaveCount(webgl ? 1 : 0);
-    await this.waitForViewportVisible();
-    await expect(this.viewport).toBeVisible();
+      active,
+      `Canvas is drawn with the ${renderer} renderer`,
+    ).toBeVisible({ timeout: 30000 });
+    await expect(inactive, `Only the ${renderer} renderer is drawing`).toHaveCount(
+      0,
+    );
   }
 
   // ---------------------------------------------------------------------------
