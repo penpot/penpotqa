@@ -165,6 +165,7 @@ export class AdminConsolePage extends BasePage {
   // Advanced Permissions tab (sidebar nav item) — its own page object,
   // AdvancedPermissionsPage, covers everything past the click itself.
   readonly advancedPermissionsNavLink: Locator;
+  readonly attributesNavLink: Locator;
 
   // Teams tab (sidebar nav item) — a table listing every team in the org,
   // one row per team, 7 columns (see TeamsTableColumn).
@@ -294,6 +295,7 @@ export class AdminConsolePage extends BasePage {
     this.advancedPermissionsNavLink = page.getByRole('link', {
       name: 'Advanced Permissions',
     });
+    this.attributesNavLink = page.getByRole('link', { name: 'Attributes' });
     this.teamsNavLink = page.getByRole('link', { name: 'Teams' });
     this.teamsTable = page.getByRole('table', { name: 'Teams' });
     this.teamsEmptyState = page.getByText('There are no teams yet');
@@ -439,6 +441,12 @@ export class AdminConsolePage extends BasePage {
     await expect(this.page, 'On the Advanced Permissions tab').toHaveURL(
       /\/permissions$/,
     );
+  }
+
+  /** Opens the Attributes tab from the sidebar and waits for its URL. */
+  async openAttributesTab() {
+    await this.attributesNavLink.click();
+    await expect(this.page, 'On the Attributes tab').toHaveURL(/\/attributes$/);
   }
 
   async openTeamsTab() {
@@ -596,6 +604,17 @@ export class AdminConsolePage extends BasePage {
       ),
       'Invitation-canceled message is shown',
     ).toBeVisible();
+  }
+
+  /**
+   * Reads the id of the organization the Admin Console shows from its URL
+   * (/admin-console/organization/{slug}/{id}/…).
+   * @returns The organization's id.
+   */
+  getOrganizationId(): string {
+    const id = new URL(this.page.url()).pathname.split('/')[4];
+    if (!id) throw new Error(`No organization id in ${this.page.url()}`);
+    return id;
   }
 
   /** The current profile's display name (e.g. "Demo User <uuid>"), stripped

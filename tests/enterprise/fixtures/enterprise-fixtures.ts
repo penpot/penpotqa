@@ -14,7 +14,9 @@
  *     │   │                                of a real Stripe checkout.
  *     │   │                                PRE/dev environments only — skips
  *     │   │                                otherwise.
- *     │   └─ enterpriseActivatedPageTest — adds the same 5 page objects.
+ *     │   └─ enterpriseActivatedPageTest — adds the same 5 page objects,
+ *     │                                    plus `createDemoMember()` for
+ *     │                                    extra demo accounts.
  *     ├─ ownerAndInviteeTest             — owner + a second, real invitee
  *     │                                    account, as sibling fixtures.
  *     │                                    Owner entitled via Stripe. Also
@@ -27,7 +29,7 @@
  * only when a case needs none of the 5 page objects.
  */
 import { test as base } from '@playwright/test';
-import type { Page } from '@playwright/test';
+import type { APIRequestContext, Page } from '@playwright/test';
 import { demoAccountApiFixture } from 'fixtures';
 import { loginAsDemoAccount } from 'helpers/accounts/login-as-demo-account';
 import { createActivatedDemoUser } from 'helpers/accounts/create-activated-demo-user';
@@ -42,6 +44,12 @@ import { StripePage } from '@pages/dashboard/stripe-page';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { AdvancedPermissionsPage } from '@pages/admin-console/advanced-permissions-page';
 import { OrganizationSsoPage } from '@pages/admin-console/organization-sso-page';
+import { AttributesPage } from '@pages/admin-console/attributes-page';
+import {
+  createDemoUserSession,
+  type DemoUserSession,
+} from 'helpers/accounts/create-demo-user-session';
+import { setDemoUserName } from 'helpers/accounts/set-demo-user-name';
 
 type EnterprisePageFixtures = {
   orgPage: OrganizationPage;
@@ -51,6 +59,7 @@ type EnterprisePageFixtures = {
   advancedPermissionsPage: AdvancedPermissionsPage;
   ssoPage: OrganizationSsoPage;
   auditLogsPage: AuditLogsPage;
+  attributesPage: AttributesPage;
 };
 
 // --- enterprisePageTest -------------------------------------------------------
@@ -88,6 +97,9 @@ export const enterprisePageTest =
     },
     auditLogsPage: async ({ page }, use) => {
       await use(new AuditLogsPage(page));
+    },
+    attributesPage: async ({ page }, use) => {
+      await use(new AttributesPage(page));
     },
   });
 
@@ -145,6 +157,24 @@ export const enterpriseDemoAccountApiFixture = base.extend({
 
 // --- enterpriseActivatedPageTest ----------------------------------------------
 
+/** An extra demo account logged in in its own browser context (see `createDemoMember`). */
+export type DemoMember = DemoUserSession & {
+  /** Display name, as the Admin Console lists it. */
+  name: string;
+  /** API session of the account. */
+  request: APIRequestContext;
+};
+
+type DemoMemberFixtures = {
+  /**
+   * Creates a demo account in its own browser context, on its dashboard, with this
+   * display name, e.g. to make it a member of an organization with
+   * `joinOrganization()` (no email involved). Every account it creates is closed
+   * when the test ends, even if it fails.
+   */
+  createDemoMember: (name: string) => Promise<DemoMember>;
+};
+
 /**
  * Same 5 page objects as `enterprisePageTest`, but built on
  * `enterpriseDemoAccountApiFixture` above instead of `demoAccountApiFixture`
@@ -154,30 +184,46 @@ export const enterpriseDemoAccountApiFixture = base.extend({
  * ("...with a valid manual activation code"), which specifically tests
  * pasting the code into that UI — use `enterprisePageTest` for those.
  */
-export const enterpriseActivatedPageTest =
-  enterpriseDemoAccountApiFixture.extend<EnterprisePageFixtures>({
-    orgPage: async ({ page }, use) => {
-      await use(new OrganizationPage(page));
-    },
-    adminConsolePage: async ({ page }, use) => {
-      await use(new AdminConsolePage(page));
-    },
-    stripePage: async ({ page }, use) => {
-      await use(new StripePage(page));
-    },
-    teamPage: async ({ page }, use) => {
-      await use(new TeamPage(page));
-    },
-    advancedPermissionsPage: async ({ page }, use) => {
-      await use(new AdvancedPermissionsPage(page));
-    },
-    ssoPage: async ({ page }, use) => {
-      await use(new OrganizationSsoPage(page));
-    },
-    auditLogsPage: async ({ page }, use) => {
-      await use(new AuditLogsPage(page));
-    },
-  });
+export const enterpriseActivatedPageTest = enterpriseDemoAccountApiFixture.extend<
+  EnterprisePageFixtures & DemoMemberFixtures
+>({
+  orgPage: async ({ page }, use) => {
+    await use(new OrganizationPage(page));
+  },
+  adminConsolePage: async ({ page }, use) => {
+    await use(new AdminConsolePage(page));
+  },
+  stripePage: async ({ page }, use) => {
+    await use(new StripePage(page));
+  },
+  teamPage: async ({ page }, use) => {
+    await use(new TeamPage(page));
+  },
+  advancedPermissionsPage: async ({ page }, use) => {
+    await use(new AdvancedPermissionsPage(page));
+  },
+  ssoPage: async ({ page }, use) => {
+    await use(new OrganizationSsoPage(page));
+  },
+  auditLogsPage: async ({ page }, use) => {
+    await use(new AuditLogsPage(page));
+  },
+  attributesPage: async ({ page }, use) => {
+    await use(new AttributesPage(page));
+  },
+  createDemoMember: async ({ browser }, use) => {
+    const members: DemoMember[] = [];
+    await use(async (name) => {
+      const session = await createDemoUserSession(browser);
+      const request = session.page.context().request;
+      await setDemoUserName(request, name);
+      const member = { ...session, name, request };
+      members.push(member);
+      return member;
+    });
+    await Promise.all(members.map((member) => member.close()));
+  },
+});
 
 // --- ownerAndInviteeTest -----------------------------------------------------
 
@@ -240,6 +286,9 @@ export const ownerAndInviteeTest = base.extend<OwnerAndInviteeFixtures>({
   },
   auditLogsPage: async ({ ownerPage }, use) => {
     await use(new AuditLogsPage(ownerPage));
+  },
+  attributesPage: async ({ ownerPage }, use) => {
+    await use(new AttributesPage(ownerPage));
   },
 });
 

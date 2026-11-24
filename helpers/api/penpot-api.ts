@@ -16,7 +16,9 @@ export type PenpotApiMethod =
   | 'import-binfile'
   | 'create-upload-session'
   | 'upload-chunk'
-  | 'create-font-variant';
+  | 'create-font-variant'
+  | 'delete-team-member'
+  | 'delete-team';
 
 /** Path of a Penpot main API method, e.g. to match it in `waitForResponse`. */
 export const penpotApiPath = (method: PenpotApiMethod) =>
@@ -32,11 +34,42 @@ export async function callPenpotApi<T = any>(
   method: PenpotApiMethod,
   params: Record<string, unknown> = {},
 ): Promise<T> {
+  const res = await postPenpotApi(request, method, params);
+  return res.json();
+}
+
+/**
+ * Like callPenpotApi(), for methods whose answer the caller doesn't need: some
+ * (e.g. delete-team) answer with an empty body, which isn't JSON.
+ * @param request Session to call with, e.g. `page.context().request`.
+ * @param method API method name.
+ * @param params Method parameters, with camelCase keys.
+ */
+export async function callPenpotApiNoContent(
+  request: APIRequestContext,
+  method: PenpotApiMethod,
+  params: Record<string, unknown> = {},
+): Promise<void> {
+  await postPenpotApi(request, method, params);
+}
+
+/**
+ * Posts a Penpot main API call and throws with the server's answer when it fails.
+ * @param request Session to call with.
+ * @param method API method name.
+ * @param params Method parameters, with camelCase keys.
+ * @returns The (successful) response.
+ */
+async function postPenpotApi(
+  request: APIRequestContext,
+  method: PenpotApiMethod,
+  params: Record<string, unknown>,
+) {
   const res = await request.post(penpotApiPath(method), {
     data: params,
     headers: { Accept: 'application/json' },
   });
   if (!res.ok())
     throw new Error(`${method} failed: ${res.status()} ${await res.text()}`);
-  return res.json();
+  return res;
 }

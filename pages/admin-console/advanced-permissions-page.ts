@@ -1,5 +1,6 @@
+import { MoveTeamsPermissionComponent } from '@pages/admin-console/move-teams-permission-component';
+import { BasePage } from '@pages/base-page';
 import { type Locator, type Page, expect } from '@playwright/test';
-import { BasePage } from '../base-page';
 
 /**
  * Named option labels for each Advanced Permissions dropdown, for typed use
@@ -72,6 +73,8 @@ export class AdvancedPermissionsPage extends BasePage {
   readonly cancelRevokeInvitationsButton: Locator;
   readonly applyAndRevokeInvitationsButton: Locator;
 
+  readonly moveTeams: MoveTeamsPermissionComponent;
+
   constructor(page: Page) {
     super(page);
 
@@ -95,6 +98,23 @@ export class AdvancedPermissionsPage extends BasePage {
     this.applyAndRevokeInvitationsButton = page.getByRole('button', {
       name: 'Apply and revoke invitations',
     });
+
+    // The Move teams block has no role or name: it's the one holding its dropdown
+    // and description, and not the other permissions' dropdowns (as its parents do)
+    const moveTeamsBlock = page
+      .locator('main div')
+      .filter({
+        has: page.getByRole('button', {
+          name: new RegExp(`${PERMISSION_TITLES[MoveTeamsPermission.TeamOwners]}$`),
+        }),
+      })
+      .filter({ hasText: 'If you manage multiple organizations' })
+      .filter({
+        hasNot: page.getByRole('button', {
+          name: new RegExp(`${PERMISSION_TITLES[CreateTeamsPermission.AnyMember]}$`),
+        }),
+      });
+    this.moveTeams = new MoveTeamsPermissionComponent(page, moveTeamsBlock);
   }
 
   /* -------------------------------------------------
