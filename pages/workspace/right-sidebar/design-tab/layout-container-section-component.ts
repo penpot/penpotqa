@@ -40,10 +40,43 @@ export type LayoutTypeName = (typeof LayoutType)[keyof typeof LayoutType];
  */
 export class LayoutContainerSectionComponent extends BaseComponent {
   readonly toggleButton: Locator;
+  readonly addLayoutButton: Locator;
+  readonly flexLayoutOption: Locator;
+  readonly gridLayoutOption: Locator;
 
   constructor(page: Page, root: Locator) {
     super(page, root);
     this.toggleButton = root.getByRole('button', { name: 'Layout', exact: true });
+    this.addLayoutButton = root.getByRole('button', { name: 'Add layout' });
+    this.flexLayoutOption = page.getByRole('button', { name: 'Flex layout' });
+    this.gridLayoutOption = page.getByRole('button', { name: 'Grid layout' });
+  }
+
+  /** Clicks the "+" (Add layout) button of the Layout section, which opens the layout options. */
+  async clickAddLayoutButton() {
+    await this.addLayoutButton.click();
+  }
+
+  /** Checks that the "Flex layout" and "Grid layout" options are shown. */
+  async checkAddLayoutOptionsAreVisible() {
+    await expect(
+      this.flexLayoutOption,
+      '"Flex layout" option is visible',
+    ).toBeVisible();
+    await expect(
+      this.gridLayoutOption,
+      '"Grid layout" option is visible',
+    ).toBeVisible();
+  }
+
+  /**
+   * Adds a layout by choosing one of the options the "+" button opened.
+   * @param type Layout to add, see LayoutType.
+   */
+  async selectAddLayoutOption(type: LayoutTypeName) {
+    await (
+      type === LayoutType.Flex ? this.flexLayoutOption : this.gridLayoutOption
+    ).click();
   }
 
   /** Expands the section if it is collapsed (adding a layout from the canvas leaves it collapsed). */
