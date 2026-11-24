@@ -89,6 +89,19 @@ export class ViewportComponent extends BaseComponent {
   }
 
   /**
+   * Checks whether a shape name is being edited on the canvas (the inline input over its title).
+   * @param editing Expected state; default true.
+   */
+  async checkShapeNameInputVisible(editing = true) {
+    await expect(
+      this.root.getByRole('textbox'),
+      editing
+        ? 'A shape name is being edited on the canvas'
+        : 'No shape name is being edited on the canvas',
+    ).toHaveCount(editing ? 1 : 0);
+  }
+
+  /**
    * Moves the mouse onto a point of the canvas, so the shape under it gets hovered.
    * @param point Point relative to the canvas.
    * @returns The point in page coordinates.
