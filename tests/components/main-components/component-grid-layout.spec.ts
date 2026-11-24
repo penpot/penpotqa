@@ -159,7 +159,7 @@ demoAccountFileTest.describe(() => {
   );
 
   demoAccountFileTest(
-    qase([1732, 1733], '[Grid layout] Use shared component in another file'),
+    qase([1732, 1733], 'Use shared component in another file'),
     async ({ dashboardPage, mainPage }) => {
       await demoAccountFileTest.step(
         'Create component and add file as shared library',
