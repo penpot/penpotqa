@@ -1,4 +1,4 @@
-import { type ShortcutRef } from '@pages/shortcuts-page';
+import { type ShortcutRef } from '@pages/your-account/shortcuts-section-component';
 import { shortcutsTest } from '@tests/profile-menu/your-account/your-account-fixture';
 import { qase } from 'playwright-qase-reporter/playwright';
 
@@ -27,29 +27,30 @@ const zoomLenseIncrease: ShortcutRef = {
 
 shortcutsTest(
   qase([3609], 'Search for a shortcut by action name'),
-  async ({ shortcutsPage }) => {
+  async ({ yourAccountPage }) => {
+    const { shortcuts } = yourAccountPage;
     await shortcutsTest.step('Click the search field', async () => {
-      await shortcutsPage.searchInput.click();
-      await shortcutsPage.isSearchInputFocused();
+      await shortcuts.searchInput.click();
+      await shortcuts.isSearchInputFocused();
     });
 
     await shortcutsTest.step(
       'Type a partial name ("Zoom") → only matching shortcuts are listed',
       async () => {
-        await shortcutsPage.search('Zoom');
-        await shortcutsPage.areAllListedShortcutsMatching('Zoom');
-        await shortcutsPage.isShortcutListed(zoomLenseIncrease);
+        await shortcuts.search('Zoom');
+        await shortcuts.areAllListedShortcutsMatching('Zoom');
+        await shortcuts.isShortcutListed(zoomLenseIncrease);
       },
     );
 
     await shortcutsTest.step(
       'Type a full action name ("Zoom in") → only that action is listed',
       async () => {
-        await shortcutsPage.search('Zoom in');
-        await shortcutsPage.areAllListedShortcutsMatching('Zoom in');
-        await shortcutsPage.isShortcutListed(workspaceZoomIn);
-        await shortcutsPage.isShortcutListed(viewerZoomIn);
-        await shortcutsPage.isShortcutListed(zoomLenseIncrease, false);
+        await shortcuts.search('Zoom in');
+        await shortcuts.areAllListedShortcutsMatching('Zoom in');
+        await shortcuts.isShortcutListed(workspaceZoomIn);
+        await shortcuts.isShortcutListed(viewerZoomIn);
+        await shortcuts.isShortcutListed(zoomLenseIncrease, false);
       },
     );
   },
@@ -57,29 +58,30 @@ shortcutsTest(
 
 shortcutsTest(
   qase([3616], 'Resolve a shortcut conflict by displacing the existing binding'),
-  async ({ shortcutsPage }) => {
+  async ({ yourAccountPage }) => {
+    const { shortcuts } = yourAccountPage;
     await shortcutsTest.step(
       'Press "z" (already used by "Zoom lense increase") for "Cut" → conflict message',
       async () => {
-        await shortcutsPage.startEditingShortcut(cut);
-        await shortcutsPage.pressShortcutKeys('z');
-        await shortcutsPage.isConflictMessageVisible(cut, zoomLenseIncrease.action);
+        await shortcuts.startEditingShortcut(cut);
+        await shortcuts.pressShortcutKeys('z');
+        await shortcuts.isConflictMessageVisible(cut, zoomLenseIncrease.action);
       },
     );
 
     await shortcutsTest.step('Save to keep the new binding', async () => {
-      await shortcutsPage.saveShortcut(cut);
-      await shortcutsPage.hasShortcutKeys(cut, ['z']);
+      await shortcuts.saveShortcut(cut);
+      await shortcuts.hasShortcutKeys(cut, ['z']);
     });
 
     await shortcutsTest.step(
       'Reopen the Shortcuts panel → "Cut" uses "z" and "Zoom lense increase" no longer does',
       async () => {
-        await shortcutsPage.reload();
-        await shortcutsPage.search(cut.action);
-        await shortcutsPage.hasShortcutKeys(cut, ['z']);
-        await shortcutsPage.search(zoomLenseIncrease.action);
-        await shortcutsPage.hasNoShortcutKeys(zoomLenseIncrease);
+        await shortcuts.reload();
+        await shortcuts.search(cut.action);
+        await shortcuts.hasShortcutKeys(cut, ['z']);
+        await shortcuts.search(zoomLenseIncrease.action);
+        await shortcuts.hasNoShortcutKeys(zoomLenseIncrease);
       },
     );
   },
@@ -90,30 +92,31 @@ shortcutsTest(
     [3661],
     'Two shortcuts can share the same key combination in different contexts',
   ),
-  async ({ shortcutsPage }) => {
+  async ({ yourAccountPage }) => {
+    const { shortcuts } = yourAccountPage;
     await shortcutsTest.step('Assign "q" to Workspace > Edit > Cut', async () => {
-      await shortcutsPage.assignShortcut(cut, 'q');
-      await shortcutsPage.hasShortcutKeys(cut, ['q']);
+      await shortcuts.assignShortcut(cut, 'q');
+      await shortcuts.hasShortcutKeys(cut, ['q']);
     });
 
     await shortcutsTest.step(
       'Press "q" for Viewer > Zoom > Zoom in → no conflict warning, it can be saved',
       async () => {
-        await shortcutsPage.startEditingShortcut(viewerZoomIn);
-        await shortcutsPage.pressShortcutKeys('q');
-        await shortcutsPage.isShortcutAvailableMessageVisible(viewerZoomIn);
-        await shortcutsPage.saveShortcut(viewerZoomIn);
+        await shortcuts.startEditingShortcut(viewerZoomIn);
+        await shortcuts.pressShortcutKeys('q');
+        await shortcuts.isShortcutAvailableMessageVisible(viewerZoomIn);
+        await shortcuts.saveShortcut(viewerZoomIn);
       },
     );
 
     await shortcutsTest.step(
       'Reopen the Shortcuts panel → both actions keep "q"',
       async () => {
-        await shortcutsPage.reload();
-        await shortcutsPage.search(cut.action);
-        await shortcutsPage.hasShortcutKeys(cut, ['q']);
-        await shortcutsPage.search(viewerZoomIn.action);
-        await shortcutsPage.hasShortcutKeys(viewerZoomIn, ['q']);
+        await shortcuts.reload();
+        await shortcuts.search(cut.action);
+        await shortcuts.hasShortcutKeys(cut, ['q']);
+        await shortcuts.search(viewerZoomIn.action);
+        await shortcuts.hasShortcutKeys(viewerZoomIn, ['q']);
       },
     );
   },
@@ -124,31 +127,32 @@ shortcutsTest(
     [3647],
     'Applying an import updates shortcuts to the imported key combinations',
   ),
-  async ({ shortcutsPage }, testInfo) => {
+  async ({ yourAccountPage }, testInfo) => {
+    const { shortcuts } = yourAccountPage;
     const exportedFile = testInfo.outputPath('shortcuts.json');
 
     await shortcutsTest.step(
       'Setup: export a file with "Cut" set to "q", then reset all shortcuts to default',
       async () => {
-        await shortcutsPage.assignShortcut(cut, 'q');
-        await shortcutsPage.search('');
-        const download = await shortcutsPage.exportShortcuts();
+        await shortcuts.assignShortcut(cut, 'q');
+        await shortcuts.search('');
+        const download = await shortcuts.exportShortcuts();
         await download.saveAs(exportedFile);
-        await shortcutsPage.clickResetAll();
-        await shortcutsPage.confirmResetAll();
+        await shortcuts.clickResetAll();
+        await shortcuts.confirmResetAll();
       },
     );
 
     await shortcutsTest.step(
       'Import the file → the preview lists Action, Current and Imported keys',
       async () => {
-        await shortcutsPage.importShortcuts(exportedFile);
-        await shortcutsPage.isDialogRowVisible(shortcutsPage.importDialog, [
+        await shortcuts.importShortcuts(exportedFile);
+        await shortcuts.isDialogRowVisible(shortcuts.importDialog, [
           'Action',
           'Current',
           'Imported',
         ]);
-        await shortcutsPage.isDialogRowVisible(shortcutsPage.importDialog, [
+        await shortcuts.isDialogRowVisible(shortcuts.importDialog, [
           'Cut',
           'ctrl x',
           'q',
@@ -157,15 +161,15 @@ shortcutsTest(
     );
 
     await shortcutsTest.step('Confirm the import → the dialog closes', async () => {
-      await shortcutsPage.confirmImport();
+      await shortcuts.confirmImport();
     });
 
     await shortcutsTest.step(
       'Reopen the Shortcuts panel → "Cut" uses the imported "q"',
       async () => {
-        await shortcutsPage.reload();
-        await shortcutsPage.search(cut.action);
-        await shortcutsPage.hasShortcutKeys(cut, ['q']);
+        await shortcuts.reload();
+        await shortcuts.search(cut.action);
+        await shortcuts.hasShortcutKeys(cut, ['q']);
       },
     );
   },
@@ -176,32 +180,33 @@ shortcutsTest(
     [3654],
     'Restore All resets every personalized and disabled shortcut to its default',
   ),
-  async ({ shortcutsPage }) => {
+  async ({ yourAccountPage }) => {
+    const { shortcuts } = yourAccountPage;
     await shortcutsTest.step(
       'Setup: reassign "Cut" to "q" and disable "Copy properties"',
       async () => {
-        await shortcutsPage.assignShortcut(cut, 'q');
-        await shortcutsPage.disableShortcut(copyProperties);
-        await shortcutsPage.hasNoShortcutKeys(copyProperties);
-        await shortcutsPage.reload();
-        await shortcutsPage.openTab('Custom');
-        await shortcutsPage.isShortcutListed(cut);
-        await shortcutsPage.openTab('Disabled');
-        await shortcutsPage.isShortcutListed(copyProperties);
-        await shortcutsPage.openTab('All');
+        await shortcuts.assignShortcut(cut, 'q');
+        await shortcuts.disableShortcut(copyProperties);
+        await shortcuts.hasNoShortcutKeys(copyProperties);
+        await shortcuts.reload();
+        await shortcuts.openTab('Custom');
+        await shortcuts.isShortcutListed(cut);
+        await shortcuts.openTab('Disabled');
+        await shortcuts.isShortcutListed(copyProperties);
+        await shortcuts.openTab('All');
       },
     );
 
     await shortcutsTest.step(
       'Click "Reset all" → confirmation lists both shortcuts with their defaults',
       async () => {
-        await shortcutsPage.clickResetAll();
-        await shortcutsPage.isDialogRowVisible(shortcutsPage.resetAllDialog, [
+        await shortcuts.clickResetAll();
+        await shortcuts.isDialogRowVisible(shortcuts.resetAllDialog, [
           'Cut',
           'q',
           'ctrl x',
         ]);
-        await shortcutsPage.isDialogRowVisible(shortcutsPage.resetAllDialog, [
+        await shortcuts.isDialogRowVisible(shortcuts.resetAllDialog, [
           'Copy properties',
           '-',
           'ctrl alt c',
@@ -212,20 +217,20 @@ shortcutsTest(
     await shortcutsTest.step(
       'Confirm → both are back to their defaults',
       async () => {
-        await shortcutsPage.confirmResetAll();
-        await shortcutsPage.search(cut.action);
-        await shortcutsPage.hasShortcutKeys(cut, ['ctrl', 'x']);
-        await shortcutsPage.search(copyProperties.action);
-        await shortcutsPage.hasShortcutKeys(copyProperties, ['ctrl', 'alt', 'c']);
-        await shortcutsPage.search('');
+        await shortcuts.confirmResetAll();
+        await shortcuts.search(cut.action);
+        await shortcuts.hasShortcutKeys(cut, ['ctrl', 'x']);
+        await shortcuts.search(copyProperties.action);
+        await shortcuts.hasShortcutKeys(copyProperties, ['ctrl', 'alt', 'c']);
+        await shortcuts.search('');
       },
     );
 
     await shortcutsTest.step('The Custom and Disabled tabs are empty', async () => {
-      await shortcutsPage.openTab('Custom');
-      await shortcutsPage.isTabEmpty();
-      await shortcutsPage.openTab('Disabled');
-      await shortcutsPage.isTabEmpty();
+      await shortcuts.openTab('Custom');
+      await shortcuts.isTabEmpty();
+      await shortcuts.openTab('Disabled');
+      await shortcuts.isTabEmpty();
     });
   },
 );

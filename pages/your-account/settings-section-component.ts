@@ -1,4 +1,4 @@
-import { BasePage } from '@pages/base-page';
+import { BaseComponent } from '@pages/base-component';
 import { type Locator, type Page, expect } from '@playwright/test';
 
 /** Status of the WebGL rendering switch, which is also its accessible name. */
@@ -17,42 +17,34 @@ export type UiThemeName = (typeof UiTheme)[keyof typeof UiTheme];
  * Your account > Settings (`?screen=settings-options`): language, UI theme and
  * the "WebGL rendering" section.
  */
-export class SettingsPage extends BasePage {
-  readonly settingsSidebarOption: Locator;
-  readonly settingsRegion: Locator;
+export class SettingsSectionComponent extends BaseComponent {
   readonly uiThemePicker: Locator;
   readonly updateSettingsButton: Locator;
   /** "Status" switch of the "WebGL rendering" section; saves as soon as it's clicked. */
   readonly webglRenderingSwitch: Locator;
+  /** Toast shown after saving; it renders in a portal. */
+  readonly toast: Locator;
 
-  constructor(page: Page) {
-    super(page);
-    this.settingsSidebarOption = page
-      .getByRole('navigation', { name: 'Settings' })
-      .getByRole('listitem')
-      .filter({ hasText: 'Settings' });
-    this.settingsRegion = page.getByRole('region', { name: 'Settings' });
+  constructor(page: Page, root: Locator) {
+    super(page, root);
     // The pickers have no accessible name: take the one after its heading
-    this.uiThemePicker = this.settingsRegion
+    this.uiThemePicker = root
       .getByRole('heading', { name: 'UI theme' })
       .locator('xpath=following-sibling::div[1]')
       .getByRole('combobox');
-    this.updateSettingsButton = this.settingsRegion.getByRole('button', {
+    this.updateSettingsButton = root.getByRole('button', {
       name: 'Update settings',
     });
-    this.webglRenderingSwitch = this.settingsRegion.getByRole('switch');
+    this.webglRenderingSwitch = root.getByRole('switch');
+    this.toast = page.locator('div[class*="shared_notification_pill__type-toast"]');
   }
 
-  /** Opens Settings from Your account's sidebar. */
-  async open() {
-    await this.settingsSidebarOption.click();
-    await expect(this.settingsRegion, 'Settings page is shown').toBeVisible();
-  }
-
-  /** Opens Your account > Settings by its URL, from anywhere in Penpot. */
-  async goto() {
-    await this.page.goto('/?screen=settings-options');
-    await expect(this.settingsRegion, 'Settings page is shown').toBeVisible();
+  /**
+   * Checks the toast shown after saving.
+   * @param message Expected toast text.
+   */
+  private async checkToast(message: string) {
+    await expect(this.toast, `Toast is "${message}"`).toHaveText(message);
   }
 
   /**
@@ -61,11 +53,9 @@ export class SettingsPage extends BasePage {
    */
   async selectUiTheme(theme: UiThemeName) {
     await this.uiThemePicker.click();
-    await this.settingsRegion
-      .getByRole('option', { name: theme, exact: true })
-      .click();
+    await this.root.getByRole('option', { name: theme, exact: true }).click();
     await this.updateSettingsButton.click();
-    await this.isSuccessMessageDisplayed('Profile saved successfully!');
+    await this.checkToast('Profile saved successfully!');
   }
 
   /**
@@ -76,9 +66,7 @@ export class SettingsPage extends BasePage {
   async toggleWebglRendering(enabled: boolean) {
     await this.checkWebglRenderingStatus(enabled ? 'Disabled' : 'Enabled');
     await this.webglRenderingSwitch.click();
-    await this.isSuccessMessageDisplayed(
-      `WebGL rendering ${enabled ? 'enabled' : 'disabled'}`,
-    );
+    await this.checkToast(`WebGL rendering ${enabled ? 'enabled' : 'disabled'}`);
     await this.checkWebglRenderingStatus(enabled ? 'Enabled' : 'Disabled');
   }
 

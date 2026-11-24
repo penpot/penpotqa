@@ -1,8 +1,8 @@
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
-import { LoginPage } from '@pages/login-page';
-import { ProfilePage } from '@pages/profile-page';
-import { passwordTest } from '@tests/profile-menu/your-account/your-account-fixture';
-import { registerTest } from 'fixtures';
+import { PasswordField } from '@pages/your-account/password-section-component';
+import {
+  passwordTest,
+  yourAccountRegisterTest,
+} from '@tests/profile-menu/your-account/your-account-fixture';
 import {
   checkPasswordChangedText,
   checkLastMessageSubject,
@@ -13,22 +13,19 @@ import { qase } from 'playwright-qase-reporter/playwright';
 
 passwordTest(
   qase([198], 'Change password to invalid'),
-  async ({ profilePage, currentPassword }) => {
+  async ({ yourAccountPage, currentPassword }) => {
+    const { password } = yourAccountPage;
     const newPassword = '1234567';
 
     await passwordTest.step('Enter current and new invalid password', async () => {
-      await profilePage.enterCurrentPassword(currentPassword);
-      await profilePage.enterNewPassword(newPassword);
-      await profilePage.enterConfirmPassword(newPassword);
+      await password.fillForm(currentPassword, newPassword);
     });
 
     await passwordTest.step(
       'Verify change password button is disabled and error is shown',
       async () => {
-        await profilePage.isChangePasswordButtonDisabled();
-        await profilePage.isPasswordInputErrorDisplayed(
-          'Password should at least be 8 characters',
-        );
+        await password.checkChangePasswordButtonIsDisabled();
+        await password.checkError('Password should at least be 8 characters');
       },
     );
   },
@@ -36,46 +33,52 @@ passwordTest(
 
 // Uses a freshly registered account: demo accounts can't receive the
 // "Password changed" email.
-registerTest(
+yourAccountRegisterTest(
   qase([199], 'Change password to valid'),
-  async ({ page, name, email }) => {
-    registerTest.slow();
-    const dashboardPage = new DashboardPage(page);
-    const loginPage = new LoginPage(page);
-    const profilePage = new ProfilePage(page);
+  async ({ page, name, email, yourAccountPage, loginPage, dashboardPage }) => {
+    yourAccountRegisterTest.slow();
+    const { password } = yourAccountPage;
     const newPassword = 'TestChangePassword123#';
 
-    await registerTest.step('Open Your account > Password', async () => {
-      await profilePage.openYourAccountPage();
-      await profilePage.isHeaderDisplayed('Your account');
-      await profilePage.openPasswordPageInAccount();
+    await yourAccountRegisterTest.step('Open Your account > Password', async () => {
+      await yourAccountPage.open();
+      await yourAccountPage.openSection('Password');
+      await password.checkIsVisible();
     });
 
-    await registerTest.step('Enter current and new valid password', async () => {
-      await profilePage.enterCurrentPassword(process.env.LOGIN_PWD);
-      await profilePage.enterNewPassword(newPassword);
-      await profilePage.enterConfirmPassword(newPassword);
-    });
-
-    await registerTest.step(
-      'Click "Change password" → success notification is shown',
+    await yourAccountRegisterTest.step(
+      'Enter current and new valid password',
       async () => {
-        await profilePage.clickChangePasswordButton();
-        await profilePage.isSuccessMessageDisplayed('Password saved successfully!');
+        const currentPassword = process.env.LOGIN_PWD;
+        if (!currentPassword) throw new Error('LOGIN_PWD is not set');
+        await password.fillForm(currentPassword, newPassword);
       },
     );
 
-    await registerTest.step('A "Password changed" email is received', async () => {
-      // The first email is the registration one.
-      await waitForMessageCount(page, email, 2, 60);
-      await checkLastMessageSubject(email, 'Password changed');
-      await checkPasswordChangedText(await getMessageText(email), name);
-    });
+    await yourAccountRegisterTest.step(
+      'Click "Change password" → success notification is shown',
+      async () => {
+        await password.submit();
+        await yourAccountPage.isSuccessMessageDisplayed(
+          'Password saved successfully!',
+        );
+      },
+    );
 
-    await registerTest.step(
+    await yourAccountRegisterTest.step(
+      'A "Password changed" email is received',
+      async () => {
+        // The first email is the registration one.
+        await waitForMessageCount(page, email, 2, 60);
+        await checkLastMessageSubject(email, 'Password changed');
+        await checkPasswordChangedText(await getMessageText(email), name);
+      },
+    );
+
+    await yourAccountRegisterTest.step(
       'Log out and log in with the new password → dashboard opens',
       async () => {
-        await profilePage.logout();
+        await yourAccountPage.profileMenu.logout();
         await loginPage.enterEmailAndClickOnContinue(email);
         await loginPage.enterPwd(newPassword);
         await loginPage.clickLoginButton();
@@ -87,46 +90,35 @@ registerTest(
 
 passwordTest(
   qase([200], 'Show/hide password'),
-  async ({ profilePage, currentPassword }) => {
+  async ({ yourAccountPage, currentPassword }) => {
+    const { password } = yourAccountPage;
     const newPassword = '1234567890';
 
     await passwordTest.step('Enter current and new passwords', async () => {
-      await profilePage.enterCurrentPassword(currentPassword);
-      await profilePage.enterNewPassword(newPassword);
-      await profilePage.enterConfirmPassword(newPassword);
+      await password.fillForm(currentPassword, newPassword);
     });
 
     await passwordTest.step(
       'Show passwords and verify they are visible',
       async () => {
-        await profilePage.clickOnShowPasswordIcon(profilePage.oldPasswordContainer);
-        await profilePage.isPasswordShown(
-          profilePage.passwordOldInput,
-          currentPassword,
-        );
-        await profilePage.clickOnShowPasswordIcon(profilePage.newPasswordContainer);
-        await profilePage.isPasswordShown(profilePage.passwordNewInput, newPassword);
-        await profilePage.clickOnShowPasswordIcon(
-          profilePage.confirmPasswordContainer,
-        );
-        await profilePage.isPasswordShown(
-          profilePage.passwordConfirmInput,
-          newPassword,
-        );
+        await password.showPassword(PasswordField.Old);
+        await password.checkPasswordIsShown(PasswordField.Old, currentPassword);
+        await password.showPassword(PasswordField.New);
+        await password.checkPasswordIsShown(PasswordField.New, newPassword);
+        await password.showPassword(PasswordField.Confirm);
+        await password.checkPasswordIsShown(PasswordField.Confirm, newPassword);
       },
     );
 
     await passwordTest.step(
       'Hide passwords and verify they are hidden',
       async () => {
-        await profilePage.clickOnHidePasswordIcon(profilePage.oldPasswordContainer);
-        await profilePage.isPasswordHidden(profilePage.passwordOldInput);
-        await profilePage.clickOnHidePasswordIcon(profilePage.newPasswordContainer);
-        await profilePage.isPasswordHidden(profilePage.passwordNewInput);
-        await profilePage.clickOnHidePasswordIcon(
-          profilePage.confirmPasswordContainer,
-        );
-        await profilePage.isPasswordHidden(profilePage.passwordConfirmInput);
+        await password.hidePassword(PasswordField.Old);
+        await password.checkPasswordIsHidden(PasswordField.Old);
+        await password.hidePassword(PasswordField.New);
+        await password.checkPasswordIsHidden(PasswordField.New);
+        await password.hidePassword(PasswordField.Confirm);
+        await password.checkPasswordIsHidden(PasswordField.Confirm);
       },
     );
   },
@@ -134,23 +126,20 @@ passwordTest(
 
 passwordTest(
   qase([202], 'Fail to change password confirmation does not match'),
-  async ({ profilePage, currentPassword }) => {
+  async ({ yourAccountPage, currentPassword }) => {
+    const { password } = yourAccountPage;
     await passwordTest.step(
       'Enter current password and non-matching new passwords',
       async () => {
-        await profilePage.enterCurrentPassword(currentPassword);
-        await profilePage.enterNewPassword('test12345');
-        await profilePage.enterConfirmPassword('test54321');
+        await password.fillForm(currentPassword, 'test12345', 'test54321');
       },
     );
 
     await passwordTest.step(
       'Verify change password button is disabled and error is shown',
       async () => {
-        await profilePage.isChangePasswordButtonDisabled();
-        await profilePage.isPasswordInputErrorDisplayed(
-          'Confirmation password must match',
-        );
+        await password.checkChangePasswordButtonIsDisabled();
+        await password.checkError('Confirmation password must match');
       },
     );
   },

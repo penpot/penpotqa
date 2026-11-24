@@ -1,4 +1,3 @@
-import { ProfilePage } from '@pages/profile-page';
 import { integrationsTest } from '@tests/profile-menu/your-account/your-account-fixture';
 import { qase } from 'playwright-qase-reporter/playwright';
 
@@ -7,19 +6,20 @@ integrationsTest(
     [2749],
     'Delete an existing access token and verify it is removed from the list',
   ),
-  async ({ profilePage }: { profilePage: ProfilePage }) => {
+  async ({ yourAccountPage }) => {
+    const { accessTokens } = yourAccountPage.integrations;
     await integrationsTest.step('Create an access token', async () => {
       const accessTokenName = 'Access token test';
-      await profilePage.createAccessToken(accessTokenName);
+      await accessTokens.createToken(accessTokenName);
     });
     await integrationsTest.step('Delete the created access token', async () => {
-      await profilePage.deleteAccessToken();
+      await accessTokens.deleteToken();
     });
     await integrationsTest.step(
       'Reload page and check that the created access token is deleted',
       async () => {
-        await profilePage.reloadPage();
-        await profilePage.checkNoAccessTokens();
+        await yourAccountPage.reloadPage();
+        await accessTokens.checkNoTokens();
       },
     );
   },

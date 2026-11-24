@@ -3,7 +3,7 @@ import { registerTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { LoginPage } from '@pages/login-page';
 import { RegisterPage } from '@pages/register-page';
-import { ProfilePage } from '@pages/profile-page';
+import { ProfileMenuComponent } from '@pages/components/profile-menu-component';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { MainPage } from '@pages/workspace/main-page';
@@ -27,7 +27,7 @@ type SetupTeamAndFileResult = {
   registerPage: RegisterPage;
   dashboardPage: DashboardPage;
   teamPage: TeamPage;
-  profilePage: ProfilePage;
+  profileMenu: ProfileMenuComponent;
   mainPage: MainPage;
 };
 
@@ -53,14 +53,14 @@ async function setupTeamAndFile(
   const registerPage = new RegisterPage(page);
   const dashboardPage = new DashboardPage(page);
   const teamPage = new TeamPage(page);
-  const profilePage = new ProfilePage(page);
+  const profileMenu = new ProfileMenuComponent(page);
   const mainPage = new MainPage(page);
 
   await teamPage.createTeam(teamName);
   await dashboardPage.createFileViaPlaceholder();
   await mainPage.waitForViewportVisible();
 
-  return { loginPage, registerPage, dashboardPage, teamPage, profilePage, mainPage };
+  return { loginPage, registerPage, dashboardPage, teamPage, profileMenu, mainPage };
 }
 
 // Create a file in Personal Projects and open it
@@ -254,7 +254,7 @@ registerTest(
       registerPage,
       dashboardPage,
       loginPage,
-      profilePage,
+      profileMenu,
     } = setup;
 
     // Get Workspace URL and go back to Dashboard
@@ -262,7 +262,7 @@ registerTest(
     await mainPage.clickPencilBoxButton();
 
     // Register a second user (fresh session required)
-    await profilePage.logout();
+    await profileMenu.logout();
     await loginPage.isEmailInputVisible();
     await page.context().clearCookies();
     await mainPage.reloadPage();
@@ -297,7 +297,7 @@ registerTest(
     await dashboardPage.isDashboardOpenedAfterLogin();
 
     // Log out & clean session before OWNER login
-    await profilePage.logout();
+    await profileMenu.logout();
     await loginPage.isEmailInputVisible();
     await page.context().clearCookies();
     await mainPage.reloadPage();

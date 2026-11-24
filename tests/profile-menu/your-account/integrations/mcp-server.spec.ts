@@ -1,38 +1,28 @@
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
-import { ProfilePage } from '@pages/profile-page';
-import { MainPage } from '@pages/workspace/main-page';
 import { integrationsTest } from '@tests/profile-menu/your-account/your-account-fixture';
 import { qase } from 'playwright-qase-reporter/playwright';
-
-let mainPage: MainPage;
-let dashboardPage: DashboardPage;
-
-integrationsTest.beforeEach(async ({ page }) => {
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
-});
 
 integrationsTest(
   qase(
     [2771, 2770, 2775, 2782, 2783, 2784, 2787, 2791, 3065],
     'Enable MCP generating key, disable MCP, enable MCP with an existing key and delete key',
   ),
-  async ({ profilePage }: { profilePage: ProfilePage }) => {
+  async ({ yourAccountPage, dashboardPage, mainPage }) => {
+    const { mcpServer } = yourAccountPage.integrations;
     await integrationsTest.step(
       '2771 Enable MCP integration generating MCP key',
       async () => {
         await integrationsTest.step('Enable MCP', async () => {
-          await profilePage.enableMCPServerWithoutKey();
+          await mcpServer.enableWithoutKey();
         });
         await integrationsTest.step('Generate MCP key', async () => {
-          await profilePage.generateMCPKey();
+          await mcpServer.generateKey();
         });
       },
     );
 
     await integrationsTest.step('2787 Disable MCP integration', async () => {
       await integrationsTest.step('Disable MCP', async () => {
-        await profilePage.disableMCPServer();
+        await mcpServer.disable();
       });
     });
 
@@ -42,7 +32,7 @@ integrationsTest(
         await integrationsTest.step(
           'Create a new file and open it in the workspace',
           async () => {
-            await profilePage.backToDashboardFromAccount();
+            await yourAccountPage.backToDashboard();
             await dashboardPage.createFileViaPlaceholder();
             await mainPage.isMainPageLoaded();
           },
@@ -65,12 +55,13 @@ integrationsTest(
           'Go back to the integrations page from file editor',
           async () => {
             await mainPage.backToDashboardFromFileEditor('Personal Projects');
-            await profilePage.openYourAccountIntegrationsPage();
+            await yourAccountPage.open();
+            await yourAccountPage.openSection('Integrations');
           },
         );
 
         await integrationsTest.step('Enable MCP server', async () => {
-          await profilePage.enableMCPServerWithKey();
+          await mcpServer.enableWithKey();
         });
       },
     );
@@ -81,7 +72,7 @@ integrationsTest(
         await integrationsTest.step(
           'Re-open the file from the Integrations page',
           async () => {
-            await profilePage.backToDashboardFromAccount();
+            await yourAccountPage.backToDashboard();
             await dashboardPage.openFileWithName('New File 1');
             await mainPage.isMainPageLoaded();
           },
@@ -176,20 +167,21 @@ integrationsTest(
         'Go back to the integrations page from file editor',
         async () => {
           await mainPage.backToDashboardFromFileEditor('Personal Projects');
-          await profilePage.openYourAccountIntegrationsPage();
+          await yourAccountPage.open();
+          await yourAccountPage.openSection('Integrations');
         },
       );
 
       await integrationsTest.step('Delete MCP key', async () => {
-        await profilePage.deleteMCPKey();
+        await mcpServer.deleteKey();
       });
 
       await integrationsTest.step(
         'Verify state persistence after reload',
         async () => {
-          await profilePage.reloadPage();
-          await profilePage.checkNoMCPKey();
-          await profilePage.backToDashboardFromAccount();
+          await yourAccountPage.reloadPage();
+          await mcpServer.checkNoKey();
+          await yourAccountPage.backToDashboard();
         },
       );
     });

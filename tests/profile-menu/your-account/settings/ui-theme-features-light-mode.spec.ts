@@ -1,30 +1,14 @@
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
-import { TeamPage } from '@pages/dashboard/team-page';
-import { ProfilePage } from '@pages/profile-page';
-import { MainPage } from '@pages/workspace/main-page';
-import { UiTheme } from '@pages/your-account/settings-page';
+import { UiTheme } from '@pages/your-account/settings-section-component';
 import { expect } from '@playwright/test';
 import { settingsTest } from '@tests/profile-menu/your-account/your-account-fixture';
 import { qase } from 'playwright-qase-reporter/playwright';
 
-let dashboardPage: DashboardPage;
-let mainPage: MainPage;
-let profilePage: ProfilePage;
-let teamPage: TeamPage;
-
-settingsTest.beforeEach(async ({ page }) => {
-  dashboardPage = new DashboardPage(page);
-  mainPage = new MainPage(page);
-  profilePage = new ProfilePage(page);
-  teamPage = new TeamPage(page);
-});
-
 settingsTest(
   qase([1677], 'Check Light UI theme in Projects page'),
-  async ({ settingsPage }) => {
+  async ({ yourAccountPage, dashboardPage, mainPage, teamPage }) => {
     await settingsTest.step('Select the Light UI theme in Settings', async () => {
-      await settingsPage.selectUiTheme(UiTheme.Light);
-      await profilePage.backToDashboardFromAccount();
+      await yourAccountPage.settings.selectUiTheme(UiTheme.Light);
+      await yourAccountPage.backToDashboard();
     });
 
     await settingsTest.step(
@@ -43,7 +27,10 @@ settingsTest(
         await expect(dashboardPage.dashboardSection).toHaveScreenshot(
           'dashboard-image.png',
           {
-            mask: [profilePage.profileMenuButton, teamPage.teamCurrentNameDiv],
+            mask: [
+              yourAccountPage.profileMenu.menuButton,
+              teamPage.teamCurrentNameDiv,
+            ],
             maxDiffPixelRatio: 0.01,
           },
         );
