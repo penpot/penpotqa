@@ -1,7 +1,7 @@
 import type { APIRequestContext } from '@playwright/test';
 import { callPenpotApi, callPenpotApiNoContent } from 'helpers/api/penpot-api';
-import { createOrgTeam } from 'helpers/organizations/create-org-team';
 import { addTeamMember } from 'helpers/teams/add-team-member';
+import { createTeam } from 'helpers/teams/create-team';
 import { createTeamName } from 'helpers/teams/create-team-name';
 import { InvitationRole } from 'helpers/teams/invitation-role';
 
@@ -19,7 +19,11 @@ export async function joinOrganization(
   organizationId: string,
   members: { request: APIRequestContext; email: string }[],
 ) {
-  const teamId = await createOrgTeam(ownerRequest, organizationId, createTeamName());
+  const { teamId } = await createTeam(
+    ownerRequest,
+    createTeamName(),
+    organizationId,
+  );
   for (const member of members) {
     await addTeamMember(ownerRequest, member, teamId, InvitationRole.Editor);
   }

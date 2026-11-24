@@ -23,9 +23,9 @@ import {
 import { activateEnterpriseLicense } from 'helpers/organizations/activate-enterprise-license';
 import { createOrgForLicensedAccount } from 'helpers/organizations/create-org-for-licensed-account';
 import { createOrgName } from 'helpers/organizations/create-org-name';
-import { createOrgTeam } from 'helpers/organizations/create-org-team';
 import { createSecondOrgFromAdminConsole } from 'helpers/organizations/create-second-org-from-admin-console';
 import { joinOrganization } from 'helpers/organizations/join-organization';
+import { createTeam } from 'helpers/teams/create-team';
 import { createTeamName } from 'helpers/teams/create-team-name';
 import { qase } from 'playwright-qase-reporter/playwright';
 
@@ -508,9 +508,9 @@ enterpriseActivatedPageTest.describe(
         await enterpriseActivatedPageTest.step(
           'Setup: User1, User2 and User4 each own a team in OrgA',
           async () => {
-            await createOrgTeam(page.context().request, orgA.id, coconutName);
-            appleId = await createOrgTeam(user2.request, orgA.id, appleName);
-            bananaId = await createOrgTeam(user4.request, orgA.id, bananaName);
+            await createTeam(page.context().request, coconutName, orgA.id);
+            appleId = (await createTeam(user2.request, appleName, orgA.id)).teamId;
+            bananaId = (await createTeam(user4.request, bananaName, orgA.id)).teamId;
           },
         );
 

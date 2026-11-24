@@ -12,10 +12,12 @@ export class AttributesPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    // Shown twice when the org has no attributes (header and empty state)
+    // Shown twice when the org has no attributes (header and empty state):
+    // take the header one, next to the section's description.
     this.newAttributeButton = page
-      .getByRole('button', { name: 'New attribute' })
-      .first();
+      .getByText('Classify org members to apply fine-grained permissions')
+      .locator('..')
+      .getByRole('button', { name: 'New attribute' });
   }
 
   /**
@@ -37,21 +39,23 @@ export class AttributesPage extends BasePage {
   }
 
   /**
-   * Creates an attribute from "New attribute", which adds a row with its name
-   * field focused.
+   * Creates an attribute from "New attribute", which opens the "Create an
+   * attribute" dialog with its name field focused.
    * @param name Attribute name, e.g. 'Legal'.
    */
   async createAttribute(name: string) {
-    const nameField = this.page.getByRole('textbox').first();
-    // A click before the page hydrates is dropped: click again until the row shows
+    const nameField = this.page
+      .getByRole('dialog', { name: 'Create an attribute' })
+      .getByRole('textbox', { name: 'Attribute name' });
+    // A click before the page hydrates is dropped: click again until the dialog opens
     await expect(async () => {
       if (!(await nameField.isVisible())) {
         await this.newAttributeButton.click();
       }
-      await expect(nameField, 'New attribute name field is focused').toBeFocused({
+      await expect(nameField, 'Attribute name field is focused').toBeFocused({
         timeout: 2000,
       });
-    }).toPass();
+    }).toPass({ timeout: 15000 });
     await this.page.keyboard.type(name);
     await this.page.keyboard.press('Enter');
     await expect(
@@ -76,7 +80,7 @@ export class AttributesPage extends BasePage {
       // The checkbox <input> is hidden behind its styled box: click the name
       await dialog.getByText(person, { exact: true }).click();
       await expect(
-        dialog.getByRole('checkbox', { name: new RegExp(`^${person} `) }),
+        dialog.getByRole('checkbox', { name: person }),
         `"${person}" is checked in "Add people to ${name}"`,
       ).toBeChecked();
     }

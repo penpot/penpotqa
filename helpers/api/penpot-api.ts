@@ -17,7 +17,6 @@ export type PenpotApiMethod =
   | 'create-upload-session'
   | 'upload-chunk'
   | 'create-font-variant'
-  | 'add-team-to-organization'
   | 'delete-team-member'
   | 'delete-team';
 
@@ -41,7 +40,7 @@ export async function callPenpotApi<T = any>(
 
 /**
  * Like callPenpotApi(), for methods whose answer the caller doesn't need: some
- * (e.g. add-team-to-organization) answer with an empty body, which isn't JSON.
+ * (e.g. delete-team) answer with an empty body, which isn't JSON.
  * @param request Session to call with, e.g. `page.context().request`.
  * @param method API method name.
  * @param params Method parameters, with camelCase keys.
