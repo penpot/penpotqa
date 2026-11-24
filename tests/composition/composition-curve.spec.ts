@@ -1,30 +1,42 @@
-import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { LayersPanelComponent } from '@pages/workspace/left-sidebar/layers-panel-component';
+import { WorkspacePage } from '@pages/workspace/workspace-page';
 import { expect } from '@playwright/test';
 import { demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 
-let layersPanelPage: LayersPanelPage;
+let layers: LayersPanelComponent;
 
 demoAccountFileTest.beforeEach(async ({ page }) => {
-  layersPanelPage = new LayersPanelPage(page);
+  layers = new WorkspacePage(page).leftSidebar.layers;
 });
 
 demoAccountFileTest.describe(() => {
   demoAccountFileTest(
     qase([483], 'Create curve line (Toolbar)'),
     async ({ mainPage }) => {
-      await demoAccountFileTest.step('Draw curve on canvas', async () => {
-        await mainPage.clickCreateCurveButton();
-        await mainPage.drawCurve(900, 300, 600, 200);
-        await mainPage.waitForChangeIsSaved();
+      await demoAccountFileTest.step(
+        'Click Curve icon in the toolbar (on the left)',
+        async () => {
+          await mainPage.clickCreateCurveButton();
+        },
+      );
+
+      await demoAccountFileTest.step('Hover mouse to the canvas', async () => {
+        await mainPage.viewport.hover();
       });
 
-      await demoAccountFileTest.step('Verify curve layer is created', async () => {
-        await mainPage.isCreatedLayerVisible();
-        await expect(mainPage.viewport).toHaveScreenshot('curve.png', {
-          mask: mainPage.maskViewport(),
-        });
-      });
+      await demoAccountFileTest.step(
+        'Hold LMB, move the mouse and release LMB',
+        async () => {
+          await mainPage.drawCurve(900, 300, 600, 200);
+          await mainPage.waitForChangeIsSaved();
+          await mainPage.isCreatedLayerVisible();
+          await layers.checkLayerRowIsVisible('Path');
+          await expect(mainPage.viewport).toHaveScreenshot('curve.png', {
+            mask: mainPage.maskViewport(),
+          });
+        },
+      );
     },
   );
 });

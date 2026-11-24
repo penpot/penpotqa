@@ -25,20 +25,27 @@ demoAccountFileTest(
     const { boolean } = workspacePage.rightSidebar.design;
     const ellipseColor = '#B1B2B5';
 
+    await demoAccountFileTest.step('Create a rectangle and an ellipse', async () => {
+      await mainPage.createDefaultRectangleByCoordinates(300, 300);
+      await mainPage.createDefaultEllipseByCoordinates(500, 300);
+      await mainPage.waitForChangeIsSaved();
+      await layers.checkLayerRowIsVisible('Rectangle');
+      await layers.checkLayerRowIsVisible('Ellipse');
+      await designPanelPage.isFillHexCodeSet(ellipseColor);
+    });
+
     await demoAccountFileTest.step(
-      'Create a rectangle and an ellipse next to it, and fill the rectangle with another color',
+      'Fill the rectangle to another color',
       async () => {
-        await mainPage.createDefaultRectangleByCoordinates(300, 300);
+        await layers.selectLayer('Rectangle');
         await designPanelPage.typeFillHexCode('FF0000');
         await mainPage.waitForChangeIsSaved();
-        await mainPage.createDefaultEllipseByCoordinates(500, 300);
-        await mainPage.waitForChangeIsSaved();
-        await designPanelPage.isFillHexCodeSet(ellipseColor);
+        await designPanelPage.isFillHexCodeSet('#ff0000');
       },
     );
 
     await demoAccountFileTest.step(
-      'Drag the rectangle to partially overlap the ellipse (ellipse on top)',
+      'Drag the rectangle to partially overlap ellipse (ellipse on top)',
       async () => {
         await workspacePage.canvas.dragShape({ x: 300, y: 300 }, { x: 440, y: 300 });
         await mainPage.waitForChangeIsSaved();
@@ -49,30 +56,30 @@ demoAccountFileTest(
       },
     );
 
-    await demoAccountFileTest.step(
-      'Select both shapes and press Ctrl+Alt+U: they are joined in a Union with the ellipse color',
-      async () => {
-        await mainPage.pressSelectAllShortcut();
-        await layers.checkSelectedLayersCount(2);
-        await mainPage.pressKeyboardShortcut('Control+Alt+U');
-        await mainPage.waitForChangeIsSaved();
-        await layersPanelPage.isNumLayerNameVisible('Union', 1);
-        await layers.checkLayerIsChildOf('Ellipse', 'Union');
-        await layers.checkLayerIsChildOf('Rectangle', 'Union');
-        await designPanelPage.isFillHexCodeSet(ellipseColor);
-        // Deselect, so the handles aren't in the snapshot
-        await mainPage.clickViewportTwice();
-        await expect(mainPage.viewport).toHaveScreenshot(
-          'union-rectangle-ellipse.png',
-          {
-            mask: mainPage.maskViewport(),
-          },
-        );
-      },
-    );
+    await demoAccountFileTest.step('Select created shapes', async () => {
+      await mainPage.pressSelectAllShortcut();
+      await layers.checkSelectedLayersCount(2);
+    });
+
+    await demoAccountFileTest.step('Click CTRL+ALT+U combination', async () => {
+      await mainPage.pressKeyboardShortcut('Control+Alt+U');
+      await mainPage.waitForChangeIsSaved();
+      await layersPanelPage.isNumLayerNameVisible('Union', 1);
+      await layers.checkLayerIsChildOf('Ellipse', 'Union');
+      await layers.checkLayerIsChildOf('Rectangle', 'Union');
+      await designPanelPage.isFillHexCodeSet(ellipseColor);
+      // Deselect, so the handles aren't in the snapshot
+      await mainPage.clickViewportTwice();
+      await expect(mainPage.viewport).toHaveScreenshot(
+        'union-rectangle-ellipse.png',
+        {
+          mask: mainPage.maskViewport(),
+        },
+      );
+    });
 
     await demoAccountFileTest.step(
-      'Disable the union with Shift+G (ungroup): the shapes are separate again',
+      'Select the Union and press SHIFT+G (Ungroup)',
       async () => {
         await layers.selectLayer('Union');
         await mainPage.pressKeyboardShortcut('Shift+G');
@@ -83,7 +90,7 @@ demoAccountFileTest(
     );
 
     await demoAccountFileTest.step(
-      'Select both shapes and click Union in the Design tab: they are joined in a Union again',
+      'Select both shapes and click the Union button at the top of the Design tab',
       async () => {
         await mainPage.pressSelectAllShortcut();
         await layers.checkSelectedLayersCount(2);
