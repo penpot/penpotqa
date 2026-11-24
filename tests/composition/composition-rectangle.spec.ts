@@ -19,58 +19,73 @@ demoAccountFileTest.beforeEach(async ({ page }) => {
 demoAccountFileTest(
   qase([275], 'Create Rectangle (Shortcut R)'),
   async ({ mainPage }) => {
+    await demoAccountFileTest.step('Press "R" keyboard button', async () => {
+      await mainPage.pressKeyboardShortcut('R');
+      await mainPage.isShapeToolActive('rect');
+    });
+
+    await demoAccountFileTest.step('Click on the canvas', async () => {
+      await mainPage.clickViewportTwice();
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.isCreatedLayerVisible();
+      await layersPanelPage.isLayerNameDisplayed(defaultNameRectangle);
+      await designPanelPage.checkSizeWidth('100');
+      await designPanelPage.checkSizeHeight('100');
+    });
+  },
+);
+
+demoAccountFileTest(
+  qase([274], 'Create Rectangle (Toolbar)'),
+  async ({ mainPage }) => {
     await demoAccountFileTest.step(
-      'Press R shortcut and verify rectangle tool is active',
+      'Click Rectangle icon in the toolbar',
       async () => {
-        await mainPage.pressKeyboardShortcut('R');
+        await mainPage.clickCreateRectangleButton();
+        await mainPage.isShapeToolActive('rect');
       },
     );
 
-    await demoAccountFileTest.step(
-      'Click on canvas and verify rectangle with default size is created',
-      async () => {
-        await mainPage.clickViewportTwice();
-        await mainPage.waitForChangeIsSaved();
-        await mainPage.isCreatedLayerVisible();
-        await designPanelPage.checkSizeWidth('100');
-        await designPanelPage.checkSizeHeight('100');
-      },
-    );
+    await demoAccountFileTest.step('Click on the canvas', async () => {
+      await mainPage.clickViewportTwice();
+      await mainPage.waitForChangeIsSaved();
+      await mainPage.isCreatedLayerVisible();
+      await layersPanelPage.isLayerNameDisplayed(defaultNameRectangle);
+      await designPanelPage.checkSizeWidth('100');
+      await designPanelPage.checkSizeHeight('100');
+      await expect(mainPage.viewport).toHaveScreenshot('rectangle.png', {
+        mask: mainPage.maskViewport(),
+      });
+    });
   },
 );
 
 demoAccountFileTest.describe(() => {
   demoAccountFileTest.beforeEach(async ({ mainPage }) => {
     await demoAccountFileTest.slow();
-    await mainPage.clickCreateRectangleButton();
-    await mainPage.clickViewportTwice();
-    await mainPage.waitForChangeIsSaved();
-  });
-
-  demoAccountFileTest(
-    qase([274], 'Create Rectangle (Toolbar)'),
-    async ({ mainPage }) => {
-      await demoAccountFileTest.step(
-        'Verify rectangle layer is created',
-        async () => {
-          await mainPage.isCreatedLayerVisible();
-          await designPanelPage.checkSizeWidth('100');
-          await designPanelPage.checkSizeHeight('100');
-          await expect(mainPage.viewport).toHaveScreenshot('rectangle.png', {
-            mask: mainPage.maskViewport(),
-          });
-        },
+    await demoAccountFileTest.step('Create a rectangle', async () => {
+      await mainPage.clickCreateRectangleButton();
+      await mainPage.clickViewportTwice();
+      await mainPage.waitForChangeIsSaved();
+      await workspacePage.leftSidebar.layers.checkLayerRowIsVisible(
+        defaultNameRectangle,
       );
-    },
-  );
+    });
+  });
 
   demoAccountFileTest(
     qase([278], 'Change border radius multiple values (Design page in the right)'),
     async ({ mainPage }) => {
+      await demoAccountFileTest.step('Select rectangle', async () => {
+        await workspacePage.leftSidebar.layers.selectLayer(defaultNameRectangle);
+        await mainPage.waitForResizeHandlerVisible();
+      });
+
       await demoAccountFileTest.step(
-        'Click on the "Single corners" icon in the Design tab',
+        'Click the "Show independent radius" button in the Design tab',
         async () => {
           await designPanelPage.clickIndividualCornersRadiusButton();
+          await designPanelPage.checkIndividualCorners('0', '0', '0', '0');
         },
       );
 
@@ -124,17 +139,11 @@ demoAccountFileTest.describe(() => {
     qase([319], 'Transform Rectangle to Path'),
     async ({ mainPage }) => {
       await demoAccountFileTest.step(
-        'Transform rectangle to path via right click',
+        'Click RMB on rectangle - click "Flatten" menu item',
         async () => {
           await mainPage.transformToPathViaRightClick();
           await mainPage.waitForChangeIsUnsaved();
           await mainPage.waitForChangeIsSaved();
-        },
-      );
-
-      await demoAccountFileTest.step(
-        'Verify path component is visible on layers tab',
-        async () => {
           await layersPanelPage.isPathComponentOnLayersTabVisible();
         },
       );
@@ -152,12 +161,6 @@ demoAccountFileTest.describe(() => {
         async () => {
           await mainPage.createComponentViaRightClick();
           await mainPage.waitForChangeIsSaved();
-        },
-      );
-
-      await demoAccountFileTest.step(
-        'Verify component appears with included rectangle',
-        async () => {
           await layersPanelPage.isMainComponentOnLayersTabVisibleWithName(
             'Rectangle',
           );
@@ -212,48 +215,60 @@ demoAccountFileTest(
   qase([2255], 'Select and deselect rectangles'),
   async ({ mainPage }) => {
     const rectangleCoordinates = [
-      { order: 'first', x: 400, y: 800 },
-      { order: 'second', x: 400, y: 200 },
-      { order: 'third', x: 100, y: 600 },
-      { order: 'fourth', x: 700, y: 600 },
+      { x: 400, y: 800 },
+      { x: 400, y: 200 },
+      { x: 100, y: 600 },
+      { x: 700, y: 600 },
     ];
 
-    for (const [index, { order, x, y }] of rectangleCoordinates.entries()) {
-      await demoAccountFileTest.step(`Create the ${order} rectangle`, async () => {
+    for (const [index, { x, y }] of rectangleCoordinates.entries()) {
+      await demoAccountFileTest.step('Create a rectangle', async () => {
         await mainPage.createDefaultRectangleByCoordinates(x, y);
         await layersPanelPage.isNumLayerNameVisible(defaultNameRectangle, index + 1);
       });
     }
 
-    await demoAccountFileTest.step('Select the 4 rectangles', async () => {
+    await demoAccountFileTest.step('Select the 4 rectangles (CTRL+A)', async () => {
       await mainPage.clickViewportTwice();
       await mainPage.waitForChangeIsSaved();
       await mainPage.pressSelectAllShortcut();
       await workspacePage.leftSidebar.layers.checkSelectedLayersCount(4);
-    });
-
-    await demoAccountFileTest.step('Deselect a rectangle', async () => {
-      await mainPage.deselectElement();
-      await workspacePage.leftSidebar.layers.checkSelectedLayersCount(3);
       await expect(mainPage.viewport).toHaveScreenshot(
-        'three-rectangle-selected.png',
+        'four-rectangles-selected.png',
         {
           mask: mainPage.maskViewport(),
         },
       );
     });
 
-    await demoAccountFileTest.step('Deselect two rectangles', async () => {
-      await mainPage.deselectElement();
-      await mainPage.deselectElement();
-      await workspacePage.leftSidebar.layers.checkSelectedLayersCount(1);
-      await expect(mainPage.viewport).toHaveScreenshot(
-        'one-rectangle-selected.png',
-        {
-          mask: mainPage.maskViewport(),
-        },
-      );
-    });
+    await demoAccountFileTest.step(
+      'Deselect a rectangle (by holding CTRL+SHIFT keyboard button)',
+      async () => {
+        await mainPage.deselectElement();
+        await workspacePage.leftSidebar.layers.checkSelectedLayersCount(3);
+        await expect(mainPage.viewport).toHaveScreenshot(
+          'three-rectangle-selected.png',
+          {
+            mask: mainPage.maskViewport(),
+          },
+        );
+      },
+    );
+
+    await demoAccountFileTest.step(
+      'Deselect two rectangles (by holding CTRL+SHIFT keyboard button)',
+      async () => {
+        await mainPage.deselectElement();
+        await mainPage.deselectElement();
+        await workspacePage.leftSidebar.layers.checkSelectedLayersCount(1);
+        await expect(mainPage.viewport).toHaveScreenshot(
+          'one-rectangle-selected.png',
+          {
+            mask: mainPage.maskViewport(),
+          },
+        );
+      },
+    );
   },
 );
 
@@ -266,25 +281,19 @@ demoAccountFileTest(
     const { layers } = workspacePage.leftSidebar;
     const { contextMenu } = workspacePage;
 
-    await demoAccountFileTest.step(
-      'Create 3 rectangles and name them by creation order',
-      async () => {
+    for (const [index, x] of [200, 400, 600].entries()) {
+      await demoAccountFileTest.step('Create a rectangle', async () => {
         // Wait for each rectangle, or on a slow run the next tool click cancels it
-        for (const [index, x] of [200, 400, 600].entries()) {
-          await mainPage.createDefaultRectangleByCoordinates(x, 200);
-          await layersPanelPage.isNumLayerNameVisible(
-            defaultNameRectangle,
-            index + 1,
-          );
-        }
-        // The newest layer is on top, so renaming top-down names them 3, 2, 1
-        for (const name of ['Rect 3', 'Rect 2', 'Rect 1']) {
-          await layers.renameLayer(defaultNameRectangle, name);
-        }
+        await mainPage.createDefaultRectangleByCoordinates(x, 200);
+        await layersPanelPage.isNumLayerNameVisible(defaultNameRectangle, 1);
+        // Name it by creation order, to tell them apart
+        await layers.renameLayer(defaultNameRectangle, `Rect ${index + 1}`);
         await mainPage.waitForChangeIsSaved();
-        await layers.checkLayerOrder(['Rect 3', 'Rect 2', 'Rect 1']);
-      },
-    );
+        await layers.checkLayerOrder(
+          [3, 2, 1].filter((n) => n <= index + 1).map((n) => `Rect ${n}`),
+        );
+      });
+    }
 
     // Each step either right-clicks the layer and picks a menu item, or selects it and
     // presses a shortcut; then checks the layers order, top first
@@ -292,48 +301,55 @@ demoAccountFileTest(
       {
         layer: 'Rect 2',
         menuItem: 'Send backward',
+        name: 'Click RMB on the 2nd rectangle - click "Send backward" menu item',
         order: ['Rect 3', 'Rect 1', 'Rect 2'],
       },
       {
         layer: 'Rect 2',
         menuItem: 'Bring forward',
+        name: 'Click RMB on the 2nd rectangle - click "Bring forward" menu item',
         order: ['Rect 3', 'Rect 2', 'Rect 1'],
       },
       {
         layer: 'Rect 1',
         shortcut: 'Control+ArrowUp',
+        name: 'Select 1st rectangle and press CTRL + arrow up on keyboard',
         order: ['Rect 3', 'Rect 1', 'Rect 2'],
       },
       {
         layer: 'Rect 1',
         shortcut: 'Control+ArrowDown',
+        name: 'Select 1st rectangle and press CTRL + arrow down on keyboard',
         order: ['Rect 3', 'Rect 2', 'Rect 1'],
       },
       {
         layer: 'Rect 2',
         menuItem: 'Send to back',
+        name: 'Click RMB on the 2nd rectangle - click "Send to back" menu item',
         order: ['Rect 3', 'Rect 1', 'Rect 2'],
       },
       {
         layer: 'Rect 2',
         menuItem: 'Bring to front',
+        name: 'Click RMB on the 2nd rectangle - click "Bring to front" menu item',
         order: ['Rect 2', 'Rect 3', 'Rect 1'],
       },
       {
         layer: 'Rect 1',
         shortcut: 'Control+Shift+ArrowUp',
+        name: 'Select 1st rectangle and press CTRL + SHIFT+ arrow up on keyboard',
         order: ['Rect 1', 'Rect 2', 'Rect 3'],
       },
       {
         layer: 'Rect 1',
         shortcut: 'Control+Shift+ArrowDown',
+        name: 'Select 1st rectangle and press CTRL + SHIFT+ arrow down on keyboard',
         order: ['Rect 2', 'Rect 3', 'Rect 1'],
       },
     ];
 
-    for (const { layer, menuItem, shortcut, order } of steps) {
-      const via = menuItem ? `"${menuItem}" (right-click)` : shortcut;
-      await demoAccountFileTest.step(`${layer}: ${via}`, async () => {
+    for (const { layer, menuItem, shortcut, order, name } of steps) {
+      await demoAccountFileTest.step(name, async () => {
         if (menuItem) {
           await layers.openLayerContextMenu(layer);
           await contextMenu.clickItem(menuItem);
