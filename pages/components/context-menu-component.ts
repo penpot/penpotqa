@@ -3,7 +3,11 @@ import { expect, type Locator, type Page } from '@playwright/test';
 
 /** Options of the "Copy/Paste as ..." submenu that copy the selection. */
 export type CopyAsOption =
-  'Copy as CSS' | 'Copy as CSS (nested layers)' | 'Copy as SVG' | 'Copy as text';
+  | 'Copy as CSS'
+  | 'Copy as CSS (nested layers)'
+  | 'Copy as SVG'
+  | 'Copy as text'
+  | 'Copy as image';
 
 /**
  * Shape context menu, opened with a right-click on a layer or on the canvas.
