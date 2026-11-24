@@ -86,6 +86,17 @@ export class WorkspacePage extends BasePage {
     this.fileRestoredModal = new FileRestoredModalComponent(page);
   }
 
+  /**
+   * Checks whether the "Image copied to the clipboard" toast (after "Copy as image") is shown.
+   * @param visible Expected state; default true.
+   */
+  async checkImageCopiedToastIsVisible(visible = true) {
+    await expect(
+      this.imageCopiedToClipboardMessage,
+      `"Image copied to the clipboard" toast is ${visible ? '' : 'not '}visible`,
+    ).toBeVisible({ visible });
+  }
+
   // ---------------------------------------------------------------------------
   // Renderer
   // ---------------------------------------------------------------------------
