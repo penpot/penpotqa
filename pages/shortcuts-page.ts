@@ -141,7 +141,10 @@ export class ShortcutsPage extends BasePage {
   }
 
   /** Runs a mutating action and waits until the shortcuts are saved: the UI updates
-   * optimistically, before the `update-profile-props` request completes. */
+   * optimistically, before the `update-profile-props` request completes.
+   * After saving, Penpot refreshes the profile (`get-profile`, then
+   * `get-subscription-usage`) and overwrites the local state with it, so it also
+   * waits for that refresh: otherwise a late one undoes the next change. */
   private async waitForShortcutsSaved(action: () => Promise<void>) {
     const saved = this.page.waitForResponse(
       (res) =>
@@ -149,8 +152,12 @@ export class ShortcutsPage extends BasePage {
         res.request().method() === 'POST' &&
         (res.request().postData() ?? '').includes('custom-shortcuts'),
     );
+    const refreshed = this.page.waitForResponse((res) =>
+      res.url().includes('/api/main/methods/get-subscription-usage'),
+    );
     await action();
     expect((await saved).ok(), 'Shortcuts change is saved').toBe(true);
+    await refreshed;
   }
 
   async saveShortcut(shortcut: ShortcutRef) {
