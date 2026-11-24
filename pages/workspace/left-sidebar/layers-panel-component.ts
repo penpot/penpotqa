@@ -243,4 +243,17 @@ export class LayersPanelComponent extends BaseComponent {
       `Layer "${name}" is ${visible ? '' : 'not '}in the layers panel`,
     ).toHaveCount(visible ? 1 : 0);
   }
+
+  /**
+   * Checks the icon a layer's row shows, which tells its type (e.g. an ellipse
+   * flattened into a path shows the path icon).
+   * @param name Layer name exactly as shown in the panel.
+   * @param icon Icon id without the `icon-` prefix, e.g. `path`.
+   */
+  async checkLayerIcon(name: string, icon: string) {
+    await expect(
+      this.getLayerRow(name).getByTestId(`icon-${icon}`),
+      `Layer "${name}" shows the "${icon}" icon`,
+    ).toBeVisible();
+  }
 }
