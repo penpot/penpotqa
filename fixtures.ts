@@ -44,13 +44,33 @@ type DemoAccountFixtures = {
   demoAccount: { email: string; password: string };
 };
 
+/** Renderer a demo account starts with; `default` leaves it to Penpot (WebGL). */
+type DemoRenderer = 'wasm' | 'svg' | 'default';
+
+type DemoRendererOptions = {
+  renderer: DemoRenderer;
+};
+
+/** Maps the `renderer` option to `createDemoUser()`'s, omitted for `default`. */
+const toDemoUserRenderer = (renderer: DemoRenderer) =>
+  renderer === 'default' ? undefined : renderer;
+
 // Fresh demo account (WASM renderer) created and logged in via the API, landing on
 // the dashboard. Use it for tests that just need a logged-in, isolated user.
 // `demoAccount` holds its credentials, for tests that log back in through the UI.
-export const demoAccountApiFixture = test.extend<DemoAccountFixtures>({
+// Set the `renderer` option to start on the classic renderer (`svg`) or on
+// Penpot's default (`default`, as a new account would).
+export const demoAccountApiFixture = test.extend<
+  DemoAccountFixtures & DemoRendererOptions
+>({
+  renderer: ['wasm', { option: true }],
   // Logs in on the context (not `page`), so `page` can depend on it.
-  demoAccount: async ({ context }, use) => {
-    await use(await createDemoUser(context.request, { renderer: 'wasm' }));
+  demoAccount: async ({ context, renderer }, use) => {
+    await use(
+      await createDemoUser(context.request, {
+        renderer: toDemoUserRenderer(renderer),
+      }),
+    );
   },
   page: async ({ page, demoAccount: _demoAccount }, use) => {
     await openDashboardAfterApiLogin(page);
@@ -74,7 +94,7 @@ type DemoWorkspaceFixtures = {
   secondUserPage: Page;
 };
 
-type DemoWorkspaceOptions = {
+type DemoWorkspaceOptions = DemoRendererOptions & {
   penpotFile: string | undefined;
   inNewTeam: boolean;
   teamFonts: TeamFont[];
@@ -87,11 +107,13 @@ type DemoWorkspaceOptions = {
 // hides some UI (e.g. the workspace header's Share button).
 // Set `teamFonts` to upload those custom fonts to the file's team (via the API)
 // before it opens.
+// Set `renderer` to start on the classic renderer (`svg`) or Penpot's default.
 // `secondUserPage` is another demo account in its own browser context, on its
 // dashboard (e.g. to open a share link as another user); only created when used.
 export const demoAccountFileTest = test.extend<
   DemoWorkspaceFixtures & DemoWorkspaceOptions
 >({
+  renderer: ['wasm', { option: true }],
   penpotFile: [undefined, { option: true }],
   inNewTeam: [false, { option: true }],
   teamFonts: [[], { option: true }],
@@ -105,9 +127,9 @@ export const demoAccountFileTest = test.extend<
   },
   // `auto: true`: open the file even if the test doesn't destructure mainPage.
   mainPage: [
-    async ({ page, penpotFile, inNewTeam, teamFonts }, use) => {
+    async ({ page, renderer, penpotFile, inNewTeam, teamFonts }, use) => {
       const request = page.context().request;
-      await createDemoUser(request, { renderer: 'wasm' });
+      await createDemoUser(request, { renderer: toDemoUserRenderer(renderer) });
       const project = inNewTeam ? await createTeam(request) : undefined;
       const { teamId, fileId } = penpotFile
         ? await importDraftFile(request, penpotFile, { project })

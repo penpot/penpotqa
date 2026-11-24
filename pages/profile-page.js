@@ -98,17 +98,6 @@ exports.ProfilePage = class ProfilePage extends BasePage {
     this.changePasswordButton = page.getByTestId('submit-password');
     this.passwordInputError = page.locator('[id*=":password"]');
 
-    //Settings
-    this.settingsMenuButton = page.getByTestId('settings-profile');
-    this.darkThemeOption = page
-      .getByRole('option')
-      .filter({ hasText: 'Penpot Dark (default)' });
-    this.lightThemeOption = page
-      .getByRole('option')
-      .filter({ hasText: 'Penpot Light' });
-    this.uiThemeDropdown = page.locator('[class*="select-wrapper"] >>nth=1');
-    this.updateSettingsButton = page.getByTestId('submit-lang-change');
-
     //Subscription
     this.subscriptionMenuButton = page.getByTestId('settings-subscription');
     this.currentPlanLabel = page
@@ -395,24 +384,6 @@ exports.ProfilePage = class ProfilePage extends BasePage {
   async backToDashboardFromAccount() {
     await this.backToDashboardBtn.click();
     await this.isHeaderDisplayed('Personal Projects');
-  }
-
-  async selectLightTheme() {
-    await this.uiThemeDropdown.click();
-    await this.lightThemeOption.click();
-    await this.updateSettingsButton.click();
-    await this.isSuccessMessageDisplayed('Profile saved successfully!');
-  }
-
-  async selectDarkTheme() {
-    await this.uiThemeDropdown.click();
-    await this.darkThemeOption.click();
-    await this.updateSettingsButton.click();
-    await this.isSuccessMessageDisplayed('Profile saved successfully!');
-  }
-
-  async openSettingsTab() {
-    await this.settingsMenuButton.click();
   }
 
   async openSubscriptionTab() {
