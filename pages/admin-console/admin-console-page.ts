@@ -305,7 +305,10 @@ export class AdminConsolePage extends BasePage {
     this.teamsEmptyState = page.getByText('There are no teams yet');
     this.peopleNavLink = page.getByRole('link', { name: 'People' });
     this.peopleTable = page.getByRole('table', { name: 'People' });
-    this.memberProfile = new MemberProfileComponent(page);
+    this.memberProfile = new MemberProfileComponent(
+      page,
+      page.getByRole('complementary', { name: / profile$/ }),
+    );
 
     // `.first()` — there are 2 identically-labelled "Invite
     // people" buttons when the People tab is in its empty state (the toolbar

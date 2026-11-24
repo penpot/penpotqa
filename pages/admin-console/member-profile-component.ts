@@ -27,8 +27,8 @@ export class MemberProfileComponent extends BaseComponent {
   readonly searchAttributesInput: Locator;
   readonly assignableAttributes: Locator;
 
-  constructor(page: Page) {
-    super(page, page.getByRole('complementary', { name: / profile$/ }));
+  constructor(page: Page, root: Locator) {
+    super(page, root);
     const attributesSection = this.root.getByRole('region', { name: 'Attributes' });
     this.assignedAttributes = attributesSection
       .getByRole('list', { name: 'Assigned attributes' })
