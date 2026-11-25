@@ -22,7 +22,11 @@ export async function addMatrixAttributes(
   await new AdminConsolePage(org.owner.page).gotoOrganization(org, 'attributes');
   const attributesPage = new AttributesPage(org.owner.page);
   for (const [attribute, holders] of Object.entries(attributes)) {
-    await attributesPage.createAttribute(attribute, descriptions[attribute]);
+    // Only its own keys: an inherited one ('toString'…) would pass a function
+    const description = Object.hasOwn(descriptions, attribute)
+      ? descriptions[attribute]
+      : undefined;
+    await attributesPage.createAttribute(attribute, description);
     if (holders.length) {
       await attributesPage.addPeopleToAttribute(attribute, holders);
     }

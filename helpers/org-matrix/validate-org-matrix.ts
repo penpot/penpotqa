@@ -84,7 +84,7 @@ export function validateOrgMatrix(matrix: OrgMatrix) {
       }
     }
     for (const attribute of Object.keys(orgDefinition.attributeDescriptions ?? {})) {
-      if (!(attribute in (orgDefinition.attributes ?? {}))) {
+      if (!Object.hasOwn(orgDefinition.attributes ?? {}, attribute)) {
         throw new Error(
           `Org matrix: ${orgKey}.attributeDescriptions describes '${attribute}', which isn't one of its attributes`,
         );

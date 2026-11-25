@@ -79,8 +79,11 @@ export class AttributesPage extends BasePage {
    * @param name Attribute name, e.g. 'Legal'.
    */
   async openAttribute(name: string) {
+    // Exact: a string name matches substrings, so 'Legal attribute' would also
+    // match an open 'Not Legal attribute' panel and skip the click
     const namedPanel = this.page.getByRole('complementary', {
       name: `${name} attribute`,
+      exact: true,
     });
     // A click before the page hydrates is dropped: click again until it opens
     await expect(async () => {
