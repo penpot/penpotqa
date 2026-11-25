@@ -259,15 +259,24 @@ export class LayersPanelComponent extends BaseComponent {
   }
 
   /**
-   * Checks the icon a layer's row shows, which tells its type (e.g. an ellipse
-   * flattened into a path shows the path icon).
+   * Checks whether a layer's row shows an icon, which tells the layer's type
+   * (e.g. an ellipse flattened into a path shows the path icon).
    * @param name Layer name exactly as shown in the panel.
    * @param icon Icon id without the `icon-` prefix, e.g. `path`.
+   * @param visible Whether the icon should be shown; default: true.
    */
-  async checkLayerIcon(name: string, icon: string) {
-    await expect(
-      this.getLayerRow(name).getByTestId(`icon-${icon}`),
-      `Layer "${name}" shows the "${icon}" icon`,
-    ).toBeVisible();
+  async checkLayerIconIsVisible(name: string, icon: string, visible = true) {
+    const layerIcon = this.getLayerRow(name).getByTestId(`icon-${icon}`);
+    if (visible) {
+      await expect(
+        layerIcon,
+        `Layer "${name}" shows the "${icon}" icon`,
+      ).toBeVisible();
+    } else {
+      await expect(
+        layerIcon,
+        `Layer "${name}" doesn't show the "${icon}" icon`,
+      ).toBeHidden();
+    }
   }
 }

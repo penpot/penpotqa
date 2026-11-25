@@ -1,12 +1,12 @@
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelComponent } from '@pages/workspace/left-sidebar/layers-panel-component';
+import type { MainPage } from '@pages/workspace/main-page';
 import { StrokeCap } from '@pages/workspace/right-sidebar/design-tab/stroke-section-component';
 import { PathEditorPage } from '@pages/workspace/toolbar/path-editor/path-editor-page';
 import type { Point } from '@pages/workspace/toolbar/path-editor/path-geometry';
 import { WorkspacePage } from '@pages/workspace/workspace-page';
 import { expect } from '@playwright/test';
 import { demoAccountFileTest } from 'fixtures';
-import type { MainPage } from '@pages/workspace/main-page';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 let designPanelPage: DesignPanelPage;
@@ -320,17 +320,14 @@ demoAccountFileTest.describe(() => {
         'Right-click on "Path" in the Layers panel',
         async () => {
           await layers.openLayerContextMenu('Path');
-          await expect(
-            mainPage.deleteLayerMenuItem,
-            'The context menu is open',
-          ).toBeVisible();
+          await workspacePage.contextMenu.checkItemsAreVisible(['Delete']);
         },
       );
 
       await demoAccountFileTest.step(
         'Click on the "Delete" option of the context menu',
         async () => {
-          await mainPage.deleteLayerMenuItem.click();
+          await workspacePage.contextMenu.clickItem('Delete');
           await mainPage.waitForChangeIsSaved();
           await mainPage.isCreatedLayerVisible(false);
           await layers.checkLayerRowIsVisible('Path', false);

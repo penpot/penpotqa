@@ -81,7 +81,7 @@ demoAccountFileTest.describe(() => {
         await pathEditorPage.transformToPathViaRightClick();
         await pathEditorPage.waitForChangeIsSaved();
         await layers.checkLayerRowIsVisible('Ellipse');
-        await layers.checkLayerIcon('Ellipse', 'path');
+        await layers.checkLayerIconIsVisible('Ellipse', 'path');
       },
     );
 
@@ -434,7 +434,7 @@ demoAccountFileTest(
     await demoAccountFileTest.step('Select "Flatten"', async () => {
       await pathEditorPage.transformToPathMenuItem.click();
       await pathEditorPage.waitForChangeIsSaved();
-      await layers.checkLayerIcon('Ellipse', 'path');
+      await layers.checkLayerIconIsVisible('Ellipse', 'path');
     });
 
     await demoAccountFileTest.step('Right-click', async () => {
