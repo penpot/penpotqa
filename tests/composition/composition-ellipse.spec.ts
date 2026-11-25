@@ -1,4 +1,3 @@
-import { ExportFormat } from '@pages/components/export-section-component';
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import { LayersPanelComponent } from '@pages/workspace/left-sidebar/layers-panel-component';
@@ -12,11 +11,12 @@ let designPanelPage: DesignPanelPage;
 let layersPanelPage: LayersPanelPage;
 let blur: BlurSectionComponent;
 let layers: LayersPanelComponent;
+let workspacePage: WorkspacePage;
 
 demoAccountFileTest.beforeEach(async ({ page }) => {
   layersPanelPage = new LayersPanelPage(page);
   designPanelPage = new DesignPanelPage(page);
-  const workspacePage = new WorkspacePage(page);
+  workspacePage = new WorkspacePage(page);
   blur = workspacePage.rightSidebar.design.blur;
   layers = workspacePage.leftSidebar.layers;
 });
@@ -64,7 +64,6 @@ demoAccountFileTest(
 
 demoAccountFileTest.describe(() => {
   demoAccountFileTest.beforeEach(async ({ mainPage }) => {
-    demoAccountFileTest.slow();
     await demoAccountFileTest.step('Create an ellipse', async () => {
       await mainPage.clickCreateEllipseButton();
       await mainPage.clickViewportTwice();
@@ -272,8 +271,8 @@ demoAccountFileTest.describe(() => {
 
   demoAccountFileTest(
     qase([342], 'Export ellipse with different sizes (PNG), Suffix is provided'),
-    async ({ page, mainPage }) => {
-      const { export: exportSection } = new WorkspacePage(page).rightSidebar.design;
+    async ({ mainPage }) => {
+      const { export: exportSection } = workspacePage.rightSidebar.design;
 
       await demoAccountFileTest.step('Select ellipse', async () => {
         await layers.selectLayer('Ellipse');
@@ -332,9 +331,7 @@ demoAccountFileTest.describe(() => {
 
 demoAccountFileTest(
   qase([358], 'Lock and unlock ellipse (From rightclick and icons)'),
-  async ({ page, mainPage }) => {
-    const workspacePage = new WorkspacePage(page);
-    const { layers } = workspacePage.leftSidebar;
+  async ({ mainPage }) => {
     const { canvas, contextMenu } = workspacePage;
     // Default 100x100 ellipses are centered on the click, so they start at (x - 50, y - 50)
     const ellipse1 = { x: 200, y: 300 };
@@ -359,7 +356,7 @@ demoAccountFileTest(
     await demoAccountFileTest.step(
       'From Layers panel (on the left): 1. Select Ellipse 1 from the list 2. At the Ellipse 1 level, click on Lock icon on the right 3. Try to move the Ellipse 1',
       async () => {
-        await layersPanelPage.selectLayerByExactName('Ellipse 1');
+        await layers.selectLayer('Ellipse 1');
         await layers.toggleLayerLock('Ellipse 1');
         await layers.checkLayerLocked('Ellipse 1');
         await mainPage.clickViewportTwice();
@@ -386,8 +383,7 @@ demoAccountFileTest(
     await demoAccountFileTest.step(
       'From Layers panel (on the left), select Ellipse 1 (a locked shape can\'t be selected on the canvas). Then, in the canvas: 1. Click with the RMB on the ellipse 2. Select "Unlock" menu item 3. Try to move the ellipse',
       async () => {
-        // A locked shape can't be picked on the canvas: select it from the layers first
-        await layersPanelPage.selectLayerByExactName('Ellipse 1');
+        await layers.selectLayer('Ellipse 1');
         await canvas.openContextMenuAt(ellipse1.x, ellipse1.y);
         await contextMenu.clickItem('Unlock');
         await layers.checkLayerLocked('Ellipse 1', false);
@@ -401,7 +397,7 @@ demoAccountFileTest(
     await demoAccountFileTest.step(
       'From Layers panel (on the left): 1. Select Ellipse 2 from the list 2. At the Ellipse 2 level, click on Unlock icon on the right 3. Try to move the Ellipse 2',
       async () => {
-        await layersPanelPage.selectLayerByExactName('Ellipse 2');
+        await layers.selectLayer('Ellipse 2');
         await layers.toggleLayerLock('Ellipse 2', true);
         await layers.checkLayerLocked('Ellipse 2', false);
         await mainPage.clickViewportTwice();
@@ -415,9 +411,8 @@ demoAccountFileTest(
 
 demoAccountFileTest(
   qase([350], 'Export multiple ellipses'),
-  async ({ page, mainPage }) => {
-    const { export: exportSection } = new WorkspacePage(page).rightSidebar.design;
-    const { layers } = new WorkspacePage(page).leftSidebar;
+  async ({ mainPage }) => {
+    const { export: exportSection } = workspacePage.rightSidebar.design;
 
     for (const [index, x] of [200, 400, 600, 800].entries()) {
       await demoAccountFileTest.step('Create an ellipse', async () => {
@@ -457,7 +452,7 @@ demoAccountFileTest(
       'From Design > Export Selection section, click on "Export 4 elements" button',
       async () => {
         await exportSection.openExportSelectionDialog(4);
-        await exportSection.exportModal.checkExportSelectionContent(4);
+        await workspacePage.exportModal.checkExportSelectionContent(4);
       },
     );
 

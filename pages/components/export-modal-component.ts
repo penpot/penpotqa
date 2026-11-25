@@ -41,6 +41,9 @@ export class ExportModalComponent extends BaseComponent {
       this.root.getByText(`${count} of ${count} elements selected`),
       `Export selection dialog says ${count} of ${count} elements are selected`,
     ).toBeVisible();
+    // Each listed element is a button named "<name><suffix> <size> <format>", e.g.
+    // "Ellipse 200x200 PNG". The list has no list/listitem roles, and the
+    // select-all button has no size or format, so it isn't counted.
     await expect(
       this.root.getByRole('button', { name: / \d+x\d+ \w+$/ }),
       `Export selection dialog lists ${count} element(s)`,
