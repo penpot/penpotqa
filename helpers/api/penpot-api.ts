@@ -18,7 +18,8 @@ export type PenpotApiMethod =
   | 'upload-chunk'
   | 'create-font-variant'
   | 'delete-team-member'
-  | 'delete-team';
+  | 'delete-team'
+  | 'get-owned-organizations-summary';
 
 /** Path of a Penpot main API method, e.g. to match it in `waitForResponse`. */
 export const penpotApiPath = (method: PenpotApiMethod) =>

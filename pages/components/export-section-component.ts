@@ -182,6 +182,24 @@ export class ExportSectionComponent extends BaseComponent {
     });
   }
 
+  /**
+   * Clicks "Export N elements" to open the "Export selection" dialog, without
+   * confirming it.
+   * @param count Number of selected elements, as the button label says.
+   */
+  async openExportSelectionDialog(count: number) {
+    const label = `Export ${count} element${count === 1 ? '' : 's'}`;
+    await expect(this.exportElementButton, `Button says "${label}"`).toHaveText(
+      new RegExp(`^${label}$`, 'i'),
+    );
+    await this.exportElementButton.click();
+  }
+
+  /** Clicks "Export" in the open "Export selection" dialog and waits for the file. */
+  async exportFromOpenDialog(): Promise<ExportResult> {
+    return this.trackExport(() => this.exportModal.exportSelection());
+  }
+
   private async trackExport(
     startExport: () => Promise<void>,
   ): Promise<ExportResult> {
@@ -212,6 +230,19 @@ export class ExportSectionComponent extends BaseComponent {
       scale,
     );
     await this.checkExportSuffix('');
+  }
+
+  /**
+   * Checks how many export rows the Export section has.
+   * @param count Expected number of rows.
+   */
+  async checkExportRowCount(count: number) {
+    await expect(
+      this.root
+        .locator('[class*="exports__element-group"]')
+        .filter({ has: getRemoveExportButton(this.page) }),
+      `Export section has ${count} export row(s)`,
+    ).toHaveCount(count);
   }
 
   async checkExportSuffix(suffix: string) {

@@ -1,3 +1,4 @@
+import { MemberProfileComponent } from '@pages/admin-console/member-profile-component';
 import { type Locator, type Page, type Response, expect } from '@playwright/test';
 import { BasePage } from '../base-page';
 
@@ -59,7 +60,8 @@ export enum PeopleTableColumn {
   User = 0,
   DateAdded = 1,
   Teams = 2,
-  Actions = 3,
+  Attributes = 3,
+  Actions = 4,
 }
 
 /**
@@ -180,6 +182,8 @@ export class AdminConsolePage extends BasePage {
   // lingering mid-transition can't be mistaken for it, and vice versa.
   readonly peopleNavLink: Locator;
   readonly peopleTable: Locator;
+  /** Panel opened by clicking a member's row (see `openMemberProfile()`). */
+  readonly memberProfile: MemberProfileComponent;
 
   // People tab's "invite to the organization" modal — org-level invites,
   // distinct from a single team's own invite flow (TeamPage's), which
@@ -301,6 +305,10 @@ export class AdminConsolePage extends BasePage {
     this.teamsEmptyState = page.getByText('There are no teams yet');
     this.peopleNavLink = page.getByRole('link', { name: 'People' });
     this.peopleTable = page.getByRole('table', { name: 'People' });
+    this.memberProfile = new MemberProfileComponent(
+      page,
+      page.getByRole('complementary', { name: / profile$/ }),
+    );
 
     // `.first()` — there are 2 identically-labelled "Invite
     // people" buttons when the People tab is in its empty state (the toolbar
@@ -443,6 +451,24 @@ export class AdminConsolePage extends BasePage {
     );
   }
 
+  /**
+   * Opens an organization's Admin Console by its URL, optionally on one of its
+   * sections. A fresh load, so it never shows another organization's cached
+   * data, unlike the org switcher.
+   *
+   * @param organization - The organization's id, slug and name.
+   * @param section - Section path to open, e.g. 'attributes' (default: none,
+   * the organization's landing page).
+   */
+  async gotoOrganization(
+    organization: { id: string; slug: string; name: string },
+    section = '',
+  ) {
+    const orgPath = `/admin-console/organization/${organization.slug}/${organization.id}`;
+    await this.page.goto(section ? `${orgPath}/${section}` : orgPath);
+    await this.isDisplayingOrganization(organization.name);
+  }
+
   /** Opens the Attributes tab from the sidebar and waits for its URL. */
   async openAttributesTab() {
     await this.attributesNavLink.click();
@@ -464,6 +490,51 @@ export class AdminConsolePage extends BasePage {
       this.invitePeopleButton,
       '"Invite people" button is visible on the People tab',
     ).toBeVisible();
+  }
+
+  /**
+   * Opens a member's profile panel by clicking their row in the People table.
+   * Retries the click, which can be dropped right after the tab renders.
+   * @param memberName Member's display name, e.g. 'User2'.
+   */
+  async openMemberProfile(memberName: string) {
+    const heading = this.memberProfile.root.getByRole('heading', {
+      name: memberName,
+      exact: true,
+    });
+    await expect(async () => {
+      if (!(await heading.isVisible())) {
+        await this.getPeopleTableCell(memberName, PeopleTableColumn.User).click();
+      }
+      await expect(heading, `"${memberName}" profile is open`).toBeVisible({
+        timeout: 2000,
+      });
+    }).toPass({ timeout: 15000 });
+  }
+
+  /**
+   * Checks whether a confirmation dialog or a message (toast) is on the page.
+   * @param visible Whether one should be visible (default true).
+   */
+  async checkConfirmationIsVisible(visible = true) {
+    const dialog = this.page
+      .getByRole('dialog')
+      .or(this.page.getByRole('alertdialog'));
+    // Toasts render inside the page's (otherwise empty) "log" live regions
+    const message = this.page
+      .getByRole('alert')
+      .or(this.page.getByRole('log').filter({ hasText: /\S/ }));
+    if (visible) {
+      await expect(
+        dialog.or(message).first(),
+        'A confirmation dialog or message is shown',
+      ).toBeVisible();
+      return;
+    }
+    // A count of 0 passes at once: callers check after the UI has applied the
+    // change, which only happens once the server answers, so a toast would be there.
+    await expect(dialog, 'No confirmation dialog is shown').toHaveCount(0);
+    await expect(message, 'No message is shown').toHaveCount(0);
   }
 
   /** Types one email into the invite modal's input and confirms it with
