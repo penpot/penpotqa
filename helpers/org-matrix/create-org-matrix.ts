@@ -71,10 +71,10 @@ export async function createOrgMatrix(
     await test.step(`Org matrix: teams and members of ${orgKey}`, () =>
       addMatrixTeams(orgs[orgKey], orgDefinition, users));
   }
-  for (const [orgKey, { attributes }] of orgDefinitions) {
+  for (const [orgKey, { attributes, attributeDescriptions }] of orgDefinitions) {
     if (!attributes) continue;
     await test.step(`Org matrix: attributes of ${orgKey}`, () =>
-      addMatrixAttributes(orgs[orgKey], attributes));
+      addMatrixAttributes(orgs[orgKey], attributes, attributeDescriptions));
   }
 
   await openLoggedInUsersFirstOrg(matrix, orgs, loggedInPage);

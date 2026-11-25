@@ -1,3 +1,4 @@
+import { AttributePanelComponent } from '@pages/admin-console/attribute-panel-component';
 import { BasePage } from '@pages/base-page';
 import { type Locator, type Page, expect } from '@playwright/test';
 
@@ -26,6 +27,7 @@ export class AttributesPage extends BasePage {
   readonly attributeNameField: Locator;
   readonly createAttributeButton: Locator;
   readonly duplicateNameError: Locator;
+  readonly panel: AttributePanelComponent;
 
   constructor(page: Page) {
     super(page);
@@ -35,6 +37,10 @@ export class AttributesPage extends BasePage {
       .getByRole('rowgroup')
       .nth(1)
       .getByRole('row');
+    this.panel = new AttributePanelComponent(
+      page,
+      page.getByRole('complementary', { name: / attribute$/ }),
+    );
     // Shown twice when the org has no attributes (header and empty state):
     // take the header one, next to the section's description.
     this.newAttributeButton = page
@@ -68,12 +74,23 @@ export class AttributesPage extends BasePage {
   }
 
   /**
-   * Returns the side panel that opens when an attribute's row is clicked.
+   * Opens an attribute's panel (see `panel`) by clicking its row, or shows that
+   * attribute in the panel if it's already open on another one.
    * @param name Attribute name, e.g. 'Legal'.
-   * @returns The "<name> attribute" panel.
    */
-  private getAttributePanel(name: string): Locator {
-    return this.page.getByRole('complementary', { name: `${name} attribute` });
+  async openAttribute(name: string) {
+    const namedPanel = this.page.getByRole('complementary', {
+      name: `${name} attribute`,
+    });
+    // A click before the page hydrates is dropped: click again until it opens
+    await expect(async () => {
+      if (!(await namedPanel.isVisible())) {
+        await this.getAttributeRow(name).click();
+      }
+      await expect(namedPanel, `"${name}" panel is open`).toBeVisible({
+        timeout: 2000,
+      });
+    }).toPass({ timeout: 15000 });
   }
 
   /**
@@ -248,24 +265,14 @@ export class AttributesPage extends BasePage {
    * @param people Display names of the organization members to add.
    */
   async addPeopleToAttribute(name: string, people: string[]) {
-    await this.getAttributeRow(name).click();
-    const panel = this.getAttributePanel(name);
-    await panel.getByRole('button', { name: 'Add people' }).click();
-    const dialog = this.page.getByRole('dialog', { name: `Add people to ${name}` });
+    await this.openAttribute(name);
+    await this.panel.openAddPeople();
     for (const person of people) {
-      // The checkbox <input> is hidden behind its styled box: click the name
-      await dialog.getByText(person, { exact: true }).click();
-      await expect(
-        dialog.getByRole('checkbox', { name: person }),
-        `"${person}" is checked in "Add people to ${name}"`,
-      ).toBeChecked();
+      await this.panel.addPeople.selectMember(person);
     }
-    await this.page.keyboard.press('Escape');
-    await expect(
-      panel.getByRole('heading', { name: `People ${people.length}` }),
-      `"${name}" has ${people.length} people`,
-    ).toBeVisible();
-    await panel.getByRole('button', { name: 'Close attribute' }).click();
+    await this.panel.addPeople.close();
+    await this.panel.checkPeopleCount(people.length);
+    await this.panel.close();
   }
 
   /**
@@ -278,5 +285,25 @@ export class AttributesPage extends BasePage {
       this.getAttributeRow(name).getByRole('cell').nth(AttributesTableColumn.People),
       `"${name}" shows ${people} under People`,
     ).toHaveText(String(people));
+  }
+
+  /**
+   * Checks which row of the table is highlighted as the one open in the panel.
+   * The highlight has no ARIA state, only a background class.
+   * @param name Attribute name, e.g. 'Legal', or null for no row highlighted.
+   */
+  async checkSelectedAttributeRow(name: string | null) {
+    const selectedRows = this.attributeRows.and(
+      this.page.locator('.bg-ds-background-surface-base-subtle'),
+    );
+    if (name === null) {
+      await expect(selectedRows, 'No attribute row is highlighted').toHaveCount(0);
+      return;
+    }
+    await expect(selectedRows, 'One attribute row is highlighted').toHaveCount(1);
+    await expect(
+      this.getAttributeRow(name),
+      `The highlighted row is "${name}"`,
+    ).toHaveClass(/(^|\s)bg-ds-background-surface-base-subtle(\s|$)/);
   }
 }

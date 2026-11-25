@@ -41,8 +41,9 @@ export function getOrgMemberNames(
 
 /**
  * Checks that a matrix can be built, before anything is created: every user
- * is listed in `users`, every team has one owner, and every attribute
- * holder is a member of the attribute's organization.
+ * is listed in `users`, every team has one owner, every attribute holder is
+ * a member of the attribute's organization, and every attribute description
+ * is for one of its attributes.
  *
  * @param matrix - The matrix to check.
  * @throws On the first problem found, naming where it is.
@@ -80,6 +81,13 @@ export function validateOrgMatrix(matrix: OrgMatrix) {
             `Org matrix: '${holder}' holds '${attribute}' in ${orgKey} but isn't a member of it`,
           );
         }
+      }
+    }
+    for (const attribute of Object.keys(orgDefinition.attributeDescriptions ?? {})) {
+      if (!(attribute in (orgDefinition.attributes ?? {}))) {
+        throw new Error(
+          `Org matrix: ${orgKey}.attributeDescriptions describes '${attribute}', which isn't one of its attributes`,
+        );
       }
     }
   }
