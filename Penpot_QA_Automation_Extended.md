@@ -106,6 +106,8 @@ penpotqa1/
 │   └── angle.js          # Angle conversion
 ├── images/               # Test image assets
 ├── pages/                # Page Object Models
+│   ├── components/       # Shared UI components
+│   │   └── profile-menu-component.ts # Profile dropdown (Your account, logout, Help & Learning)
 │   ├── dashboard/        # Dashboard-related pages
 │   │   ├── dashboard-page.js
 │   │   ├── team-page.js
@@ -124,9 +126,17 @@ penpotqa1/
 │   │   ├── history-panel-page.js
 │   │   └── plugins-page.js
 │   ├── base-page.js      # Base page with common functionality
+│   ├── your-account/     # Your account: page + one component per section
+│   │   ├── your-account-page.ts
+│   │   ├── profile-section-component.ts
+│   │   ├── password-section-component.ts
+│   │   ├── shortcuts-section-component.ts
+│   │   ├── settings-section-component.ts
+│   │   ├── subscription-section-component.ts
+│   │   ├── integrations-section-component.ts
+│   │   └── give-feedback-section-component.ts
 │   ├── login-page.js
 │   ├── register-page.js
-│   ├── profile-page.js
 │   └── forgot-password-page.js
 ├── tests/                # Test specifications (531 tests in 67 files)
 │   ├── action-menu/
@@ -141,10 +151,8 @@ penpotqa1/
 │   ├── login-signup/
 │   ├── panels-features/
 │   ├── plugins/
-│   ├── profile/
-│   ├── subscription-plans/
+│   ├── profile-menu/
 │   ├── tokens/
-│   ├── ui-theme/
 │   └── view-mode/
 ├── fixtures.js           # Custom test fixtures
 ├── playwright.config.js  # Playwright configuration
@@ -810,8 +818,10 @@ registerTest('Test trial expiration', async ({ page, email, name }) => {
   const penpotId = await getProfileIdByEmail(email);
   const testClockId = await createCustomerWithTestClock(page, name, email, penpotId);
 
-  // 2. Subscribe to plan
-  await profilePage.clickOnAddPaymentMethodButton();
+  // 2. Subscribe to plan from Your account > Subscription
+  const yourAccountPage = new YourAccountPage(page);
+  await yourAccountPage.goto('Subscription');
+  await yourAccountPage.subscription.clickAddPaymentMethod();
   await stripePage.addDefaultCard();
   await stripePage.selectPlan('Professional');
 

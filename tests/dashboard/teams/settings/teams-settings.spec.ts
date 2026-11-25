@@ -1,6 +1,6 @@
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { MainPage } from '@pages/workspace/main-page';
-import { ProfilePage } from '@pages/profile-page';
+import { YourAccountPage } from '@pages/your-account/your-account-page';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { expect } from '@playwright/test';
 import { demoAccountApiFixture } from 'fixtures';
@@ -11,13 +11,13 @@ const team = createTeamName();
 
 let dashboardPage: DashboardPage;
 let mainPage: MainPage;
-let profilePage: ProfilePage;
+let yourAccountPage: YourAccountPage;
 let teamPage: TeamPage;
 
 demoAccountApiFixture.beforeEach(async ({ page }) => {
   teamPage = new TeamPage(page);
   dashboardPage = new DashboardPage(page);
-  profilePage = new ProfilePage(page);
+  yourAccountPage = new YourAccountPage(page);
   mainPage = new MainPage(page);
 });
 
@@ -53,12 +53,11 @@ demoAccountApiFixture(
     await demoAccountApiFixture.step(
       'Update profile name and create a team',
       async () => {
-        await profilePage.openYourAccountPage();
-        await profilePage.isHeaderDisplayed('Your account');
-        await profilePage.changeProfileName('QA Engineer');
-        await profilePage.uploadProfileImage('images/sample.jpeg');
-        await profilePage.waitInfoMessageHidden();
-        await profilePage.backToDashboardFromAccount();
+        await yourAccountPage.open();
+        await yourAccountPage.profile.changeName('QA Engineer');
+        await yourAccountPage.profile.uploadImage('images/sample.jpeg');
+        await yourAccountPage.waitInfoMessageHidden();
+        await yourAccountPage.backToDashboard();
         await teamPage.createTeam(team);
         await teamPage.openTeamSettingsPageViaOptionsMenu();
       },
