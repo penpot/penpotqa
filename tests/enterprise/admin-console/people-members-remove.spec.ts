@@ -1,15 +1,11 @@
 /**
  * Qase suite: Admin Console > Sidebar Menu > People > Members (tab) > Remove
  *
- * Stubs below (`test.skip`) await automation — see the Enterprise Plan
- * automation plan.
- *
  * Base fixture: `ownerAndInviteeActivatedTest` (see enterprise-fixtures.ts)
  * — the owner is Enterprise-entitled via the activation-code path,
  * skipping the Stripe checkout UI. PRE/dev environments only — skips
- * automatically wherever `LICENSES_MANAGER_URL` is unset. Per-case
- * "Accounts:" notes cover invitees needing a real, readable inbox instead
- * (see the enterprise-demo-account-email memory).
+ * automatically wherever `LICENSES_MANAGER_URL` is unset. `invitee` needs
+ * a real, readable inbox (see tests/enterprise/README.md).
  */
 import { qase } from 'playwright-qase-reporter/playwright';
 import { waitMessage, waitSecondMessage, waitForMessageCount } from 'helpers/gmail';
@@ -33,7 +29,7 @@ ownerAndInviteeActivatedTest.describe(
         const inviteeOrgPage = new OrganizationPage(invitee.page);
 
         await ownerAndInviteeActivatedTest.step(
-          'Setup: create an org (Enterprise-activated) and invite the second account',
+          'Setup: Enterprise already active (activation code), create an org and invite the second account',
           async () => {
             await createOrgForLicensedAccount(orgPage, orgName);
             await adminConsolePage.invitePersonToOrganization(invitee.email);
@@ -87,7 +83,7 @@ ownerAndInviteeActivatedTest.describe(
 
         try {
           await ownerAndInviteeActivatedTest.step(
-            'Setup: create an org (Enterprise-activated) and invite the second account',
+            'Setup: Enterprise already active (activation code), create an org and invite the second account',
             async () => {
               await createOrgForLicensedAccount(orgPage, orgName);
               await adminConsolePage.invitePersonToOrganization(invitee.email);
@@ -163,7 +159,7 @@ ownerAndInviteeActivatedTest.describe(
         const teamNames = [createTeamName(), createTeamName(), createTeamName()];
 
         await ownerAndInviteeActivatedTest.step(
-          'Setup: create an org (Enterprise-activated)',
+          'Setup: Enterprise already active (activation code), create an org',
           async () => {
             await createOrgForLicensedAccount(orgPage, orgName);
           },

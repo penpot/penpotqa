@@ -1,15 +1,10 @@
 /**
  * Qase suite: Cross-cutting: Enterprise Dashboard (direct) / Admin Console > Subscriptions & Billing / Admin Console (direct)
  *
- * These cases drive the real Stripe test-mode checkout/trial UI itself, not just an org that happens to have the Enterprise plan. Kept in their own file per the automation plan (section 2.6) — inherently slower/flakier than the rest of the suite.
+ * These cases drive the real Stripe test-mode checkout/trial UI itself, not just an org that happens to have the Enterprise plan. Kept in their own file: inherently slower/flakier than the rest of the suite.
  *
- * Stubs below (`test.skip`) await automation — see the Enterprise Plan
- * automation plan.
- *
- * Base: `enterprisePageTest` (see enterprise-fixtures.ts) for a single
- * actor; `ownerAndInviteeTest` for cases needing a real second account.
- * Per-case "Accounts:" notes cover invitees needing a real, readable
- * inbox instead (see the enterprise-demo-account-email memory).
+ * Base: `enterprisePageTest` (see enterprise-fixtures.ts), which goes through
+ * the real Stripe checkout. 3664 is still a `test.skip` stub.
  */
 import { qase } from 'playwright-qase-reporter/playwright';
 import { createOrgName } from 'helpers/organizations/create-org-name';
@@ -295,8 +290,7 @@ enterprisePageTest.describe(
          * 6. Click Send → modal closes
          * 7. User remains on the Admin Console, no redirect
          */
-        // TODO: automate — see automation plan (not yet unblocked, or not yet reached
-        // in the implementation order from section 4).
+        // TODO: automate.
       },
     );
   },

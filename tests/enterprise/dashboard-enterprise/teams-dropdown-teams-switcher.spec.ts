@@ -25,7 +25,7 @@ enterpriseActivatedPageTest.describe(
         const teamName = createTeamName();
 
         await enterpriseActivatedPageTest.step(
-          'Setup: create OrgA and "Team-Apple" in it (owned by the user)',
+          'Setup: Enterprise already active (activation code), create OrgA and "Team-Apple" in it (owned by the user)',
           async () => {
             await createOrgForLicensedAccount(orgPage, orgAName);
             await adminConsolePage.goToFiles(orgAName);
@@ -60,7 +60,7 @@ enterpriseActivatedPageTest.describe(
         const inviteeOrgPage = new OrganizationPage(invitee.page);
 
         await ownerAndInviteeActivatedTest.step(
-          'Setup: another user creates OrgB and the user joins it as a member (not owner)',
+          'Setup: Enterprise already active (activation code), another user creates OrgB and the user joins it as a member (not owner)',
           async () => {
             await createOrgForLicensedAccount(orgPage, orgBName);
             await adminConsolePage.invitePersonToOrganization(invitee.email);

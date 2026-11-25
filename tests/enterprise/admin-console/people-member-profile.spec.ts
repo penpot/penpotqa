@@ -43,7 +43,7 @@ enterpriseActivatedPageTest.describe(
         const teamLead: AssignableAttribute = { name: 'Team lead', people: 0 };
 
         await enterpriseActivatedPageTest.step(
-          `Setup: create an org with the attributes "${auditor.name}", "${legal.name}", "${qaDepartment.name}" and "${teamLead.name}", and make "${user2.name}" a member`,
+          `Setup: Enterprise already active (activation code), create an org with the attributes "${auditor.name}", "${legal.name}", "${qaDepartment.name}" and "${teamLead.name}", and make "${user2.name}" a member`,
           async () => {
             await createOrgForLicensedAccount(orgPage, createOrgName());
             await joinOrganization(
@@ -151,7 +151,7 @@ enterpriseActivatedPageTest.describe(
         const qaDepartment = 'QA department';
 
         await enterpriseActivatedPageTest.step(
-          `Setup: create an org where member "${user3.name}" holds "${legal}" and "${qaDepartment}"`,
+          `Setup: Enterprise already active (activation code), create an org where member "${user3.name}" holds "${legal}" and "${qaDepartment}"`,
           async () => {
             await createOrgForLicensedAccount(orgPage, createOrgName());
             await joinOrganization(

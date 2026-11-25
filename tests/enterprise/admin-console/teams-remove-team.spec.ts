@@ -36,7 +36,7 @@ ownerAndInviteeActivatedTest.describe(
         let fileUrl = '';
 
         await ownerAndInviteeActivatedTest.step(
-          'Setup: User1 creates OrgA and invites User2, who joins and creates "Team Apple" with a file',
+          'Setup: Enterprise already active (activation code), User1 creates OrgA and invites User2, who joins and creates "Team Apple" with a file',
           async () => {
             await createOrgForLicensedAccount(orgPage, orgAName);
             orgAAdminConsoleUrl = ownerPage.url();
@@ -133,7 +133,7 @@ ownerAndInviteeActivatedTest.describe(
         let teamId = '';
 
         await ownerAndInviteeActivatedTest.step(
-          'Setup: User1 creates OrgA and "Team Apple", and User3 joins the team as Admin',
+          'Setup: Enterprise already active (activation code), User1 creates OrgA and "Team Apple", and User3 joins the team as Admin',
           async () => {
             await createOrgForLicensedAccount(orgPage, orgAName);
             orgAAdminConsoleUrl = ownerPage.url();
