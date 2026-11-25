@@ -21,16 +21,38 @@ export enum AttributesTableColumn {
 export class AttributesPage extends BasePage {
   readonly newAttributeButton: Locator;
   readonly attributesTable: Locator;
+  readonly attributeRows: Locator;
+  readonly createAttributeDialog: Locator;
+  readonly attributeNameField: Locator;
+  readonly createAttributeButton: Locator;
+  readonly duplicateNameError: Locator;
 
   constructor(page: Page) {
     super(page);
     this.attributesTable = page.getByRole('table', { name: 'Attributes' });
+    // The second rowgroup is the <tbody>, the list's own scroll container
+    this.attributeRows = this.attributesTable
+      .getByRole('rowgroup')
+      .nth(1)
+      .getByRole('row');
     // Shown twice when the org has no attributes (header and empty state):
     // take the header one, next to the section's description.
     this.newAttributeButton = page
       .getByText('Classify org members to apply fine-grained permissions')
       .locator('..')
       .getByRole('button', { name: 'New attribute' });
+    this.createAttributeDialog = page.getByRole('dialog', {
+      name: 'Create an attribute',
+    });
+    this.attributeNameField = this.createAttributeDialog.getByRole('textbox', {
+      name: 'Attribute name',
+    });
+    this.createAttributeButton = this.createAttributeDialog.getByRole('button', {
+      name: 'Create attribute',
+    });
+    this.duplicateNameError = this.createAttributeDialog.getByText(
+      'An attribute with this name already exists.',
+    );
   }
 
   /**
@@ -55,35 +77,171 @@ export class AttributesPage extends BasePage {
   }
 
   /**
+   * Opens the "Create an attribute" dialog from "New attribute" and waits for
+   * its name field to be focused.
+   */
+  async openCreateAttributeDialog() {
+    // A click before the page hydrates is dropped: click again until the dialog opens
+    await expect(async () => {
+      if (!(await this.attributeNameField.isVisible())) {
+        await this.newAttributeButton.click();
+      }
+      await expect(
+        this.attributeNameField,
+        'Attribute name field is focused',
+      ).toBeFocused({ timeout: 2000 });
+    }).toPass({ timeout: 15000 });
+  }
+
+  /**
+   * Types a name in the open "Create an attribute" dialog, replacing the
+   * current one.
+   * @param name Attribute name, e.g. 'Ops'.
+   */
+  async typeAttributeName(name: string) {
+    await this.attributeNameField.fill(name);
+  }
+
+  /**
+   * Clicks "Create attribute" in the open dialog. It doesn't wait for the
+   * attribute to be created, so it also drives names that get rejected.
+   */
+  async clickCreateAttributeButton() {
+    await this.createAttributeButton.click();
+  }
+
+  /**
    * Creates an attribute from "New attribute", which opens the "Create an
    * attribute" dialog with its name field focused, and closes the dialog again.
    * @param name Attribute name, e.g. 'Legal'.
    * @param description Optional description, e.g. 'Legal department'.
    */
   async createAttribute(name: string, description?: string) {
-    const dialog = this.page.getByRole('dialog', { name: 'Create an attribute' });
-    const nameField = dialog.getByRole('textbox', { name: 'Attribute name' });
-    // A click before the page hydrates is dropped: click again until the dialog opens
-    await expect(async () => {
-      if (!(await nameField.isVisible())) {
-        await this.newAttributeButton.click();
-      }
-      await expect(nameField, 'Attribute name field is focused').toBeFocused({
-        timeout: 2000,
-      });
-    }).toPass({ timeout: 15000 });
-    await nameField.fill(name);
+    await this.openCreateAttributeDialog();
+    await this.attributeNameField.fill(name);
     if (description) {
-      await dialog.getByRole('textbox', { name: 'Description' }).fill(description);
+      await this.createAttributeDialog
+        .getByRole('textbox', { name: 'Description' })
+        .fill(description);
     }
-    await dialog.getByRole('button', { name: 'Create attribute' }).click();
+    await this.createAttributeButton.click();
     await expect(
       this.getAttributeRow(name),
       `Attribute "${name}" is listed`,
     ).toBeVisible();
-    // The dialog stays open after creating, to chain another attribute
+    // In case the dialog stays open after creating (on PRE it closes on its own)
     await this.page.keyboard.press('Escape');
-    await expect(dialog, '"Create an attribute" dialog is closed').toBeHidden();
+    await expect(
+      this.createAttributeDialog,
+      '"Create an attribute" dialog is closed',
+    ).toBeHidden();
+  }
+
+  /**
+   * Scrolls the attributes list to its top with the mouse wheel, until the
+   * first attribute is in view.
+   */
+  async scrollAttributesListToTop() {
+    await this.attributeRows.first().hover();
+    await this.page.mouse.wheel(0, -10000);
+    await expect(
+      this.attributeRows.first(),
+      'First attribute is in view after scrolling to the top',
+    ).toBeInViewport();
+  }
+
+  /**
+   * Scrolls the attributes list to its bottom with the mouse wheel, until the
+   * last attribute is in view.
+   */
+  async scrollAttributesListToBottom() {
+    await this.attributeRows.first().hover();
+    await this.page.mouse.wheel(0, 10000);
+    await expect(
+      this.attributeRows.last(),
+      'Last attribute is in view after scrolling to the bottom',
+    ).toBeInViewport();
+  }
+
+  /**
+   * Checks the names in the attributes list, in the order they're shown.
+   * @param names Expected names, top to bottom, e.g. ['Legal', 'Ops'].
+   */
+  async checkAttributeNames(names: string[]) {
+    // Each row's Attribute cell: getByRole('cell').first() would be the first
+    // cell of the whole list. It holds only the name when there's no description
+    await expect(
+      this.attributeRows.locator('td:first-child'),
+      `Attributes listed in this order: ${names.join(', ')}`,
+    ).toHaveText(names);
+  }
+
+  /**
+   * Checks an attribute's row is scrolled out of the list's visible area.
+   * @param name Attribute name, e.g. 'UX'.
+   */
+  async checkAttributeIsOutOfView(name: string) {
+    await expect(
+      this.getAttributeRow(name),
+      `"${name}" is out of view`,
+    ).not.toBeInViewport();
+  }
+
+  /**
+   * Checks a just-created attribute was scrolled into view and is highlighted.
+   * The highlight only lasts about two seconds, so call it right after creating.
+   * @param name Attribute name, e.g. 'Zebra team'.
+   */
+  async checkNewAttributeIsInViewAndHighlighted(name: string) {
+    const row = this.getAttributeRow(name);
+    // The highlight has no role or state: it's this background class on the
+    // <tr>, which hover:/focus-visible: variants of it don't match
+    await expect(row, `"${name}" is highlighted`).toHaveClass(
+      /(^|\s)bg-ds-background-surface-base-subtle(\s|$)/,
+    );
+    await expect(row, `"${name}" is scrolled into view`).toBeInViewport();
+  }
+
+  /**
+   * Checks the "Create an attribute" dialog rejects a name already in use: the
+   * error under the name, the typed name kept and "Create attribute" disabled.
+   * @param name Name typed in the dialog, e.g. 'OPS'.
+   */
+  async checkDuplicateNameErrorIsVisible(name: string) {
+    await expect(
+      this.duplicateNameError,
+      'Duplicate name error is visible',
+    ).toBeVisible();
+    await expect(this.attributeNameField, `Name field keeps "${name}"`).toHaveValue(
+      name,
+    );
+    await expect(
+      this.createAttributeButton,
+      '"Create attribute" is disabled',
+    ).toBeDisabled();
+  }
+
+  /**
+   * Checks the duplicate name error is gone and "Create attribute" is enabled
+   * again, as happens as soon as the name is edited.
+   */
+  async checkDuplicateNameErrorIsHidden() {
+    await expect(
+      this.duplicateNameError,
+      'Duplicate name error is hidden',
+    ).toBeHidden();
+    await expect(
+      this.createAttributeButton,
+      '"Create attribute" is enabled',
+    ).toBeEnabled();
+  }
+
+  /** Checks the "Create an attribute" dialog closed on its own after creating. */
+  async checkCreateAttributeDialogIsHidden() {
+    await expect(
+      this.createAttributeDialog,
+      '"Create an attribute" dialog is closed',
+    ).toBeHidden();
   }
 
   /**
