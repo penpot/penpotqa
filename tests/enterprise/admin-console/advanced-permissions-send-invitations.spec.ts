@@ -25,8 +25,10 @@ import type { OrgMatrix } from 'helpers/org-matrix/org-matrix-types';
  * (https://github.com/penpot/penpot-nitrate/issues/508), as their Qase
  * preconditions describe it: User1 owns OrgA and OrgB and Team Coconut, the
  * other users have their roles in Team Apple and Team Banana, and OrgA has the
- * attributes Legal, Compliance, Junior and Beta testers. Shared by the
- * attribute restriction cases below; build it with the `buildOrgMatrix` fixture.
+ * attributes Legal, Compliance, Junior and Beta testers. Build it with the
+ * `buildOrgMatrix` fixture.
+ *
+ * Used by Qase 4096, 4098 and 4099: update it when their preconditions change.
  */
 const ATTRIBUTE_RESTRICTIONS_MATRIX: OrgMatrix = {
   users: ['User1', 'User2', 'User3', 'User4', 'User5', 'User6'],

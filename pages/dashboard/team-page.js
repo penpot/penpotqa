@@ -1,5 +1,6 @@
 const { BasePage } = require('../base-page');
 const { expect } = require('@playwright/test');
+const { TeamFormModalComponent } = require('./team-form-modal-component');
 const { TeamInvitationsComponent } = require('./team-invitations-component');
 const {
   TeamOrganizationModalComponent,
@@ -70,17 +71,13 @@ exports.TeamPage = class TeamPage extends BasePage {
     );
     this.addTeamToOrgLink = page.getByText('Add to an organization');
     this.teamOrgModal = new TeamOrganizationModalComponent(page);
+    this.teamFormModal = new TeamFormModalComponent(page);
     this.invitations = new TeamInvitationsComponent(page);
     this.addTeamToOrgSubmitButton = page.getByRole('button', {
       name: 'Add to organization',
     });
     // Toast reads "<team> now belongs to <org>" for both add and move.
     this.addedToOrgMessage = page.getByText(/ now belongs to /);
-    // Shown inside the same modal instead of the org combobox when
-    // "Create Teams" is 'Only me' and the actor isn't the owner (PENPOT-3333).
-    this.noPermissionToAddTeamMessage = page.getByText(
-      "You don't have permission to add teams to any of your organizations.",
-    );
     this.teamOrgOptionsButton = this.teamOrganizationSection.locator('button');
     this.changeTeamOrgMenuItem = page.getByText('Change team organization');
     this.moveTeamSubmitButton = page.getByRole('button', { name: 'Move team' });
@@ -103,8 +100,8 @@ exports.TeamPage = class TeamPage extends BasePage {
     );
     // A separate, blocking `.main_ui_alert__` modal — shown instead of the
     // combobox entirely when NO organization would accept the team. Distinct
-    // wording from noPermissionToAddTeamMessage above (that one gates on the
-    // "Create Teams" permission, "teams" plural, no "this").
+    // wording from TeamFormMessage.noPermissionToAddTeams (that one gates on
+    // the "Create Teams" permission, "teams" plural, no "this").
     this.noOrgAllowsTeamMoveMessage = page.getByText(
       "You don't have permission to add this team to any of your organizations.",
       { exact: true },
@@ -342,15 +339,6 @@ exports.TeamPage = class TeamPage extends BasePage {
     await this.changeTeamOrgMenuItem.click();
   }
 
-  async isMoveTeamBlockedModalVisible(orgName) {
-    await expect(
-      this.page.getByText(
-        `You are not allowed to move teams that are part of ${orgName} organization. If you need more information, contact the organization's owner.`,
-      ),
-      `Move-team blocked modal names "${orgName}"`,
-    ).toBeVisible();
-  }
-
   /** Its overlay otherwise intercepts every later click on the page. */
   async closeMoveTeamBlockedModal() {
     await this.clickOnESC();
@@ -362,7 +350,7 @@ exports.TeamPage = class TeamPage extends BasePage {
 
   /** Opens the "Add team to an organization" modal without assuming success
    * — a restricted non-owner sees a permission-denied message here instead
-   * of the org combobox (see isNoPermissionToAddTeamMessageVisible()/
+   * of the org combobox (see TeamFormMessage.noPermissionToAddTeams/
    * isNoOrgAllowsTeamMoveMessageVisible() for the two different gates that
    * can short-circuit straight to a message here). */
   async openAddTeamToOrgModal() {
@@ -379,27 +367,10 @@ exports.TeamPage = class TeamPage extends BasePage {
 
   /** Clicks "Create new team" without filling the form: inside an org whose
    * Create Teams permission blocks the user, it opens a restriction modal
-   * instead (see isNoPermissionToCreateTeamMessageVisible()). */
+   * instead (see TeamFormMessage.noPermissionToCreateTeams). */
   async clickCreateNewTeamMenuItem() {
     await this.openTeamsListIfClosed();
     await this.createNewTeamMenuItem.click();
-  }
-
-  async isNoPermissionToCreateTeamMessageVisible(orgName) {
-    await expect(
-      this.page.getByText(
-        `You are not allowed to create teams within ${orgName} organization.`,
-      ),
-      `No-permission-to-create-team modal names "${orgName}"`,
-    ).toBeVisible();
-    await expect(this.teamNameInput, 'Create team form is not shown').toHaveCount(0);
-  }
-
-  async isNoPermissionToAddTeamMessageVisible() {
-    await expect(
-      this.noPermissionToAddTeamMessage,
-      'No-permission-to-add-team message is shown',
-    ).toBeVisible();
   }
 
   async isNoOrgAllowsTeamMoveMessageVisible() {

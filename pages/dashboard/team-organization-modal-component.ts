@@ -20,6 +20,21 @@ export class TeamOrganizationModalComponent extends BaseComponent {
     await this.orgPicker.click();
   }
 
+  /**
+   * Checks whether the modal shows its organization picker. When the user can't
+   * add the team to any organization, Penpot shows TeamFormModalComponent's
+   * message instead of this modal.
+   *
+   * @param visible - Whether it should be shown (default: true).
+   */
+  async checkOrgPickerIsVisible(visible = true) {
+    visible
+      ? await expect(this.orgPicker, 'Organization picker is shown').toBeVisible()
+      : await expect(this.orgPicker, 'Organization picker is not shown').toHaveCount(
+          0,
+        );
+  }
+
   /** Closes the modal with Escape, without adding or moving the team. */
   async close() {
     await this.page.keyboard.press('Escape');
