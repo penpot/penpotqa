@@ -1,5 +1,6 @@
 const { BasePage } = require('../base-page');
 const { expect } = require('@playwright/test');
+const { TeamInvitationsComponent } = require('./team-invitations-component');
 const {
   TeamOrganizationModalComponent,
 } = require('./team-organization-modal-component');
@@ -69,6 +70,7 @@ exports.TeamPage = class TeamPage extends BasePage {
     );
     this.addTeamToOrgLink = page.getByText('Add to an organization');
     this.teamOrgModal = new TeamOrganizationModalComponent(page);
+    this.invitations = new TeamInvitationsComponent(page);
     this.addTeamToOrgSubmitButton = page.getByRole('button', {
       name: 'Add to organization',
     });

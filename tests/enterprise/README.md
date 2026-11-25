@@ -34,7 +34,12 @@ objects (`orgPage`, `adminConsolePage`, `stripePage`, `teamPage`,
   these fixtures skip instead of failing. Pair it with
   `createOrgForLicensedAccount()` instead of `subscribeAndCreateOrg()`.
 - **Demo accounts can't read email**, so any actor that has to accept an
-  invite must be the real `invitee` account.
+  invite by email must be the real `invitee` account. When email is only how
+  people get into a team or an organization, not what the case tests, use
+  demo accounts instead, with the `enterpriseActivatedPageTest` tools:
+  `createDemoMember()` and `joinOrganization()` for a few actors, or
+  `buildOrgMatrix()` to describe a whole set-up of users, organizations, teams
+  and attributes as data (see its doc comment).
 - Demo profiles and everything they own are purged after 7 days, so no
   cleanup is needed.
 
@@ -42,7 +47,9 @@ objects (`orgPage`, `adminConsolePage`, `stripePage`, `teamPage`,
 
 - `helpers/organizations/`: `createOrgName()`, `subscribeAndCreateOrg()`,
   `createOrgForLicensedAccount()`, `createSecondOrgFromAdminConsole()`,
-  `activateEnterpriseLicense()`
+  `activateEnterpriseLicense()`, `getOwnedOrganization()`
+- `helpers/org-matrix/`: the phases of `buildOrgMatrix()` (users,
+  organizations, teams, attributes) and its validation
 - `helpers/accounts/`: demo users, real accounts and invitee sessions
   (prefer the `ownerAndInvitee*` fixtures over calling these directly)
 - `helpers/teams/go-to-other-team.ts`: reach an org-less team once the
