@@ -1,4 +1,5 @@
 import { MoveTeamsPermissionComponent } from '@pages/admin-console/move-teams-permission-component';
+import { PermissionControlComponent } from '@pages/admin-console/permission-control-component';
 import { BasePage } from '@pages/base-page';
 import { type Locator, type Page, expect } from '@playwright/test';
 
@@ -74,6 +75,7 @@ export class AdvancedPermissionsPage extends BasePage {
   readonly applyAndRevokeInvitationsButton: Locator;
 
   readonly moveTeams: MoveTeamsPermissionComponent;
+  readonly sendInvitations: PermissionControlComponent;
 
   constructor(page: Page) {
     super(page);
@@ -115,6 +117,29 @@ export class AdvancedPermissionsPage extends BasePage {
         }),
       });
     this.moveTeams = new MoveTeamsPermissionComponent(page, moveTeamsBlock);
+
+    // Found the same way: the block holding Send invitations' dropdown and
+    // description, and not Create Teams' dropdown (as its parents do)
+    const sendInvitationsTitle =
+      PERMISSION_TITLES[SendInvitationsPermission.OwnersAndAdmins];
+    const sendInvitationsBlock = page
+      .locator('main div')
+      .filter({
+        has: page.getByRole('button', {
+          name: new RegExp(`${sendInvitationsTitle}$`),
+        }),
+      })
+      .filter({ hasText: 'Control which roles are allowed to invite people' })
+      .filter({
+        hasNot: page.getByRole('button', {
+          name: new RegExp(`${PERMISSION_TITLES[CreateTeamsPermission.AnyMember]}$`),
+        }),
+      });
+    this.sendInvitations = new PermissionControlComponent(
+      page,
+      sendInvitationsBlock,
+      sendInvitationsTitle,
+    );
   }
 
   /* -------------------------------------------------
