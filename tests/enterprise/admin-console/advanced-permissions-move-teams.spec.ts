@@ -15,6 +15,10 @@ import { AdminConsolePage } from '@pages/admin-console/admin-console-page';
 import { MoveTeamsPermission } from '@pages/admin-console/advanced-permissions-page';
 import { MoveTeamsMessage } from '@pages/admin-console/move-teams-permission-component';
 import { OrganizationPage } from '@pages/dashboard/organization-page';
+import {
+  TeamFormMessage,
+  TeamFormTitle,
+} from '@pages/dashboard/team-form-modal-component';
 import { TeamPage } from '@pages/dashboard/team-page';
 import {
   enterpriseActivatedPageTest,
@@ -195,7 +199,10 @@ enterpriseActivatedPageTest.describe(
             await teamPage.goToTeamDashboard(teamId);
             await teamPage.openTeamSettingsPageViaOptionsMenu();
             await teamPage.openChangeTeamOrgModal();
-            await teamPage.isMoveTeamBlockedModalVisible(orgAName);
+            await teamPage.teamFormModal.checkTitle(TeamFormTitle.changeTeamOrg);
+            await teamPage.teamFormModal.checkMessageIsVisible(
+              TeamFormMessage.noPermissionToMoveTeams(orgAName),
+            );
           },
         );
       },
@@ -269,7 +276,12 @@ enterpriseActivatedPageTest.describe(
           'Team Settings > three-dot menu > "Change team organization" → blocking modal names OrgD',
           async () => {
             await inviteeTeamPage.openChangeTeamOrgModal();
-            await inviteeTeamPage.isMoveTeamBlockedModalVisible(orgDName);
+            await inviteeTeamPage.teamFormModal.checkTitle(
+              TeamFormTitle.changeTeamOrg,
+            );
+            await inviteeTeamPage.teamFormModal.checkMessageIsVisible(
+              TeamFormMessage.noPermissionToMoveTeams(orgDName),
+            );
           },
         );
       },
@@ -431,7 +443,10 @@ enterpriseActivatedPageTest.describe(
           "Under 'Only me, from the Admin Console', 'Remove team from organization' → blocking modal names the organization",
           async () => {
             await teamPage.openRemoveTeamFromOrgDialog();
-            await teamPage.isMoveTeamBlockedModalVisible(orgName);
+            await teamPage.teamFormModal.checkTitle(TeamFormTitle.changeTeamOrg);
+            await teamPage.teamFormModal.checkMessageIsVisible(
+              TeamFormMessage.noPermissionToMoveTeams(orgName),
+            );
             await teamPage.closeMoveTeamBlockedModal();
           },
         );
@@ -456,7 +471,10 @@ enterpriseActivatedPageTest.describe(
             await teamPage.switchTeam(teamName);
             await teamPage.openTeamSettingsPageViaOptionsMenu();
             await teamPage.openRemoveTeamFromOrgDialog();
-            await teamPage.isMoveTeamBlockedModalVisible(orgName);
+            await teamPage.teamFormModal.checkTitle(TeamFormTitle.changeTeamOrg);
+            await teamPage.teamFormModal.checkMessageIsVisible(
+              TeamFormMessage.noPermissionToMoveTeams(orgName),
+            );
           },
         );
       },
@@ -561,7 +579,12 @@ enterpriseActivatedPageTest.describe(
             await user4TeamPage.goToTeamDashboard(bananaId);
             await user4TeamPage.openTeamSettingsPageViaOptionsMenu();
             await user4TeamPage.openChangeTeamOrgModal();
-            await user4TeamPage.isMoveTeamBlockedModalVisible(orgA.name);
+            await user4TeamPage.teamFormModal.checkTitle(
+              TeamFormTitle.changeTeamOrg,
+            );
+            await user4TeamPage.teamFormModal.checkMessageIsVisible(
+              TeamFormMessage.noPermissionToMoveTeams(orgA.name),
+            );
             await user4TeamPage.closeMoveTeamBlockedModal();
           },
         );
