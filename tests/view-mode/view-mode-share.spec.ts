@@ -1,4 +1,4 @@
-import { ProfilePage } from '@pages/profile-page';
+import { ProfileMenuComponent } from '@pages/components/profile-menu-component';
 import { CommentsPanelPage } from '@pages/workspace/comments-panel-page';
 import { InspectPanelPage } from '@pages/workspace/inspect-panel-page';
 import { ViewModePage } from '@pages/workspace/view-mode-page';
@@ -12,13 +12,13 @@ import { qase } from 'playwright-qase-reporter/playwright';
 const defaultNameBoard = 'Board';
 
 let viewModePage: ViewModePage;
-let profilePage: ProfilePage;
+let profileMenu: ProfileMenuComponent;
 let layersPanelPage: LayersPanelPage;
 
 demoAccountFileTest.describe(() => {
   demoAccountFileTest.beforeEach(async ({ page }) => {
     viewModePage = new ViewModePage(page);
-    profilePage = new ProfilePage(page);
+    profileMenu = new ProfileMenuComponent(page);
     layersPanelPage = new LayersPanelPage(page);
     await demoAccountFileTest.slow();
   });
@@ -51,8 +51,8 @@ demoAccountFileTest.describe(() => {
         'Log out and verify the destroyed link is no longer accessible',
         async () => {
           await mainPage.clickPencilBoxButton();
-          await profilePage.logout();
-          await profilePage.gotoLink(shareLink);
+          await profileMenu.logout();
+          await page.goto(shareLink);
           viewModePage = new ViewModePage(page);
           await viewModePage.isViewerSectionVisible(false);
           await expect(mainPage.loginDialog).toHaveScreenshot(

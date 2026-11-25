@@ -2,7 +2,7 @@ import { demoAccountApiFixture, demoAccountFileTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { waitMessage } from 'helpers/gmail';
 import { LoginPage } from '@pages/login-page';
-import { ProfilePage } from '@pages/profile-page';
+import { ProfileMenuComponent } from '@pages/components/profile-menu-component';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { ViewModePage } from '@pages/workspace/view-mode-page';
 import { createTeamName } from 'helpers/teams/create-team-name';
@@ -105,7 +105,7 @@ demoAccountFileTest.describe('Validate bad URL logged out', () => {
 
       await demoAccountFileTest.step('Logout', async () => {
         await mainPage.clickPencilBoxButton();
-        await new ProfilePage(page).logout();
+        await new ProfileMenuComponent(page).logout();
       });
 
       await demoAccountFileTest.step(
@@ -142,7 +142,7 @@ demoAccountFileTest.describe('Validate bad URL logged out', () => {
 
       await demoAccountFileTest.step('Logout', async () => {
         await mainPage.clickPencilBoxButton();
-        await new ProfilePage(page).logout();
+        await new ProfileMenuComponent(page).logout();
       });
 
       await demoAccountFileTest.step(
@@ -198,7 +198,7 @@ demoAccountApiFixture(
       async () => {
         const invite = await waitMessage(page, inviteeEmail, 40);
 
-        await new ProfilePage(page).logout();
+        await new ProfileMenuComponent(page).logout();
 
         await page.goto(invite!.inviteUrl);
 

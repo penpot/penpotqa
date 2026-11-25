@@ -46,7 +46,8 @@ All page interactions are abstracted into page objects under `pages/`:
 - **`pages/workspace/workspace-page.ts`** — Composes the editor by UI region: `leftSidebar` (`pages/workspace/left-sidebar/`, e.g. `layers`), `rightSidebar.design` (`pages/workspace/right-sidebar/design-tab/`: `stroke`, `blur`, `layoutContainer`, `layoutItem`, `gridCell`, `export`). New locators and methods go in the component of their region, never in the legacy `*-page.js` files, which are migrated progressively (map in `.claude/skills/page-objects/references/workspace-map.md`).
 - **`pages/workspace/tokens/`** — Design tokens feature (TypeScript). Uses `BaseComponent` as base class with a component composition pattern: `TokensBasePage` composes `SetsComponent`, `ThemesComponent`, `ToolsComponent`, and token-type components.
 - **`pages/dashboard/`** — Dashboard and team management: `dashboard-page.js`, `team-page.js`, `dashboard-deleted-page.ts`
-- **`pages/login-page.js`**, **`register-page.js`**, **`profile-page.js`**, **`forgot-password-page.js`** — Auth flows
+- **`pages/login-page.js`**, **`register-page.js`**, **`forgot-password-page.js`** — Auth flows
+- **`pages/your-account/your-account-page.ts`** — Your account (`?screen=settings-*`): sidebar plus one component per section (`profile`, `password`, `shortcuts`, `settings`, `subscription`, `integrations`, `giveFeedback`). The profile dropdown (Your account, logout, Help & Learning links) is `pages/components/profile-menu-component.ts`.
 
 ### Test Fixtures (`fixtures.ts`)
 

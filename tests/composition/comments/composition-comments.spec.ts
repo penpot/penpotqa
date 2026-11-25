@@ -1,6 +1,6 @@
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { TeamPage } from '@pages/dashboard/team-page';
-import { ProfilePage } from '@pages/profile-page';
+import { ProfileMenuComponent } from '@pages/components/profile-menu-component';
 import { CommentsPanelPage } from '@pages/workspace/comments-panel-page';
 import { demoAccountFileTest, demoTeamWithInviteeTest } from 'fixtures';
 import { openTeamFile } from 'helpers/teams/open-team-file';
@@ -9,7 +9,7 @@ import { qase } from 'playwright-qase-reporter/playwright';
 import { setDemoUserName } from 'helpers/accounts/set-demo-user-name';
 
 let commentsPanelPage: CommentsPanelPage;
-let profilePage: ProfilePage;
+let profileMenu: ProfileMenuComponent;
 
 demoAccountFileTest.describe('Single comment thread actions', () => {
   demoAccountFileTest.beforeEach(async ({ page, mainPage }) => {
@@ -425,7 +425,7 @@ demoAccountFileTest.describe('Comment bubbles', () => {
 
 demoTeamWithInviteeTest.describe('Notifications and mentions', () => {
   demoTeamWithInviteeTest.beforeEach(async ({ page }) => {
-    profilePage = new ProfilePage(page);
+    profileMenu = new ProfileMenuComponent(page);
     commentsPanelPage = new CommentsPanelPage(page);
   });
 
@@ -494,7 +494,7 @@ demoTeamWithInviteeTest.describe('Notifications and mentions', () => {
         await mainPage.clickViewportTwice();
         await commentsPanelPage.postComment(comment);
         await mainPage.backToDashboardFromFileEditor();
-        ownerName = (await profilePage.getUserName()) ?? '';
+        ownerName = await profileMenu.getAccountName();
       });
 
       await demoTeamWithInviteeTest.step(
