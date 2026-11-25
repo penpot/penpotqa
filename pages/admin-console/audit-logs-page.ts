@@ -105,9 +105,17 @@ export class AuditLogsPage extends BasePage {
     return `audit-log-${orgSlug}-${[...new Set(range)].join('-')}.csv`;
   }
 
-  /** The picker only offers days up to today, so moving the clock lets it offer later days. */
-  async reloadWithClockMovedForward(days: number) {
-    await this.page.clock.setSystemTime(Date.now() + days * 24 * 60 * 60 * 1000);
+  /** When the CSV's first event of a type happened, e.g. 'create-organization'. */
+  async getEventDate(download: Download, eventType: string): Promise<Date> {
+    const { rows } = await this.readCsv(download);
+    const row = rows.find((r) => r.includes(`,${eventType},`));
+    expect(row, `CSV holds the ${eventType} event`).toBeDefined();
+    return new Date((row ?? '').split(',')[0]);
+  }
+
+  /** The picker only offers days up to today, so setting the clock lets it offer later days. */
+  async reloadWithClockAt(date: Date) {
+    await this.page.clock.setSystemTime(date);
     await this.page.reload();
     await this.page.waitForLoadState('networkidle');
   }

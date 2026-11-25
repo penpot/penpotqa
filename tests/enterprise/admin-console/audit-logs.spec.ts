@@ -216,13 +216,13 @@ enterpriseActivatedPageTest.describe(
       ),
       async ({ orgPage, adminConsolePage, auditLogsPage }) => {
         const { filters } = auditLogsPage;
-        const day = 24 * 60 * 60 * 1000;
-        // A new org only has events on its creation day (Day A); the next days have none.
-        const dayA = new Date();
-        const dayB = new Date(dayA.getTime() + day);
-        const lastDay = new Date(dayA.getTime() + 3 * day);
         let orgSlug = '';
         let fullExport: Download;
+        // Day A: the org's creation day, its only day with events. Set after setup, as
+        // it can cross midnight; calendar-day arithmetic, as 24h can stay on one day (DST).
+        let dayA: Date;
+        let dayB: Date;
+        let lastDay: Date;
 
         await enterpriseActivatedPageTest.step(
           'Setup: create an organization, download its full audit log and move the clock 3 days ahead',
@@ -232,7 +232,15 @@ enterpriseActivatedPageTest.describe(
             await auditLogsPage.openAuditLogsTab();
             await auditLogsPage.waitForRecordedEvents();
             fullExport = await auditLogsPage.downloadCsv();
-            await auditLogsPage.reloadWithClockMovedForward(3);
+            dayA = await auditLogsPage.getEventDate(
+              fullExport,
+              'create-organization',
+            );
+            dayB = new Date(dayA.getTime());
+            dayB.setDate(dayB.getDate() + 1);
+            lastDay = new Date(dayA.getTime());
+            lastDay.setDate(lastDay.getDate() + 3);
+            await auditLogsPage.reloadWithClockAt(lastDay);
           },
         );
 
