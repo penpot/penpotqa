@@ -54,6 +54,20 @@ export class LayersPanelComponent extends BaseComponent {
   }
 
   /**
+   * Selects all the layers with the same name, which sit together: clicks the first
+   * one and Shift+clicks the last one.
+   * @param name Layer name exactly as shown in the panel.
+   */
+  async shiftSelectLayersNamed(name: string) {
+    const rows = this.getLayerRow(name);
+    await rows.first().getByText(name, { exact: true }).click();
+    await rows
+      .last()
+      .getByText(name, { exact: true })
+      .click({ modifiers: ['Shift'] });
+  }
+
+  /**
    * Opens the shape context menu of a layer with a right-click on its row.
    * @param name Layer name exactly as shown in the panel; the first match is used.
    */
