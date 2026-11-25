@@ -1,7 +1,10 @@
 /**
  * Qase suite: Admin Console > Sidebar Menu > Nitrates > Audit Logs
- * 4026/4027/4030 are one flow on the same org, so they run as one case.
+ * 4026/4027/4030 are one flow on the same org, so they run as one case; so are
+ * 4060/4061/4062/4063/4071 (Filter by Event Type).
  */
+import { AuditLogEventCategory } from '@pages/admin-console/audit-log-filters-component';
+import { type Download } from '@playwright/test';
 import { enterpriseActivatedPageTest } from '@tests/enterprise/fixtures/enterprise-fixtures';
 import { createOrgForLicensedAccount } from 'helpers/organizations/create-org-for-licensed-account';
 import { createOrgName } from 'helpers/organizations/create-org-name';
@@ -81,6 +84,126 @@ enterpriseActivatedPageTest.describe(
             const download = await auditLogsPage.downloadCsv();
             await auditLogsPage.checkCsvDownloadedMessageIsVisible();
             await auditLogsPage.checkDownloadedCsv(download, orgSlug);
+          },
+        );
+      },
+    );
+
+    enterpriseActivatedPageTest(
+      qase(
+        [4060, 4061, 4062, 4063, 4071],
+        'Audit Logs: filter by event type and clear the filters back to the full export',
+      ),
+      async ({ orgPage, adminConsolePage, auditLogsPage }) => {
+        const { filters } = auditLogsPage;
+        const { TeamAndOrganization, FilesAndProjects } = AuditLogEventCategory;
+        let orgSlug = '';
+        let fullExport: Download;
+
+        await enterpriseActivatedPageTest.step(
+          'Setup: create an organization and download its full audit log',
+          async () => {
+            await createOrgForLicensedAccount(orgPage, createOrgName());
+            ({ slug: orgSlug } = adminConsolePage.getOrgSlugAndIdFromUrl());
+            await auditLogsPage.openAuditLogsTab();
+            await auditLogsPage.waitForRecordedEvents();
+            fullExport = await auditLogsPage.downloadCsv();
+            await auditLogsPage.checkDownloadedCsv(fullExport, orgSlug);
+          },
+        );
+
+        await enterpriseActivatedPageTest.step(
+          '4060, Event type filter is available with no categories filtered by default',
+          async () => {
+            await enterpriseActivatedPageTest.step(
+              'Open the Event type filter → every category is unchecked and it reads "None filtered"',
+              async () => {
+                await filters.openFilters();
+                await filters.openEventTypeFilter();
+                await filters.checkSelectedCategories([]);
+              },
+            );
+
+            await enterpriseActivatedPageTest.step(
+              'Export details box does not mention any category',
+              async () => {
+                await auditLogsPage.checkExportHasNoEventTypes();
+              },
+            );
+          },
+        );
+
+        await enterpriseActivatedPageTest.step(
+          '4061, Event type filter offers all expected categories',
+          async () => {
+            await filters.checkEventTypeCategories();
+          },
+        );
+
+        await enterpriseActivatedPageTest.step(
+          '4062, Narrowing the selection to one category is reflected on screen',
+          async () => {
+            await filters.selectCategory(TeamAndOrganization);
+            await filters.checkSelectedCategories([TeamAndOrganization]);
+            await auditLogsPage.checkExportEventTypes([TeamAndOrganization]);
+          },
+        );
+
+        await enterpriseActivatedPageTest.step(
+          '4063, Adding a second category to the selection is reflected on screen',
+          async () => {
+            await filters.selectCategory(FilesAndProjects);
+            await filters.checkSelectedCategories([
+              TeamAndOrganization,
+              FilesAndProjects,
+            ]);
+            await auditLogsPage.checkExportEventTypes([
+              TeamAndOrganization,
+              FilesAndProjects,
+            ]);
+          },
+        );
+
+        await enterpriseActivatedPageTest.step(
+          '4071, Export after clearing all filters matches the full audit log',
+          async () => {
+            await enterpriseActivatedPageTest.step(
+              'Narrow the selection to Team and organization management and set a date range → the export reflects both',
+              async () => {
+                await filters.selectCategory(FilesAndProjects, false);
+                await filters.closeEventTypeFilter();
+                await filters.setDateRangeToToday();
+                await filters.checkDateRangeIsToday();
+                await auditLogsPage.checkExportEventTypes([TeamAndOrganization]);
+                await auditLogsPage.checkExportFileNameIsFiltered(orgSlug);
+              },
+            );
+
+            await enterpriseActivatedPageTest.step(
+              'Clear the event type filter and the date range → nothing is filtered',
+              async () => {
+                await filters.clearEventTypeFilter();
+                await filters.clearDateRange();
+                await filters.checkNoDateRange();
+                await auditLogsPage.checkExportHasNoEventTypes();
+                await auditLogsPage.checkExportFileName(orgSlug);
+                await filters.openEventTypeFilter();
+                await filters.checkSelectedCategories([]);
+                await filters.closeEventTypeFilter();
+              },
+            );
+
+            await enterpriseActivatedPageTest.step(
+              'Click Download CSV → the file holds every event of the full export',
+              async () => {
+                const download = await auditLogsPage.downloadCsv();
+                await auditLogsPage.checkDownloadedCsvMatchesFullExport(
+                  download,
+                  fullExport,
+                  orgSlug,
+                );
+              },
+            );
           },
         );
       },

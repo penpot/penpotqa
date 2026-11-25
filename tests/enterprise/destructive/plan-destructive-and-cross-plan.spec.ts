@@ -13,7 +13,7 @@
 import { qase } from 'playwright-qase-reporter/playwright';
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { MainPage } from '@pages/workspace/main-page';
-import { ProfilePage } from '@pages/profile-page';
+import { YourAccountPage } from '@pages/your-account/your-account-page';
 import { OrganizationPage } from '@pages/dashboard/organization-page';
 import { AdminConsolePage } from '@pages/admin-console/admin-console-page';
 import { StripePage } from '@pages/dashboard/stripe-page';
@@ -34,7 +34,7 @@ enterprisePageTest.describe(
         'Delete an Enterprise account with organizations shows the extended warning and removes them immediately',
       ),
       async ({ page, orgPage, adminConsolePage, stripePage, teamPage }) => {
-        const profilePage = new ProfilePage(page);
+        const yourAccountPage = new YourAccountPage(page);
         const loginPage = new LoginPage(page);
         const firstOrgName = createOrgName();
         const secondOrgName = createOrgName();
@@ -66,24 +66,32 @@ enterprisePageTest.describe(
         await enterprisePageTest.step(
           'Open user menu > "Your account" > click "Want to remove your account?" → confirmation modal',
           async () => {
-            await profilePage.openYourAccountPage();
-            await profilePage.clickOnWantToRemoveAccountLink();
+            await yourAccountPage.open();
+            await yourAccountPage.profile.openDeleteAccountModal();
           },
         );
 
         await enterprisePageTest.step(
           'Warning box: irreversible, account/subscription/orgs deleted immediately',
           async () => {
-            await profilePage.isDeleteAccountWarningVisible();
+            await yourAccountPage.profile.checkDeleteAccountWarningIsVisible();
           },
         );
 
         await enterprisePageTest.step(
           'Expand "Organizations that will be deleted" → every owned org listed with team/member counts',
           async () => {
-            await profilePage.expandOrganizationsToDelete();
-            await profilePage.isOrganizationListedToDelete(firstOrgName, 0, 1);
-            await profilePage.isOrganizationListedToDelete(secondOrgName, 1, 1);
+            await yourAccountPage.profile.expandOrganizationsToDelete();
+            await yourAccountPage.profile.checkOrganizationIsListedToDelete(
+              firstOrgName,
+              0,
+              1,
+            );
+            await yourAccountPage.profile.checkOrganizationIsListedToDelete(
+              secondOrgName,
+              1,
+              1,
+            );
           },
         );
 
@@ -91,7 +99,7 @@ enterprisePageTest.describe(
           // Redirect to login is the checkable signal of immediate deletion.
           'Click "Yes, delete my account" → deleted immediately, signed out',
           async () => {
-            await profilePage.clickOnConfirmDeleteAccountButton();
+            await yourAccountPage.profile.confirmDeleteAccount();
             await loginPage.isLoginPageUrlShown();
           },
         );
@@ -250,7 +258,7 @@ enterprisePageTest.describe(
         'Show downgrade warning before switching plans, then cancel and reactivate the Enterprise plan',
       ),
       async ({ page, orgPage, adminConsolePage, stripePage }) => {
-        const profilePage = new ProfilePage(page);
+        const yourAccountPage = new YourAccountPage(page);
         const orgName = createOrgName();
 
         await enterprisePageTest.step(
@@ -271,25 +279,29 @@ enterprisePageTest.describe(
         await enterprisePageTest.step(
           'Open Subscription page → Enterprise current, Professional listed with a Subscribe button',
           async () => {
-            await profilePage.openYourAccountPage();
-            await profilePage.openSubscriptionTab();
-            await profilePage.checkSubscriptionName('Enterprise (trial)');
+            await yourAccountPage.open();
+            await yourAccountPage.openSection('Subscription');
+            await yourAccountPage.subscription.checkCurrentPlan(
+              'Enterprise (trial)',
+            );
           },
         );
 
         await enterprisePageTest.step(
           'Click Subscribe on Professional → warning modal (loses orgs, admin console, org config)',
           async () => {
-            await profilePage.clickOnSubscribeToProfessionalButton();
-            await profilePage.isDowngradeWarningVisible();
+            await yourAccountPage.subscription.clickSubscribeToProfessional();
+            await yourAccountPage.subscription.checkDowngradeWarningIsVisible();
           },
         );
 
         await enterprisePageTest.step(
           'Close without confirming → no downgrade started, still Enterprise',
           async () => {
-            await profilePage.closeDowngradeWarningWithoutConfirming();
-            await profilePage.checkSubscriptionName('Enterprise (trial)');
+            await yourAccountPage.subscription.closeDowngradeWarningWithoutConfirming();
+            await yourAccountPage.subscription.checkCurrentPlan(
+              'Enterprise (trial)',
+            );
           },
         );
 
@@ -298,7 +310,7 @@ enterprisePageTest.describe(
         await enterprisePageTest.step(
           'Manage your subscription → Stripe customer portal',
           async () => {
-            await profilePage.clickOnManageSubscriptionButton();
+            await yourAccountPage.subscription.clickManageSubscription();
             await stripePage.isOnStripeBillingPage();
           },
         );
@@ -321,7 +333,7 @@ enterprisePageTest.describe(
         await enterprisePageTest.step(
           'Back in Penpot: subscription page shows the plan active-until end date',
           async () => {
-            await profilePage.goToSubscriptionsPage();
+            await yourAccountPage.goto('Subscription');
             await stripePage.isCancelsEndsVisible();
           },
         );
@@ -329,7 +341,7 @@ enterprisePageTest.describe(
         await enterprisePageTest.step(
           'Reactivate plan before the end date → confirm',
           async () => {
-            await profilePage.clickOnManageSubscriptionButton();
+            await yourAccountPage.subscription.clickManageSubscription();
             await stripePage.isOnStripeBillingPage();
             await stripePage.reactivateSubscription();
           },
@@ -338,9 +350,11 @@ enterprisePageTest.describe(
         await enterprisePageTest.step(
           'Back in Penpot: Canceled/active-until state is cleared',
           async () => {
-            await profilePage.goToSubscriptionsPage();
+            await yourAccountPage.goto('Subscription');
             await stripePage.isCancelsEndsVisible(false);
-            await profilePage.checkSubscriptionName('Enterprise (trial)');
+            await yourAccountPage.subscription.checkCurrentPlan(
+              'Enterprise (trial)',
+            );
           },
         );
       },
@@ -350,14 +364,14 @@ enterprisePageTest.describe(
       qase([3592], 'Cannot switch between Enterprise and Unlimited plans'),
       async ({ page, browser, stripePage }) => {
         // User A: this test's own demo account, put on the Unlimited plan.
-        const profilePageA = new ProfilePage(page);
+        const yourAccountPageA = new YourAccountPage(page);
 
         // User B: a second, independent Enterprise account in its own org.
         const userBContext = await browser.newContext({
           baseURL: process.env.BASE_URL,
         });
         const userBPage = await userBContext.newPage();
-        const profilePageB = new ProfilePage(userBPage);
+        const yourAccountPageB = new YourAccountPage(userBPage);
         const orgPageB = new OrganizationPage(userBPage);
         const adminConsolePageB = new AdminConsolePage(userBPage);
         const stripePageB = new StripePage(userBPage);
@@ -366,7 +380,10 @@ enterprisePageTest.describe(
           await enterprisePageTest.step(
             'Setup: User A on Unlimited, User B on Enterprise (its own org)',
             async () => {
-              await profilePageA.tryTrialForPlan('Unlimited');
+              await yourAccountPageA.open();
+              await yourAccountPageA.openSection('Subscription');
+              await yourAccountPageA.subscription.startTrial('Unlimited');
+              await yourAccountPageA.backToDashboard();
 
               await loginAsDemoAccount(userBPage);
               const orgBName = createOrgName();
@@ -377,7 +394,7 @@ enterprisePageTest.describe(
                 orgBName,
               );
               // Back to the dashboard — the Admin Console's user menu has
-              // no "profile-btn" testid, needed by openYourAccountPage().
+              // no "profile-btn" testid, needed by YourAccountPage.open().
               await adminConsolePageB.goToFiles(orgBName);
             },
           );
@@ -385,9 +402,9 @@ enterprisePageTest.describe(
           await enterprisePageTest.step(
             'User A (Unlimited): Manage subscription → Stripe "Update plan" only offers seat changes, no Enterprise switch',
             async () => {
-              await profilePageA.openYourAccountPage();
-              await profilePageA.openSubscriptionTab();
-              await profilePageA.clickOnManageSubscriptionButton();
+              await yourAccountPageA.open();
+              await yourAccountPageA.openSection('Subscription');
+              await yourAccountPageA.subscription.clickManageSubscription();
               await stripePage.isOnStripeBillingPage();
               await stripePage.clickOnActivePlanLink();
               await stripePage.isUpdatePlanOptionAvailable();
@@ -397,30 +414,30 @@ enterprisePageTest.describe(
           await enterprisePageTest.step(
             'User A: "Try it free for 14 days" on the Enterprise sidebar widget → Contact Sales modal, no Stripe checkout',
             async () => {
-              await profilePageA.goToSubscriptionsPage();
-              await profilePageA.clickOnTryItFreeFor14DaysButton();
-              await profilePageA.isContactSalesModalVisible();
+              await yourAccountPageA.goto('Subscription');
+              await yourAccountPageA.subscription.clickTryItFreeFor14Days();
+              await yourAccountPageA.subscription.checkContactSalesModalIsVisible();
               await stripePage.isOnStripeBillingPage(false);
-              await profilePageA.closeContactSalesModal();
+              await yourAccountPageA.subscription.closeContactSalesModal();
             },
           );
 
           await enterprisePageTest.step(
             'User A: "Try 14 days for free" on the Enterprise plan card → Contact Sales modal, no Stripe checkout',
             async () => {
-              await profilePageA.clickOnTry14DaysForFreeButton();
-              await profilePageA.isContactSalesModalVisible();
+              await yourAccountPageA.subscription.clickTry14DaysForFree();
+              await yourAccountPageA.subscription.checkContactSalesModalIsVisible();
               await stripePage.isOnStripeBillingPage(false);
-              await profilePageA.closeContactSalesModal();
+              await yourAccountPageA.subscription.closeContactSalesModal();
             },
           );
 
           await enterprisePageTest.step(
             'User B (Enterprise): Manage subscription → Stripe offers no self-serve plan-switch option at all',
             async () => {
-              await profilePageB.openYourAccountPage();
-              await profilePageB.openSubscriptionTab();
-              await profilePageB.clickOnManageSubscriptionButton();
+              await yourAccountPageB.open();
+              await yourAccountPageB.openSection('Subscription');
+              await yourAccountPageB.subscription.clickManageSubscription();
               await stripePageB.isOnStripeBillingPage();
               await stripePageB.clickOnActivePlanLink();
               // Enterprise's plan page never offers "Update plan" at all.
@@ -431,11 +448,11 @@ enterprisePageTest.describe(
           await enterprisePageTest.step(
             'User B: "Try it free for 14 days" on the Unlimited plan card → Contact Sales modal, no Stripe checkout',
             async () => {
-              await profilePageB.goToSubscriptionsPage();
-              await profilePageB.clickOnTryItFreeFor14DaysButton();
-              await profilePageB.isContactSalesModalVisible();
+              await yourAccountPageB.goto('Subscription');
+              await yourAccountPageB.subscription.clickTryItFreeFor14Days();
+              await yourAccountPageB.subscription.checkContactSalesModalIsVisible();
               await stripePageB.isOnStripeBillingPage(false);
-              await profilePageB.closeContactSalesModal();
+              await yourAccountPageB.subscription.closeContactSalesModal();
             },
           );
         } finally {

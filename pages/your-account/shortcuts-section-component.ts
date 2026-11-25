@@ -1,5 +1,5 @@
 import { type Download, type Locator, type Page, expect } from '@playwright/test';
-import { BasePage } from './base-page';
+import { BaseComponent } from '@pages/base-component';
 
 /** Top-level groups of the shortcuts list (each one is a `#<context>-section`). */
 export type ShortcutContext = 'workspace' | 'dashboard' | 'viewer';
@@ -15,9 +15,7 @@ export type ShortcutRef = {
 };
 
 /** Your account > Shortcuts (`?screen=settings-shortcuts`). */
-export class ShortcutsPage extends BasePage {
-  readonly shortcutsSidebarOption: Locator;
-  readonly shortcutsRegion: Locator;
+export class ShortcutsSectionComponent extends BaseComponent {
   readonly searchInput: Locator;
   readonly tabPanel: Locator;
   readonly resetAllButton: Locator;
@@ -32,22 +30,17 @@ export class ShortcutsPage extends BasePage {
   readonly importDialog: Locator;
   readonly importConfirmButton: Locator;
 
-  constructor(page: Page) {
-    super(page);
+  constructor(page: Page, root: Locator) {
+    super(page, root);
 
-    this.shortcutsSidebarOption = page
-      .getByRole('navigation', { name: 'Settings' })
-      .getByRole('listitem')
-      .filter({ hasText: 'Shortcuts' });
-    this.shortcutsRegion = page.getByRole('region', { name: 'Shortcuts page' });
-    this.searchInput = this.shortcutsRegion.getByRole('textbox', {
+    this.searchInput = this.root.getByRole('textbox', {
       name: 'Search shortcuts',
     });
-    this.tabPanel = this.shortcutsRegion.getByRole('tabpanel');
-    this.resetAllButton = this.shortcutsRegion.getByRole('button', {
+    this.tabPanel = this.root.getByRole('tabpanel');
+    this.resetAllButton = this.root.getByRole('button', {
       name: 'Reset all',
     });
-    this.importExportButton = this.shortcutsRegion.getByRole('button', {
+    this.importExportButton = this.root.getByRole('button', {
       name: 'Import/Export',
     });
     this.importMenuItem = page.getByRole('menuitem', { name: 'Import' });
@@ -74,7 +67,7 @@ export class ShortcutsPage extends BasePage {
    * ------------------------------------------------- */
 
   private getShortcutRow({ context, subsection, action }: ShortcutRef): Locator {
-    return this.page
+    return this.root
       .locator(`#${context}-section > li`)
       .filter({
         has: this.page.getByRole('heading', { name: subsection, exact: true }),
@@ -92,22 +85,21 @@ export class ShortcutsPage extends BasePage {
   }
 
   private getTab(tab: ShortcutsTab): Locator {
-    return this.shortcutsRegion.getByRole('tab', { name: tab, exact: true });
+    return this.root.getByRole('tab', { name: tab, exact: true });
   }
 
   /* -------------------------------------------------
    * Actions
    * ------------------------------------------------- */
 
-  /** Opens Shortcuts from the Your account sidebar (Your account already open). */
-  async openFromYourAccount() {
-    await this.shortcutsSidebarOption.click();
-    await expect(this.searchInput, 'Shortcuts page is loaded').toBeVisible();
-  }
-
   /** Reloads the page, to check changes were saved and not just shown. */
   async reload() {
     await this.page.reload();
+    await this.checkIsLoaded();
+  }
+
+  /** Checks the shortcuts list is loaded, by its search field. */
+  async checkIsLoaded() {
     await expect(this.searchInput, 'Shortcuts page is loaded').toBeVisible();
   }
 
@@ -141,7 +133,10 @@ export class ShortcutsPage extends BasePage {
   }
 
   /** Runs a mutating action and waits until the shortcuts are saved: the UI updates
-   * optimistically, before the `update-profile-props` request completes. */
+   * optimistically, before the `update-profile-props` request completes.
+   * After saving, Penpot refreshes the profile (`get-profile`, then
+   * `get-subscription-usage`) and overwrites the local state with it, so it also
+   * waits for that refresh: otherwise a late one undoes the next change. */
   private async waitForShortcutsSaved(action: () => Promise<void>) {
     const saved = this.page.waitForResponse(
       (res) =>
@@ -149,8 +144,12 @@ export class ShortcutsPage extends BasePage {
         res.request().method() === 'POST' &&
         (res.request().postData() ?? '').includes('custom-shortcuts'),
     );
+    const refreshed = this.page.waitForResponse((res) =>
+      res.url().includes('/api/main/methods/get-subscription-usage'),
+    );
     await action();
     expect((await saved).ok(), 'Shortcuts change is saved').toBe(true);
+    await refreshed;
   }
 
   async saveShortcut(shortcut: ShortcutRef) {

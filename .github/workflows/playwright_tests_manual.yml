@@ -33,11 +33,16 @@ on:
           - tests/login-signup
           - tests/panels-features
           - tests/plugins
-          - tests/your-account
-          - tests/subscription-plans
+          - tests/profile-menu
+          - tests/profile-menu/help-and-learning
+          - tests/profile-menu/your-account
+          - tests/profile-menu/your-account/integrations
+          - tests/profile-menu/your-account/password
+          - tests/profile-menu/your-account/profile
+          - tests/profile-menu/your-account/settings
+          - tests/profile-menu/your-account/shortcuts
           - tests/tokens
           - tests/tokens/token-types
-          - tests/ui-theme
           - tests/view-mode
         default: 'tests/login-signup'
       test_spec:

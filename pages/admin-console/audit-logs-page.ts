@@ -1,3 +1,7 @@
+import {
+  AuditLogFiltersComponent,
+  type AuditLogEventCategoryName,
+} from '@pages/admin-console/audit-log-filters-component';
 import { type Download, type Locator, type Page, expect } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import { BasePage } from '../base-page';
@@ -24,6 +28,7 @@ export const ExportDetail = {
   FileName: 'File name',
   Format: 'Format',
   Columns: 'Columns',
+  EventTypes: 'Event types',
 } as const;
 
 export type ExportDetailName = (typeof ExportDetail)[keyof typeof ExportDetail];
@@ -39,6 +44,7 @@ export class AuditLogsPage extends BasePage {
   readonly downloadCsvButton: Locator;
 
   readonly csvDownloadedMessage: Locator;
+  readonly filters: AuditLogFiltersComponent;
 
   constructor(page: Page) {
     super(page);
@@ -62,6 +68,8 @@ export class AuditLogsPage extends BasePage {
     this.csvDownloadedMessage = page.getByText(
       'The CSV was successfully downloaded!',
     );
+
+    this.filters = new AuditLogFiltersComponent(page, page.getByRole('main'));
   }
 
   private getExportDetailValue(detail: ExportDetailName): Locator {
@@ -69,6 +77,13 @@ export class AuditLogsPage extends BasePage {
       .locator('div')
       .filter({ has: this.page.getByRole('term').filter({ hasText: detail }) })
       .getByRole('definition');
+  }
+
+  private async readCsv(download: Download) {
+    const [header, ...rows] = (await readFile(await download.path(), 'utf8'))
+      .trim()
+      .split(/\r?\n/);
+    return { header, rows };
   }
 
   /** Retries the click: right after navigating, a nav click can silently no-op. */
@@ -141,6 +156,30 @@ export class AuditLogsPage extends BasePage {
     ).toHaveText(Object.values(AuditLogColumn).join(', '));
   }
 
+  /** The file name gets a date and "-filtered" while any filter is applied. */
+  async checkExportFileNameIsFiltered(orgSlug: string) {
+    await expect(
+      this.getExportDetailValue(ExportDetail.FileName),
+      'Export file name shows it is filtered',
+    ).toHaveText(
+      new RegExp(`^audit-log-${orgSlug}-\\d{4}-\\d{2}-\\d{2}-filtered\\.csv$`),
+    );
+  }
+
+  async checkExportEventTypes(categories: AuditLogEventCategoryName[]) {
+    await expect(
+      this.getExportDetailValue(ExportDetail.EventTypes),
+      'Export details box lists the selected event types',
+    ).toHaveText(categories.join(', '));
+  }
+
+  async checkExportHasNoEventTypes() {
+    await expect(
+      this.getExportDetailValue(ExportDetail.EventTypes),
+      'Export details box does not mention any event type',
+    ).toBeHidden();
+  }
+
   async checkEventTypeGuideLinkIsVisible() {
     await expect(
       this.eventTypeGuideLink,
@@ -166,9 +205,7 @@ export class AuditLogsPage extends BasePage {
     expect(download.suggestedFilename(), 'Downloaded file name').toBe(
       `audit-log-${orgSlug}.csv`,
     );
-    const [header, ...rows] = (await readFile(await download.path(), 'utf8'))
-      .trim()
-      .split(/\r?\n/);
+    const { header, rows } = await this.readCsv(download);
     expect(header, 'CSV header lists every audit log column, in order').toBe(
       Object.values(AuditLogColumn).join(','),
     );
@@ -176,5 +213,23 @@ export class AuditLogsPage extends BasePage {
       rows.some((row) => row.includes(',create-organization,')),
       'CSV holds the create-organization event',
     ).toBe(true);
+  }
+
+  /** Later exports may add rows (e.g. the earlier export itself), never lose any. */
+  async checkDownloadedCsvMatchesFullExport(
+    download: Download,
+    fullExport: Download,
+    orgSlug: string,
+  ) {
+    expect(
+      download.suggestedFilename(),
+      'Downloaded file name is not filtered',
+    ).toBe(`audit-log-${orgSlug}.csv`);
+    const csv = await this.readCsv(download);
+    const full = await this.readCsv(fullExport);
+    expect(csv.header, 'CSV header matches the full export').toBe(full.header);
+    expect(csv.rows, 'CSV holds every event of the full export').toEqual(
+      expect.arrayContaining(full.rows),
+    );
   }
 }

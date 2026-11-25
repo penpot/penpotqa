@@ -8,7 +8,7 @@ import {
 import { DashboardPage } from '@pages/dashboard/dashboard-page';
 import { ForgotPasswordPage } from '@pages/forgot-password-page';
 import { LoginPage } from '@pages/login-page';
-import { ProfilePage } from '@pages/profile-page';
+import { ProfileMenuComponent } from '@pages/components/profile-menu-component';
 import { RegisterPage } from '@pages/register-page';
 import { registerTest } from 'fixtures';
 import { qase } from 'playwright-qase-reporter/playwright';
@@ -42,7 +42,7 @@ demoCredentialsTest.describe('Forgot password form validations', () => {
 
 registerTest.describe(() => {
   let dashboardPage: DashboardPage;
-  let profilePage: ProfilePage;
+  let profileMenu: ProfileMenuComponent;
   let registerPage: RegisterPage;
   let newPwd: string;
 
@@ -53,11 +53,11 @@ registerTest.describe(() => {
       loginPage = new LoginPage(page);
       registerPage = new RegisterPage(page);
       dashboardPage = new DashboardPage(page);
-      profilePage = new ProfilePage(page);
+      profileMenu = new ProfileMenuComponent(page);
       forgotPasswordPage = new ForgotPasswordPage(page);
       newPwd = 'TestForgotPassword123#';
 
-      await profilePage.logout();
+      await profileMenu.logout();
       await loginPage.clickOnForgotPassword();
       await forgotPasswordPage.enterEmail(email);
       await forgotPasswordPage.clickRecoverPasswordButton();

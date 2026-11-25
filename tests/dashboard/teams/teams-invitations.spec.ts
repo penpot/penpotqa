@@ -3,7 +3,7 @@ import { demoAccountApiFixture } from 'fixtures';
 import { callPenpotApi } from 'helpers/api/penpot-api';
 import { qase } from 'playwright-qase-reporter/playwright';
 import { RegisterPage } from 'pages/register-page';
-import { ProfilePage } from 'pages/profile-page';
+import { ProfileMenuComponent } from '@pages/components/profile-menu-component';
 import { DashboardPage } from 'pages/dashboard/dashboard-page';
 import { TeamPage } from 'pages/dashboard/team-page';
 import { random } from 'helpers/string-generator';
@@ -21,7 +21,7 @@ import { registerAndDemoUserTest } from './teams-fixtures';
 let teamPage: TeamPage;
 let registerPage: RegisterPage;
 let dashboardPage: DashboardPage;
-let profilePage: ProfilePage;
+let profileMenu: ProfileMenuComponent;
 
 const team = createTeamName();
 
@@ -29,7 +29,7 @@ const initPages = (page: Page) => {
   teamPage = new TeamPage(page);
   registerPage = new RegisterPage(page);
   dashboardPage = new DashboardPage(page);
-  profilePage = new ProfilePage(page);
+  profileMenu = new ProfileMenuComponent(page);
 };
 
 demoAccountApiFixture.describe('As Owner - Invitations (demo account)', () => {
@@ -259,7 +259,7 @@ demoAccountApiFixture(
     await demoAccountApiFixture.step(
       'Both editors sign up from their invites',
       async () => {
-        await profilePage.logout();
+        await profileMenu.logout();
 
         await page.goto(firstInvite!.inviteUrl);
         await registerPage.registerAccount(
@@ -272,7 +272,7 @@ demoAccountApiFixture(
         await page.goto(firstVerificationMessage!.inviteUrl);
         await dashboardPage.fillOnboardingQuestions();
         await teamPage.isTeamSelected(team);
-        await profilePage.logout();
+        await profileMenu.logout();
 
         await page.goto(secondInvite!.inviteUrl);
         await registerPage.registerAccount(

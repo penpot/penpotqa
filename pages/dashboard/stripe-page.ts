@@ -32,7 +32,7 @@ export class StripePage extends BasePage {
   readonly currentSubscriptionHeader: Locator;
 
   // Hosted Stripe Customer Portal (billing.stripe.com), reached via
-  // ProfilePage.manageSubscriptionButton — a multi-page hosted app, not an SPA.
+  // SubscriptionSectionComponent.manageSubscriptionButton — a multi-page hosted app, not an SPA.
   readonly activePlanLink: Locator;
   // Only offered on Unlimited — Enterprise's plan page never shows it.
   readonly updatePlanLink: Locator;
