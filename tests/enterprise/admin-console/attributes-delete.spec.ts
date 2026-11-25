@@ -13,6 +13,10 @@ import {
 import { AttributeOption } from '@pages/admin-console/attributes-page';
 import { ViewTeamsRole } from '@pages/admin-console/delete-attribute-dialog-component';
 import { RestrictionPart } from '@pages/admin-console/permission-control-component';
+import {
+  TeamFormMessage,
+  TeamFormTitle,
+} from '@pages/dashboard/team-form-modal-component';
 import { enterpriseActivatedPageTest } from '@tests/enterprise/fixtures/enterprise-fixtures';
 import { openTeamDashboard } from 'helpers/teams/open-team-dashboard';
 import { qase } from 'playwright-qase-reporter/playwright';
@@ -181,7 +185,10 @@ enterpriseActivatedPageTest.describe(
           async () => {
             const teamPage = await openTeamDashboard(User4.page, banana.id);
             await teamPage.clickCreateNewTeamMenuItem();
-            await teamPage.isNoPermissionToCreateTeamMessageVisible(orgA.name);
+            await teamPage.teamFormModal.checkTitle(TeamFormTitle.createTeam);
+            await teamPage.teamFormModal.checkMessageIsVisible(
+              TeamFormMessage.noPermissionToCreateTeams(orgA.name),
+            );
             return teamPage;
           },
         );
