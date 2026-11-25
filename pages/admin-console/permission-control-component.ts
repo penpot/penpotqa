@@ -54,7 +54,8 @@ export class PermissionControlComponent extends BaseComponent {
    * moment after each change, one save after another, each sending the whole
    * permissions state: so the change is saved once a save sent after it is
    * answered. Without this, a reload or another user's check can run before
-   * the change reaches the server.
+   * the change reaches the server. Since each save carries the whole state,
+   * Send invitations included, matching it finds the saves of every control.
    *
    * @param change - The action that changes a permission.
    */
