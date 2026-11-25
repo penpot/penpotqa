@@ -1,5 +1,6 @@
 import { DesignPanelPage } from '@pages/workspace/design-panel-page';
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import type { MainPage } from '@pages/workspace/main-page';
 import { WorkspacePage } from '@pages/workspace/workspace-page';
 import { expect } from '@playwright/test';
 import { demoAccountFileTest } from 'fixtures';
@@ -16,6 +17,19 @@ demoAccountFileTest.beforeEach(async ({ page }) => {
   layersPanelPage = new LayersPanelPage(page);
 });
 
+/**
+ * Clicks the canvas with the rectangle tool already active and checks that a
+ * default 100x100 rectangle was created. Shared by the two creation tests (274, 275).
+ */
+async function clickCanvasAndCheckRectangle(mainPage: MainPage) {
+  await mainPage.clickViewportTwice();
+  await mainPage.waitForChangeIsSaved();
+  await mainPage.isCreatedLayerVisible();
+  await layersPanelPage.isLayerNameDisplayed(defaultNameRectangle);
+  await designPanelPage.checkSizeWidth('100');
+  await designPanelPage.checkSizeHeight('100');
+}
+
 demoAccountFileTest(
   qase([275], 'Create Rectangle (Shortcut R)'),
   async ({ mainPage }) => {
@@ -25,12 +39,7 @@ demoAccountFileTest(
     });
 
     await demoAccountFileTest.step('Click on the canvas', async () => {
-      await mainPage.clickViewportTwice();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.isCreatedLayerVisible();
-      await layersPanelPage.isLayerNameDisplayed(defaultNameRectangle);
-      await designPanelPage.checkSizeWidth('100');
-      await designPanelPage.checkSizeHeight('100');
+      await clickCanvasAndCheckRectangle(mainPage);
     });
   },
 );
@@ -47,12 +56,7 @@ demoAccountFileTest(
     );
 
     await demoAccountFileTest.step('Click on the canvas', async () => {
-      await mainPage.clickViewportTwice();
-      await mainPage.waitForChangeIsSaved();
-      await mainPage.isCreatedLayerVisible();
-      await layersPanelPage.isLayerNameDisplayed(defaultNameRectangle);
-      await designPanelPage.checkSizeWidth('100');
-      await designPanelPage.checkSizeHeight('100');
+      await clickCanvasAndCheckRectangle(mainPage);
       await expect(mainPage.viewport).toHaveScreenshot('rectangle.png', {
         mask: mainPage.maskViewport(),
       });
@@ -62,7 +66,6 @@ demoAccountFileTest(
 
 demoAccountFileTest.describe(() => {
   demoAccountFileTest.beforeEach(async ({ mainPage }) => {
-    await demoAccountFileTest.slow();
     await demoAccountFileTest.step('Create a rectangle', async () => {
       await mainPage.clickCreateRectangleButton();
       await mainPage.clickViewportTwice();
@@ -337,13 +340,13 @@ demoAccountFileTest(
       {
         layer: 'Rect 1',
         shortcut: 'Control+Shift+ArrowUp',
-        name: 'Select 1st rectangle and press CTRL + SHIFT+ arrow up on keyboard',
+        name: 'Select 1st rectangle and press CTRL + SHIFT + arrow up on keyboard',
         order: ['Rect 1', 'Rect 2', 'Rect 3'],
       },
       {
         layer: 'Rect 1',
         shortcut: 'Control+Shift+ArrowDown',
-        name: 'Select 1st rectangle and press CTRL + SHIFT+ arrow down on keyboard',
+        name: 'Select 1st rectangle and press CTRL + SHIFT + arrow down on keyboard',
         order: ['Rect 2', 'Rect 3', 'Rect 1'],
       },
     ];
