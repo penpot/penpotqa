@@ -118,23 +118,20 @@ export class AttributesPage extends BasePage {
    */
   async createAttribute(name: string, description?: string) {
     await this.openCreateAttributeDialog();
-    await this.attributeNameField.fill(name);
+    await this.typeAttributeName(name);
     if (description) {
       await this.createAttributeDialog
         .getByRole('textbox', { name: 'Description' })
         .fill(description);
     }
-    await this.createAttributeButton.click();
+    await this.clickCreateAttributeButton();
     await expect(
       this.getAttributeRow(name),
       `Attribute "${name}" is listed`,
     ).toBeVisible();
     // In case the dialog stays open after creating (on PRE it closes on its own)
     await this.page.keyboard.press('Escape');
-    await expect(
-      this.createAttributeDialog,
-      '"Create an attribute" dialog is closed',
-    ).toBeHidden();
+    await this.checkCreateAttributeDialogIsHidden();
   }
 
   /**
