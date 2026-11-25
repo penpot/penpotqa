@@ -28,6 +28,7 @@ export class AuditLogFiltersComponent extends BaseComponent {
   readonly eventTypeDialog: Locator;
   readonly eventTypeCheckboxes: Locator;
   readonly eventTypeSelectionCount: Locator;
+  readonly calendarDialog: Locator;
   readonly todayCalendarButton: Locator;
 
   constructor(page: Page, root: Locator) {
@@ -49,9 +50,10 @@ export class AuditLogFiltersComponent extends BaseComponent {
     this.eventTypeCheckboxes = this.eventTypeDialog.getByRole('checkbox');
     this.eventTypeSelectionCount =
       this.eventTypeDialog.getByText(/^(None|\d+) filtered$/);
-    this.todayCalendarButton = page
-      .getByRole('dialog', { name: /^Calendar Date range/ })
-      .getByRole('button', { name: /^Today, / });
+    this.calendarDialog = page.getByRole('dialog', { name: /^Calendar Date range/ });
+    this.todayCalendarButton = this.calendarDialog.getByRole('button', {
+      name: /^Today, /,
+    });
   }
 
   private getCategoryCheckbox(category: AuditLogEventCategoryName): Locator {
@@ -59,6 +61,38 @@ export class AuditLogFiltersComponent extends BaseComponent {
       name: category,
       exact: true,
     });
+  }
+
+  /** Day buttons are named e.g. "Wednesday, 25 November 2026 selected, First available date". */
+  private getCalendarDay(date: Date): Locator {
+    const label = date.toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
+    return this.calendarDialog
+      .getByRole('button', {
+        name: new RegExp(`(^|\\s)${label}(\\D|$)`),
+        disabled: false,
+      })
+      .first();
+  }
+
+  private async clickCalendarDay(date: Date) {
+    const dayButton = this.getCalendarDay(date);
+    // Page through months until the day shows, e.g. "December 2026" → November.
+    for (let i = 0; i < 12 && (await dayButton.count()) === 0; i++) {
+      const month = await this.calendarDialog
+        .getByRole('heading')
+        .first()
+        .innerText();
+      const direction = date < new Date(`1 ${month}`) ? 'Previous' : 'Next';
+      await this.calendarDialog
+        .getByRole('button', { name: direction, disabled: false })
+        .first()
+        .click();
+    }
+    await dayButton.click();
   }
 
   async openFilters() {
@@ -95,6 +129,13 @@ export class AuditLogFiltersComponent extends BaseComponent {
     await this.dateRangeButton.click();
     await this.todayCalendarButton.click();
     await this.todayCalendarButton.click();
+    await expect(this.clearDateRangeButton, 'Date range is set').toBeVisible();
+  }
+
+  async setDateRange(from: Date, to: Date) {
+    await this.dateRangeButton.click();
+    await this.clickCalendarDay(from);
+    await this.clickCalendarDay(to);
     await expect(this.clearDateRangeButton, 'Date range is set').toBeVisible();
   }
 
@@ -149,6 +190,10 @@ export class AuditLogFiltersComponent extends BaseComponent {
     await expect(this.dateRangeButton, 'Date range is today').toHaveAccessibleName(
       `Calendar Date range is ${today}`,
     );
+  }
+
+  async checkDateRangePickerIsVisible() {
+    await expect(this.dateRangeButton, 'Date range picker is visible').toBeVisible();
   }
 
   async checkNoDateRange() {

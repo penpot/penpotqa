@@ -1,8 +1,7 @@
 /**
- * Qase suite: Admin Console > Sidebar Menu > Audit Logs
- *
- * 4026/4027/4030 are one flow on the same org, so they run as one case; so are
- * 4060/4061/4062/4063/4071 (Filter by Event Type).
+ * Qase suite: Admin Console > Sidebar Menu > Nitrates > Audit Logs
+ * Cases that are one flow on the same org run as one test: 4026/4027/4030,
+ * Filter by Event Type (4060-4071) and Filter by Date Range (4131-4142).
  */
 import { AuditLogEventCategory } from '@pages/admin-console/audit-log-filters-component';
 import { type Download } from '@playwright/test';
@@ -191,6 +190,103 @@ enterpriseActivatedPageTest.describe(
                 await filters.openEventTypeFilter();
                 await filters.checkSelectedCategories([]);
                 await filters.closeEventTypeFilter();
+              },
+            );
+
+            await enterpriseActivatedPageTest.step(
+              'Click Download CSV → the file holds every event of the full export',
+              async () => {
+                const download = await auditLogsPage.downloadCsv();
+                await auditLogsPage.checkDownloadedCsvMatchesFullExport(
+                  download,
+                  fullExport,
+                  orgSlug,
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+
+    enterpriseActivatedPageTest(
+      qase(
+        [4131, 4139, 4142],
+        'Audit Logs: filter by date range, empty range and clear back to the full export',
+      ),
+      async ({ orgPage, adminConsolePage, auditLogsPage }) => {
+        const { filters } = auditLogsPage;
+        const day = 24 * 60 * 60 * 1000;
+        // A new org only has events on its creation day (Day A); the next days have none.
+        const dayA = new Date();
+        const dayB = new Date(dayA.getTime() + day);
+        const lastDay = new Date(dayA.getTime() + 3 * day);
+        let orgSlug = '';
+        let fullExport: Download;
+
+        await enterpriseActivatedPageTest.step(
+          'Setup: create an organization, download its full audit log and move the clock 3 days ahead',
+          async () => {
+            await createOrgForLicensedAccount(orgPage, createOrgName());
+            ({ slug: orgSlug } = adminConsolePage.getOrgSlugAndIdFromUrl());
+            await auditLogsPage.openAuditLogsTab();
+            await auditLogsPage.waitForRecordedEvents();
+            fullExport = await auditLogsPage.downloadCsv();
+            await auditLogsPage.reloadWithClockMovedForward(3);
+          },
+        );
+
+        await enterpriseActivatedPageTest.step(
+          '4131, Date range picker is available with no range applied by default',
+          async () => {
+            await enterpriseActivatedPageTest.step(
+              'Click Filters → the date range picker is displayed',
+              async () => {
+                await filters.openFilters();
+                await filters.checkDateRangePickerIsVisible();
+              },
+            );
+
+            await enterpriseActivatedPageTest.step(
+              'No range is applied and the export is the full one',
+              async () => {
+                await filters.checkNoDateRange();
+                await auditLogsPage.checkExportDetailsBoxIsVisible();
+                await auditLogsPage.checkExportFileName(orgSlug);
+              },
+            );
+          },
+        );
+
+        await enterpriseActivatedPageTest.step(
+          '4139, Range with no events shows empty state and disables download',
+          async () => {
+            await filters.setDateRange(dayB, lastDay);
+            await auditLogsPage.checkNoMatchingEventsState();
+          },
+        );
+
+        await enterpriseActivatedPageTest.step(
+          '4142, Clearing the filter returns to the full export',
+          async () => {
+            await enterpriseActivatedPageTest.step(
+              'Set a date range → the file name shows the range',
+              async () => {
+                await filters.setDateRange(dayA, lastDay);
+                await auditLogsPage.checkExportFileNameForRange(
+                  orgSlug,
+                  dayA,
+                  lastDay,
+                );
+              },
+            );
+
+            await enterpriseActivatedPageTest.step(
+              'Clear the filter → no range is set and the export is the full one',
+              async () => {
+                await filters.clearDateRange();
+                await filters.checkNoDateRange();
+                await auditLogsPage.checkExportFileName(orgSlug);
               },
             );
 

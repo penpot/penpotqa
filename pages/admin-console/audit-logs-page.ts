@@ -33,10 +33,15 @@ export const ExportDetail = {
 
 export type ExportDetailName = (typeof ExportDetail)[keyof typeof ExportDetail];
 
+/** Local calendar day as YYYY-MM-DD, as export file names write it. */
+const toIsoDate = (date: Date) => date.toLocaleDateString('en-CA');
+
 /** Admin Console > Audit Logs tab: export details box and CSV download. */
 export class AuditLogsPage extends BasePage {
   readonly auditLogsNavLink: Locator;
   readonly noEventsHeading: Locator;
+  readonly noMatchingEventsHeading: Locator;
+  readonly headerDownloadCsvButton: Locator;
 
   // Scoped to the box: the section header has a second "Download CSV" button.
   readonly exportDetailsBox: Locator;
@@ -55,6 +60,14 @@ export class AuditLogsPage extends BasePage {
     this.noEventsHeading = page.getByRole('heading', {
       name: 'No events recorded yet',
     });
+    this.noMatchingEventsHeading = page.getByRole('heading', {
+      name: 'No events match these filters',
+    });
+    // The only one left when the filters match no events.
+    this.headerDownloadCsvButton = page
+      .getByRole('main')
+      .getByRole('button', { name: 'Download CSV' })
+      .first();
 
     this.exportDetailsBox = page.getByRole('main').locator('div:has(> dl)');
     this.eventTypeGuideLink = this.exportDetailsBox.getByRole('link', {
@@ -84,6 +97,19 @@ export class AuditLogsPage extends BasePage {
       .trim()
       .split(/\r?\n/);
     return { header, rows };
+  }
+
+  /** One date for a single day, e.g. audit-log-orga-2026-11-25-2026-11-27.csv for a range. */
+  private getRangeFileName(orgSlug: string, from: Date, to: Date) {
+    const range = [toIsoDate(from), toIsoDate(to)];
+    return `audit-log-${orgSlug}-${[...new Set(range)].join('-')}.csv`;
+  }
+
+  /** The picker only offers days up to today, so moving the clock lets it offer later days. */
+  async reloadWithClockMovedForward(days: number) {
+    await this.page.clock.setSystemTime(Date.now() + days * 24 * 60 * 60 * 1000);
+    await this.page.reload();
+    await this.page.waitForLoadState('networkidle');
   }
 
   /** Retries the click: right after navigating, a nav click can silently no-op. */
@@ -164,6 +190,28 @@ export class AuditLogsPage extends BasePage {
     ).toHaveText(
       new RegExp(`^audit-log-${orgSlug}-\\d{4}-\\d{2}-\\d{2}-filtered\\.csv$`),
     );
+  }
+
+  async checkExportFileNameForRange(orgSlug: string, from: Date, to: Date) {
+    await expect(
+      this.getExportDetailValue(ExportDetail.FileName),
+      'Export file name includes the selected range',
+    ).toHaveText(this.getRangeFileName(orgSlug, from, to));
+  }
+
+  async checkNoMatchingEventsState() {
+    await expect(
+      this.noMatchingEventsHeading,
+      'Empty state says no events match the filters',
+    ).toBeVisible();
+    await expect(
+      this.exportDetailsBox,
+      'Export details box is replaced',
+    ).toBeHidden();
+    await expect(
+      this.headerDownloadCsvButton,
+      '"Download CSV" button is disabled',
+    ).toBeDisabled();
   }
 
   async checkExportEventTypes(categories: AuditLogEventCategoryName[]) {
