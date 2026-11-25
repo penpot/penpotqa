@@ -16,7 +16,10 @@
  *     │   │                                otherwise.
  *     │   └─ enterpriseActivatedPageTest — adds the same 5 page objects,
  *     │                                    plus `createDemoMember()` for
- *     │                                    extra demo accounts.
+ *     │                                    extra demo accounts and
+ *     │                                    `buildOrgMatrix()` for whole
+ *     │                                    set-ups of orgs, teams and
+ *     │                                    attributes.
  *     ├─ ownerAndInviteeTest             — owner + a second, real invitee
  *     │                                    account, as sibling fixtures.
  *     │                                    Owner entitled via Stripe. Also
@@ -48,8 +51,11 @@ import { AttributesPage } from '@pages/admin-console/attributes-page';
 import {
   createDemoUserSession,
   type DemoUserSession,
+  type DemoUserSessionOptions,
 } from 'helpers/accounts/create-demo-user-session';
 import { setDemoUserName } from 'helpers/accounts/set-demo-user-name';
+import { createOrgMatrix } from 'helpers/org-matrix/create-org-matrix';
+import type { BuiltOrgMatrix, OrgMatrix } from 'helpers/org-matrix/org-matrix-types';
 
 type EnterprisePageFixtures = {
   orgPage: OrganizationPage;
@@ -171,8 +177,46 @@ type DemoMemberFixtures = {
    * display name, e.g. to make it a member of an organization with
    * `joinOrganization()` (no email involved). Every account it creates is closed
    * when the test ends, even if it fails.
+   *
+   * Pass `{ openDashboard: false }` when the account only needs its API session
+   * for now: its `page` stays blank, saving a page load per account.
    */
-  createDemoMember: (name: string) => Promise<DemoMember>;
+  createDemoMember: (
+    name: string,
+    options?: DemoUserSessionOptions,
+  ) => Promise<DemoMember>;
+  /**
+   * Builds the users, organizations, teams, roles and attributes an `OrgMatrix`
+   * describes, with demo accounts only (no email), each phase as its own report
+   * step. Call it inside a `Setup:` step:
+   *
+   * ```ts
+   * const matrix = await enterpriseActivatedPageTest.step(
+   *   'Setup: OrgA users, teams and attributes',
+   *   () =>
+   *     buildOrgMatrix({
+   *       users: ['User1', 'User2', 'User3'],
+   *       loggedInUser: 'User1',
+   *       orgs: {
+   *         orgA: {
+   *           teams: { apple: { User2: 'owner', User3: 'admin' } },
+   *           attributes: { Legal: ['User2'] },
+   *         },
+   *         orgB: { owner: 'User2', members: ['User3'] },
+   *       },
+   *     }),
+   * );
+   * await openDashboardAfterApiLogin(matrix.users.User3.page); // blank until opened
+   * matrix.orgs.orgA.teams.apple.name;
+   * ```
+   *
+   * `page` is the `loggedInUser`, left in the Admin Console of the first
+   * organization they own. The other users are `createDemoMember()` accounts
+   * whose pages stay blank until opened (see `MatrixUser.page`).
+   * How each part is built: `createOrgMatrix()` in
+   * `helpers/org-matrix/create-org-matrix.ts`.
+   */
+  buildOrgMatrix: (matrix: OrgMatrix) => Promise<BuiltOrgMatrix>;
 };
 
 /**
@@ -213,8 +257,8 @@ export const enterpriseActivatedPageTest = enterpriseDemoAccountApiFixture.exten
   },
   createDemoMember: async ({ browser }, use) => {
     const members: DemoMember[] = [];
-    await use(async (name) => {
-      const session = await createDemoUserSession(browser);
+    await use(async (name, options) => {
+      const session = await createDemoUserSession(browser, options);
       const request = session.page.context().request;
       await setDemoUserName(request, name);
       const member = { ...session, name, request };
@@ -222,6 +266,9 @@ export const enterpriseActivatedPageTest = enterpriseDemoAccountApiFixture.exten
       return member;
     });
     await Promise.all(members.map((member) => member.close()));
+  },
+  buildOrgMatrix: async ({ page, createDemoMember }, use) => {
+    await use((matrix) => createOrgMatrix(matrix, page, createDemoMember));
   },
 });
 

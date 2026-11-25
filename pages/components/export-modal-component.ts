@@ -27,6 +27,37 @@ export class ExportModalComponent extends BaseComponent {
     });
   }
 
+  /**
+   * Checks the "Export selection" dialog content: the title, the selected
+   * elements (each one a toggle button), and the Cancel and Export buttons.
+   * @param count Number of elements listed in the dialog.
+   */
+  async checkExportSelectionContent(count: number) {
+    await expect(
+      this.exportSelectionTitle,
+      'Export selection dialog is visible',
+    ).toBeVisible();
+    await expect(
+      this.root.getByText(`${count} of ${count} elements selected`),
+      `Export selection dialog says ${count} of ${count} elements are selected`,
+    ).toBeVisible();
+    // Each listed element is a button named "<name><suffix> <size> <format>", e.g.
+    // "Ellipse 200x200 PNG". The list has no list/listitem roles, and the
+    // select-all button has no size or format, so it isn't counted.
+    await expect(
+      this.root.getByRole('button', { name: / \d+x\d+ \w+$/ }),
+      `Export selection dialog lists ${count} element(s)`,
+    ).toHaveCount(count);
+    await expect(
+      this.root.getByRole('button', { name: 'Cancel', exact: true }),
+      'Export selection dialog has the Cancel button',
+    ).toBeVisible();
+    await expect(
+      this.exportButton,
+      'Export selection dialog has the Export button',
+    ).toBeVisible();
+  }
+
   /** Confirms the "Export selection" dialog. The caller waits for the download. */
   async exportSelection() {
     await expect(
