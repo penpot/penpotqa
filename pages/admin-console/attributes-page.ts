@@ -1,4 +1,6 @@
+import { AttributeDialogComponent } from '@pages/admin-console/attribute-dialog-component';
 import { AttributePanelComponent } from '@pages/admin-console/attribute-panel-component';
+import { DeleteAttributeDialogComponent } from '@pages/admin-console/delete-attribute-dialog-component';
 import { BasePage } from '@pages/base-page';
 import { type Locator, type Page, expect } from '@playwright/test';
 
@@ -23,10 +25,8 @@ export class AttributesPage extends BasePage {
   readonly newAttributeButton: Locator;
   readonly attributesTable: Locator;
   readonly attributeRows: Locator;
-  readonly createAttributeDialog: Locator;
-  readonly attributeNameField: Locator;
-  readonly createAttributeButton: Locator;
-  readonly duplicateNameError: Locator;
+  readonly createDialog: AttributeDialogComponent;
+  readonly editDialog: AttributeDialogComponent;
   readonly panel: AttributePanelComponent;
 
   constructor(page: Page) {
@@ -47,18 +47,25 @@ export class AttributesPage extends BasePage {
       .getByText('Classify org members to apply fine-grained permissions')
       .locator('..')
       .getByRole('button', { name: 'New attribute' });
-    this.createAttributeDialog = page.getByRole('dialog', {
-      name: 'Create an attribute',
-    });
-    this.attributeNameField = this.createAttributeDialog.getByRole('textbox', {
-      name: 'Attribute name',
-    });
-    this.createAttributeButton = this.createAttributeDialog.getByRole('button', {
-      name: 'Create attribute',
-    });
-    this.duplicateNameError = this.createAttributeDialog.getByText(
-      'An attribute with this name already exists.',
+    this.createDialog = new AttributeDialogComponent(
+      page,
+      'Create an attribute',
+      'Create attribute',
     );
+    this.editDialog = new AttributeDialogComponent(
+      page,
+      'Edit attribute',
+      'Save changes',
+    );
+  }
+
+  /**
+   * Returns a row's options menu ("⋯"), open once its button is clicked.
+   * @param name Attribute name, e.g. 'Legal'.
+   * @returns The "Attribute options for <name>" menu.
+   */
+  private getAttributeOptionsMenu(name: string): Locator {
+    return this.page.getByRole('menu', { name: `Attribute options for ${name}` });
   }
 
   /**
@@ -103,31 +110,132 @@ export class AttributesPage extends BasePage {
   async openCreateAttributeDialog() {
     // A click before the page hydrates is dropped: click again until the dialog opens
     await expect(async () => {
-      if (!(await this.attributeNameField.isVisible())) {
+      if (!(await this.createDialog.nameField.isVisible())) {
         await this.newAttributeButton.click();
       }
       await expect(
-        this.attributeNameField,
+        this.createDialog.nameField,
         'Attribute name field is focused',
       ).toBeFocused({ timeout: 2000 });
     }).toPass({ timeout: 15000 });
   }
 
   /**
-   * Types a name in the open "Create an attribute" dialog, replacing the
-   * current one.
-   * @param name Attribute name, e.g. 'Ops'.
+   * Opens a row's options menu ("⋯"), whose button only shows while the row is
+   * hovered.
+   * @param name Attribute name, e.g. 'Legal'.
    */
-  async typeAttributeName(name: string) {
-    await this.attributeNameField.fill(name);
+  async openAttributeOptions(name: string) {
+    const menu = this.getAttributeOptionsMenu(name);
+    // A click right after the list renders, or a toast closing, can be dropped
+    await expect(async () => {
+      if (!(await menu.isVisible())) {
+        await this.getAttributeRow(name).hover();
+        await this.page
+          .getByRole('button', { name: `Attribute options for ${name}` })
+          .click({ timeout: 2000 });
+      }
+      await expect(menu, `"${name}" options menu is open`).toBeVisible({
+        timeout: 2000,
+      });
+    }).toPass({ timeout: 15000 });
   }
 
   /**
-   * Clicks "Create attribute" in the open dialog. It doesn't wait for the
-   * attribute to be created, so it also drives names that get rejected.
+   * Opens "Edit attribute" from a row's options menu, with its fields filled in.
+   * @param name Attribute name, e.g. 'Contractors'.
    */
-  async clickCreateAttributeButton() {
-    await this.createAttributeButton.click();
+  async openEditAttributeDialog(name: string) {
+    await this.openAttributeOptions(name);
+    await this.getAttributeOptionsMenu(name)
+      .getByRole('menuitem', { name: 'Edit' })
+      .click();
+    await expect(this.editDialog.nameField, 'Name field shows the name').toHaveValue(
+      name,
+    );
+  }
+
+  /**
+   * Edits an attribute from its options menu and saves, waiting for the dialog
+   * to close.
+   * @param name Current name, e.g. 'Contractors'.
+   * @param changes The new name and/or description; what's left out is kept.
+   */
+  async editAttribute(
+    name: string,
+    changes: { name?: string; description?: string },
+  ) {
+    await this.openEditAttributeDialog(name);
+    if (changes.name !== undefined) await this.editDialog.typeName(changes.name);
+    if (changes.description !== undefined) {
+      await this.editDialog.typeDescription(changes.description);
+    }
+    await this.editDialog.clickSubmit();
+    await this.editDialog.checkIsHidden();
+  }
+
+  /**
+   * Clicks "Delete" in a row's options menu. It deletes straight away when
+   * nobody holds the attribute and no control uses it; otherwise it opens the
+   * 'Delete "<name>"?' dialog.
+   * @param name Attribute name, e.g. 'Old pilot'.
+   * @returns The delete dialog, for the cases that open it.
+   */
+  async clickDeleteAttribute(name: string): Promise<DeleteAttributeDialogComponent> {
+    await this.openAttributeOptions(name);
+    await this.getAttributeOptionsMenu(name)
+      .getByRole('menuitem', { name: 'Delete' })
+      .click();
+    return new DeleteAttributeDialogComponent(this.page, name);
+  }
+
+  /**
+   * Checks a row's open options menu offers exactly these items.
+   * @param name Attribute name, e.g. 'Contractors'.
+   * @param items Expected items, in order, e.g. ['Edit', 'Delete'].
+   */
+  async checkAttributeOptionsMenuItems(name: string, items: string[]) {
+    await expect(
+      this.getAttributeOptionsMenu(name).getByRole('menuitem'),
+      `"${name}" options menu offers [${items.join(', ')}]`,
+    ).toHaveText(items);
+  }
+
+  /**
+   * Checks the message the Admin Console shows at the bottom after a change.
+   * @param message Its text, e.g. '"Old pilot" deleted'.
+   */
+  async checkMessageIsVisible(message: string) {
+    await expect(
+      this.page.getByText(message, { exact: true }),
+      `The message "${message}" is shown`,
+    ).toBeVisible();
+  }
+
+  /**
+   * Checks an attribute is listed, with its description when given.
+   * @param name Attribute name, matched with its exact case, e.g. 'Junior'.
+   * @param description Expected description under the name.
+   */
+  async checkAttributeIsListed(name: string, description?: string) {
+    const row = this.getAttributeRow(name);
+    await expect(row, `"${name}" is listed`).toBeVisible();
+    if (description) {
+      await expect(
+        row.getByText(description, { exact: true }),
+        `"${name}" shows the description "${description}"`,
+      ).toBeVisible();
+    }
+  }
+
+  /**
+   * Checks no attribute with this exact name is listed.
+   * @param name Attribute name, e.g. 'Contractors'.
+   */
+  async checkAttributeIsNotListed(name: string) {
+    await expect(this.getAttributeRow(name), `"${name}" is not listed`).toHaveCount(
+      0,
+    );
   }
 
   /**
@@ -138,20 +246,16 @@ export class AttributesPage extends BasePage {
    */
   async createAttribute(name: string, description?: string) {
     await this.openCreateAttributeDialog();
-    await this.typeAttributeName(name);
-    if (description) {
-      await this.createAttributeDialog
-        .getByRole('textbox', { name: 'Description' })
-        .fill(description);
-    }
-    await this.clickCreateAttributeButton();
+    await this.createDialog.typeName(name);
+    if (description) await this.createDialog.typeDescription(description);
+    await this.createDialog.clickSubmit();
     await expect(
       this.getAttributeRow(name),
       `Attribute "${name}" is listed`,
     ).toBeVisible();
     // In case the dialog stays open after creating (on PRE it closes on its own)
     await this.page.keyboard.press('Escape');
-    await this.checkCreateAttributeDialogIsHidden();
+    await this.createDialog.checkIsHidden();
   }
 
   /**
@@ -217,48 +321,6 @@ export class AttributesPage extends BasePage {
       /(^|\s)bg-ds-background-surface-base-subtle(\s|$)/,
     );
     await expect(row, `"${name}" is scrolled into view`).toBeInViewport();
-  }
-
-  /**
-   * Checks the "Create an attribute" dialog rejects a name already in use: the
-   * error under the name, the typed name kept and "Create attribute" disabled.
-   * @param name Name typed in the dialog, e.g. 'OPS'.
-   */
-  async checkDuplicateNameErrorIsVisible(name: string) {
-    await expect(
-      this.duplicateNameError,
-      'Duplicate name error is visible',
-    ).toBeVisible();
-    await expect(this.attributeNameField, `Name field keeps "${name}"`).toHaveValue(
-      name,
-    );
-    await expect(
-      this.createAttributeButton,
-      '"Create attribute" is disabled',
-    ).toBeDisabled();
-  }
-
-  /**
-   * Checks the duplicate name error is gone and "Create attribute" is enabled
-   * again, as happens as soon as the name is edited.
-   */
-  async checkDuplicateNameErrorIsHidden() {
-    await expect(
-      this.duplicateNameError,
-      'Duplicate name error is hidden',
-    ).toBeHidden();
-    await expect(
-      this.createAttributeButton,
-      '"Create attribute" is enabled',
-    ).toBeEnabled();
-  }
-
-  /** Checks the "Create an attribute" dialog closed on its own after creating. */
-  async checkCreateAttributeDialogIsHidden() {
-    await expect(
-      this.createAttributeDialog,
-      '"Create an attribute" dialog is closed',
-    ).toBeHidden();
   }
 
   /**

@@ -71,6 +71,15 @@ export class MoveTeamsPermissionComponent extends BaseComponent {
     ).toHaveText(new RegExp(`^${escapeRegExp(attribute)}\\s*${holders}$`));
   }
 
+  /** Checks "Except" isn't on, so moving teams has no attribute restriction. */
+  async checkNoExclusion() {
+    await expect(
+      this.root.getByRole('button', { name: 'Remove "Except"' }),
+      `Move teams has no "Except"`,
+    ).toBeHidden();
+    await expect(this.exceptButton, '"Except" can be added').toBeVisible();
+  }
+
   /**
    * Checks the block's messages are exactly these, in order, so no other message
    * (e.g. a warning that nobody can move a team) is shown.
