@@ -9,6 +9,7 @@ import {
   CreateTeamsPermission,
   SendInvitationsPermission,
 } from '@pages/admin-console/advanced-permissions-page';
+import { AttributeOption } from '@pages/admin-console/attributes-page';
 import { RestrictionPart } from '@pages/admin-console/permission-control-component';
 import { enterpriseActivatedPageTest } from '@tests/enterprise/fixtures/enterprise-fixtures';
 import { createOrgForLicensedAccount } from 'helpers/organizations/create-org-for-licensed-account';
@@ -67,8 +68,8 @@ enterpriseActivatedPageTest.describe(
           async () => {
             await attributesPage.openAttributeOptions(contractors.name);
             await attributesPage.checkAttributeOptionsMenuItems(contractors.name, [
-              'Edit',
-              'Delete',
+              AttributeOption.Edit,
+              AttributeOption.Delete,
             ]);
           },
         );
@@ -77,8 +78,13 @@ enterpriseActivatedPageTest.describe(
           'Click "Edit" → its name, description and holders, with "Save changes" disabled',
           async () => {
             await attributesPage.openEditAttributeDialog(contractors.name);
-            await editDialog.checkFields(contractors.name, contractors.description);
-            await editDialog.checkHoldersMessage('1 member holds this attribute');
+            await editDialog.checkFieldsHaveValues(
+              contractors.name,
+              contractors.description,
+            );
+            await editDialog.checkHoldersMessageIsVisible(
+              '1 member holds this attribute',
+            );
             await editDialog.checkSubmitIsEnabled(false);
           },
         );

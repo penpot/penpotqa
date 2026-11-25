@@ -15,6 +15,15 @@ export enum AttributesTableColumn {
   People = 3,
 }
 
+/** The items of an attribute row's options menu ("⋯"). */
+export const AttributeOption = {
+  Edit: 'Edit',
+  Delete: 'Delete',
+} as const;
+
+export type AttributeOptionName =
+  (typeof AttributeOption)[keyof typeof AttributeOption];
+
 /**
  * Covers the Admin Console's Attributes tab
  * (/admin-console/organization/{slug}/{id}/attributes): org-level labels such as
@@ -131,7 +140,7 @@ export class AttributesPage extends BasePage {
     await expect(async () => {
       if (!(await menu.isVisible())) {
         await this.getAttributeRow(name).hover();
-        await this.page
+        await this.getAttributeRow(name)
           .getByRole('button', { name: `Attribute options for ${name}` })
           .click({ timeout: 2000 });
       }
@@ -148,7 +157,7 @@ export class AttributesPage extends BasePage {
   async openEditAttributeDialog(name: string) {
     await this.openAttributeOptions(name);
     await this.getAttributeOptionsMenu(name)
-      .getByRole('menuitem', { name: 'Edit' })
+      .getByRole('menuitem', { name: AttributeOption.Edit })
       .click();
     await expect(this.editDialog.nameField, 'Name field shows the name').toHaveValue(
       name,
@@ -184,7 +193,7 @@ export class AttributesPage extends BasePage {
   async clickDeleteAttribute(name: string): Promise<DeleteAttributeDialogComponent> {
     await this.openAttributeOptions(name);
     await this.getAttributeOptionsMenu(name)
-      .getByRole('menuitem', { name: 'Delete' })
+      .getByRole('menuitem', { name: AttributeOption.Delete })
       .click();
     return new DeleteAttributeDialogComponent(this.page, name);
   }
@@ -192,9 +201,9 @@ export class AttributesPage extends BasePage {
   /**
    * Checks a row's open options menu offers exactly these items.
    * @param name Attribute name, e.g. 'Contractors'.
-   * @param items Expected items, in order, e.g. ['Edit', 'Delete'].
+   * @param items Expected items, in order, e.g. [AttributeOption.Edit, AttributeOption.Delete].
    */
-  async checkAttributeOptionsMenuItems(name: string, items: string[]) {
+  async checkAttributeOptionsMenuItems(name: string, items: AttributeOptionName[]) {
     await expect(
       this.getAttributeOptionsMenu(name).getByRole('menuitem'),
       `"${name}" options menu offers [${items.join(', ')}]`,
@@ -253,8 +262,6 @@ export class AttributesPage extends BasePage {
       this.getAttributeRow(name),
       `Attribute "${name}" is listed`,
     ).toBeVisible();
-    // In case the dialog stays open after creating (on PRE it closes on its own)
-    await this.page.keyboard.press('Escape');
     await this.createDialog.checkIsHidden();
   }
 

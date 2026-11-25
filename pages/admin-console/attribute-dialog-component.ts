@@ -13,9 +13,9 @@ export class AttributeDialogComponent extends BaseComponent {
   readonly duplicateNameError: Locator;
 
   /**
-   * @param page - The Attributes page.
-   * @param title - The dialog's title, e.g. 'Edit attribute'.
-   * @param submitLabel - Its submit button, e.g. 'Save changes'.
+   * @param page The Attributes page.
+   * @param title The dialog's title, e.g. 'Edit attribute'.
+   * @param submitLabel Its submit button, e.g. 'Save changes'.
    */
   constructor(page: Page, title: string, submitLabel: string) {
     super(page, page.getByRole('dialog', { name: title }));
@@ -56,7 +56,7 @@ export class AttributeDialogComponent extends BaseComponent {
    * @param name Expected name, e.g. 'Contractors'.
    * @param description Expected description, e.g. 'People from agencies'.
    */
-  async checkFields(name: string, description: string) {
+  async checkFieldsHaveValues(name: string, description: string) {
     await expect(this.nameField, `Name field shows "${name}"`).toHaveValue(name);
     await expect(
       this.descriptionField,
@@ -69,7 +69,7 @@ export class AttributeDialogComponent extends BaseComponent {
    * attribute (only in "Edit attribute").
    * @param text Its text, e.g. '1 member holds this attribute'.
    */
-  async checkHoldersMessage(text: string) {
+  async checkHoldersMessageIsVisible(text: string) {
     await expect(
       this.root.getByText(text, { exact: true }),
       `The dialog reads "${text}"`,

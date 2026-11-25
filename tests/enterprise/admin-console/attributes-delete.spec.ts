@@ -10,6 +10,8 @@ import {
   MoveTeamsPermission,
   SendInvitationsPermission,
 } from '@pages/admin-console/advanced-permissions-page';
+import { AttributeOption } from '@pages/admin-console/attributes-page';
+import { ViewTeamsRole } from '@pages/admin-console/delete-attribute-dialog-component';
 import { RestrictionPart } from '@pages/admin-console/permission-control-component';
 import { enterpriseActivatedPageTest } from '@tests/enterprise/fixtures/enterprise-fixtures';
 import { openTeamDashboard } from 'helpers/teams/open-team-dashboard';
@@ -46,8 +48,8 @@ enterpriseActivatedPageTest.describe(
           async () => {
             await attributesPage.openAttributeOptions(oldPilot);
             await attributesPage.checkAttributeOptionsMenuItems(oldPilot, [
-              'Edit',
-              'Delete',
+              AttributeOption.Edit,
+              AttributeOption.Delete,
             ]);
           },
         );
@@ -135,7 +137,7 @@ enterpriseActivatedPageTest.describe(
             await dialog.checkWarningIsVisible(
               'Create Teams would be left with nobody able to create teams.',
             );
-            await dialog.checkNoWarning('Move teams across organizations');
+            await dialog.checkWarningIsHidden('Move teams across organizations');
             return dialog;
           },
         );
@@ -232,7 +234,7 @@ enterpriseActivatedPageTest.describe(
               'Nobody holds this attribute, and these controls point at it:',
               ['Create Teams'],
             );
-            await dialog.checkNoWarning();
+            await dialog.checkWarningIsHidden();
             return dialog;
           },
         );
@@ -326,8 +328,8 @@ enterpriseActivatedPageTest.describe(
           async () => {
             await deleteDialog.openTeams();
             await deleteDialog.checkTeams([
-              { name: banana.name, role: 'Not a member' },
-              { name: coconut.name, role: 'Owner' },
+              { name: banana.name, role: ViewTeamsRole.NotAMember },
+              { name: coconut.name, role: ViewTeamsRole.Owner },
             ]);
           },
         );

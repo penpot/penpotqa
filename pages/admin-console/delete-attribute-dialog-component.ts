@@ -1,8 +1,18 @@
 import { BaseComponent } from '@pages/base-component';
 import { type Locator, type Page, expect } from '@playwright/test';
 
+/** The logged-in user's role in a team of the "View teams" list. */
+export const ViewTeamsRole = {
+  Owner: 'Owner',
+  NotAMember: 'Not a member',
+} as const;
+
+export type ViewTeamsRoleName = (typeof ViewTeamsRole)[keyof typeof ViewTeamsRole];
+
 /** A team of the "View teams" list, with the logged-in user's role in it. */
-export type TeamLeftWithNobody = { name: string; role: string };
+export type TeamLeftWithNobody = { name: string; role: ViewTeamsRoleName };
+
+const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 /**
  * The 'Delete "<attribute>"?' dialog of the Attributes tab, shown when someone
@@ -18,8 +28,8 @@ export class DeleteAttributeDialogComponent extends BaseComponent {
   readonly deleteButton: Locator;
 
   /**
-   * @param page - The Attributes page.
-   * @param attribute - The attribute being deleted, e.g. 'Compliance'.
+   * @param page The Attributes page.
+   * @param attribute The attribute being deleted, e.g. 'Compliance'.
    */
   constructor(page: Page, attribute: string) {
     super(page, page.getByRole('dialog', { name: `Delete "${attribute}"?` }));
@@ -76,11 +86,13 @@ export class DeleteAttributeDialogComponent extends BaseComponent {
    * @param control Control name, e.g. 'Move teams across organizations'; leave it
    * out to check there's no warning for any control.
    */
-  async checkNoWarning(control?: string) {
+  async checkWarningIsHidden(control?: string) {
     // Warnings start with the control: "Create Teams would be left with nobody…".
     // Anchored, so it doesn't match the dialog's text, which lists every control
     const warning = control
-      ? this.root.getByText(new RegExp(`^${control}:? .*would be left with nobody`))
+      ? this.root.getByText(
+          new RegExp(`^${escapeRegExp(control)}:? .*would be left with nobody`),
+        )
       : this.root.getByText('would be left with nobody');
     await expect(
       warning,
@@ -110,7 +122,7 @@ export class DeleteAttributeDialogComponent extends BaseComponent {
   /**
    * Checks the teams listed after "View teams", in any order: each with the
    * logged-in user's role in it, and no other team.
-   * @param teams Expected teams, e.g. [{ name: 'Team Banana', role: 'Not a member' }].
+   * @param teams Expected teams, e.g. [{ name: 'Team Banana', role: ViewTeamsRole.NotAMember }].
    */
   async checkTeams(teams: TeamLeftWithNobody[]) {
     await expect(this.teams, `${teams.length} teams are listed`).toHaveCount(

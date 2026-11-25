@@ -75,7 +75,7 @@ export class MoveTeamsPermissionComponent extends BaseComponent {
   async checkNoExclusion() {
     await expect(
       this.root.getByRole('button', { name: 'Remove "Except"' }),
-      `Move teams has no "Except"`,
+      'Move teams has no "Except"',
     ).toBeHidden();
     await expect(this.exceptButton, '"Except" can be added').toBeVisible();
   }
