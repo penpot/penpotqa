@@ -13,7 +13,7 @@ import { OrganizationPage } from '@pages/dashboard/organization-page';
 import {
   TeamFormMessage,
   TeamFormTitle,
-} from '@pages/dashboard/team-form-modal-component';
+} from '@pages/dashboard/modals/team-form-modal-component';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { CreateTeamsPermission } from '@pages/admin-console/advanced-permissions-page';
 import { RestrictionPart } from '@pages/admin-console/permission-control-component';

@@ -1,10 +1,10 @@
 const { BasePage } = require('../base-page');
 const { expect } = require('@playwright/test');
-const { TeamFormModalComponent } = require('./team-form-modal-component');
+const { TeamFormModalComponent } = require('./modals/team-form-modal-component');
 const { TeamInvitationsComponent } = require('./team-invitations-component');
 const {
   TeamOrganizationModalComponent,
-} = require('./team-organization-modal-component');
+} = require('./modals/team-organization-modal-component');
 
 exports.TeamPage = class TeamPage extends BasePage {
   /**

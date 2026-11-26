@@ -19,7 +19,7 @@ import { OrganizationPage } from '@pages/dashboard/organization-page';
 import {
   TeamFormMessage,
   TeamFormTitle,
-} from '@pages/dashboard/team-form-modal-component';
+} from '@pages/dashboard/modals/team-form-modal-component';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { enterpriseActivatedPageTest } from '@tests/enterprise/fixtures/enterprise-fixtures';
 import { activateEnterpriseLicense } from 'helpers/organizations/activate-enterprise-license';

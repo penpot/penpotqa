@@ -16,7 +16,7 @@ import { RestrictionPart } from '@pages/admin-console/permission-control-compone
 import {
   TeamFormMessage,
   TeamFormTitle,
-} from '@pages/dashboard/team-form-modal-component';
+} from '@pages/dashboard/modals/team-form-modal-component';
 import { enterpriseActivatedPageTest } from '@tests/enterprise/fixtures/enterprise-fixtures';
 import { openTeamDashboard } from 'helpers/teams/open-team-dashboard';
 import { qase } from 'playwright-qase-reporter/playwright';
