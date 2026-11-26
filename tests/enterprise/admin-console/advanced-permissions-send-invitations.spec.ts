@@ -104,48 +104,9 @@ enterpriseActivatedPageTest.describe(
     );
 
     enterpriseActivatedPageTest(
-      qase([3361], 'Switch invitation permission setting to Team owners only'),
-      async ({ orgPage, adminConsolePage, advancedPermissionsPage }) => {
-        const orgName = createOrgName();
-
-        await enterpriseActivatedPageTest.step(
-          'Setup: Enterprise already active (activation code), create an organization',
-          async () => {
-            await createOrgForLicensedAccount(orgPage, orgName);
-            await adminConsolePage.openAdvancedPermissionsTab();
-          },
-        );
-
-        await enterpriseActivatedPageTest.step(
-          'Admin Console > Advanced Permissions > Send invitations → both options available',
-          async () => {
-            await advancedPermissionsPage.isPermissionVisible(
-              SendInvitationsPermission.OwnersAndAdmins,
-            );
-            await advancedPermissionsPage.isPermissionVisible(
-              SendInvitationsPermission.OwnersOnly,
-            );
-          },
-        );
-
-        await enterpriseActivatedPageTest.step(
-          "Select 'Team owners only' → option becomes selected (autosaved)",
-          async () => {
-            await advancedPermissionsPage.selectPermission(
-              SendInvitationsPermission.OwnersOnly,
-            );
-            await advancedPermissionsPage.isPermissionSelected(
-              SendInvitationsPermission.OwnersOnly,
-            );
-          },
-        );
-      },
-    );
-
-    enterpriseActivatedPageTest(
       qase(
-        [3362, 3364],
-        'Team owners only setting restricts team admins from inviting and managing invitations',
+        [3361, 3362, 3364],
+        "Switch invitation permission to 'Team owners only', which restricts team admins from inviting and managing invitations",
       ),
       async ({
         page,
@@ -184,19 +145,34 @@ enterpriseActivatedPageTest.describe(
         );
 
         await enterpriseActivatedPageTest.step(
-          "Org owner switches the Send invitations permission to 'Team owners only'",
+          '(3361) Admin Console > Advanced Permissions > Send invitations → both options available',
           async () => {
             await orgPage.openOrgSwitcher();
             await orgPage.clickGoToAdminConsole();
             await adminConsolePage.openAdvancedPermissionsTab();
-            await advancedPermissionsPage.selectPermission(
+            await advancedPermissionsPage.isPermissionVisible(
+              SendInvitationsPermission.OwnersAndAdmins,
+            );
+            await advancedPermissionsPage.isPermissionVisible(
               SendInvitationsPermission.OwnersOnly,
             );
           },
         );
 
         await enterpriseActivatedPageTest.step(
-          '3362: Team owners only setting restricts team admins from inviting',
+          "Select 'Team owners only' → option becomes selected (autosaved)",
+          async () => {
+            await advancedPermissionsPage.selectPermission(
+              SendInvitationsPermission.OwnersOnly,
+            );
+            await advancedPermissionsPage.isPermissionSelected(
+              SendInvitationsPermission.OwnersOnly,
+            );
+          },
+        );
+
+        await enterpriseActivatedPageTest.step(
+          '(3362) Team owners only setting restricts team admins from inviting',
           async () => {
             // The admin's session predates the permission switch above —
             // reload to pick up the now-restrictive permission.
@@ -215,7 +191,7 @@ enterpriseActivatedPageTest.describe(
         );
 
         await enterpriseActivatedPageTest.step(
-          '3364: Restricted team admin can only view invitations under Team owners only',
+          '(3364) Restricted team admin can only view invitations under Team owners only',
           async () => {
             await adminTeamPage.isInvitationSelectable(pendingEmail, false);
             await adminTeamPage.isInvitationRoleEditable(pendingEmail, false);

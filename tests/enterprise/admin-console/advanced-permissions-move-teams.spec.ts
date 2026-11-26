@@ -36,8 +36,8 @@ enterpriseActivatedPageTest.describe(
   () => {
     enterpriseActivatedPageTest(
       qase(
-        [3342],
-        "Set team movement permission to 'Only me, from the Admin Console' and verify setting is autosaved",
+        [3342, 3344, 3343],
+        "Set team movement permission to 'Only me, from the Admin Console', back to 'Team owners', and limit it to the same Enterprise subscription, each autosaved",
       ),
       async ({ orgPage, adminConsolePage, advancedPermissionsPage }) => {
         const orgName = createOrgName();
@@ -51,7 +51,7 @@ enterpriseActivatedPageTest.describe(
         );
 
         await enterpriseActivatedPageTest.step(
-          'Admin Console > Advanced Permissions > Move Teams Across Organizations → both options and the same subscription checkbox available',
+          '(3342) Admin Console > Advanced Permissions > Move Teams Across Organizations → both options and the same subscription checkbox available',
           async () => {
             await advancedPermissionsPage.isPermissionVisible(
               MoveTeamsPermission.TeamOwners,
@@ -75,27 +75,22 @@ enterpriseActivatedPageTest.describe(
             await advancedPermissionsPage.isSameSubscriptionOnlyVisible(false);
           },
         );
-      },
-    );
-
-    enterpriseActivatedPageTest(
-      qase(
-        [3343],
-        'Limit team movement to organizations under the same Enterprise subscription and verify it is autosaved',
-      ),
-      async ({ orgPage, adminConsolePage, advancedPermissionsPage }) => {
-        const orgName = createOrgName();
 
         await enterpriseActivatedPageTest.step(
-          'Setup: Enterprise already active (activation code), create an organization',
+          "(3344) Select 'Team owners' → option becomes selected (autosaved), persists after reload, with the same subscription checkbox unchecked",
           async () => {
-            await createOrgForLicensedAccount(orgPage, orgName);
-            await adminConsolePage.openAdvancedPermissionsTab();
+            await advancedPermissionsPage.selectPermission(
+              MoveTeamsPermission.TeamOwners,
+            );
+            await advancedPermissionsPage.isPermissionSelected(
+              MoveTeamsPermission.TeamOwners,
+            );
+            await advancedPermissionsPage.isSameSubscriptionOnlyChecked(false);
           },
         );
 
         await enterpriseActivatedPageTest.step(
-          "Check 'Only between organizations under this Enterprise subscription' → stays checked under 'Team owners' (autosaved) after reload",
+          "(3343) Check 'Only between organizations under this Enterprise subscription' → stays checked under 'Team owners' (autosaved) after reload",
           async () => {
             await advancedPermissionsPage.setSameSubscriptionOnly(true);
             await advancedPermissionsPage.isPermissionSelected(
@@ -109,51 +104,12 @@ enterpriseActivatedPageTest.describe(
 
     enterpriseActivatedPageTest(
       qase(
-        [3344],
-        "Set team movement permission to 'Team owners' and verify setting is autosaved",
+        [3345, 3626, 3348],
+        "Team Settings blocks moving or removing a team under 'Only me, from the Admin Console', blocks removing it under the same subscription limit, and allows moving it within that subscription",
       ),
-      async ({ orgPage, adminConsolePage, advancedPermissionsPage }) => {
-        const orgName = createOrgName();
-
-        await enterpriseActivatedPageTest.step(
-          'Setup: Enterprise already active (activation code), create an organization, and switch off the default permission',
-          async () => {
-            await createOrgForLicensedAccount(orgPage, orgName);
-            await adminConsolePage.openAdvancedPermissionsTab();
-            await advancedPermissionsPage.selectPermission(
-              MoveTeamsPermission.OnlyMeFromAdminConsole,
-            );
-          },
-        );
-
-        await enterpriseActivatedPageTest.step(
-          "Select 'Team owners' → option becomes selected (autosaved), persists after reload, with the same subscription checkbox unchecked",
-          async () => {
-            await advancedPermissionsPage.selectPermission(
-              MoveTeamsPermission.TeamOwners,
-            );
-            await advancedPermissionsPage.isPermissionSelected(
-              MoveTeamsPermission.TeamOwners,
-            );
-            await advancedPermissionsPage.isSameSubscriptionOnlyChecked(false);
-          },
-        );
-      },
-    );
-
-    enterpriseActivatedPageTest(
-      qase(
-        [3345],
-        "Restricted move attempt under 'Only me, from the Admin Console' shows modal with correct organization name",
-      ),
-      async ({
-        page,
-        orgPage,
-        adminConsolePage,
-        advancedPermissionsPage,
-        teamPage,
-      }) => {
+      async ({ orgPage, adminConsolePage, advancedPermissionsPage, teamPage }) => {
         const orgAName = createOrgName();
+        let orgA: { name: string; slug: string; id: string };
         const orgBName = createOrgName();
         const teamName = createTeamName();
         let teamId = '';
@@ -162,6 +118,8 @@ enterpriseActivatedPageTest.describe(
           "Setup: Enterprise already active (activation code), create OrgA, and set 'Move teams across organizations' to 'Only me, from the Admin Console'",
           async () => {
             await createOrgForLicensedAccount(orgPage, orgAName);
+            const { slug, orgId } = adminConsolePage.getOrgSlugAndIdFromUrl();
+            orgA = { name: orgAName, slug, id: orgId };
             await adminConsolePage.openAdvancedPermissionsTab();
             await advancedPermissionsPage.selectPermission(
               MoveTeamsPermission.OnlyMeFromAdminConsole,
@@ -170,21 +128,16 @@ enterpriseActivatedPageTest.describe(
         );
 
         await enterpriseActivatedPageTest.step(
-          'Create a team while OrgA is the active sidebar context → it auto-joins OrgA',
+          'Setup: create a team while OrgA is the active sidebar context (it auto-joins OrgA), then create OrgB, a second organization for the same owner',
           async () => {
             await adminConsolePage.goToFiles(orgAName);
             await teamPage.createTeam(teamName);
             teamId = teamPage.getTeamIdFromUrl();
             await teamPage.openTeamSettingsPageViaOptionsMenu();
             await teamPage.isTeamPartOfOrganization(orgAName);
-          },
-        );
 
-        await enterpriseActivatedPageTest.step(
-          // "Change team organization" only renders once the owner has
-          // another org to move into
-          'Create OrgB, a second organization for the same owner',
-          async () => {
+            // "Change team organization" only renders once the owner has
+            // another org to move into
             await orgPage.openOrgSwitcher();
             await orgPage.clickCreateOrgFromDropdown();
             await orgPage.createOrganization(orgBName);
@@ -192,7 +145,7 @@ enterpriseActivatedPageTest.describe(
         );
 
         await enterpriseActivatedPageTest.step(
-          'Team Settings > three-dot menu > "Change team organization" → blocking modal names OrgA',
+          '(3345) Team Settings > three-dot menu > "Change team organization" → blocking modal names OrgA',
           async () => {
             await teamPage.goToTeamDashboard(teamId);
             await teamPage.openTeamSettingsPageViaOptionsMenu();
@@ -201,6 +154,53 @@ enterpriseActivatedPageTest.describe(
             await teamPage.teamFormModal.checkMessageIsVisible(
               TeamFormMessage.noPermissionToMoveTeams(orgAName),
             );
+            await teamPage.closeMoveTeamBlockedModal();
+          },
+        );
+
+        await enterpriseActivatedPageTest.step(
+          '(3626) Under \'Only me, from the Admin Console\', "Remove team from organization" → the same blocking modal names OrgA',
+          async () => {
+            await teamPage.openRemoveTeamFromOrgDialog();
+            await teamPage.teamFormModal.checkTitle(TeamFormTitle.changeTeamOrg);
+            await teamPage.teamFormModal.checkMessageIsVisible(
+              TeamFormMessage.noPermissionToMoveTeams(orgAName),
+            );
+            await teamPage.closeMoveTeamBlockedModal();
+          },
+        );
+
+        await enterpriseActivatedPageTest.step(
+          "Org owner switches OrgA's setting to 'Team owners', only between organizations under this Enterprise subscription",
+          async () => {
+            await adminConsolePage.gotoOrganization(orgA);
+            await adminConsolePage.openAdvancedPermissionsTab();
+            await advancedPermissionsPage.selectPermission(
+              MoveTeamsPermission.TeamOwners,
+            );
+            await advancedPermissionsPage.setSameSubscriptionOnly(true);
+          },
+        );
+
+        await enterpriseActivatedPageTest.step(
+          'Under the same subscription limit, "Remove team from organization" → the blocking modal appears again',
+          async () => {
+            await teamPage.goToTeamDashboard(teamId);
+            await teamPage.openTeamSettingsPageViaOptionsMenu();
+            await teamPage.openRemoveTeamFromOrgDialog();
+            await teamPage.teamFormModal.checkTitle(TeamFormTitle.changeTeamOrg);
+            await teamPage.teamFormModal.checkMessageIsVisible(
+              TeamFormMessage.noPermissionToMoveTeams(orgAName),
+            );
+            await teamPage.closeMoveTeamBlockedModal();
+          },
+        );
+
+        await enterpriseActivatedPageTest.step(
+          '(3348) Move the team from OrgA to OrgB, under the same subscription → completes without a restriction modal, team is now part of OrgB',
+          async () => {
+            await teamPage.changeTeamOrganization(orgBName);
+            await teamPage.isTeamPartOfOrganization(orgBName);
           },
         );
       },
@@ -208,8 +208,8 @@ enterpriseActivatedPageTest.describe(
 
     enterpriseActivatedPageTest(
       qase(
-        [3346],
-        "Restricted move attempt under 'Team owners' limited to the same subscription shows modal when moving from OrgD",
+        [3346, 3349],
+        "A team owner can't move their team out of OrgD while it is limited to the same subscription, and can once the limit is lifted",
       ),
       async ({
         page,
@@ -228,11 +228,14 @@ enterpriseActivatedPageTest.describe(
         const memberTeamPage = new TeamPage(member.page);
 
         await enterpriseActivatedPageTest.step(
-          "Setup: Enterprise already active (activation code), create OrgD, limit 'Move teams across organizations' to organizations under this Enterprise subscription",
+          "Setup: Enterprise already active (activation code), create OrgD (kept at the default 'Team owners', with no destination limit)",
           async () => {
             await createOrgForLicensedAccount(orgPage, orgDName);
             await adminConsolePage.openAdvancedPermissionsTab();
-            await advancedPermissionsPage.setSameSubscriptionOnly(true);
+            await advancedPermissionsPage.isPermissionSelected(
+              MoveTeamsPermission.TeamOwners,
+            );
+            await advancedPermissionsPage.isSameSubscriptionOnlyChecked(false);
             orgDId = adminConsolePage.getOrganizationId();
           },
         );
@@ -260,7 +263,7 @@ enterpriseActivatedPageTest.describe(
 
         await enterpriseActivatedPageTest.step(
           // Joining OrgD can make it the active org, hiding OrgE's team from the switcher.
-          "The member switches back to OrgE's context, then to their team, and moves it into OrgD",
+          "Setup: the member switches back to OrgE's context, then to their team, and moves it into OrgD",
           async () => {
             await memberOrgPage.switchToOrg(orgEName);
             await memberTeamPage.switchTeam(teamName);
@@ -271,8 +274,16 @@ enterpriseActivatedPageTest.describe(
         );
 
         await enterpriseActivatedPageTest.step(
-          'Team Settings > three-dot menu > "Change team organization" → blocking modal names OrgD',
+          "Setup: org owner limits OrgD's 'Move teams across organizations' to organizations under this Enterprise subscription",
           async () => {
+            await advancedPermissionsPage.setSameSubscriptionOnly(true);
+          },
+        );
+
+        await enterpriseActivatedPageTest.step(
+          '(3346) Team Settings > three-dot menu > "Change team organization" → blocking modal names OrgD',
+          async () => {
+            await member.page.reload();
             await memberTeamPage.openChangeTeamOrgModal();
             await memberTeamPage.teamFormModal.checkTitle(
               TeamFormTitle.changeTeamOrg,
@@ -280,199 +291,23 @@ enterpriseActivatedPageTest.describe(
             await memberTeamPage.teamFormModal.checkMessageIsVisible(
               TeamFormMessage.noPermissionToMoveTeams(orgDName),
             );
-          },
-        );
-      },
-    );
-
-    enterpriseActivatedPageTest(
-      qase(
-        [3348],
-        "Allowed move under 'Team owners' limited to the same subscription from OrgA to OrgB succeeds",
-      ),
-      async ({
-        page,
-        orgPage,
-        adminConsolePage,
-        advancedPermissionsPage,
-        teamPage,
-      }) => {
-        const orgAName = createOrgName();
-        const orgBName = createOrgName();
-        const teamName = createTeamName();
-        let teamId = '';
-
-        await enterpriseActivatedPageTest.step(
-          "Setup: Enterprise already active (activation code), create OrgA, and limit 'Move teams across organizations' to organizations under this Enterprise subscription",
-          async () => {
-            await createOrgForLicensedAccount(orgPage, orgAName);
-            await adminConsolePage.openAdvancedPermissionsTab();
-            await advancedPermissionsPage.setSameSubscriptionOnly(true);
+            await memberTeamPage.closeMoveTeamBlockedModal();
           },
         );
 
         await enterpriseActivatedPageTest.step(
-          'Create a team while OrgA is the active sidebar context → it auto-joins OrgA, then create OrgB (a second org for the same owner)',
+          "Setup: org owner lifts the limit, back to the default 'Team owners'",
           async () => {
-            await adminConsolePage.goToFiles(orgAName);
-            await teamPage.createTeam(teamName);
-            teamId = teamPage.getTeamIdFromUrl();
-            await teamPage.openTeamSettingsPageViaOptionsMenu();
-            await teamPage.isTeamPartOfOrganization(orgAName);
-
-            await orgPage.openOrgSwitcher();
-            await orgPage.clickCreateOrgFromDropdown();
-            await orgPage.createOrganization(orgBName);
+            await advancedPermissionsPage.setSameSubscriptionOnly(false);
           },
         );
 
         await enterpriseActivatedPageTest.step(
-          'Move the team from OrgA to OrgB → completes without a restriction modal, team is now part of OrgB',
+          '(3349) Move the team from OrgD to OrgE → completes without a restriction modal, team is now part of OrgE',
           async () => {
-            await teamPage.goToTeamDashboard(teamId);
-            await teamPage.openTeamSettingsPageViaOptionsMenu();
-            await teamPage.changeTeamOrganization(orgBName);
-            await teamPage.isTeamPartOfOrganization(orgBName);
-          },
-        );
-      },
-    );
-
-    enterpriseActivatedPageTest(
-      qase([3349], "Allowed move under 'Team owners' from OrgD to OrgA succeeds"),
-      async ({
-        page,
-        orgPage,
-        adminConsolePage,
-        advancedPermissionsPage,
-        createDemoMember,
-      }) => {
-        const orgDName = createOrgName();
-        const orgAName = createOrgName();
-        const teamName = createTeamName();
-        const member = await createDemoMember('Member');
-        let orgDId = '';
-        const memberOrgPage = new OrganizationPage(member.page);
-        const memberAdminConsolePage = new AdminConsolePage(member.page);
-        const memberTeamPage = new TeamPage(member.page);
-
-        await enterpriseActivatedPageTest.step(
-          "Setup: Enterprise already active (activation code), create OrgD (kept at the default 'Team owners', with no destination limit)",
-          async () => {
-            await createOrgForLicensedAccount(orgPage, orgDName);
-            await adminConsolePage.openAdvancedPermissionsTab();
-            await advancedPermissionsPage.isPermissionSelected(
-              MoveTeamsPermission.TeamOwners,
-            );
-            await advancedPermissionsPage.isSameSubscriptionOnlyChecked(false);
-            orgDId = adminConsolePage.getOrganizationId();
-          },
-        );
-
-        await enterpriseActivatedPageTest.step(
-          // Activate before creating the team, or it drops out of the switcher.
-          'Setup: the member separately activates their own Enterprise license and creates OrgA, then creates their own team (auto-joins OrgA)',
-          async () => {
-            await activateEnterpriseLicense(member.request);
-            await member.page.goto('/');
-            await createOrgForLicensedAccount(memberOrgPage, orgAName);
-            await memberAdminConsolePage.goToFiles(orgAName);
-            await memberTeamPage.createTeam(teamName);
-          },
-        );
-
-        await enterpriseActivatedPageTest.step(
-          'Setup: the member joins OrgD as a non-owner org member',
-          async () => {
-            await joinOrganization(page.context().request, orgDId, [member]);
             await member.page.reload();
-          },
-        );
-
-        await enterpriseActivatedPageTest.step(
-          // Joining OrgD can make it the active org, hiding OrgA's team from the switcher.
-          "The member switches back to OrgA's context, then to their team, and moves it into OrgD",
-          async () => {
-            await memberOrgPage.switchToOrg(orgAName);
-            await memberTeamPage.switchTeam(teamName);
-            await memberTeamPage.openTeamSettingsPageViaOptionsMenu();
-            await memberTeamPage.isTeamPartOfOrganization(orgAName);
-            await memberTeamPage.changeTeamOrganization(orgDName);
-          },
-        );
-
-        await enterpriseActivatedPageTest.step(
-          'Move the team from OrgD to OrgA → completes without a restriction modal, team is now part of OrgA',
-          async () => {
-            await memberTeamPage.changeTeamOrganization(orgAName);
-            await memberTeamPage.isTeamPartOfOrganization(orgAName);
-          },
-        );
-      },
-    );
-
-    enterpriseActivatedPageTest(
-      qase(
-        [3626],
-        "'Remove team from organization' is blocked under both restriction settings ('Only me, from the Admin Console' and 'Team owners' limited to the same subscription)",
-      ),
-      async ({ orgPage, adminConsolePage, advancedPermissionsPage, teamPage }) => {
-        const orgName = createOrgName();
-        const teamName = createTeamName();
-
-        await enterpriseActivatedPageTest.step(
-          "Setup: Enterprise already active (activation code), create an org with a team in it, and set 'Move teams across organizations' to 'Only me, from the Admin Console'",
-          async () => {
-            await createOrgForLicensedAccount(orgPage, orgName);
-            await adminConsolePage.openAdvancedPermissionsTab();
-            await advancedPermissionsPage.selectPermission(
-              MoveTeamsPermission.OnlyMeFromAdminConsole,
-            );
-
-            await adminConsolePage.goToFiles(orgName);
-
-            await teamPage.createTeam(teamName);
-            await teamPage.openTeamSettingsPageViaOptionsMenu();
-            await teamPage.isTeamPartOfOrganization(orgName);
-          },
-        );
-
-        await enterpriseActivatedPageTest.step(
-          "Under 'Only me, from the Admin Console', 'Remove team from organization' → blocking modal names the organization",
-          async () => {
-            await teamPage.openRemoveTeamFromOrgDialog();
-            await teamPage.teamFormModal.checkTitle(TeamFormTitle.changeTeamOrg);
-            await teamPage.teamFormModal.checkMessageIsVisible(
-              TeamFormMessage.noPermissionToMoveTeams(orgName),
-            );
-            await teamPage.closeMoveTeamBlockedModal();
-          },
-        );
-
-        await enterpriseActivatedPageTest.step(
-          "Org owner switches the setting to 'Team owners', only between organizations under this Enterprise subscription",
-          async () => {
-            await orgPage.openOrgSwitcher();
-            await orgPage.clickGoToAdminConsole();
-            await adminConsolePage.openAdvancedPermissionsTab();
-            await advancedPermissionsPage.selectPermission(
-              MoveTeamsPermission.TeamOwners,
-            );
-            await advancedPermissionsPage.setSameSubscriptionOnly(true);
-          },
-        );
-
-        await enterpriseActivatedPageTest.step(
-          "Under the same subscription limit, 'Remove team from organization' → the same blocking modal appears again",
-          async () => {
-            await adminConsolePage.goToFiles(orgName);
-            await teamPage.switchTeam(teamName);
-            await teamPage.openTeamSettingsPageViaOptionsMenu();
-            await teamPage.openRemoveTeamFromOrgDialog();
-            await teamPage.teamFormModal.checkTitle(TeamFormTitle.changeTeamOrg);
-            await teamPage.teamFormModal.checkMessageIsVisible(
-              TeamFormMessage.noPermissionToMoveTeams(orgName),
-            );
+            await memberTeamPage.changeTeamOrganization(orgEName);
+            await memberTeamPage.isTeamPartOfOrganization(orgEName);
           },
         );
       },

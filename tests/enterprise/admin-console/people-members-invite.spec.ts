@@ -1,5 +1,10 @@
 /**
- * Qase suite: Admin Console > Sidebar Menu > People > Members (tab) > Invite People (Button & Modal)
+ * Qase suites:
+ * - Admin Console > Sidebar Menu > People > Members (tab) > Invite People (Button & Modal)
+ * - Admin Console > Sidebar Menu > People > Pending (tab) > Cancel Invitation
+ *
+ * One flow: invite, check the pending list, then cancel one of the
+ * invitations.
  *
  * Base: `enterpriseActivatedPageTest` (see enterprise-fixtures.ts) — these
  * cases don't exercise the checkout UI itself, so the account is
@@ -15,7 +20,10 @@ enterpriseActivatedPageTest.describe(
   'Admin Console > Sidebar Menu > People > Members (tab) > Invite People (Button & Modal)',
   () => {
     enterpriseActivatedPageTest(
-      qase([3302], 'Invite users: add multiple valid emails to invitation list'),
+      qase(
+        [3302, 3308, 3185],
+        'Invite several users, see the pending invitations with their date sent, and cancel one of them',
+      ),
       async ({ orgPage, adminConsolePage }) => {
         const orgName = createOrgName();
         const email1 = `pending1-${Date.now()}@demo.example.com`;
@@ -29,7 +37,7 @@ enterpriseActivatedPageTest.describe(
         );
 
         await enterpriseActivatedPageTest.step(
-          'Admin Console > Members > Invite people → add several valid emails → all appear in the invitation list',
+          '(3302) Admin Console > Members > Invite people → add several valid emails → all appear in the invitation list',
           async () => {
             await adminConsolePage.openPeopleTab();
             await adminConsolePage.openInvitePeopleModal();
@@ -49,32 +57,28 @@ enterpriseActivatedPageTest.describe(
             await adminConsolePage.isPendingInvitationListed(email2);
           },
         );
-      },
-    );
-
-    enterpriseActivatedPageTest(
-      qase(
-        [3308],
-        'Invite users: pending invitations display email and date sent after sending',
-      ),
-      async ({ orgPage, adminConsolePage }) => {
-        const orgName = createOrgName();
-        const email = `pending-${Date.now()}@demo.example.com`;
 
         await enterpriseActivatedPageTest.step(
-          'Setup: Enterprise already active (activation code), create an organization, and send an invitation',
+          '(3308) Pending invitations section → each entry shows the invited email and a date sent',
           async () => {
-            await createOrgForLicensedAccount(orgPage, orgName);
-            await adminConsolePage.invitePersonToOrganization(email);
+            await adminConsolePage.hasPendingInvitationDateAdded(email1);
+            await adminConsolePage.hasPendingInvitationDateAdded(email2);
           },
         );
 
         await enterpriseActivatedPageTest.step(
-          'Pending invitations section → the entry shows the invited email and a date sent',
+          '(3185) Locate a pending invitation and click Cancel → confirmation modal names the invitee',
           async () => {
-            await adminConsolePage.openPendingTab();
-            await adminConsolePage.isPendingInvitationListed(email);
-            await adminConsolePage.hasPendingInvitationDateAdded(email);
+            await adminConsolePage.openCancelPendingInvitationDialog(email2);
+          },
+        );
+
+        await enterpriseActivatedPageTest.step(
+          'Confirm → success message, the invitation no longer appears, and the other one stays',
+          async () => {
+            await adminConsolePage.confirmCancelPendingInvitation();
+            await adminConsolePage.isPendingInvitationListed(email2, false);
+            await adminConsolePage.isPendingInvitationListed(email1);
           },
         );
       },
