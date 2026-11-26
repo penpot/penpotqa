@@ -1,51 +1,121 @@
 name: OpenCode Agent
 
+# Reviews a PR against the team skills in .claude/skills/ and posts the findings
+# as inline review comments. Trigger it with a PR comment that starts with
+# `/oc review-qa-pr`, or manually from the Actions tab with the PR number.
+# The prompt is fixed in .github/opencode/review-prompt.md.
 on:
   issue_comment:
     types: [created]
-  pull_request_review_comment:
-    types: [created]
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: Number of the PR to review
+        required: true
+        type: number
 
-permissions:
-  id-token: write
-  contents: read
-  pull-requests: write
-  issues: write
+permissions: {}
 
 jobs:
-  opencode:
-    if: >
-      (contains(github.event.comment.body, '/oc') ||
-       contains(github.event.comment.body, '/opencode')) &&
-      github.actor != 'github-actions[bot]' &&
-      github.actor != 'dependabot[bot]'
+  review:
+    if: >-
+      (github.event_name == 'workflow_dispatch' &&
+       contains(fromJSON('["estefafdez","lugarbos","tdelatorre","daniel-herrero"]'),
+         github.actor)) ||
+      (github.event_name == 'issue_comment' &&
+       github.event.issue.pull_request &&
+       contains(fromJSON('["estefafdez","lugarbos","tdelatorre","daniel-herrero"]'),
+         github.event.comment.user.login) &&
+       startsWith(github.event.comment.body, '/oc review-qa-pr'))
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    concurrency:
+      group: opencode-review-${{ github.event.issue.number || inputs.pr }}
+      cancel-in-progress: true
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PR: ${{ github.event.issue.number || inputs.pr }}
+      MODEL: opencode-go/${{ vars.OPENCODE_MODEL || 'deepseek-v4.1-flash' }}
+      OPENCODE_CONFIG: .github/opencode/review.json
+      OPENCODE_DISABLE_AUTOUPDATE: 'true'
+      OPENCODE_DISABLE_PROJECT_CONFIG: 'true'
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
+      # Skills, prompt and scripts come from the branch the workflow runs on
+      # (the default branch for comments). The PR code is never checked out:
+      # the review reads its diff only.
+      - name: Check out the workflow branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 1
           persist-credentials: false
 
-      # Free model names change often, so pick the newest free model of the
-      # requested family (`--model <family>` in the comment, deepseek by default).
-      - name: Resolve latest free model
-        id: model
-        env:
-          COMMENT_BODY: ${{ github.event.comment.body }}
-        run: |
-          family=$(grep -oP -- '--model\s+\K[a-z0-9.-]+' <<< "$COMMENT_BODY" | head -1)
-          family=${family:-deepseek}
-          free=$(npx -y opencode-ai models opencode --refresh | grep -E '^opencode/.*-free$')
-          model=$(grep -E "^opencode/${family}" <<< "$free" | sort -V | tail -1)
-          model=${model:-$(head -1 <<< "$free")}
-          echo "Using model: $model"
-          echo "name=$model" >> "$GITHUB_OUTPUT"
+      - name: Acknowledge the request
+        if: github.event_name == 'issue_comment'
+        run: >-
+          gh api "repos/$GITHUB_REPOSITORY/issues/comments/${{ github.event.comment.id }}/reactions"
+          -f content=eyes --silent
 
-      - name: Run OpenCode Agent
-        uses: anomalyco/opencode/github@latest
+      # Same pinned V1 CLI as penpot/penpot: the opencode-go provider and
+      # `opencode run --pure` are known to work there with the shared key.
+      - name: Install OpenCode
+        run: |
+          REVIEW_DIR="$RUNNER_TEMP/review"
+          echo "REVIEW_DIR=$REVIEW_DIR" >> "$GITHUB_ENV"
+          mkdir -p "$REVIEW_DIR/bin"
+          curl -fsSL --retry 3 -o "$REVIEW_DIR/cli.tgz" \
+            https://registry.npmjs.org/opencode-linux-x64/-/opencode-linux-x64-1.19.5.tgz
+          sha=8b5aa1ed5a282c630bf715fab9df77cb4240f23ff568f7836112a3b26617ac95f54e32161e004132411b1093d9b61a566ec260fff5df06047a29befe34f68989
+          printf '%s  %s\n' "$sha" "$REVIEW_DIR/cli.tgz" | sha512sum --check
+          tar -xzf "$REVIEW_DIR/cli.tgz" -C "$REVIEW_DIR/bin" --strip-components=2 package/bin/opencode
+          echo "$REVIEW_DIR/bin" >> "$GITHUB_PATH"
+
+      # The prompt lists each skill's name and description, so the model opens
+      # only the skills the diff touches, and carries the diff inline with the
+      # line numbers it can comment on.
+      - name: Build the review prompt
+        run: |
+          gh pr view "$PR" --repo "$GITHUB_REPOSITORY" --json headRefOid --jq .headRefOid \
+            > "$REVIEW_DIR/head"
+          gh pr diff "$PR" --repo "$GITHUB_REPOSITORY" > "$REVIEW_DIR/change.diff"
+          python3 -I .github/opencode/review.py prompt \
+            "$REVIEW_DIR/change.diff" "$REVIEW_DIR/annotated.diff" "$REVIEW_DIR/lines.json"
+          {
+            cat .github/opencode/review-prompt.md
+            echo
+            echo '## Team skills'
+            echo
+            for skill in .claude/skills/*/SKILL.md; do
+              description=$(sed -n 's/^description: *//p' "$skill" | head -1)
+              echo "- \`$skill\`: $description"
+            done
+            echo
+            echo '## Diff'
+            echo
+            head -c 150000 "$REVIEW_DIR/annotated.diff"
+          } > "$REVIEW_DIR/prompt"
+
+      - name: Review with OpenCode
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          model: ${{ steps.model.outputs.name }}
-          use_github_token: true
+          OPENCODE_GO_API_KEY: ${{ secrets.OPENCODE_GO_API_KEY }}
+        run: |
+          opencode run --pure --model "$MODEL" --format json < "$REVIEW_DIR/prompt" |
+            jq -ers '[.[] | select(.type == "text") | .part.text] | last // error("OpenCode returned no text")' \
+            > "$REVIEW_DIR/answer"
+
+      - name: Post the review
+        run: |
+          header="**OpenCode review against the team skills** · \`$MODEL\` · \`$(cut -c1-7 "$REVIEW_DIR/head")\`"
+          python3 -I .github/opencode/review.py payload "$REVIEW_DIR/answer" \
+            "$REVIEW_DIR/lines.json" "$(cat "$REVIEW_DIR/head")" "$header" "$REVIEW_DIR/review.json"
+          gh api "repos/$GITHUB_REPOSITORY/pulls/$PR/reviews" --input "$REVIEW_DIR/review.json" \
+            --jq .html_url
+
+      - name: Report a failed review
+        if: failure()
+        run: >-
+          gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body
+          "OpenCode review failed. See the [run]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID)."
