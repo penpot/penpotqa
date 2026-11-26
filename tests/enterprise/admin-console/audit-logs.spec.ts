@@ -270,7 +270,7 @@ enterpriseActivatedPageTest.describe(
           '4139, Range with no events shows empty state and disables download',
           async () => {
             await filters.setDateRange(dayB, lastDay);
-            await auditLogsPage.checkNoMatchingEventsState();
+            await auditLogsPage.checkNoMatchingEventsEmptyStateIsVisible();
           },
         );
 
