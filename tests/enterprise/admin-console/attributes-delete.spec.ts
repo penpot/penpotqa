@@ -61,10 +61,10 @@ enterpriseActivatedPageTest.describe(
         await enterpriseActivatedPageTest.step(
           `Click "Delete" → deleted with no dialog`,
           async () => {
-            const deleteDialog = await attributesPage.clickDeleteAttribute(oldPilot);
+            await attributesPage.clickDeleteAttribute(oldPilot);
             await attributesPage.checkMessageIsVisible(`"${oldPilot}" deleted`);
-            await deleteDialog.checkIsHidden();
-            await attributesPage.checkAttributeIsNotListed(oldPilot);
+            await attributesPage.deleteDialog.checkIsHidden();
+            await attributesPage.checkAttributeIsListed(oldPilot, { listed: false });
           },
         );
 
@@ -72,7 +72,7 @@ enterpriseActivatedPageTest.describe(
           `Reload → "${oldPilot}" is still gone and "${marketing}" is listed`,
           async () => {
             await adminConsolePage.refreshPage();
-            await attributesPage.checkAttributeIsNotListed(oldPilot);
+            await attributesPage.checkAttributeIsListed(oldPilot, { listed: false });
             await attributesPage.checkAttributeIsListed(marketing);
           },
         );
@@ -130,28 +130,31 @@ enterpriseActivatedPageTest.describe(
           },
         );
 
-        const deleteDialog = await enterpriseActivatedPageTest.step(
+        await enterpriseActivatedPageTest.step(
           `Delete "${compliance}" → the dialog lists both controls and warns only about Create Teams`,
           async () => {
-            const dialog = await attributesPage.clickDeleteAttribute(compliance);
-            await dialog.checkSummary(
+            await attributesPage.clickDeleteAttribute(compliance);
+            await attributesPage.deleteDialog.checkSummary(
               '1 member holds this attribute, and these controls point at it:',
               ['Create Teams', 'Move teams across organizations'],
             );
-            await dialog.checkWarningIsVisible(
+            await attributesPage.deleteDialog.checkWarningIsVisible(
               'Create Teams would be left with nobody able to create teams.',
             );
-            await dialog.checkWarningIsHidden('Move teams across organizations');
-            return dialog;
+            await attributesPage.deleteDialog.checkWarningIsHidden(
+              'Move teams across organizations',
+            );
           },
         );
 
         await enterpriseActivatedPageTest.step(
           `Click "Delete attribute" → "${compliance}" leaves the list`,
           async () => {
-            await deleteDialog.confirm();
+            await attributesPage.deleteDialog.confirm();
             await attributesPage.checkMessageIsVisible(`"${compliance}" deleted`);
-            await attributesPage.checkAttributeIsNotListed(compliance);
+            await attributesPage.checkAttributeIsListed(compliance, {
+              listed: false,
+            });
           },
         );
 
@@ -233,25 +236,26 @@ enterpriseActivatedPageTest.describe(
           },
         );
 
-        const deleteDialog = await enterpriseActivatedPageTest.step(
+        await enterpriseActivatedPageTest.step(
           `Delete "${betaTesters}" → the dialog lists Create Teams, with no warning`,
           async () => {
-            const dialog = await attributesPage.clickDeleteAttribute(betaTesters);
-            await dialog.checkSummary(
+            await attributesPage.clickDeleteAttribute(betaTesters);
+            await attributesPage.deleteDialog.checkSummary(
               'Nobody holds this attribute, and these controls point at it:',
               ['Create Teams'],
             );
-            await dialog.checkWarningIsHidden();
-            return dialog;
+            await attributesPage.deleteDialog.checkWarningIsHidden();
           },
         );
 
         await enterpriseActivatedPageTest.step(
           `Click "Delete attribute" → "${betaTesters}" leaves the list`,
           async () => {
-            await deleteDialog.confirm();
+            await attributesPage.deleteDialog.confirm();
             await attributesPage.checkMessageIsVisible(`"${betaTesters}" deleted`);
-            await attributesPage.checkAttributeIsNotListed(betaTesters);
+            await attributesPage.checkAttributeIsListed(betaTesters, {
+              listed: false,
+            });
           },
         );
 
@@ -315,26 +319,25 @@ enterpriseActivatedPageTest.describe(
           },
         );
 
-        const deleteDialog = await enterpriseActivatedPageTest.step(
+        await enterpriseActivatedPageTest.step(
           `Delete "${compliance}" → the dialog warns 2 teams would be left with nobody able to send invitations`,
           async () => {
-            const dialog = await attributesPage.clickDeleteAttribute(compliance);
-            await dialog.checkSummary(
+            await attributesPage.clickDeleteAttribute(compliance);
+            await attributesPage.deleteDialog.checkSummary(
               '1 member holds this attribute, and these controls point at it:',
               ['Send invitations'],
             );
-            await dialog.checkWarningIsVisible(
+            await attributesPage.deleteDialog.checkWarningIsVisible(
               'Send invitations: 2 teams would be left with nobody able to send invitations.',
             );
-            return dialog;
           },
         );
 
         await enterpriseActivatedPageTest.step(
           'Click "View teams" → Team Banana and Team Coconut, with User1\'s role in each',
           async () => {
-            await deleteDialog.openTeams();
-            await deleteDialog.checkTeams([
+            await attributesPage.deleteDialog.openTeams();
+            await attributesPage.deleteDialog.checkTeams([
               { name: banana.name, role: ViewTeamsRole.NotAMember },
               { name: coconut.name, role: ViewTeamsRole.Owner },
             ]);
@@ -344,16 +347,18 @@ enterpriseActivatedPageTest.describe(
         await enterpriseActivatedPageTest.step(
           'Click "Hide teams" → the list closes',
           async () => {
-            await deleteDialog.closeTeams();
+            await attributesPage.deleteDialog.closeTeams();
           },
         );
 
         await enterpriseActivatedPageTest.step(
           `Click "Delete attribute" → "${compliance}" leaves the list`,
           async () => {
-            await deleteDialog.confirm();
+            await attributesPage.deleteDialog.confirm();
             await attributesPage.checkMessageIsVisible(`"${compliance}" deleted`);
-            await attributesPage.checkAttributeIsNotListed(compliance);
+            await attributesPage.checkAttributeIsListed(compliance, {
+              listed: false,
+            });
           },
         );
 

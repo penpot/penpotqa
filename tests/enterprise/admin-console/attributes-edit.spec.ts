@@ -106,11 +106,12 @@ enterpriseActivatedPageTest.describe(
             await attributesPage.checkMessageIsVisible(
               `"${contractors.name}" is now "${renamed.name}"`,
             );
-            await attributesPage.checkAttributeIsListed(
-              renamed.name,
-              renamed.description,
-            );
-            await attributesPage.checkAttributeIsNotListed(contractors.name);
+            await attributesPage.checkAttributeIsListed(renamed.name, {
+              description: renamed.description,
+            });
+            await attributesPage.checkAttributeIsListed(contractors.name, {
+              listed: false,
+            });
           },
         );
 
@@ -123,10 +124,9 @@ enterpriseActivatedPageTest.describe(
             await attributesPage.checkMessageIsVisible(
               `Description for "${renamed.name}" updated.`,
             );
-            await attributesPage.checkAttributeIsListed(
-              renamed.name,
-              newDescription,
-            );
+            await attributesPage.checkAttributeIsListed(renamed.name, {
+              description: newDescription,
+            });
           },
         );
 
@@ -134,10 +134,9 @@ enterpriseActivatedPageTest.describe(
           `Reload → "${renamed.name}" is kept, with 1 person`,
           async () => {
             await adminConsolePage.refreshPage();
-            await attributesPage.checkAttributeIsListed(
-              renamed.name,
-              newDescription,
-            );
+            await attributesPage.checkAttributeIsListed(renamed.name, {
+              description: newDescription,
+            });
             await attributesPage.checkAttributePeopleCount(renamed.name, 1);
           },
         );
@@ -202,10 +201,9 @@ enterpriseActivatedPageTest.describe(
           `Rename "${contractors}" to "${renamed.name}" → listed with its new description and 2 people`,
           async () => {
             await attributesPage.editAttribute(contractors, renamed);
-            await attributesPage.checkAttributeIsListed(
-              renamed.name,
-              renamed.description,
-            );
+            await attributesPage.checkAttributeIsListed(renamed.name, {
+              description: renamed.description,
+            });
             await attributesPage.checkAttributePeopleCount(renamed.name, 2);
           },
         );
@@ -331,10 +329,9 @@ enterpriseActivatedPageTest.describe(
             await attributesPage.checkMessageIsVisible(
               `"${legal.name}" is now "${legalCapitalized}"`,
             );
-            await attributesPage.checkAttributeIsListed(
-              legalCapitalized,
-              legal.description,
-            );
+            await attributesPage.checkAttributeIsListed(legalCapitalized, {
+              description: legal.description,
+            });
           },
         );
 

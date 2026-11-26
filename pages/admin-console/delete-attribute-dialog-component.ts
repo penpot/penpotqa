@@ -29,16 +29,18 @@ export class DeleteAttributeDialogComponent extends BaseComponent {
 
   /**
    * @param page The Attributes page.
-   * @param attribute The attribute being deleted, e.g. 'Compliance'.
+   * @param root The dialog, e.g. page.getByRole('dialog', { name: 'Delete "Compliance"?' }).
    */
-  constructor(page: Page, attribute: string) {
-    super(page, page.getByRole('dialog', { name: `Delete "${attribute}"?` }));
-    // Two lists: the controls, and the teams shown after "View teams"
-    this.controls = this.root.getByRole('list').first().getByRole('listitem');
-    this.teams = this.root.getByRole('list').nth(1).getByRole('listitem');
-    this.viewTeamsButton = this.root.getByRole('button', { name: 'View teams' });
-    this.hideTeamsButton = this.root.getByRole('button', { name: 'Hide teams' });
-    this.deleteButton = this.root.getByRole('button', { name: 'Delete attribute' });
+  constructor(page: Page, root: Locator) {
+    super(page, root);
+    // Neither list has an accessible name: the test ids tell them apart
+    this.controls = root
+      .getByTestId('advanced-permissions-controls')
+      .getByRole('listitem');
+    this.teams = root.getByTestId('vacant-teams-list').getByRole('listitem');
+    this.viewTeamsButton = root.getByRole('button', { name: 'View teams' });
+    this.hideTeamsButton = root.getByRole('button', { name: 'Hide teams' });
+    this.deleteButton = root.getByRole('button', { name: 'Delete attribute' });
   }
 
   /**

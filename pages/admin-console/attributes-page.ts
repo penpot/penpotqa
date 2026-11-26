@@ -36,6 +36,7 @@ export class AttributesPage extends BasePage {
   readonly attributeRows: Locator;
   readonly createDialog: AttributeDialogComponent;
   readonly editDialog: AttributeDialogComponent;
+  readonly deleteDialog: DeleteAttributeDialogComponent;
   readonly panel: AttributePanelComponent;
 
   constructor(page: Page) {
@@ -58,13 +59,18 @@ export class AttributesPage extends BasePage {
       .getByRole('button', { name: 'New attribute' });
     this.createDialog = new AttributeDialogComponent(
       page,
-      'Create an attribute',
+      page.getByRole('dialog', { name: 'Create an attribute' }),
       'Create attribute',
     );
     this.editDialog = new AttributeDialogComponent(
       page,
-      'Edit attribute',
+      page.getByRole('dialog', { name: 'Edit attribute' }),
       'Save changes',
+    );
+    // 'Delete "Compliance"?': only one is open at a time, so any attribute's matches
+    this.deleteDialog = new DeleteAttributeDialogComponent(
+      page,
+      page.getByRole('dialog', { name: /^Delete ".+"\?$/ }),
     );
   }
 
@@ -186,16 +192,14 @@ export class AttributesPage extends BasePage {
   /**
    * Clicks "Delete" in a row's options menu. It deletes straight away when
    * nobody holds the attribute and no control uses it; otherwise it opens the
-   * 'Delete "<name>"?' dialog.
+   * 'Delete "<name>"?' dialog (see `deleteDialog`).
    * @param name Attribute name, e.g. 'Old pilot'.
-   * @returns The delete dialog, for the cases that open it.
    */
-  async clickDeleteAttribute(name: string): Promise<DeleteAttributeDialogComponent> {
+  async clickDeleteAttribute(name: string) {
     await this.openAttributeOptions(name);
     await this.getAttributeOptionsMenu(name)
       .getByRole('menuitem', { name: AttributeOption.Delete })
       .click();
-    return new DeleteAttributeDialogComponent(this.page, name);
   }
 
   /**
@@ -222,12 +226,21 @@ export class AttributesPage extends BasePage {
   }
 
   /**
-   * Checks an attribute is listed, with its description when given.
+   * Checks whether an attribute is listed, with its description when given.
    * @param name Attribute name, matched with its exact case, e.g. 'Junior'.
-   * @param description Expected description under the name.
+   * @param options.listed Whether it should be listed (default: true).
+   * @param options.description Expected description under the name, only checked
+   * when listed.
    */
-  async checkAttributeIsListed(name: string, description?: string) {
+  async checkAttributeIsListed(
+    name: string,
+    { listed = true, description }: { listed?: boolean; description?: string } = {},
+  ) {
     const row = this.getAttributeRow(name);
+    if (!listed) {
+      await expect(row, `"${name}" is not listed`).toHaveCount(0);
+      return;
+    }
     await expect(row, `"${name}" is listed`).toBeVisible();
     if (description) {
       await expect(
@@ -235,16 +248,6 @@ export class AttributesPage extends BasePage {
         `"${name}" shows the description "${description}"`,
       ).toBeVisible();
     }
-  }
-
-  /**
-   * Checks no attribute with this exact name is listed.
-   * @param name Attribute name, e.g. 'Contractors'.
-   */
-  async checkAttributeIsNotListed(name: string) {
-    await expect(this.getAttributeRow(name), `"${name}" is not listed`).toHaveCount(
-      0,
-    );
   }
 
   /**
@@ -262,6 +265,8 @@ export class AttributesPage extends BasePage {
       this.getAttributeRow(name),
       `Attribute "${name}" is listed`,
     ).toBeVisible();
+    // In case the dialog stays open after creating (on PRE it closes on its own)
+    await this.page.keyboard.press('Escape');
     await this.createDialog.checkIsHidden();
   }
 

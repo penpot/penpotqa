@@ -14,15 +14,15 @@ export class AttributeDialogComponent extends BaseComponent {
 
   /**
    * @param page The Attributes page.
-   * @param title The dialog's title, e.g. 'Edit attribute'.
+   * @param root The dialog, e.g. page.getByRole('dialog', { name: 'Edit attribute' }).
    * @param submitLabel Its submit button, e.g. 'Save changes'.
    */
-  constructor(page: Page, title: string, submitLabel: string) {
-    super(page, page.getByRole('dialog', { name: title }));
-    this.nameField = this.root.getByRole('textbox', { name: 'Attribute name' });
-    this.descriptionField = this.root.getByRole('textbox', { name: 'Description' });
-    this.submitButton = this.root.getByRole('button', { name: submitLabel });
-    this.duplicateNameError = this.root.getByText(
+  constructor(page: Page, root: Locator, submitLabel: string) {
+    super(page, root);
+    this.nameField = root.getByRole('textbox', { name: 'Attribute name' });
+    this.descriptionField = root.getByRole('textbox', { name: 'Description' });
+    this.submitButton = root.getByRole('button', { name: submitLabel });
+    this.duplicateNameError = root.getByText(
       'An attribute with this name already exists.',
     );
   }
