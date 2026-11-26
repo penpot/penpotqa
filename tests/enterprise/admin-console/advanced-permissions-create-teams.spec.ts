@@ -64,8 +64,8 @@ enterpriseActivatedPageTest.describe(
   () => {
     enterpriseActivatedPageTest(
       qase(
-        [3328],
-        "Org owner can change team creation permission to 'Only me' and is autosaved",
+        [3328, 3329],
+        "Org owner changes team creation permission to 'Only me' and back to 'Any member of the organization', each autosaved",
       ),
       async ({ orgPage, adminConsolePage, advancedPermissionsPage }) => {
         const orgName = createOrgName();
@@ -79,7 +79,7 @@ enterpriseActivatedPageTest.describe(
         );
 
         await enterpriseActivatedPageTest.step(
-          'Admin Console > Advanced Permissions > Create Teams → both options available',
+          '(3328) Admin Console > Advanced Permissions > Create Teams → both options available',
           async () => {
             await advancedPermissionsPage.isPermissionVisible(
               CreateTeamsPermission.AnyMember,
@@ -101,35 +101,9 @@ enterpriseActivatedPageTest.describe(
             );
           },
         );
-      },
-    );
-
-    enterpriseActivatedPageTest(
-      qase(
-        [3329],
-        "Org owner can change team creation permission to 'Any member of the organization' and is autosaved",
-      ),
-      async ({ orgPage, adminConsolePage, advancedPermissionsPage }) => {
-        const orgName = createOrgName();
 
         await enterpriseActivatedPageTest.step(
-          'Setup: Enterprise already active (activation code), create an organization, and switch off the default permission',
-          async () => {
-            await createOrgForLicensedAccount(orgPage, orgName);
-            await adminConsolePage.openAdvancedPermissionsTab();
-            await advancedPermissionsPage.selectPermission(
-              CreateTeamsPermission.OnlyMe,
-            );
-            // Confirm the baseline persisted before making a second change
-            // in the same session.
-            await advancedPermissionsPage.isPermissionSelected(
-              CreateTeamsPermission.OnlyMe,
-            );
-          },
-        );
-
-        await enterpriseActivatedPageTest.step(
-          "Select 'Any member of the organization' → option becomes selected (autosaved)",
+          "(3329) Select 'Any member of the organization' → option becomes selected (autosaved)",
           async () => {
             await advancedPermissionsPage.selectPermission(
               CreateTeamsPermission.AnyMember,
@@ -155,14 +129,9 @@ enterpriseActivatedPageTest.describe(
         teamPage,
       }) => {
         /**
-         * "Create Teams" gates Team Settings' "Add to an organization" link.
-         * Owners bypass it unconditionally, so this creates a team and adds
-         * it to the org as owner under 'Only me', to prove the bypass.
-         *
-         * Team created BEFORE the org exists (same ordering as PENPOT-3192)
-         * — a team created while an org is the active sidebar context
-         * auto-associates with it, leaving no "Add to an organization" link
-         * to exercise here otherwise.
+         * "Create Teams" gates Team Settings' "Add to an organization" link,
+         * which owners bypass. The team is created before the org, or it
+         * would join the org on creation and leave no link to use.
          */
         const orgName = createOrgName();
         const teamName = createTeamName();
@@ -194,8 +163,8 @@ enterpriseActivatedPageTest.describe(
 
     enterpriseActivatedPageTest(
       qase(
-        [3333],
-        "When permission is 'Only me', non-owner user sees restricted modal when attempting to create a team",
+        [3334, 3333],
+        "Non-owner member can create a team under 'Any member of the organization', and sees the restriction modal once it is 'Only me'",
       ),
       async ({
         page,
@@ -211,84 +180,11 @@ enterpriseActivatedPageTest.describe(
         const memberTeamPage = new TeamPage(member.page);
 
         await enterpriseActivatedPageTest.step(
-          'Setup: Enterprise already active (activation code), create an organization, and make a second account a member of it',
-          async () => {
-            await createOrgForLicensedAccount(orgPage, orgName);
-            await joinOrganization(
-              page.context().request,
-              adminConsolePage.getOrganizationId(),
-              [member],
-            );
-          },
-        );
-
-        await enterpriseActivatedPageTest.step(
-          'Setup: the member creates a team in the org, while any member still can',
-          async () => {
-            // The restriction modal names the org of the current team, so the
-            // member needs a team inside the org, not just their Personal Projects.
-            await member.page.goto('/');
-            await memberOrgPage.switchToOrg(orgName);
-            await memberTeamPage.createTeam(teamName);
-            await memberTeamPage.openTeamSettingsPageViaOptionsMenu();
-            await memberTeamPage.isTeamPartOfOrganization(orgName);
-          },
-        );
-
-        await enterpriseActivatedPageTest.step(
-          "Setup: org owner sets Create Teams permission to 'Only me'",
-          async () => {
-            await adminConsolePage.openAdvancedPermissionsTab();
-            await advancedPermissionsPage.selectPermission(
-              CreateTeamsPermission.OnlyMe,
-            );
-          },
-        );
-
-        await enterpriseActivatedPageTest.step(
-          'Non-owner member attempts to create a team within the org → restriction modal is shown',
-          async () => {
-            await member.page.reload();
-            await memberTeamPage.clickCreateNewTeamMenuItem();
-            await memberTeamPage.teamFormModal.checkTitle(TeamFormTitle.createTeam);
-            await memberTeamPage.teamFormModal.checkMessageIsVisible(
-              TeamFormMessage.noPermissionToCreateTeams(orgName),
-            );
-          },
-        );
-      },
-    );
-
-    enterpriseActivatedPageTest(
-      qase(
-        [3334],
-        "When permission is 'Any member of the organization', non-owner member can create a team",
-      ),
-      async ({
-        page,
-        orgPage,
-        adminConsolePage,
-        advancedPermissionsPage,
-        createDemoMember,
-      }) => {
-        const orgName = createOrgName();
-        const teamName = createTeamName();
-        const member = await createDemoMember('Member');
-        const memberOrgPage = new OrganizationPage(member.page);
-        const memberTeamPage = new TeamPage(member.page);
-
-        await enterpriseActivatedPageTest.step(
-          "Setup: Enterprise already active (activation code), create an organization, set Create Teams permission to 'Any member', and make a second account a member of it",
+          "Setup: Enterprise already active (activation code), create an organization (Create Teams at its default, 'Any member'), and make a second account a member of it",
           async () => {
             await createOrgForLicensedAccount(orgPage, orgName);
             await adminConsolePage.openAdvancedPermissionsTab();
-            // "Any member" is the real default — switch away and back so
-            // the pick actually registers a change (picking the selected
-            // option shows no toast to wait on).
-            await advancedPermissionsPage.selectPermission(
-              CreateTeamsPermission.OnlyMe,
-            );
-            await advancedPermissionsPage.selectPermission(
+            await advancedPermissionsPage.isPermissionSelected(
               CreateTeamsPermission.AnyMember,
             );
             await joinOrganization(
@@ -300,13 +196,35 @@ enterpriseActivatedPageTest.describe(
         );
 
         await enterpriseActivatedPageTest.step(
-          'Non-owner member creates a team within the org → succeeds, no restriction modal',
+          '(3334) Non-owner member creates a team within the org → succeeds, no restriction modal',
           async () => {
             await member.page.goto('/');
             await memberOrgPage.switchToOrg(orgName);
             await memberTeamPage.createTeam(teamName);
             await memberTeamPage.openTeamSettingsPageViaOptionsMenu();
             await memberTeamPage.isTeamPartOfOrganization(orgName);
+          },
+        );
+
+        await enterpriseActivatedPageTest.step(
+          "Setup: org owner sets Create Teams permission to 'Only me'",
+          async () => {
+            await advancedPermissionsPage.selectPermission(
+              CreateTeamsPermission.OnlyMe,
+            );
+          },
+        );
+
+        await enterpriseActivatedPageTest.step(
+          // The modal names the org of the member's team from 3334.
+          '(3333) Non-owner member attempts to create a team within the org → restriction modal is shown',
+          async () => {
+            await member.page.reload();
+            await memberTeamPage.clickCreateNewTeamMenuItem();
+            await memberTeamPage.teamFormModal.checkTitle(TeamFormTitle.createTeam);
+            await memberTeamPage.teamFormModal.checkMessageIsVisible(
+              TeamFormMessage.noPermissionToCreateTeams(orgName),
+            );
           },
         );
       },
