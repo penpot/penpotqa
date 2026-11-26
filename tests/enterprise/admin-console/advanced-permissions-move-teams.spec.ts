@@ -108,7 +108,8 @@ enterpriseActivatedPageTest.describe(
         "Team Settings blocks moving or removing a team under 'Only me, from the Admin Console', blocks removing it under the same subscription limit, and allows moving it within that subscription",
       ),
       async ({ orgPage, adminConsolePage, advancedPermissionsPage, teamPage }) => {
-        const orgA = { name: createOrgName(), id: '', slug: '' };
+        const orgAName = createOrgName();
+        let orgA: { name: string; slug: string; id: string };
         const orgBName = createOrgName();
         const teamName = createTeamName();
         let teamId = '';
@@ -116,9 +117,9 @@ enterpriseActivatedPageTest.describe(
         await enterpriseActivatedPageTest.step(
           "Setup: Enterprise already active (activation code), create OrgA, and set 'Move teams across organizations' to 'Only me, from the Admin Console'",
           async () => {
-            await createOrgForLicensedAccount(orgPage, orgA.name);
-            ({ slug: orgA.slug, orgId: orgA.id } =
-              adminConsolePage.getOrgSlugAndIdFromUrl());
+            await createOrgForLicensedAccount(orgPage, orgAName);
+            const { slug, orgId } = adminConsolePage.getOrgSlugAndIdFromUrl();
+            orgA = { name: orgAName, slug, id: orgId };
             await adminConsolePage.openAdvancedPermissionsTab();
             await advancedPermissionsPage.selectPermission(
               MoveTeamsPermission.OnlyMeFromAdminConsole,
@@ -129,11 +130,11 @@ enterpriseActivatedPageTest.describe(
         await enterpriseActivatedPageTest.step(
           'Setup: create a team while OrgA is the active sidebar context (it auto-joins OrgA), then create OrgB, a second organization for the same owner',
           async () => {
-            await adminConsolePage.goToFiles(orgA.name);
+            await adminConsolePage.goToFiles(orgAName);
             await teamPage.createTeam(teamName);
             teamId = teamPage.getTeamIdFromUrl();
             await teamPage.openTeamSettingsPageViaOptionsMenu();
-            await teamPage.isTeamPartOfOrganization(orgA.name);
+            await teamPage.isTeamPartOfOrganization(orgAName);
 
             // "Change team organization" only renders once the owner has
             // another org to move into
@@ -151,7 +152,7 @@ enterpriseActivatedPageTest.describe(
             await teamPage.openChangeTeamOrgModal();
             await teamPage.teamFormModal.checkTitle(TeamFormTitle.changeTeamOrg);
             await teamPage.teamFormModal.checkMessageIsVisible(
-              TeamFormMessage.noPermissionToMoveTeams(orgA.name),
+              TeamFormMessage.noPermissionToMoveTeams(orgAName),
             );
             await teamPage.closeMoveTeamBlockedModal();
           },
@@ -163,7 +164,7 @@ enterpriseActivatedPageTest.describe(
             await teamPage.openRemoveTeamFromOrgDialog();
             await teamPage.teamFormModal.checkTitle(TeamFormTitle.changeTeamOrg);
             await teamPage.teamFormModal.checkMessageIsVisible(
-              TeamFormMessage.noPermissionToMoveTeams(orgA.name),
+              TeamFormMessage.noPermissionToMoveTeams(orgAName),
             );
             await teamPage.closeMoveTeamBlockedModal();
           },
@@ -189,7 +190,7 @@ enterpriseActivatedPageTest.describe(
             await teamPage.openRemoveTeamFromOrgDialog();
             await teamPage.teamFormModal.checkTitle(TeamFormTitle.changeTeamOrg);
             await teamPage.teamFormModal.checkMessageIsVisible(
-              TeamFormMessage.noPermissionToMoveTeams(orgA.name),
+              TeamFormMessage.noPermissionToMoveTeams(orgAName),
             );
             await teamPage.closeMoveTeamBlockedModal();
           },
