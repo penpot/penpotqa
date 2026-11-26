@@ -4,7 +4,7 @@
  * These cases drive the real Stripe test-mode checkout/trial UI itself, not just an org that happens to have the Enterprise plan. Kept in their own file: inherently slower/flakier than the rest of the suite.
  *
  * Base: `enterprisePageTest` (see enterprise-fixtures.ts), which goes through
- * the real Stripe checkout. 3664 is still a `test.skip` stub.
+ * the real Stripe checkout.
  */
 import { qase } from 'playwright-qase-reporter/playwright';
 import { createOrgName } from 'helpers/organizations/create-org-name';
@@ -274,23 +274,6 @@ enterprisePageTest.describe(
             await orgPage.hasCurrentPlanSidebarText('Enterprise');
           },
         );
-      },
-    );
-
-    enterprisePageTest.skip(
-      qase([3664], 'Complete the Enterprise onboarding survey in the Admin Console'),
-      async ({ page }) => {
-        /**
-         * Qase steps (see PENPOT-3664 for full detail):
-         * 1. Land on Admin Console welcome page after a fresh signup + Stripe payment → no survey yet
-         * 2. Wait / move cursor → "Help us get to know you" modal appears with 2 dropdowns, Send disabled
-         * 3. Modal explains why the answers are collected
-         * 4. Answer "What kind of work do you do?" → Send still disabled
-         * 5. Answer "What is your company size?" → Send enabled
-         * 6. Click Send → modal closes
-         * 7. User remains on the Admin Console, no redirect
-         */
-        // TODO: automate.
       },
     );
   },
