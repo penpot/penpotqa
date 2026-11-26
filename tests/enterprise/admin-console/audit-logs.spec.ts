@@ -1,5 +1,6 @@
 /**
- * Qase suite: Admin Console > Sidebar Menu > Nitrates > Audit Logs
+ * Qase suite: Admin Console > Sidebar Menu > Audit Logs
+ *
  * 4026/4027/4030 are one flow on the same org, so they run as one case; so are
  * 4060/4061/4062/4063/4071 (Filter by Event Type).
  */
@@ -22,7 +23,7 @@ enterpriseActivatedPageTest.describe(
         let orgSlug = '';
 
         await enterpriseActivatedPageTest.step(
-          'Setup: create an organization',
+          'Setup: Enterprise already active (activation code), create an organization',
           async () => {
             await createOrgForLicensedAccount(orgPage, createOrgName());
             ({ slug: orgSlug } = adminConsolePage.getOrgSlugAndIdFromUrl());
@@ -101,7 +102,7 @@ enterpriseActivatedPageTest.describe(
         let fullExport: Download;
 
         await enterpriseActivatedPageTest.step(
-          'Setup: create an organization and download its full audit log',
+          'Setup: Enterprise already active (activation code), create an organization and download its full audit log',
           async () => {
             await createOrgForLicensedAccount(orgPage, createOrgName());
             ({ slug: orgSlug } = adminConsolePage.getOrgSlugAndIdFromUrl());

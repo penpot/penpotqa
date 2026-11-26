@@ -1,9 +1,6 @@
 /**
  * Qase suite: Admin Console > Settings > Rename organization
  *
- * Stubs below (`test.skip`) await automation — see the Enterprise Plan
- * automation plan.
- *
  * Base: `enterpriseActivatedPageTest` (see enterprise-fixtures.ts) — these
  * cases don't exercise the checkout UI itself, so the account is
  * Enterprise-entitled via the activation-code path (PRE/dev only) instead
@@ -24,7 +21,7 @@ enterpriseActivatedPageTest.describe(
         const newOrgName = createOrgName();
 
         await enterpriseActivatedPageTest.step(
-          'Setup: create an organization',
+          'Setup: Enterprise already active (activation code), create an organization',
           async () => {
             await createOrgForLicensedAccount(orgPage, orgName);
           },
@@ -58,7 +55,7 @@ enterpriseActivatedPageTest.describe(
         const newOrgName = createOrgName();
 
         await enterpriseActivatedPageTest.step(
-          'Setup: create an organization and rename it',
+          'Setup: Enterprise already active (activation code), create an organization and rename it',
           async () => {
             await createOrgForLicensedAccount(orgPage, orgName);
             await adminConsolePage.openSettings();
