@@ -38,3 +38,16 @@ export const snapSegmentsTo = (actual: Segment[], expected: [Point, Point][]) =>
 /** Numbers of an SVG path `d` attribute, in order. */
 export const pathNumbers = (d: string) =>
   (d.match(/-?[\d.]+(e-?\d+)?/g) ?? []).map(Number);
+
+/** The extreme nodes of a path, e.g. the 4 nodes of a flattened ellipse. */
+export type NodesBySide = Record<'top' | 'right' | 'bottom' | 'left', Point>;
+
+/** Point in the middle between `a` and `b` (e.g. where merging two nodes leaves the new one). */
+export const midpoint = (a: Point, b: Point): Point => ({
+  x: (a.x + b.x) / 2,
+  y: (a.y + b.y) / 2,
+});
+
+/** Segments of a closed path through `points` in order, back to the first one. */
+export const closedPathSegments = (points: Point[]): [Point, Point][] =>
+  points.map((point, i) => [point, points[(i + 1) % points.length]]);

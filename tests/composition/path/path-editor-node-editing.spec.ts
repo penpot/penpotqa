@@ -1,5 +1,5 @@
-import { pathEditorTest } from '@tests/composition/path-editor/path-editor-fixture';
-import { A, B, C, D } from '@tests/composition/path-editor/straight-curved-path';
+import { pathEditorTest } from '@tests/composition/path/path-fixture';
+import { A, B, C, D } from '@tests/composition/path/straight-curved-path';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 pathEditorTest.beforeEach(async ({ pathEditorPage }) => {

@@ -12,7 +12,7 @@ import { GridCellSectionComponent } from '@pages/workspace/right-sidebar/design-
 import { LayoutContainerSectionComponent } from '@pages/workspace/right-sidebar/design-tab/layout-container-section-component';
 import { LayoutItemSectionComponent } from '@pages/workspace/right-sidebar/design-tab/layout-item-section-component';
 import { RadiusSectionComponent } from '@pages/workspace/right-sidebar/design-tab/radius-section-component';
-import { StrokeSectionComponent } from '@pages/workspace/right-sidebar/design-tab/stroke-section-component';
+import { StrokeSectionComponent } from '@pages/workspace/right-sidebar/design-tab/stroke/stroke-section-component';
 import { TextSectionComponent } from '@pages/workspace/right-sidebar/design-tab/text-section-component';
 
 export class DesignTabComponent extends BaseComponent {

@@ -3,7 +3,7 @@ import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
 import {
   StrokeCap,
   type StrokeSectionComponent,
-} from '@pages/workspace/right-sidebar/design-tab/stroke-section-component';
+} from '@pages/workspace/right-sidebar/design-tab/stroke/stroke-section-component';
 import { WorkspacePage } from '@pages/workspace/workspace-page';
 import { expect } from '@playwright/test';
 import { demoAccountFileTest } from 'fixtures';

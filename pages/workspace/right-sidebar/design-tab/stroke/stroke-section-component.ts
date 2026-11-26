@@ -1,4 +1,5 @@
 import { BaseComponent } from '@pages/base-component';
+import { StrokeRowOptionsComponent } from '@pages/workspace/right-sidebar/design-tab/stroke/stroke-row-options-component';
 import { expect, type Locator, type Page } from '@playwright/test';
 
 export const STROKE_WIDTH = 'Stroke width';
@@ -165,6 +166,29 @@ export class StrokeSectionComponent extends BaseComponent {
     await expect(this.strokeColorInput, `Stroke color is ${hex}`).toHaveValue(
       hex.slice(1),
     );
+  }
+
+  /**
+   * One stroke of the selected layer, in the order the section lists them.
+   * @param index Position of the stroke row, from 0 (the first one).
+   * @returns The stroke row component.
+   */
+  getStrokeRow(index: number): StrokeRowOptionsComponent {
+    return new StrokeRowOptionsComponent(
+      this.page,
+      this.root.getByLabel(`stroke-row-${index}`, { exact: true }),
+    );
+  }
+
+  /**
+   * Checks how many strokes the selected layer has.
+   * @param count Expected number of stroke rows (0 when it has no stroke).
+   */
+  async checkStrokeCount(count: number) {
+    await expect(
+      this.root.getByLabel(/^stroke-row-\d+$/),
+      `Layer has ${count} stroke(s)`,
+    ).toHaveCount(count);
   }
 
   /**

@@ -30,7 +30,7 @@ on:
           - tests/composition/text
           - tests/composition/image
           - tests/composition/comments
-          - tests/composition/path-editor
+          - tests/composition/path
           - tests/composition/layouts
           - tests/composition/layouts/flex
           - tests/composition/layouts/grid

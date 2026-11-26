@@ -1,4 +1,5 @@
 import {
+  type NodesBySide,
   type Point,
   type Segment,
   TOLERANCE,
@@ -93,6 +94,16 @@ export class PathOverlayComponent {
 
   async dragNode(node: Point, delta: Point) {
     await this.dragBy(node, delta);
+  }
+
+  /**
+   * Selects nodes: clicks the first one, then Shift+clicks the rest.
+   * @param nodes Nodes to select, as returned by getNodes().
+   */
+  async selectNodes(...nodes: Point[]) {
+    const [first, ...rest] = nodes;
+    await this.clickNode(first);
+    for (const node of rest) await this.clickNode(node, ['Shift']);
   }
 
   /**
@@ -199,6 +210,37 @@ export class PathOverlayComponent {
     return nodes.filter(
       (node, i) => nodes.findIndex((other) => isNear(node, other, 0.01)) === i,
     );
+  }
+
+  /**
+   * The extreme nodes of the path, named by their position (as the Qase cases do
+   * for a flattened ellipse).
+   * @returns The top, right, bottom and left nodes.
+   */
+  async getNodesBySide(): Promise<NodesBySide> {
+    const nodes = await this.getNodes();
+    const byX = [...nodes].sort((a, b) => a.x - b.x);
+    const byY = [...nodes].sort((a, b) => a.y - b.y);
+    return {
+      top: byY[0],
+      bottom: byY[byY.length - 1],
+      left: byX[0],
+      right: byX[byX.length - 1],
+    };
+  }
+
+  /**
+   * The node that was just placed: the only node not in `known`. Fails if there
+   * isn't exactly one.
+   * @param known Nodes the path had before.
+   * @returns The new node.
+   */
+  async getAddedNode(known: Point[]): Promise<Point> {
+    const added = (await this.getNodes()).filter(
+      (node) => !known.some((k) => isNear(k, node)),
+    );
+    expect(added, 'Exactly one new node was placed').toHaveLength(1);
+    return added[0];
   }
 
   /** Segments drawn by the editor. Each `g.path-segment` holds the segment's

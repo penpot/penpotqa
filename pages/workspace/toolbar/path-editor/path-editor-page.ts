@@ -1,7 +1,9 @@
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import { LayersPanelComponent } from '@pages/workspace/left-sidebar/layers-panel-component';
+import type { Point } from '@pages/workspace/toolbar/path-editor/path-geometry';
 import { PathOverlayComponent } from '@pages/workspace/toolbar/path-editor/path-overlay-component';
 import { ToolbarPage } from '@pages/workspace/toolbar/toolbar-page';
-import { expect, type Locator, type Page } from '@playwright/test';
+import { expect, type Locator, type Page, test } from '@playwright/test';
 
 /** Actions of the path toolbar, by their button title. */
 export const PathToolbarAction = {
@@ -32,6 +34,7 @@ export type PathToolbarActionName =
 export class PathEditorPage extends ToolbarPage {
   // components
   readonly overlayComp: PathOverlayComponent;
+  readonly layers: LayersPanelComponent;
 
   // pages
   readonly layersPanelPage: LayersPanelPage;
@@ -51,6 +54,10 @@ export class PathEditorPage extends ToolbarPage {
 
     // components
     this.overlayComp = new PathOverlayComponent(page);
+    this.layers = new LayersPanelComponent(
+      page,
+      page.getByTestId('left-sidebar').getByTestId('layer-tree'),
+    );
 
     // pages
     this.layersPanelPage = new LayersPanelPage(page);
@@ -90,6 +97,93 @@ export class PathEditorPage extends ToolbarPage {
   async exitPathEditing() {
     await this.clickOnESC();
     await this.overlayComp.isHidden();
+  }
+
+  /** Clicks the Ellipse tool and the viewport, and waits for the "Ellipse" layer. */
+  async createEllipse() {
+    await this.clickCreateEllipseButton();
+    await this.clickViewportTwice();
+    await this.waitForChangeIsSaved();
+    await this.layers.checkLayerRowIsVisible('Ellipse');
+  }
+
+  /**
+   * Draws the first three nodes of a path with the Path tool, one Qase step each,
+   * and checks each node and straight segment in the path editor overlay.
+   * @param points Viewport positions of the three nodes, in order.
+   * @param thirdStepName Name of the step that places the third node.
+   * @returns The three nodes in design coordinates, in the order they were placed.
+   */
+  async drawThreeNodes(points: Point[], thirdStepName: string): Promise<Point[]> {
+    const placed: Point[] = [];
+
+    await test.step('Click on the "Path (P)" tool in the toolbar at the top of the viewport', async () => {
+      await this.clickCreatePathButton();
+      await this.checkPathToolActive();
+    });
+
+    await test.step('Click on an empty area of the viewport', async () => {
+      await this.clickViewportByCoordinates(points[0].x, points[0].y);
+      await this.checkPathToolbarVisible();
+      await this.overlayComp.checkNodeCount(1);
+      placed.push(...(await this.overlayComp.getNodes()));
+    });
+
+    await test.step('Click on another area of the viewport', async () => {
+      await this.clickViewportByCoordinates(points[1].x, points[1].y);
+      await this.overlayComp.checkNodeCount(2);
+      placed.push(await this.overlayComp.getAddedNode(placed));
+      await this.overlayComp.checkSegmentIsCurve(placed[0], placed[1], false);
+    });
+
+    await test.step(thirdStepName, async () => {
+      await this.clickViewportByCoordinates(points[2].x, points[2].y);
+      await this.overlayComp.checkNodeCount(3);
+      placed.push(await this.overlayComp.getAddedNode(placed));
+      await this.overlayComp.checkSegmentIsCurve(placed[1], placed[2], false);
+    });
+
+    return placed;
+  }
+
+  /**
+   * Draws an opened semi-ellipse path with the P shortcut, one Qase step each: a
+   * corner node, then a curved node placed with click and drag.
+   * @param start Viewport position of the first node.
+   * @param options.caseId Qase ID to prefix the first step with, as `(490) …`,
+   *   when the test merges several cases (default: no prefix).
+   * @returns The two nodes in design coordinates, in the order they were placed.
+   */
+  async drawSemiEllipsePath(
+    start: Point,
+    { caseId }: { caseId?: number } = {},
+  ): Promise<Point[]> {
+    const placed: Point[] = [];
+    const prefix = caseId ? `(${caseId}) ` : '';
+
+    await test.step(`${prefix}Press P keyboard button`, async () => {
+      await this.pressKeyboardShortcut('P');
+      await this.checkPathToolActive();
+    });
+
+    await test.step('Click on the canvas', async () => {
+      await this.clickViewportByCoordinates(start.x, start.y);
+      await this.checkPathToolbarVisible();
+      await this.overlayComp.checkNodeCount(1);
+      placed.push(...(await this.overlayComp.getNodes()));
+    });
+
+    await test.step('Click and drag to another area (closer to starting node, to make a semi-ellipse)', async () => {
+      // Pressing at the new node and dragging sets its handler, so the segment curves
+      await this.overlayComp.dragBy(
+        { x: placed[0].x + 300, y: placed[0].y },
+        { x: 0, y: 150 },
+      );
+      await this.overlayComp.checkNodeCount(2);
+      placed.push(await this.overlayComp.getAddedNode(placed));
+    });
+
+    return placed;
   }
 
   async clickDrawNodesButtonOnNodePanel() {

@@ -6,7 +6,7 @@ import {
   StrokeSide,
   type StrokeSideName,
   type StrokeWidthFieldName,
-} from '@pages/workspace/right-sidebar/design-tab/stroke-section-component';
+} from '@pages/workspace/right-sidebar/design-tab/stroke/stroke-section-component';
 import { TokensPage } from '@pages/workspace/tokens/tokens-base-page';
 import { WorkspacePage } from '@pages/workspace/workspace-page';
 import { expect } from '@playwright/test';

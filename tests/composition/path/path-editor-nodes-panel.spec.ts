@@ -1,11 +1,6 @@
 import { PathToolbarAction } from '@pages/workspace/toolbar/path-editor/path-editor-page';
-import { pathEditorTest } from '@tests/composition/path-editor/path-editor-fixture';
-import {
-  A,
-  B,
-  C,
-  C_HANDLER,
-} from '@tests/composition/path-editor/straight-curved-path';
+import { pathEditorTest } from '@tests/composition/path/path-fixture';
+import { A, B, C, C_HANDLER } from '@tests/composition/path/straight-curved-path';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 const { DrawNodes, MoveNodes, SnapNodes, HandlerBehaviour } = PathToolbarAction;
