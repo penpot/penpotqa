@@ -125,6 +125,22 @@ export class PermissionControlComponent extends BaseComponent {
     await this.checkAttributePickerIsOpen();
   }
 
+  /** Closes the attribute picker with Escape, without picking anything. */
+  async closeAttributePicker() {
+    await this.page.keyboard.press('Escape');
+    await this.checkAttributePickerIsOpen(false);
+  }
+
+  /**
+   * Removes "Who are" or "Except" from the restriction with its ✕.
+   *
+   * @param part - Which part to remove.
+   */
+  async removePart(part: RestrictionPartName) {
+    await this.root.getByRole('button', { name: `Remove "${part}"` }).click();
+    await this.checkPartIsAdded(part, false);
+  }
+
   /**
    * Types in the attribute picker's search.
    *
@@ -251,16 +267,42 @@ export class PermissionControlComponent extends BaseComponent {
   }
 
   /**
-   * Checks that the open picker lists an attribute with its number of holders.
+   * Checks that the open picker lists an attribute with its number of holders,
+   * and its description when given.
    *
    * @param attribute - Attribute name, e.g. 'Junior'.
    * @param holders - Number of organization members who hold it.
+   * @param description - The description shown after them, e.g. 'Legal department'.
    */
-  async checkAttributeOption(attribute: string, holders: number) {
+  async checkAttributeOption(
+    attribute: string,
+    holders: number,
+    description?: string,
+  ) {
+    const option = this.getAttributeOption(attribute);
+    // The count can run straight into the description ("Legal2Legal department"),
+    // so it ends where the digits do, not at a word boundary
+    await expect(option, `The picker lists "${attribute} ${holders}"`).toHaveText(
+      new RegExp(`^${escapeRegExp(attribute)}\\s*${holders}(?!\\d)`),
+    );
+    if (description) {
+      await expect(
+        option.getByText(description, { exact: true }),
+        `"${attribute}" shows the description "${description}"`,
+      ).toBeVisible();
+    }
+  }
+
+  /**
+   * Checks the open picker has no option for an attribute.
+   *
+   * @param attribute - Attribute name, e.g. 'Contractors'.
+   */
+  async checkAttributeOptionIsHidden(attribute: string) {
     await expect(
       this.getAttributeOption(attribute),
-      `The picker lists "${attribute} ${holders}"`,
-    ).toHaveText(new RegExp(`^${escapeRegExp(attribute)}\\s*${holders}\\b`));
+      `The picker doesn't list "${attribute}"`,
+    ).toHaveCount(0);
   }
 
   /**
