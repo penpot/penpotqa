@@ -38,7 +38,7 @@ enterpriseActivatedPageTest.describe(
         let orgAAdminConsoleUrl = '';
 
         await ownerAndInviteeActivatedTest.step(
-          'Setup: create OrgA, invite the second account to it, and create OrgB',
+          'Setup: Enterprise already active (activation code), create OrgA, invite the second account to it, and create OrgB',
           async () => {
             await createOrgForLicensedAccount(orgPage, orgAName);
             orgAAdminConsoleUrl = ownerPage.url();
@@ -151,7 +151,7 @@ enterpriseActivatedPageTest.describe(
         let orgAAdminConsoleUrl = '';
 
         await ownerAndInviteeActivatedTest.step(
-          'Setup: another user creates OrgX and invites the mover to it',
+          'Setup: Enterprise already active (activation code), another user creates OrgX and invites the mover to it',
           async () => {
             await createOrgForLicensedAccount(orgPage, orgXName);
             await adminConsolePage.invitePersonToOrganization(invitee.email);
@@ -238,7 +238,7 @@ enterpriseActivatedPageTest.describe(
         let invitedTeamId = '';
 
         await enterpriseActivatedPageTest.step(
-          'Setup: create OrgA, OrgB (restricted to "Organization members only") and OrgC',
+          'Setup: Enterprise already active (activation code), create OrgA, OrgB (restricted to "Organization members only") and OrgC',
           async () => {
             await createOrgForLicensedAccount(orgPage, orgAName);
             orgAAdminConsoleUrl = page.url();

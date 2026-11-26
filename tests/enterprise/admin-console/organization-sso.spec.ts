@@ -3,15 +3,18 @@
  *
  * 3527/3535/3587 run as one sequential case since 3535/3587 both require SSO
  * already active (via 3527) — avoids repeating the expensive setup 3x.
+ *
+ * Base: `ownerAndInviteeActivatedTest` — the invitee must be a real account
+ * (the SSO notice email is read); the owner is Enterprise-entitled via the
+ * activation-code path (PRE/dev only), no Stripe checkout.
  */
 import { qase } from 'playwright-qase-reporter/playwright';
-import { ownerAndInviteeTest } from '@tests/enterprise/fixtures/enterprise-fixtures';
+import { ownerAndInviteeActivatedTest } from '@tests/enterprise/fixtures/enterprise-fixtures';
 import { OrganizationPage } from '@pages/dashboard/organization-page';
 import { TeamPage } from '@pages/dashboard/team-page';
 import { LoginPage } from '@pages/login-page';
 import { createOrgName } from 'helpers/organizations/create-org-name';
 import { createTeamName } from 'helpers/teams/create-team-name';
-import { subscribeAndCreateOrg } from 'helpers/organizations/subscribe-and-create-org';
 import {
   waitSecondMessage,
   waitForMessageCount,
@@ -22,6 +25,7 @@ import {
   checkSsoActivatedEmailText,
 } from 'helpers/gmail';
 import { SsoProvider } from '@pages/admin-console/organization-sso-page';
+import { createOrgForLicensedAccount } from 'helpers/organizations/create-org-for-licensed-account';
 
 const AUTH0_TEST_SSO_CONFIG = {
   issuerUrl: process.env.ENTERPRISE_SSO_ISSUER_URL!,
@@ -29,10 +33,10 @@ const AUTH0_TEST_SSO_CONFIG = {
   clientSecret: process.env.ENTERPRISE_SSO_CLIENT_SECRET!,
 };
 
-ownerAndInviteeTest.describe(
+ownerAndInviteeActivatedTest.describe(
   'Admin Console > Sidebar Menu > Organization SSO',
   () => {
-    ownerAndInviteeTest(
+    ownerAndInviteeActivatedTest(
       qase(
         [3527, 3535, 3587],
         'Activate SSO (test connection passes), existing session cutoff, deactivate SSO',
@@ -41,25 +45,19 @@ ownerAndInviteeTest.describe(
         ownerPage,
         orgPage,
         adminConsolePage,
-        stripePage,
         teamPage,
         ssoPage,
         invitee,
       }) => {
-        ownerAndInviteeTest.slow();
+        ownerAndInviteeActivatedTest.slow();
 
         const orgName = createOrgName();
         const teamName = createTeamName();
 
-        await ownerAndInviteeTest.step(
-          'Setup: create OrgA with a team, and get the invitee an active session inside it',
+        await ownerAndInviteeActivatedTest.step(
+          'Setup: Enterprise already active (activation code), create OrgA with a team, and get the invitee an active session inside it',
           async () => {
-            await subscribeAndCreateOrg(
-              orgPage,
-              adminConsolePage,
-              stripePage,
-              orgName,
-            );
+            await createOrgForLicensedAccount(orgPage, orgName);
             await adminConsolePage.goToFiles(orgName);
             await teamPage.createTeam(teamName);
 
@@ -78,7 +76,7 @@ ownerAndInviteeTest.describe(
           },
         );
 
-        await ownerAndInviteeTest.step(
+        await ownerAndInviteeActivatedTest.step(
           'PENPOT-3527: Activate SSO, test connection passes',
           async () => {
             await ssoPage.openSsoConfigTab();
@@ -91,7 +89,7 @@ ownerAndInviteeTest.describe(
           },
         );
 
-        await ownerAndInviteeTest.step(
+        await ownerAndInviteeActivatedTest.step(
           'PENPOT-3535: Existing session gets an immediate hard cutoff to the SSO login',
           async () => {
             // Bound to invitee.page, not orgPage (ownerPage) — no reload needed.
@@ -109,26 +107,29 @@ ownerAndInviteeTest.describe(
           },
         );
 
-        await ownerAndInviteeTest.step('PENPOT-3587: Deactivate SSO', async () => {
-          await ssoPage.deactivateSso();
-          await ssoPage.isSsoDeactivatedNotificationVisible(orgName);
-          await ssoPage.isSsoConfigActive(false);
-          await ssoPage.isActivateSsoButtonVisible();
+        await ownerAndInviteeActivatedTest.step(
+          'PENPOT-3587: Deactivate SSO',
+          async () => {
+            await ssoPage.deactivateSso();
+            await ssoPage.isSsoDeactivatedNotificationVisible(orgName);
+            await ssoPage.isSsoConfigActive(false);
+            await ssoPage.isActivateSsoButtonVisible();
 
-          // Invitee can access OrgA's team.
-          const inviteeLoginPage = new LoginPage(invitee.page);
-          const inviteeOrgPage = new OrganizationPage(invitee.page);
-          const inviteeTeamPage = new TeamPage(invitee.page);
-          await inviteeLoginPage.goto();
-          await inviteeLoginPage.enterEmailAndClickOnContinue(invitee.email);
-          await inviteeLoginPage.enterPwd(process.env.LOGIN_PWD!);
-          await inviteeLoginPage.clickLoginButton();
+            // Invitee can access OrgA's team.
+            const inviteeLoginPage = new LoginPage(invitee.page);
+            const inviteeOrgPage = new OrganizationPage(invitee.page);
+            const inviteeTeamPage = new TeamPage(invitee.page);
+            await inviteeLoginPage.goto();
+            await inviteeLoginPage.enterEmailAndClickOnContinue(invitee.email);
+            await inviteeLoginPage.enterPwd(process.env.LOGIN_PWD!);
+            await inviteeLoginPage.clickLoginButton();
 
-          await inviteeOrgPage.openOrgSwitcher();
-          await inviteeOrgPage.isOrgListedInDropdown(orgName);
-          await inviteeOrgPage.switchToOrg(orgName);
-          await inviteeTeamPage.switchTeam(teamName);
-        });
+            await inviteeOrgPage.openOrgSwitcher();
+            await inviteeOrgPage.isOrgListedInDropdown(orgName);
+            await inviteeOrgPage.switchToOrg(orgName);
+            await inviteeTeamPage.switchTeam(teamName);
+          },
+        );
       },
     );
   },

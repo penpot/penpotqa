@@ -539,10 +539,21 @@ export class AdminConsolePage extends BasePage {
 
   /** Types one email into the invite modal's input and confirms it with
    * Enter, adding it to the list of addresses to invite — does not send
-   * anything by itself. Assumes the invite modal is already open. */
+   * anything by itself. Assumes the invite modal is already open.
+   *
+   * Waits for the email's chip before returning, and types it again if the
+   * Enter was lost, so the next email isn't typed over an unconfirmed one. */
   async addEmailToInviteList(email: string) {
-    await this.invitePeopleEmailInput.fill(email);
-    await this.page.keyboard.press('Enter');
+    const chipRemoveButton = this.page.getByRole('button', {
+      name: `Remove ${email}`,
+      exact: true,
+    });
+    await expect(async () => {
+      if (await chipRemoveButton.isVisible()) return;
+      await this.invitePeopleEmailInput.fill(email);
+      await this.invitePeopleEmailInput.press('Enter');
+      await expect(chipRemoveButton).toBeVisible({ timeout: 3000 });
+    }).toPass({ timeout: 15000 });
   }
 
   /** Sends every email currently in the invite list. Assumes the invite

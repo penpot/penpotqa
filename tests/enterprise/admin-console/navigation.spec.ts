@@ -1,21 +1,22 @@
 /**
  * Qase suite: Admin Console (direct cases) / Subscriptions & Billing
  *
- * Stubs below (`test.skip`) await automation — see the Enterprise Plan
- * automation plan.
- *
- * Base: `enterprisePageTest` (see enterprise-fixtures.ts) for a single
- * actor; `ownerAndInviteeTest` for cases needing a real second account.
- * Per-case "Accounts:" notes cover invitees needing a real, readable
- * inbox instead (see the enterprise-demo-account-email memory).
+ * Base: `enterpriseActivatedPageTest` (see enterprise-fixtures.ts) for the
+ * cases that need an organization — Enterprise-entitled via the
+ * activation-code path (PRE/dev only), no Stripe checkout.
+ * `enterprisePageTest` for the cases that run on an account with no
+ * Enterprise plan at all (3093, 3094, 3097).
  */
 import { qase } from 'playwright-qase-reporter/playwright';
 import { LoginPage } from '@pages/login-page';
 import { createDemoUser } from 'helpers/accounts/create-demo-user';
 import { createOrgName } from 'helpers/organizations/create-org-name';
-import { subscribeAndCreateOrg } from 'helpers/organizations/subscribe-and-create-org';
 import { createSecondOrgFromAdminConsole } from 'helpers/organizations/create-second-org-from-admin-console';
-import { enterprisePageTest } from '@tests/enterprise/fixtures/enterprise-fixtures';
+import {
+  enterprisePageTest,
+  enterpriseActivatedPageTest,
+} from '@tests/enterprise/fixtures/enterprise-fixtures';
+import { createOrgForLicensedAccount } from 'helpers/organizations/create-org-for-licensed-account';
 
 enterprisePageTest.describe(
   'Admin Console (direct cases) / Subscriptions & Billing',
@@ -99,23 +100,18 @@ enterprisePageTest.describe(
       },
     );
 
-    enterprisePageTest(
+    enterpriseActivatedPageTest(
       qase([3180], 'Access Admin Console via direct URL'),
-      async ({ page, orgPage, adminConsolePage, stripePage }) => {
+      async ({ page, orgPage, adminConsolePage }) => {
         const firstOrgName = createOrgName();
         const secondOrgName = createOrgName();
         let firstOrgSlug = '';
         let firstOrgId = '';
 
-        await enterprisePageTest.step(
-          'Setup: subscribe to Enterprise and create two organizations',
+        await enterpriseActivatedPageTest.step(
+          'Setup: Enterprise already active (activation code), create two organizations',
           async () => {
-            await subscribeAndCreateOrg(
-              orgPage,
-              adminConsolePage,
-              stripePage,
-              firstOrgName,
-            );
+            await createOrgForLicensedAccount(orgPage, firstOrgName);
             ({ slug: firstOrgSlug, orgId: firstOrgId } =
               adminConsolePage.getOrgSlugAndIdFromUrl());
 
@@ -133,7 +129,7 @@ enterprisePageTest.describe(
           },
         );
 
-        await enterprisePageTest.step(
+        await enterpriseActivatedPageTest.step(
           'Navigate to bare /admin-console (no org) → lands on the last-visited organization',
           async () => {
             // Second org was created (and is thus last-visited) right above
@@ -144,7 +140,7 @@ enterprisePageTest.describe(
           },
         );
 
-        await enterprisePageTest.step(
+        await enterpriseActivatedPageTest.step(
           'Navigate to /admin-console/organization/[org-name]/[org-id] directly → lands on that org’s console',
           async () => {
             await page.goto(
@@ -157,9 +153,9 @@ enterprisePageTest.describe(
       },
     );
 
-    enterprisePageTest(
+    enterpriseActivatedPageTest(
       qase([3182], 'Access Admin Console from org navigation menu in design app'),
-      async ({ orgPage, adminConsolePage, stripePage }) => {
+      async ({ orgPage, adminConsolePage }) => {
         /**
          * Only step 1 is
          * automated here: opening the org nav menu from a team dashboard for
@@ -170,20 +166,15 @@ enterprisePageTest.describe(
          */
         const orgName = createOrgName();
 
-        await enterprisePageTest.step(
-          'Setup: subscribe to Enterprise and create an organization',
+        await enterpriseActivatedPageTest.step(
+          'Setup: Enterprise already active (activation code), create an organization',
           async () => {
-            await subscribeAndCreateOrg(
-              orgPage,
-              adminConsolePage,
-              stripePage,
-              orgName,
-            );
+            await createOrgForLicensedAccount(orgPage, orgName);
             await adminConsolePage.goToFiles(orgName);
           },
         );
 
-        await enterprisePageTest.step(
+        await enterpriseActivatedPageTest.step(
           'From the dashboard, open the org nav menu → "Go to Admin Console" → the active (owned) org’s console',
           async () => {
             await orgPage.openOrgSwitcher();
@@ -194,21 +185,16 @@ enterprisePageTest.describe(
       },
     );
 
-    enterprisePageTest(
+    enterpriseActivatedPageTest(
       qase([3184], 'Navigate between organizations from within Admin Console'),
-      async ({ orgPage, adminConsolePage, stripePage }) => {
+      async ({ orgPage, adminConsolePage }) => {
         const firstOrgName = createOrgName();
         const secondOrgName = createOrgName();
 
-        await enterprisePageTest.step(
-          'Setup: subscribe to Enterprise and create two organizations',
+        await enterpriseActivatedPageTest.step(
+          'Setup: Enterprise already active (activation code), create two organizations',
           async () => {
-            await subscribeAndCreateOrg(
-              orgPage,
-              adminConsolePage,
-              stripePage,
-              firstOrgName,
-            );
+            await createOrgForLicensedAccount(orgPage, firstOrgName);
 
             await createSecondOrgFromAdminConsole(
               adminConsolePage,
@@ -218,7 +204,7 @@ enterprisePageTest.describe(
           },
         );
 
-        await enterprisePageTest.step(
+        await enterpriseActivatedPageTest.step(
           'Open the org nav menu in Admin Console → both organizations are listed',
           async () => {
             await adminConsolePage.openOrgSwitcher();
@@ -227,7 +213,7 @@ enterprisePageTest.describe(
           },
         );
 
-        await enterprisePageTest.step(
+        await enterpriseActivatedPageTest.step(
           'Click a different organization → taken to its Admin Console, correct details shown',
           async () => {
             await adminConsolePage.switchToOrg(firstOrgName);

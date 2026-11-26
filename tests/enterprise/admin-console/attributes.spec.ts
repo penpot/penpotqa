@@ -40,7 +40,7 @@ enterpriseActivatedPageTest.describe(
         const agil = 'Ágil';
 
         await enterpriseActivatedPageTest.step(
-          `Setup: create an org with ${attributes.length} attributes, in reverse alphabetical order`,
+          `Setup: Enterprise already active (activation code), create an org with ${attributes.length} attributes, in reverse alphabetical order`,
           async () => {
             await createOrgForLicensedAccount(orgPage, createOrgName());
             await adminConsolePage.openAttributesTab();
@@ -89,7 +89,7 @@ enterpriseActivatedPageTest.describe(
         const opsTeam = 'Ops team';
 
         await enterpriseActivatedPageTest.step(
-          `Setup: create an org with the attribute "${ops}"`,
+          `Setup: Enterprise already active (activation code), create an org with the attribute "${ops}"`,
           async () => {
             await createOrgForLicensedAccount(orgPage, createOrgName());
             await adminConsolePage.openAttributesTab();

@@ -1,12 +1,15 @@
 /**
  * Qase suite: Cross-cutting: Admin Console > Settings > Delete organization; Admin Console > Subscriptions & Billing; Enterprise Dashboard (direct)
  *
- * These 6 cases permanently mutate plan/org state (delete org, delete account, downgrade, cancel plan) or require a non-Enterprise starting plan (cross-plan checks). Kept in their own file per the automation plan (section 2.6) — each needs a disposable org, not shared with the rest of the suite.
+ * These 6 cases permanently mutate plan/org state (delete org, delete account, downgrade, cancel plan) or require a non-Enterprise starting plan (cross-plan checks). Kept in their own file: each needs a disposable org, not shared with the rest of the suite.
  *
  * PENPOT-3353 and PENPOT-3434 are merged into one test (same org/owner,
  * sequential state). PENPOT-3358 is dropped as a strict subset of 3592.
  *
- * Base: `enterprisePageTest` for a single actor. PENPOT-3592 needs a second,
+ * Base: `enterpriseActivatedPageTest` (activation code, PRE/dev only) for
+ * the delete cases, which don't touch billing; `enterprisePageTest` (real
+ * Stripe checkout) for the ones that test the Stripe billing portal
+ * (3353/3434, 3592). PENPOT-3592 needs a second,
  * fully independent account/plan, so it opens its own browser context
  * rather than using `ownerAndInviteeTest` (whose invitee joins the same org).
  */
@@ -23,32 +26,31 @@ import { subscribeAndCreateOrg } from 'helpers/organizations/subscribe-and-creat
 import { createSecondOrgFromAdminConsole } from 'helpers/organizations/create-second-org-from-admin-console';
 import { loginAsDemoAccount } from 'helpers/accounts/login-as-demo-account';
 import { LoginPage } from '@pages/login-page';
-import { enterprisePageTest } from '@tests/enterprise/fixtures/enterprise-fixtures';
+import {
+  enterprisePageTest,
+  enterpriseActivatedPageTest,
+} from '@tests/enterprise/fixtures/enterprise-fixtures';
+import { createOrgForLicensedAccount } from 'helpers/organizations/create-org-for-licensed-account';
 
 enterprisePageTest.describe(
   'Cross-cutting: Admin Console > Settings > Delete organization; Admin Console > Subscriptions & Billing; Enterprise Dashboard (direct)',
   () => {
-    enterprisePageTest(
+    enterpriseActivatedPageTest(
       qase(
         [3555],
         'Delete an Enterprise account with organizations shows the extended warning and removes them immediately',
       ),
-      async ({ page, orgPage, adminConsolePage, stripePage, teamPage }) => {
+      async ({ page, orgPage, adminConsolePage, teamPage }) => {
         const yourAccountPage = new YourAccountPage(page);
         const loginPage = new LoginPage(page);
         const firstOrgName = createOrgName();
         const secondOrgName = createOrgName();
         const teamName = createTeamName();
 
-        await enterprisePageTest.step(
-          'Setup: subscribe to Enterprise, create a second org, and a team in it',
+        await enterpriseActivatedPageTest.step(
+          'Setup: Enterprise already active (activation code), create two organizations, and a team in the second one',
           async () => {
-            await subscribeAndCreateOrg(
-              orgPage,
-              adminConsolePage,
-              stripePage,
-              firstOrgName,
-            );
+            await createOrgForLicensedAccount(orgPage, firstOrgName);
 
             await createSecondOrgFromAdminConsole(
               adminConsolePage,
@@ -63,7 +65,7 @@ enterprisePageTest.describe(
           },
         );
 
-        await enterprisePageTest.step(
+        await enterpriseActivatedPageTest.step(
           'Open user menu > "Your account" > click "Want to remove your account?" → confirmation modal',
           async () => {
             await yourAccountPage.open();
@@ -71,14 +73,14 @@ enterprisePageTest.describe(
           },
         );
 
-        await enterprisePageTest.step(
+        await enterpriseActivatedPageTest.step(
           'Warning box: irreversible, account/subscription/orgs deleted immediately',
           async () => {
             await yourAccountPage.profile.checkDeleteAccountWarningIsVisible();
           },
         );
 
-        await enterprisePageTest.step(
+        await enterpriseActivatedPageTest.step(
           'Expand "Organizations that will be deleted" → every owned org listed with team/member counts',
           async () => {
             await yourAccountPage.profile.expandOrganizationsToDelete();
@@ -95,7 +97,7 @@ enterprisePageTest.describe(
           },
         );
 
-        await enterprisePageTest.step(
+        await enterpriseActivatedPageTest.step(
           // Redirect to login is the checkable signal of immediate deletion.
           'Click "Yes, delete my account" → deleted immediately, signed out',
           async () => {
@@ -106,12 +108,12 @@ enterprisePageTest.describe(
       },
     );
 
-    enterprisePageTest(
+    enterpriseActivatedPageTest(
       qase(
         [3223],
         'Delete organization with no members redirects user to the most recent organization',
       ),
-      async ({ orgPage, adminConsolePage, stripePage }) => {
+      async ({ orgPage, adminConsolePage }) => {
         /**
          * A single-member
          * (no other members) org is the easiest way to get
@@ -122,15 +124,10 @@ enterprisePageTest.describe(
         const firstOrgName = createOrgName();
         const secondOrgName = createOrgName();
 
-        await enterprisePageTest.step(
-          'Setup: subscribe to Enterprise and create two organizations',
+        await enterpriseActivatedPageTest.step(
+          'Setup: Enterprise already active (activation code), create two organizations',
           async () => {
-            await subscribeAndCreateOrg(
-              orgPage,
-              adminConsolePage,
-              stripePage,
-              firstOrgName,
-            );
+            await createOrgForLicensedAccount(orgPage, firstOrgName);
 
             // Second org: already Enterprise, so this goes straight through
             // the org switcher's own "Create org" item — no Stripe involved.
@@ -143,7 +140,7 @@ enterprisePageTest.describe(
           },
         );
 
-        await enterprisePageTest.step(
+        await enterpriseActivatedPageTest.step(
           'Delete the second (current) organization → success toast',
           async () => {
             await adminConsolePage.openSettings();
@@ -151,14 +148,14 @@ enterprisePageTest.describe(
           },
         );
 
-        await enterprisePageTest.step(
+        await enterpriseActivatedPageTest.step(
           'Redirected to the other, most-recently-active organization',
           async () => {
             await adminConsolePage.isDisplayingOrganization(firstOrgName);
           },
         );
 
-        await enterprisePageTest.step(
+        await enterpriseActivatedPageTest.step(
           'The deleted organization no longer appears in the org switcher',
           async () => {
             await adminConsolePage.openOrgSwitcher();
@@ -168,27 +165,22 @@ enterprisePageTest.describe(
       },
     );
 
-    enterprisePageTest(
+    enterpriseActivatedPageTest(
       qase(
         [3226],
         'Delete organization with at least one team and one file moves teams and files to default organization',
       ),
-      async ({ page, orgPage, adminConsolePage, stripePage, teamPage }) => {
+      async ({ page, orgPage, adminConsolePage, teamPage }) => {
         const dashboardPage = new DashboardPage(page);
         const mainPage = new MainPage(page);
         const orgName = createOrgName();
         const teamName = createTeamName();
         let orgAdminConsoleUrl = '';
 
-        await enterprisePageTest.step(
-          'Setup: subscribe to Enterprise, create an org, a team in it, and a file in that team',
+        await enterpriseActivatedPageTest.step(
+          'Setup: Enterprise already active (activation code), create an org, a team in it, and a file in that team',
           async () => {
-            await subscribeAndCreateOrg(
-              orgPage,
-              adminConsolePage,
-              stripePage,
-              orgName,
-            );
+            await createOrgForLicensedAccount(orgPage, orgName);
             orgAdminConsoleUrl = page.url();
 
             await adminConsolePage.goToFiles(orgName);
@@ -200,7 +192,7 @@ enterprisePageTest.describe(
           },
         );
 
-        await enterprisePageTest.step(
+        await enterpriseActivatedPageTest.step(
           "Back on the org's Admin Console, open the delete-organization explanation panel",
           async () => {
             await page.goto(orgAdminConsoleUrl);
@@ -210,7 +202,7 @@ enterprisePageTest.describe(
           },
         );
 
-        await enterprisePageTest.step(
+        await enterpriseActivatedPageTest.step(
           'Confirm → "Are you sure?" dialog shows the correct affected member/team/file counts',
           async () => {
             await adminConsolePage.clickDeleteOrganizationExplanationConfirm();
@@ -221,7 +213,7 @@ enterprisePageTest.describe(
           },
         );
 
-        await enterprisePageTest.step(
+        await enterpriseActivatedPageTest.step(
           'Expand "Affected teams" → the real team is listed',
           async () => {
             await adminConsolePage.expandAffectedTeams();
@@ -229,14 +221,14 @@ enterprisePageTest.describe(
           },
         );
 
-        await enterprisePageTest.step(
+        await enterpriseActivatedPageTest.step(
           'Confirm deletion → success toast',
           async () => {
             await adminConsolePage.confirmDeleteOrganization();
           },
         );
 
-        await enterprisePageTest.step(
+        await enterpriseActivatedPageTest.step(
           'The team survives, now ungrouped (no longer associated with any organization)',
           async () => {
             // A real navigation, not the Admin Console's own "Go to Files"
