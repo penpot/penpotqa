@@ -150,7 +150,7 @@ enterpriseActivatedPageTest.describe(
             await teamPage.goToTeamDashboard(teamId);
             await teamPage.openTeamSettingsPageViaOptionsMenu();
             await teamPage.openChangeTeamOrgModal();
-            await teamPage.teamFormModal.checkTitle(TeamFormTitle.changeTeamOrg);
+            await teamPage.modal.checkTitle(TeamFormTitle.changeTeamOrg);
             await teamPage.teamFormModal.checkMessageIsVisible(
               TeamFormMessage.noPermissionToMoveTeams(orgAName),
             );
@@ -162,7 +162,7 @@ enterpriseActivatedPageTest.describe(
           '(3626) Under \'Only me, from the Admin Console\', "Remove team from organization" → the same blocking modal names OrgA',
           async () => {
             await teamPage.openRemoveTeamFromOrgDialog();
-            await teamPage.teamFormModal.checkTitle(TeamFormTitle.changeTeamOrg);
+            await teamPage.modal.checkTitle(TeamFormTitle.changeTeamOrg);
             await teamPage.teamFormModal.checkMessageIsVisible(
               TeamFormMessage.noPermissionToMoveTeams(orgAName),
             );
@@ -188,7 +188,7 @@ enterpriseActivatedPageTest.describe(
             await teamPage.goToTeamDashboard(teamId);
             await teamPage.openTeamSettingsPageViaOptionsMenu();
             await teamPage.openRemoveTeamFromOrgDialog();
-            await teamPage.teamFormModal.checkTitle(TeamFormTitle.changeTeamOrg);
+            await teamPage.modal.checkTitle(TeamFormTitle.changeTeamOrg);
             await teamPage.teamFormModal.checkMessageIsVisible(
               TeamFormMessage.noPermissionToMoveTeams(orgAName),
             );
@@ -285,9 +285,7 @@ enterpriseActivatedPageTest.describe(
           async () => {
             await member.page.reload();
             await memberTeamPage.openChangeTeamOrgModal();
-            await memberTeamPage.teamFormModal.checkTitle(
-              TeamFormTitle.changeTeamOrg,
-            );
+            await memberTeamPage.modal.checkTitle(TeamFormTitle.changeTeamOrg);
             await memberTeamPage.teamFormModal.checkMessageIsVisible(
               TeamFormMessage.noPermissionToMoveTeams(orgDName),
             );
@@ -412,9 +410,7 @@ enterpriseActivatedPageTest.describe(
             await user4TeamPage.goToTeamDashboard(bananaId);
             await user4TeamPage.openTeamSettingsPageViaOptionsMenu();
             await user4TeamPage.openChangeTeamOrgModal();
-            await user4TeamPage.teamFormModal.checkTitle(
-              TeamFormTitle.changeTeamOrg,
-            );
+            await user4TeamPage.modal.checkTitle(TeamFormTitle.changeTeamOrg);
             await user4TeamPage.teamFormModal.checkMessageIsVisible(
               TeamFormMessage.noPermissionToMoveTeams(orgA.name),
             );
@@ -428,10 +424,10 @@ enterpriseActivatedPageTest.describe(
             await user2TeamPage.goToTeamDashboard(appleId);
             await user2TeamPage.openTeamSettingsPageViaOptionsMenu();
             await user2TeamPage.openChangeTeamOrgModal();
-            await user2TeamPage.teamOrgModal.openOrgPicker();
+            await user2TeamPage.selectOrgModal.openOrgPicker();
             await user2TeamPage.isOrgPickerOptionDisabled(orgB.name, false);
             await user2TeamPage.selectOrgInPicker(orgB.name);
-            await user2TeamPage.teamOrgModal.close();
+            await user2TeamPage.selectOrgModal.close();
           },
         );
 

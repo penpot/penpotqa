@@ -221,7 +221,7 @@ enterpriseActivatedPageTest.describe(
           async () => {
             await member.page.reload();
             await memberTeamPage.clickCreateNewTeamMenuItem();
-            await memberTeamPage.teamFormModal.checkTitle(TeamFormTitle.createTeam);
+            await memberTeamPage.modal.checkTitle(TeamFormTitle.createTeam);
             await memberTeamPage.teamFormModal.checkMessageIsVisible(
               TeamFormMessage.noPermissionToCreateTeams(orgName),
             );
@@ -275,11 +275,11 @@ enterpriseActivatedPageTest.describe(
           "Click on the 'Add to an organization' link → the modal says there's no permission to add teams, with no organization selector",
           async () => {
             await user2TeamPage.openAddTeamToOrgModal();
-            await user2TeamPage.teamFormModal.checkTitle(TeamFormTitle.addTeamToOrg);
+            await user2TeamPage.modal.checkTitle(TeamFormTitle.addTeamToOrg);
             await user2TeamPage.teamFormModal.checkMessageIsVisible(
               TeamFormMessage.noPermissionToAddTeams,
             );
-            await user2TeamPage.teamOrgModal.checkOrgPickerIsVisible(false);
+            await user2TeamPage.selectOrgModal.checkOrgPickerIsVisible(false);
           },
         );
       },
@@ -320,11 +320,11 @@ enterpriseActivatedPageTest.describe(
               banana.id,
             );
             await user5TeamPage.clickCreateNewTeamMenuItem();
-            await user5TeamPage.teamFormModal.checkTitle(
+            await user5TeamPage.modal.checkTitle(
               TeamFormTitle.createTeamInOrg(orgA.name),
             );
             await user5TeamPage.teamFormModal.checkCreateTeamFormIsVisible();
-            await user5TeamPage.teamFormModal.close();
+            await user5TeamPage.modal.close();
           },
         );
 
@@ -349,7 +349,7 @@ enterpriseActivatedPageTest.describe(
               banana.id,
             );
             await user5TeamPage.clickCreateNewTeamMenuItem();
-            await user5TeamPage.teamFormModal.checkTitle(TeamFormTitle.createTeam);
+            await user5TeamPage.modal.checkTitle(TeamFormTitle.createTeam);
             await user5TeamPage.teamFormModal.checkMessageIsVisible(
               TeamFormMessage.noPermissionToCreateTeams(orgA.name),
             );
@@ -364,11 +364,11 @@ enterpriseActivatedPageTest.describe(
               banana.id,
             );
             await user4TeamPage.clickCreateNewTeamMenuItem();
-            await user4TeamPage.teamFormModal.checkTitle(
+            await user4TeamPage.modal.checkTitle(
               TeamFormTitle.createTeamInOrg(orgA.name),
             );
             await user4TeamPage.teamFormModal.checkCreateTeamFormIsVisible();
-            await user4TeamPage.teamFormModal.close();
+            await user4TeamPage.modal.close();
           },
         );
 
@@ -388,7 +388,7 @@ enterpriseActivatedPageTest.describe(
               banana.id,
             );
             await user4TeamPage.clickCreateNewTeamMenuItem();
-            await user4TeamPage.teamFormModal.checkTitle(TeamFormTitle.createTeam);
+            await user4TeamPage.modal.checkTitle(TeamFormTitle.createTeam);
             await user4TeamPage.teamFormModal.checkMessageIsVisible(
               TeamFormMessage.noPermissionToCreateTeams(orgA.name),
             );

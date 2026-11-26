@@ -188,7 +188,7 @@ enterpriseActivatedPageTest.describe(
           async () => {
             const teamPage = await openTeamDashboard(User4.page, banana.id);
             await teamPage.clickCreateNewTeamMenuItem();
-            await teamPage.teamFormModal.checkTitle(TeamFormTitle.createTeam);
+            await teamPage.modal.checkTitle(TeamFormTitle.createTeam);
             await teamPage.teamFormModal.checkMessageIsVisible(
               TeamFormMessage.noPermissionToCreateTeams(orgA.name),
             );
@@ -202,10 +202,10 @@ enterpriseActivatedPageTest.describe(
             await user4TeamPage.goToTeamDashboard(banana.id);
             await user4TeamPage.openTeamSettingsPageViaOptionsMenu();
             await user4TeamPage.openChangeTeamOrgModal();
-            await user4TeamPage.teamOrgModal.openOrgPicker();
+            await user4TeamPage.selectOrgModal.openOrgPicker();
             await user4TeamPage.isOrgPickerOptionDisabled(orgB.name, false);
             await user4TeamPage.selectOrgInPicker(orgB.name);
-            await user4TeamPage.teamOrgModal.close();
+            await user4TeamPage.selectOrgModal.close();
           },
         );
       },
