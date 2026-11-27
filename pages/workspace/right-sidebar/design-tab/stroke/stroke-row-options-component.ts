@@ -11,12 +11,11 @@ export const StrokePosition = {
 export type StrokePositionName =
   (typeof StrokePosition)[keyof typeof StrokePosition];
 
-/** Stroke styles as the style dropdown labels them. */
+/** Stroke styles that can be picked in the style dropdown. */
 export const StrokeStyle = {
   Solid: 'Solid',
   Dotted: 'Dotted',
   Dashed: 'Dashed',
-  Mixed: 'Mixed',
 } as const;
 
 export type StrokeStyleName = (typeof StrokeStyle)[keyof typeof StrokeStyle];

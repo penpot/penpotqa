@@ -30,6 +30,7 @@ export type StrokeWidthFieldName = StrokeSideName | typeof STROKE_WIDTH;
 
 /** The Stroke section of the Design tab. */
 export class StrokeSectionComponent extends BaseComponent {
+  readonly addStrokeButton: Locator;
   readonly strokeRow: Locator;
   readonly strokeColorBullet: Locator;
   readonly strokeColorInput: Locator;
@@ -43,6 +44,7 @@ export class StrokeSectionComponent extends BaseComponent {
   constructor(page: Page, root: Locator) {
     super(page, root);
 
+    this.addStrokeButton = root.getByRole('button', { name: 'Add stroke color' });
     this.strokeRow = root.locator('div[class*="stroke-color-actions"]').last();
     this.strokeColorBullet = this.strokeRow
       .locator('div[class*="color-bullet-wrapper"]')
@@ -63,6 +65,11 @@ export class StrokeSectionComponent extends BaseComponent {
     return this.root
       .getByTestId('numeric-input-wrapper')
       .filter({ has: this.page.getByLabel(label, { exact: true }) });
+  }
+
+  /** Adds a stroke to the selected layer with the section's "+" button. */
+  async addStroke() {
+    await this.addStrokeButton.click();
   }
 
   async clickStrokePerSideButton() {

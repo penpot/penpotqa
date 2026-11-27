@@ -230,6 +230,18 @@ export class PathOverlayComponent {
   }
 
   /**
+   * The node closest to the top-left corner (smallest x + y), e.g. the top-left
+   * corner of a rectangle being edited.
+   * @returns That node, in design coordinates.
+   */
+  async getTopLeftNode(): Promise<Point> {
+    const [topLeft] = [...(await this.getNodes())].sort(
+      (a, b) => a.x + a.y - (b.x + b.y),
+    );
+    return topLeft;
+  }
+
+  /**
    * The node that was just placed: the only node not in `known`. Fails if there
    * isn't exactly one.
    * @param known Nodes the path had before.

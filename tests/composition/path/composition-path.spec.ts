@@ -3,6 +3,8 @@ import {
   StrokeStyle,
 } from '@pages/workspace/right-sidebar/design-tab/stroke/stroke-row-options-component';
 import { StrokeCap } from '@pages/workspace/right-sidebar/design-tab/stroke/stroke-section-component';
+import type { PathEditorPage } from '@pages/workspace/toolbar/path-editor/path-editor-page';
+import type { Point } from '@pages/workspace/toolbar/path-editor/path-geometry';
 import { expect } from '@playwright/test';
 import { pathTest } from '@tests/composition/path/path-fixture';
 import { qase } from 'playwright-qase-reporter/playwright';
@@ -14,12 +16,52 @@ const PATH_POINTS = [
   { x: 1000, y: 400 },
 ];
 
+/**
+ * Draws the first three nodes of the default path with the Path tool, one Qase
+ * step each, and checks each straight segment in the path editor overlay.
+ * @param pathEditorPage Page object of the workspace and its path editor.
+ * @param thirdStepName Name of the step that places the third node.
+ * @returns The three nodes in design coordinates, in the order they were placed.
+ */
+async function drawThreeNodes(
+  pathEditorPage: PathEditorPage,
+  thirdStepName: string,
+): Promise<Point[]> {
+  const { overlayComp } = pathEditorPage;
+  const placed: Point[] = [];
+
+  await pathTest.step(
+    'Click on the "Path (P)" tool in the toolbar at the top of the viewport',
+    async () => {
+      await pathEditorPage.clickCreatePathButton();
+      await pathEditorPage.checkPathToolActive();
+    },
+  );
+
+  await pathTest.step('Click on an empty area of the viewport', async () => {
+    placed.push(await pathEditorPage.placeNode(PATH_POINTS[0]));
+    await pathEditorPage.checkPathToolbarVisible();
+  });
+
+  await pathTest.step('Click on another area of the viewport', async () => {
+    placed.push(await pathEditorPage.placeNode(PATH_POINTS[1]));
+    await overlayComp.checkSegmentIsCurve(placed[0], placed[1], false);
+  });
+
+  await pathTest.step(thirdStepName, async () => {
+    placed.push(await pathEditorPage.placeNode(PATH_POINTS[2]));
+    await overlayComp.checkSegmentIsCurve(placed[1], placed[2], false);
+  });
+
+  return placed;
+}
+
 pathTest(
   qase([487], 'Create Path (Toolbar) - closed'),
   async ({ mainPage, pathEditorPage, layers, designPanelPage }) => {
     const { overlayComp } = pathEditorPage;
-    const [first, second, third] = await pathEditorPage.drawThreeNodes(
-      PATH_POINTS,
+    const [first, second, third] = await drawThreeNodes(
+      pathEditorPage,
       'Click on a third area of the viewport',
     );
 
@@ -58,8 +100,8 @@ pathTest(
   qase([489], 'Create Path (Toolbar) - opened'),
   async ({ mainPage, pathEditorPage, layers }) => {
     const { overlayComp } = pathEditorPage;
-    const [first, second, third] = await pathEditorPage.drawThreeNodes(
-      PATH_POINTS,
+    const [first, second, third] = await drawThreeNodes(
+      pathEditorPage,
       'Click on a third area of the viewport, closer to the starting node',
     );
 
@@ -85,21 +127,42 @@ pathTest(
     [490, 499],
     'Create Path (Shortcut P) - opened, then edit and delete its stroke',
   ),
-  async ({ mainPage, workspacePage, pathEditorPage, layers, designPanelPage }) => {
+  async ({ mainPage, workspacePage, pathEditorPage, layers }) => {
     const { overlayComp } = pathEditorPage;
     const { stroke } = workspacePage.rightSidebar.design;
-    const [first, second] = await pathEditorPage.drawSemiEllipsePath(
-      PATH_POINTS[0],
-      { caseId: 490 },
-    );
+    await pathTest.step('(490) Create Path (Shortcut P) - opened', async () => {
+      let first: Point;
+      let second: Point;
 
-    await pathTest.step('Press ENTER on keyboard', async () => {
-      await mainPage.pressKeyboardShortcut('Enter');
-      await mainPage.waitForChangeIsSaved();
-      await overlayComp.checkNodes([first, second]);
-      await overlayComp.checkSegments([[first, second]]);
-      await overlayComp.checkSegmentIsCurve(first, second, true);
-      await layers.checkLayerRowIsVisible('Path');
+      await pathTest.step('Press P keyboard button', async () => {
+        await mainPage.pressKeyboardShortcut('P');
+        await pathEditorPage.checkPathToolActive();
+      });
+
+      await pathTest.step('Click on the canvas', async () => {
+        first = await pathEditorPage.placeNode(PATH_POINTS[0]);
+        await pathEditorPage.checkPathToolbarVisible();
+      });
+
+      await pathTest.step(
+        'Click and drag to another area (closer to starting node, to make a semi-ellipse)',
+        async () => {
+          // Pressing at the new node and dragging sets its handler, so the segment curves
+          second = await pathEditorPage.placeCurvedNode(
+            { x: first.x + 300, y: first.y },
+            { x: 0, y: 150 },
+          );
+        },
+      );
+
+      await pathTest.step('Press ENTER on keyboard', async () => {
+        await mainPage.pressKeyboardShortcut('Enter');
+        await mainPage.waitForChangeIsSaved();
+        await overlayComp.checkNodes([first, second]);
+        await overlayComp.checkSegments([[first, second]]);
+        await overlayComp.checkSegmentIsCurve(first, second, true);
+        await layers.checkLayerRowIsVisible('Path');
+      });
     });
 
     await pathTest.step('(499) Edit and delete Stroke to Path', async () => {
@@ -114,7 +177,7 @@ pathTest(
 
       await pathTest.step('Click "+" button next to "Stroke"', async () => {
         // A drawn path already has a default stroke, so "+" adds a second one
-        await designPanelPage.clickAddStrokeButton();
+        await stroke.addStroke();
         await mainPage.waitForChangeIsSaved();
         await stroke.checkStrokeCount(2);
       });

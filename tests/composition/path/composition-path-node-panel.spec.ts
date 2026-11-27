@@ -12,9 +12,14 @@ pathTest.describe(() => {
   let nodes: NodesBySide;
 
   pathTest.beforeEach(async ({ pathEditorPage, layers }) => {
+    const { overlayComp } = pathEditorPage;
+
     await pathTest.step(
       'Click on the "Ellipse (E)" tool in the toolbar and click on an empty area of the viewport',
-      () => pathEditorPage.createEllipse(),
+      async () => {
+        await pathEditorPage.createEllipse();
+        await layers.checkLayerRowIsVisible('Ellipse');
+      },
     );
 
     await pathTest.step(
@@ -35,8 +40,8 @@ pathTest.describe(() => {
         await pathEditorPage.isToolbarButtonToggled(
           pathEditorPage.nodePanelMoveNodesButton,
         );
-        await pathEditorPage.overlayComp.checkNodeCount(4);
-        nodes = await pathEditorPage.overlayComp.getNodesBySide();
+        await overlayComp.checkNodeCount(4);
+        nodes = await overlayComp.getNodesBySide();
       },
     );
   });
@@ -47,7 +52,7 @@ pathTest.describe(() => {
       const { overlayComp } = pathEditorPage;
 
       await pathTest.step('Click on the top node', async () => {
-        await pathEditorPage.overlayComp.selectNodes(nodes.top);
+        await overlayComp.selectNodes(nodes.top);
         await overlayComp.checkSelectedNodes([nodes.top]);
       });
 
@@ -63,7 +68,7 @@ pathTest.describe(() => {
       });
 
       await pathTest.step('Click on the left node', async () => {
-        await pathEditorPage.overlayComp.selectNodes(nodes.left);
+        await overlayComp.selectNodes(nodes.left);
         await overlayComp.checkSelectedNodes([nodes.left]);
       });
 
@@ -89,7 +94,7 @@ pathTest.describe(() => {
       await pathTest.step(
         'Click on the top node, then Shift+click on the right node',
         async () => {
-          await pathEditorPage.overlayComp.selectNodes(nodes.top, nodes.right);
+          await overlayComp.selectNodes(nodes.top, nodes.right);
           await overlayComp.checkSelectedNodes([nodes.top, nodes.right]);
           await pathEditorPage.checkToolbarButtonVisible(
             PathToolbarAction.MergeNodes,
@@ -105,7 +110,7 @@ pathTest.describe(() => {
       await pathTest.step(
         'Click on the bottom node, then Shift+click on the left node',
         async () => {
-          await pathEditorPage.overlayComp.selectNodes(nodes.bottom, nodes.left);
+          await overlayComp.selectNodes(nodes.bottom, nodes.left);
           await overlayComp.checkSelectedNodes([nodes.bottom, nodes.left]);
           await pathEditorPage.checkToolbarButtonVisible(
             PathToolbarAction.MergeNodes,
@@ -176,7 +181,7 @@ pathTest.describe(() => {
       await pathTest.step(
         'Click on one end node of the new line, then Shift+click on a node of the initial path',
         async () => {
-          await pathEditorPage.overlayComp.selectNodes(newLineNodes[0], topRight);
+          await overlayComp.selectNodes(newLineNodes[0], topRight);
           await overlayComp.checkSelectedNodes([newLineNodes[0], topRight]);
           await pathEditorPage.checkToolbarButtonVisible(
             PathToolbarAction.MergeNodes,
@@ -209,7 +214,7 @@ pathTest.describe(() => {
       await pathTest.step(
         'Click on the top node, then Shift+click on the bottom node',
         async () => {
-          await pathEditorPage.overlayComp.selectNodes(nodes.top, nodes.bottom);
+          await overlayComp.selectNodes(nodes.top, nodes.bottom);
           await overlayComp.checkSelectedNodes([nodes.top, nodes.bottom]);
           await pathEditorPage.checkToolbarButtonVisible(
             PathToolbarAction.JoinNodes,
@@ -229,7 +234,7 @@ pathTest.describe(() => {
       await pathTest.step(
         'Click on the right node, then Shift+click on the left node',
         async () => {
-          await pathEditorPage.overlayComp.selectNodes(nodes.right, nodes.left);
+          await overlayComp.selectNodes(nodes.right, nodes.left);
           await overlayComp.checkSelectedNodes([nodes.right, nodes.left]);
           await pathEditorPage.checkToolbarButtonVisible(
             PathToolbarAction.JoinNodes,
@@ -260,7 +265,7 @@ pathTest.describe(() => {
       await pathTest.step(
         'Click on the top node, then Shift+click on the right node',
         async () => {
-          await pathEditorPage.overlayComp.selectNodes(nodes.top, nodes.right);
+          await overlayComp.selectNodes(nodes.top, nodes.right);
           await overlayComp.checkSelectedNodes([nodes.top, nodes.right]);
           await pathEditorPage.checkToolbarButtonVisible(
             PathToolbarAction.SeparateNodes,
@@ -285,7 +290,7 @@ pathTest.describe(() => {
       await pathTest.step(
         'Click on the bottom node, then Shift+click on the left node',
         async () => {
-          await pathEditorPage.overlayComp.selectNodes(nodes.bottom, nodes.left);
+          await overlayComp.selectNodes(nodes.bottom, nodes.left);
           await overlayComp.checkSelectedNodes([nodes.bottom, nodes.left]);
           await pathEditorPage.checkToolbarButtonVisible(
             PathToolbarAction.SeparateNodes,
@@ -314,7 +319,7 @@ pathTest.describe(() => {
       const { overlayComp } = pathEditorPage;
 
       await pathTest.step('Click on the top node', async () => {
-        await pathEditorPage.overlayComp.selectNodes(nodes.top);
+        await overlayComp.selectNodes(nodes.top);
         await overlayComp.checkSelectedNodes([nodes.top]);
         await pathEditorPage.checkToolbarButtonVisible(PathToolbarAction.ToCorner);
       });
@@ -329,7 +334,7 @@ pathTest.describe(() => {
       });
 
       await pathTest.step('Click on the right node', async () => {
-        await pathEditorPage.overlayComp.selectNodes(nodes.right);
+        await overlayComp.selectNodes(nodes.right);
         await overlayComp.checkSelectedNodes([nodes.right]);
         await pathEditorPage.checkToolbarButtonVisible(PathToolbarAction.ToCorner);
       });
@@ -351,7 +356,7 @@ pathTest.describe(() => {
       const { overlayComp } = pathEditorPage;
 
       await pathTest.step('Select 2 nodes (SHIFT + click)', async () => {
-        await pathEditorPage.overlayComp.selectNodes(nodes.top, nodes.right);
+        await overlayComp.selectNodes(nodes.top, nodes.right);
         await overlayComp.checkSelectedNodes([nodes.top, nodes.right]);
       });
 
@@ -368,7 +373,7 @@ pathTest.describe(() => {
       await pathTest.step(
         'Select 2 other (remaining) nodes (SHIFT + click)',
         async () => {
-          await pathEditorPage.overlayComp.selectNodes(nodes.bottom, nodes.left);
+          await overlayComp.selectNodes(nodes.bottom, nodes.left);
           await overlayComp.checkSelectedNodes([nodes.bottom, nodes.left]);
         },
       );
@@ -412,7 +417,7 @@ pathTest.describe(() => {
       await pathTest.step(
         'Select 2 neighboring (joined) nodes (SHIFT + click)',
         async () => {
-          await pathEditorPage.overlayComp.selectNodes(nodes.top, nodes.right);
+          await overlayComp.selectNodes(nodes.top, nodes.right);
           await overlayComp.checkSelectedNodes([nodes.top, nodes.right]);
           await pathEditorPage.checkToolbarButtonVisible(PathToolbarAction.ToCorner);
         },
@@ -443,8 +448,9 @@ pathTest.describe(() => {
 
 pathTest(
   qase([538], 'Edit Rectangle - move nodes'),
-  async ({ pathEditorPage, layers }) => {
+  async ({ workspacePage, pathEditorPage, layers }) => {
     const { overlayComp } = pathEditorPage;
+    const { contextMenu } = workspacePage;
     let topLeft: Point;
 
     await pathTest.step('Create a rectangle', async () => {
@@ -455,20 +461,18 @@ pathTest(
     });
 
     await pathTest.step('Right-click', async () => {
-      await pathEditorPage.createdLayer.click({ button: 'right', force: true });
-      await pathEditorPage.editPathMenuItem.waitFor({ state: 'visible' });
+      await layers.openLayerContextMenu('Rectangle');
+      await contextMenu.checkItemsAreVisible(['Edit']);
     });
 
     await pathTest.step('Select "Edit" option', async () => {
-      await pathEditorPage.editPathMenuItem.click();
+      await contextMenu.clickItem('Edit');
       await pathEditorPage.checkPathToolbarVisible();
       await pathEditorPage.isToolbarButtonToggled(
         pathEditorPage.nodePanelMoveNodesButton,
       );
       await overlayComp.checkNodeCount(4);
-      [topLeft] = [...(await overlayComp.getNodes())].sort(
-        (a, b) => a.x + a.y - (b.x + b.y),
-      );
+      topLeft = await overlayComp.getTopLeftNode();
     });
 
     await pathTest.step('Click and drag one of the nodes', async () => {
@@ -482,38 +486,42 @@ pathTest(
 
 pathTest(
   qase([543], 'Draw/Move nodes (via M and P shorcuts)'),
-  async ({ pathEditorPage, layers }) => {
+  async ({ workspacePage, pathEditorPage, layers }) => {
     const { overlayComp } = pathEditorPage;
+    const { contextMenu } = workspacePage;
     let nodes: NodesBySide;
     let newNodes: Point[];
     let expectedNodes: Point[];
 
-    await pathTest.step('Create an ellipse', () => pathEditorPage.createEllipse());
+    await pathTest.step('Create an ellipse', async () => {
+      await pathEditorPage.createEllipse();
+      await layers.checkLayerRowIsVisible('Ellipse');
+    });
 
     await pathTest.step('Right-click created ellipse', async () => {
-      await pathEditorPage.createdLayer.click({ button: 'right', force: true });
-      await pathEditorPage.transformToPathMenuItem.waitFor({ state: 'visible' });
+      await layers.openLayerContextMenu('Ellipse');
+      await contextMenu.checkItemsAreVisible(['Flatten']);
     });
 
     await pathTest.step('Select "Flatten"', async () => {
-      await pathEditorPage.transformToPathMenuItem.click();
+      await contextMenu.clickItem('Flatten');
       await pathEditorPage.waitForChangeIsSaved();
       await layers.checkLayerIconIsVisible('Ellipse', 'path');
     });
 
     await pathTest.step('Right-click', async () => {
-      await pathEditorPage.createdLayer.click({ button: 'right', force: true });
-      await pathEditorPage.editPathMenuItem.waitFor({ state: 'visible' });
+      await layers.openLayerContextMenu('Ellipse');
+      await contextMenu.checkItemsAreVisible(['Edit']);
     });
 
     await pathTest.step('Select "Edit" option', async () => {
-      await pathEditorPage.editPathMenuItem.click();
+      await contextMenu.clickItem('Edit');
       await pathEditorPage.checkPathToolbarVisible();
       await pathEditorPage.isToolbarButtonToggled(
         pathEditorPage.nodePanelMoveNodesButton,
       );
       await overlayComp.checkNodeCount(4);
-      nodes = await pathEditorPage.overlayComp.getNodesBySide();
+      nodes = await overlayComp.getNodesBySide();
       newNodes = [
         { x: nodes.right.x + 100, y: nodes.top.y },
         { x: nodes.right.x + 200, y: nodes.top.y },
@@ -558,7 +566,7 @@ pathTest(
       expectedNodes = await overlayComp.moveNode(nodes.top, { x: 0, y: -40 });
     });
 
-    await pathTest.step('click on an empty area of the canvas', async () => {
+    await pathTest.step('Click on an empty area of the canvas', async () => {
       await overlayComp.clickAt({
         x: nodes.left.x - 150,
         y: nodes.bottom.y + 150,
