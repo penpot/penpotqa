@@ -1,10 +1,11 @@
 const { BasePage } = require('../base-page');
 const { expect } = require('@playwright/test');
-const { TeamFormModalComponent } = require('./team-form-modal-component');
-const { TeamInvitationsComponent } = require('./team-invitations-component');
+const { ModalComponent } = require('../components/modal-component');
 const {
-  TeamOrganizationModalComponent,
-} = require('./team-organization-modal-component');
+  SelectOrganizationModalComponent,
+} = require('./modals/select-organization-modal-component');
+const { TeamFormModalComponent } = require('./modals/team-form-modal-component');
+const { TeamInvitationsComponent } = require('./team-invitations-component');
 
 exports.TeamPage = class TeamPage extends BasePage {
   /**
@@ -70,8 +71,12 @@ exports.TeamPage = class TeamPage extends BasePage {
       'This team is not part of any organization',
     );
     this.addTeamToOrgLink = page.getByText('Add to an organization');
-    this.teamOrgModal = new TeamOrganizationModalComponent(page);
-    this.teamFormModal = new TeamFormModalComponent(page);
+    this.modal = new ModalComponent(page);
+    this.selectOrgModal = new SelectOrganizationModalComponent(
+      page,
+      this.modal.root,
+    );
+    this.teamFormModal = new TeamFormModalComponent(page, this.modal.root);
     this.invitations = new TeamInvitationsComponent(page);
     this.addTeamToOrgSubmitButton = page.getByRole('button', {
       name: 'Add to organization',
@@ -303,7 +308,7 @@ exports.TeamPage = class TeamPage extends BasePage {
    */
   async addTeamToOrganization(orgName) {
     await this.openAddTeamToOrgModal();
-    await this.teamOrgModal.openOrgPicker();
+    await this.selectOrgModal.openOrgPicker();
     await this.selectOrgInPicker(orgName);
     await this.submitAddToOrg();
   }
@@ -324,7 +329,7 @@ exports.TeamPage = class TeamPage extends BasePage {
    * Assumes Team Settings is open; reuses addedToOrgMessage's toast text. */
   async changeTeamOrganization(orgName) {
     await this.openChangeTeamOrgModal();
-    await this.teamOrgModal.openOrgPicker();
+    await this.selectOrgModal.openOrgPicker();
     await this.selectOrgInPicker(orgName);
     await this.moveTeamSubmitButton.click();
     await expect(
