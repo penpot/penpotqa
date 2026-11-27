@@ -1,0 +1,204 @@
+---
+name: js-to-ts-spec-migration
+description: Step-by-step migration of a penpotqa spec file from .spec.js to .spec.ts — converting imports, declaring page objects at file scope, migrating local fixture files, handling nullable return values, migrating test steps, renaming and cleaning up the snapshot folder, and verifying with Playwright. Use this skill whenever you migrate, convert or port a .spec.js test (or its fixtures and snapshots) to TypeScript, even if the user only says "pasa este spec a TS" or "migrate this test".
+---
+
+# JS to TS Migration Guide
+
+Steps to migrate a `.spec.js` test file to `.spec.ts`.
+
+## 1. Convert imports
+
+Replace `require` with `import`. Always use path aliases instead of relative paths for project modules:
+
+```js
+// Before
+const { mainTest } = require('../../fixtures');
+const { qase } = require('playwright-qase-reporter/playwright');
+const { ProfilePage } = require('../../pages/profile-page');
+
+// After
+import { ProfilePage } from '@pages/profile-page';
+import { mainTest } from 'fixtures';
+import { qase } from 'playwright-qase-reporter/playwright';
+```
+
+Apply this rule to all imports from project modules: `fixtures`, page objects, helpers, etc. Only third-party packages keep their original import paths.
+
+Sort all import statements alphabetically by module path:
+
+```typescript
+// Correct — sorted alphabetically
+import { DashboardPage } from '@pages/dashboard/dashboard-page';
+import { TeamPage } from '@pages/dashboard/team-page';
+import { MainPage } from '@pages/workspace/main-page';
+import { expect } from '@playwright/test';
+import { mainTest } from 'fixtures';
+import { createTeamName } from 'helpers/teams/create-team-name';
+import { qase } from 'playwright-qase-reporter/playwright';
+```
+
+Before finishing a migration, remove any import or variable that is not referenced in the file. Common leftovers are page objects imported and instantiated in `beforeEach` but never used in any test:
+
+```typescript
+// Incorrect — imported and instantiated but never used in tests
+import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
+
+let assetsPanelPage: AssetsPanelPage;
+
+mainTest.beforeEach(async ({ page }) => {
+  assetsPanelPage = new AssetsPanelPage(page); // remove this too
+});
+```
+
+## 2. Declare page objects and variables at file scope
+
+Declare page object instances as `let` variables **outside** of `beforeEach`, and assign them inside `beforeEach`. This applies at every scope level: outer `describe`, inner `describe`, etc.
+
+```typescript
+// Correct
+let profilePage: ProfilePage;
+
+mainTest.beforeEach(async ({ page }) => {
+  profilePage = new ProfilePage(page);
+});
+
+// Incorrect — declaring inside beforeEach makes them unavailable to tests
+mainTest.beforeEach(async ({ page }) => {
+  const profilePage: ProfilePage = new ProfilePage(page);
+});
+```
+
+Always generate the team name using `createTeamName()` — never `random().concat('autotest')`:
+
+```typescript
+// Correct
+import { createTeamName } from 'helpers/teams/create-team-name';
+
+const teamName = createTeamName();
+
+// Incorrect
+import { random } from 'helpers/string-generator';
+
+const teamName = random().concat('autotest');
+```
+
+## 3. Migrate local fixture files
+
+If the spec imports from a local fixture file (e.g. `your-account-fixture.js`), migrate that fixture to `.ts` too. Add a type for the **new** fixtures only and pass it as a generic to `.extend<T>()`:
+
+```ts
+import { ProfilePage } from '@pages/profile-page';
+import { mainTest } from 'fixtures';
+
+type YourAccountFixtures = {
+  profilePage: ProfilePage;
+};
+
+export const profileTest = mainTest.extend<YourAccountFixtures>({
+  profilePage: async ({ page }, use) => {
+    const profilePage = new ProfilePage(page);
+    // setup...
+    await use(profilePage);
+  },
+});
+```
+
+Because `profileTest` extends `mainTest`, it automatically inherits all of `mainTest`'s fixtures (e.g. `page`). You only need to declare the **new** fixtures in the generic type. Both base and custom fixtures are available in every test:
+
+```ts
+profileTest(qase([205], 'Logout from Account'), async ({ page, profilePage }) => {
+  // page comes from mainTest, profilePage comes from YourAccountFixtures
+});
+```
+
+Replace `module.exports = { ... }` with named `export` on each const.
+
+## 4. Handle nullable return values explicitly
+
+When an async helper returns `T | null | undefined` (e.g. `getRegisterMessage`, `waitMessage`, Stripe helpers), add an explicit null guard instead of using the non-null assertion operator (`!`). A null guard narrows the type for TypeScript and produces a clear failure message if the value is missing:
+
+```ts
+// Avoid — suppresses the error but crashes at runtime with no useful message
+await checkNewEmailText(changeEmail!.inviteText, name, newEmail);
+await page.goto(changeEmail!.inviteUrl);
+
+// Prefer — fails fast with an explicit message and narrows the type
+const changeEmail = await getRegisterMessage(email);
+if (!changeEmail) throw new Error('Email confirmation not received');
+await checkNewEmailText(changeEmail.inviteText, name, newEmail);
+await page.goto(changeEmail.inviteUrl);
+```
+
+## 5. Migrate test steps
+
+When migrating a test to TypeScript, **always wrap the test body in `mainTest.step()` calls** grouping actions by logical phase. The step syntax is identical in JS and TS.
+
+If the original JS test already has steps, keep them as-is. If it has no steps, add them during migration using descriptive names that reflect what each group of actions does:
+
+```typescript
+// JS (before) — no steps
+mainTest(qase([607], 'Add flex layout to board from right click'), async () => {
+  await mainPage.addFlexLayoutViaRightClick();
+  await mainPage.waitForChangeIsSaved();
+  await expect(mainPage.flexLayoutSection).toBeVisible();
+});
+
+// TS (after) — steps added
+mainTest(qase([607], 'Add flex layout to board from right click'), async () => {
+  await mainTest.step('Add flex layout via right click', async () => {
+    await mainPage.addFlexLayoutViaRightClick();
+    await mainPage.waitForChangeIsSaved();
+  });
+
+  await mainTest.step('Verify flex layout is applied', async () => {
+    await expect(mainPage.flexLayoutSection).toBeVisible();
+  });
+});
+```
+
+**Step naming rules:**
+
+- Use action-oriented names: `'Add flex layout via right click'`, `'Verify flex layout is applied'`
+- Group setup actions together, assertions together
+- Keep step names short and descriptive — no Qase IDs in the step name unless the original JS had them
+
+**Qase IDs:** always wrap the Qase ID(s) in an array, even for a single ID — never pass a bare number:
+
+```typescript
+// Correct
+qase([607], 'Add flex layout to board from right click');
+qase(
+  [2905, 2873],
+  'Selecting via the Token Icon and detaching via the detach button',
+);
+
+// Incorrect — bare number, not wrapped in an array
+qase(607, 'Add flex layout to board from right click');
+```
+
+## 6. Rename snapshot folder and clean up
+
+If a `<spec-name>.spec.js-snapshots` directory exists next to the spec file, rename it to `<spec-name>.spec.ts-snapshots`. Snapshots live directly at the root of that directory (no OS/browser subfolders) — flatten any `linux/chrome` (or other OS/browser) snapshots into the root and delete the rest:
+
+```bash
+# 1. Rename the folder
+mv tests/path/to/foo.spec.js-snapshots tests/path/to/foo.spec.ts-snapshots
+
+# 2. Flatten linux/chrome snapshots to the root and delete all other OS/browser directories
+SNAPSHOTS="tests/path/to/foo.spec.ts-snapshots"
+if [ -d "$SNAPSHOTS/linux/chrome" ]; then
+  mv "$SNAPSHOTS/linux/chrome"/* "$SNAPSHOTS/"
+fi
+find "$SNAPSHOTS" -mindepth 1 -maxdepth 1 -type d -exec rm -rf {} +
+```
+
+Do this as part of the migration, before confirming it is complete.
+
+## 7. Keep `.js` originals during migration
+
+Do not delete the original `.js` files until the user confirms the migration is complete.
+
+## 8. Verify
+
+Run `npx playwright test <path-to-new-ts-file> --list` to confirm Playwright resolves all tests correctly.
