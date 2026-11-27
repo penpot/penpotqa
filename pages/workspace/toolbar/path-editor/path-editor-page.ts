@@ -1,4 +1,5 @@
 import { LayersPanelPage } from '@pages/workspace/layers-panel-page';
+import type { Point } from '@pages/workspace/toolbar/path-editor/path-geometry';
 import { PathOverlayComponent } from '@pages/workspace/toolbar/path-editor/path-overlay-component';
 import { ToolbarPage } from '@pages/workspace/toolbar/toolbar-page';
 import { expect, type Locator, type Page } from '@playwright/test';
@@ -90,6 +91,40 @@ export class PathEditorPage extends ToolbarPage {
   async exitPathEditing() {
     await this.clickOnESC();
     await this.overlayComp.isHidden();
+  }
+
+  /** Clicks the Ellipse tool and the viewport, and waits for the change to be saved. */
+  async createEllipse() {
+    await this.clickCreateEllipseButton();
+    await this.clickViewportTwice();
+    await this.waitForChangeIsSaved();
+  }
+
+  /**
+   * Places a node with the Path tool (or Draw nodes mode) by clicking the viewport,
+   * and waits for it to show in the path editor overlay.
+   * @param point Viewport position to click, relative to the viewport.
+   * @returns The new node, in design coordinates.
+   */
+  async placeNode(point: Point): Promise<Point> {
+    const known = await this.overlayComp.getNodes();
+    await this.clickViewportByCoordinates(point.x, point.y);
+    await this.overlayComp.checkNodeCount(known.length + 1);
+    return this.overlayComp.getAddedNode(known);
+  }
+
+  /**
+   * Places a curved node with the Path tool: presses at `from` and drags by
+   * `delta`, which sets the node's handler so the segment to it curves.
+   * @param from Where to place the node, in design coordinates.
+   * @param delta How far to drag its handler, in design units (e.g. { x: 0, y: 150 }).
+   * @returns The new node, in design coordinates.
+   */
+  async placeCurvedNode(from: Point, delta: Point): Promise<Point> {
+    const known = await this.overlayComp.getNodes();
+    await this.overlayComp.dragBy(from, delta);
+    await this.overlayComp.checkNodeCount(known.length + 1);
+    return this.overlayComp.getAddedNode(known);
   }
 
   async clickDrawNodesButtonOnNodePanel() {

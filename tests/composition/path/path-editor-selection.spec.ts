@@ -1,8 +1,8 @@
-import { pathEditorTest } from '@tests/composition/path-editor/path-editor-fixture';
+import { pathEditorTest } from '@tests/composition/path/path-fixture';
 import {
   PATH_NODES,
   PATH_SEGMENTS,
-} from '@tests/composition/path-editor/straight-curved-path';
+} from '@tests/composition/path/straight-curved-path';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 pathEditorTest(

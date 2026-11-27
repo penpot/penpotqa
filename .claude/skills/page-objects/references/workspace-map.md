@@ -63,7 +63,9 @@ pages/
         design-tab-component.ts
         measures-section-component.ts
         fill-section-component.ts
-        stroke-section-component.ts
+        stroke/                    # section with child components gets a folder
+          stroke-section-component.ts
+          stroke-row-options-component.ts # one stroke: color, opacity, width, position, style
         blur-section-component.ts
         layout-container-section-component.ts # Layout section (flex/grid board)
         layout-item-section-component.ts      # Flex/Grid element section of a child
