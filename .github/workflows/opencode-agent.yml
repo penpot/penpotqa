@@ -99,18 +99,23 @@ jobs:
         env:
           OPENCODE_GO_API_KEY: ${{ secrets.OPENCODE_GO_API_KEY }}
         run: |
-          opencode run --pure --model "$MODEL" --variant "$EFFORT" --format json < "$REVIEW_DIR/prompt" |
-            jq -ers '[.[] | select(.type == "text") | .part.text] | last // error("OpenCode returned no text")' \
-            > "$REVIEW_DIR/answer"
+          opencode run --pure --model "$MODEL" --variant "$EFFORT" --format json < "$REVIEW_DIR/prompt" \
+            > "$REVIEW_DIR/events"
+          jq -ers '[.[] | select(.type == "text") | .part.text] | last // error("OpenCode returned no text")' \
+            "$REVIEW_DIR/events" > "$REVIEW_DIR/answer"
 
       # Same as penpot/penpot: the answer is the review, the workflow only adds
       # the header and publishes it.
       - name: Post the review
         run: |
           head=$(cat "$REVIEW_DIR/head")
+          # Tokens of every model step (input, output, reasoning and cache).
+          tokens=$(jq -rs '[.[] | select(.type == "step_finish") | .part.tokens
+            | (.input // 0) + (.output // 0) + (.reasoning // 0) + (.cache.read // 0) + (.cache.write // 0)]
+            | add // 0 | "\(. / 1000 | round)k tokens"' "$REVIEW_DIR/events")
           # Some models wrap the JSON answer in a Markdown code fence.
           sed '/^\s*```\(json\)\?\s*$/d' "$REVIEW_DIR/answer" |
-            jq -e --arg header "**OpenCode review against the team skills** · \`$MODEL\` ($EFFORT) · \`${head:0:7}\`" --arg sha "$head" '
+            jq -e --arg header "**OpenCode review against the team skills** · \`$MODEL\` ($EFFORT) · \`${head:0:7}\` · $tokens" --arg sha "$head" '
               {commit_id: $sha, event: "COMMENT", body: ($header + "\n\n" + .summary),
                 comments: [.comments[] | {path, line, side, body}]}' |
             gh api "repos/$GITHUB_REPOSITORY/pulls/$PR/reviews" --input - --jq .html_url

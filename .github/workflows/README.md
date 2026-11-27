@@ -130,7 +130,7 @@ Only `estefafdez`, `lugarbos`, `tdelatorre` and `daniel-herrero` can trigger it 
 1. Reacts with 👀 to the comment.
 2. Builds the prompt from [`.github/opencode/review-prompt.md`](../opencode/review-prompt.md), the name and description of every skill in `.claude/skills/`, and the PR diff. The PR code is never checked out.
 3. Runs OpenCode (pinned V1 CLI, same as penpot/penpot) with the `OPENCODE_GO_API_KEY` repository secret. The model opens only the skills the diff touches and can't edit files, run commands or fetch URLs ([`.github/opencode/review.json`](../opencode/review.json)).
-4. Posts a review with one inline comment per finding: the skill, the rule it breaks and why, plus a one-click `suggestion` when the fix fits in the commented line. The model writes the review and the workflow publishes it as is, like penpot/penpot: if a comment points to a line outside the diff, GitHub rejects the whole review and the run fails. If the run fails, it leaves a short comment with a link to it.
+4. Posts a review, headed with the model, reasoning level, commit and tokens used, with one inline comment per finding: the skill, the rule it breaks and why, plus a one-click `suggestion` when the fix fits in the commented line. The model writes the review and the workflow publishes it as is, like penpot/penpot: if a comment points to a line outside the diff, GitHub rejects the whole review and the run fails. If the run fails, it leaves a short comment with a link to it.
 
 ### Things to know
 
