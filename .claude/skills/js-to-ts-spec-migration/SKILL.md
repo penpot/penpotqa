@@ -140,7 +140,6 @@ If the original JS test already has steps, keep them as-is. If it has no steps, 
 // JS (before) — no steps
 mainTest(qase([607], 'Add flex layout to board from right click'), async () => {
   await mainPage.addFlexLayoutViaRightClick();
-  await mainPage.waitForChangeIsSaved();
   await expect(mainPage.flexLayoutSection).toBeVisible();
 });
 
@@ -148,7 +147,6 @@ mainTest(qase([607], 'Add flex layout to board from right click'), async () => {
 mainTest(qase([607], 'Add flex layout to board from right click'), async () => {
   await mainTest.step('Add flex layout via right click', async () => {
     await mainPage.addFlexLayoutViaRightClick();
-    await mainPage.waitForChangeIsSaved();
   });
 
   await mainTest.step('Verify flex layout is applied', async () => {
@@ -161,7 +159,7 @@ mainTest(qase([607], 'Add flex layout to board from right click'), async () => {
 
 - Use action-oriented names: `'Add flex layout via right click'`, `'Verify flex layout is applied'`
 - Group setup actions together, assertions together
-- Keep step names short and descriptive — no Qase IDs in the step name unless the original JS had them
+- Keep step names short and descriptive — no Qase IDs in the step name, except when the test covers more than one Qase case: then group each case's steps in a parent step titled `(ID) <Qase case title>` (see section 8 of the `test-suite-patterns` skill)
 
 **Qase IDs:** always wrap the Qase ID(s) in an array, even for a single ID — never pass a bare number:
 
@@ -175,6 +173,30 @@ qase(
 
 // Incorrect — bare number, not wrapped in an array
 qase(607, 'Add flex layout to board from right click');
+```
+
+When the test covers more than one case, the array lists every covered ID, and
+the step that covers each case carries its ID as a `(ID)` prefix:
+
+```typescript
+mainTest(
+  qase(
+    [2905, 2873],
+    'Selecting via the Token Icon and detaching via the detach button',
+  ),
+  async () => {
+    await mainTest.step('(2905) Select the token via the token icon', async () => {
+      /* ... */
+    });
+
+    await mainTest.step(
+      '(2873) Detach the token via the detach button',
+      async () => {
+        /* ... */
+      },
+    );
+  },
+);
 ```
 
 ## 6. Rename snapshot folder and clean up
