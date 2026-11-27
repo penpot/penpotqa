@@ -45,7 +45,7 @@ jobs:
       OPENCODE_DISABLE_AUTOUPDATE: 'true'
       OPENCODE_DISABLE_PROJECT_CONFIG: 'true'
     steps:
-      # Skills, prompt and scripts come from the branch the workflow runs on
+      # Skills and prompt come from the branch the workflow runs on
       # (the default branch for comments). The PR code is never checked out:
       # the review reads its diff only.
       - name: Check out the workflow branch
@@ -75,15 +75,11 @@ jobs:
           echo "$REVIEW_DIR/bin" >> "$GITHUB_PATH"
 
       # The prompt lists each skill's name and description, so the model opens
-      # only the skills the diff touches, and carries the diff inline with the
-      # line numbers it can comment on.
+      # only the skills the diff touches, and carries the diff inline.
       - name: Build the review prompt
         run: |
           gh pr view "$PR" --repo "$GITHUB_REPOSITORY" --json headRefOid --jq .headRefOid \
             > "$REVIEW_DIR/head"
-          gh pr diff "$PR" --repo "$GITHUB_REPOSITORY" > "$REVIEW_DIR/change.diff"
-          python3 -I .github/opencode/review.py prompt \
-            "$REVIEW_DIR/change.diff" "$REVIEW_DIR/annotated.diff" "$REVIEW_DIR/lines.json"
           {
             cat .github/opencode/review-prompt.md
             echo
@@ -96,7 +92,7 @@ jobs:
             echo
             echo '## Diff'
             echo
-            head -c 150000 "$REVIEW_DIR/annotated.diff"
+            gh pr diff "$PR" --repo "$GITHUB_REPOSITORY" | head -c 150000
           } > "$REVIEW_DIR/prompt"
 
       - name: Review with OpenCode
@@ -107,13 +103,17 @@ jobs:
             jq -ers '[.[] | select(.type == "text") | .part.text] | last // error("OpenCode returned no text")' \
             > "$REVIEW_DIR/answer"
 
+      # Same as penpot/penpot: the answer is the review, the workflow only adds
+      # the header and publishes it.
       - name: Post the review
         run: |
-          header="**OpenCode review against the team skills** · \`$MODEL\` ($EFFORT) · \`$(cut -c1-7 "$REVIEW_DIR/head")\`"
-          python3 -I .github/opencode/review.py payload "$REVIEW_DIR/answer" \
-            "$REVIEW_DIR/lines.json" "$(cat "$REVIEW_DIR/head")" "$header" "$REVIEW_DIR/review.json"
-          gh api "repos/$GITHUB_REPOSITORY/pulls/$PR/reviews" --input "$REVIEW_DIR/review.json" \
-            --jq .html_url
+          head=$(cat "$REVIEW_DIR/head")
+          # Some models wrap the JSON answer in a Markdown code fence.
+          sed '/^\s*```\(json\)\?\s*$/d' "$REVIEW_DIR/answer" |
+            jq -e --arg header "**OpenCode review against the team skills** · \`$MODEL\` ($EFFORT) · \`${head:0:7}\`" --arg sha "$head" '
+              {commit_id: $sha, event: "COMMENT", body: ($header + "\n\n" + .summary),
+                comments: [.comments[] | {path, line, side, body}]}' |
+            gh api "repos/$GITHUB_REPOSITORY/pulls/$PR/reviews" --input - --jq .html_url
 
       - name: Report a failed review
         if: failure()
