@@ -40,6 +40,7 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       PR: ${{ github.event.issue.number || inputs.pr }}
       MODEL: opencode-go/${{ vars.OPENCODE_MODEL || 'deepseek-v4.1-flash' }}
+      EFFORT: ${{ vars.OPENCODE_EFFORT || 'high' }}
       OPENCODE_CONFIG: .github/opencode/review.json
       OPENCODE_DISABLE_AUTOUPDATE: 'true'
       OPENCODE_DISABLE_PROJECT_CONFIG: 'true'
@@ -60,7 +61,7 @@ jobs:
           -f content=eyes --silent
 
       # Same pinned V1 CLI as penpot/penpot: the opencode-go provider and
-      # `opencode run --pure` are known to work there with the shared key.
+      # `opencode run --pure` are known to work there.
       - name: Install OpenCode
         run: |
           REVIEW_DIR="$RUNNER_TEMP/review"
@@ -102,13 +103,13 @@ jobs:
         env:
           OPENCODE_GO_API_KEY: ${{ secrets.OPENCODE_GO_API_KEY }}
         run: |
-          opencode run --pure --model "$MODEL" --format json < "$REVIEW_DIR/prompt" |
+          opencode run --pure --model "$MODEL" --variant "$EFFORT" --format json < "$REVIEW_DIR/prompt" |
             jq -ers '[.[] | select(.type == "text") | .part.text] | last // error("OpenCode returned no text")' \
             > "$REVIEW_DIR/answer"
 
       - name: Post the review
         run: |
-          header="**OpenCode review against the team skills** · \`$MODEL\` · \`$(cut -c1-7 "$REVIEW_DIR/head")\`"
+          header="**OpenCode review against the team skills** · \`$MODEL\` ($EFFORT) · \`$(cut -c1-7 "$REVIEW_DIR/head")\`"
           python3 -I .github/opencode/review.py payload "$REVIEW_DIR/answer" \
             "$REVIEW_DIR/lines.json" "$(cat "$REVIEW_DIR/head")" "$header" "$REVIEW_DIR/review.json"
           gh api "repos/$GITHUB_REPOSITORY/pulls/$PR/reviews" --input "$REVIEW_DIR/review.json" \

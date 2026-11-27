@@ -129,11 +129,11 @@ Only `estefafdez`, `lugarbos`, `tdelatorre` and `daniel-herrero` can trigger it 
 
 1. Reacts with 👀 to the comment.
 2. Builds the prompt from [`.github/opencode/review-prompt.md`](../opencode/review-prompt.md), the name and description of every skill in `.claude/skills/`, and the PR diff with the line numbers of the new file. The PR code is never checked out.
-3. Runs OpenCode (pinned V1 CLI, same as penpot/penpot) with the `OPENCODE_GO_API_KEY` organization secret. The model opens only the skills the diff touches and can't edit files, run commands or fetch URLs ([`.github/opencode/review.json`](../opencode/review.json)).
+3. Runs OpenCode (pinned V1 CLI, same as penpot/penpot) with the `OPENCODE_GO_API_KEY` repository secret. The model opens only the skills the diff touches and can't edit files, run commands or fetch URLs ([`.github/opencode/review.json`](../opencode/review.json)).
 4. Posts a review with one inline comment per finding: the skill, the rule it breaks and why, plus a one-click `suggestion` when the fix fits in the commented lines. Findings on lines outside the diff go to the review body. If the run fails, it leaves a short comment with a link to it.
 
 ### Things to know
 
 - **Skills, prompt and scripts come from the branch the workflow runs on**: `main` for comments, the chosen branch for manual runs. A new skill in `.claude/skills/` is picked up with no workflow change.
-- **Model:** `deepseek-v4.1-flash` by default. Set the `OPENCODE_MODEL` Actions variable to change it (OpenCode Go model ID without the `opencode-go/` prefix).
+- **Model:** `deepseek-v4.1-flash` with `high` reasoning by default. Set the `OPENCODE_MODEL` Actions variable to change the model (OpenCode Go model ID without the `opencode-go/` prefix, e.g. `hy4-flash-free` or `minimax-m3.1-flash`) and `OPENCODE_EFFORT` to change the reasoning level.
 - **Diff size:** the diff is cut at 150 KB, so very large PRs are reviewed partially.
