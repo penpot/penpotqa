@@ -28,7 +28,7 @@ jobs:
          github.event.comment.user.login) &&
        startsWith(github.event.comment.body, '/oc review-qa-pr'))
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     concurrency:
       group: opencode-review-${{ github.event.issue.number || inputs.pr }}
       cancel-in-progress: true
@@ -75,11 +75,21 @@ jobs:
           echo "$REVIEW_DIR/bin" >> "$GITHUB_PATH"
 
       # The prompt lists each skill's name and description, so the model opens
-      # only the skills the diff touches, and carries the diff inline.
+      # only the skills the diff touches, and carries the diff inline without
+      # the removed lines (only added lines are reviewed). Over 150 KB, the PR
+      # is not reviewed: the model takes too long and may not answer.
       - name: Build the review prompt
         run: |
           gh pr view "$PR" --repo "$GITHUB_REPOSITORY" --json headRefOid --jq .headRefOid \
             > "$REVIEW_DIR/head"
+          gh pr diff "$PR" --repo "$GITHUB_REPOSITORY" | grep -v '^-[^-]' > "$REVIEW_DIR/change.diff"
+          size=$(( $(wc -c < "$REVIEW_DIR/change.diff") / 1000 ))
+          if (( size > 150 )); then
+            gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body \
+              "OpenCode review skipped: the diff is too large (${size} KB without removed lines, limit 150 KB)."
+            echo "SKIP=true" >> "$GITHUB_ENV"
+            exit 0
+          fi
           {
             cat .github/opencode/review-prompt.md
             echo
@@ -92,21 +102,26 @@ jobs:
             echo
             echo '## Diff'
             echo
-            gh pr diff "$PR" --repo "$GITHUB_REPOSITORY" | head -c 150000
+            cat "$REVIEW_DIR/change.diff"
           } > "$REVIEW_DIR/prompt"
 
       - name: Review with OpenCode
+        if: env.SKIP != 'true'
+        timeout-minutes: 15
         env:
           OPENCODE_GO_API_KEY: ${{ secrets.OPENCODE_GO_API_KEY }}
         run: |
           opencode run --pure --model "$MODEL" --variant "$EFFORT" --format json < "$REVIEW_DIR/prompt" \
             > "$REVIEW_DIR/events"
+          # With no answer, print the start of each event to see why (tools, errors).
           jq -ers '[.[] | select(.type == "text") | .part.text] | last // error("OpenCode returned no text")' \
-            "$REVIEW_DIR/events" > "$REVIEW_DIR/answer"
+            "$REVIEW_DIR/events" > "$REVIEW_DIR/answer" ||
+            { echo "OpenCode events:"; cut -c1-400 "$REVIEW_DIR/events"; exit 1; }
 
       # Same as penpot/penpot: the answer is the review, the workflow only adds
       # the header and publishes it.
       - name: Post the review
+        if: env.SKIP != 'true'
         run: |
           head=$(cat "$REVIEW_DIR/head")
           # Tokens of every model step (input, output, reasoning and cache).

@@ -136,4 +136,4 @@ Only `estefafdez`, `lugarbos`, `tdelatorre` and `daniel-herrero` can trigger it 
 
 - **Skills and prompt come from the branch the workflow runs on**: `main` for comments, the chosen branch for manual runs. A new skill in `.claude/skills/` is picked up with no workflow change.
 - **Model:** `deepseek-v4.1-flash` with `high` reasoning by default. Set the `OPENCODE_MODEL` Actions variable to change the model (OpenCode Go model ID without the `opencode-go/` prefix, e.g. `hy4-flash-free` or `minimax-m3.1-flash`) and `OPENCODE_EFFORT` to change the reasoning level.
-- **Diff size:** the diff is cut at 150 KB, so very large PRs are reviewed partially.
+- **Diff size:** the model gets the diff without removed lines. Over 150 KB, the PR is not reviewed and the workflow leaves a comment saying so. The review step stops after 15 minutes.
