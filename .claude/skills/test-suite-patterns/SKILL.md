@@ -195,6 +195,43 @@ async () => {...})` blocks, grouping setup / action / verification
 separately. Step names are action-oriented and describe what happens, not
 raw ticket IDs or generic labels.
 
+**Exception: tests that cover more than one Qase case.** When one test covers
+several cases, the test title lists every covered ID in one array
+(`qase([a, b], ...)`), and each case's steps go inside a parent
+step titled `(ID) <Qase case title>`, so the report shows which steps cover
+which case. The ID goes only on the parent step, never on the child steps.
+Steps shared by several cases go inside the parent step of the case they
+belong to first, and carry that one ID only, never `(a, b)`. `Setup:` steps
+that belong to no case stay outside, without an ID.
+
+```ts
+demoAccountApiFixture(
+  qase([3336, 3413], 'Subscribe to a plan and start a trial'),
+  async () => {
+    await demoAccountApiFixture.step('Setup: create a team', async () => {
+      /* ... */
+    });
+
+    await demoAccountApiFixture.step('(3336) Subscribe to a plan', async () => {
+      await demoAccountApiFixture.step('Open the subscription page', async () => {
+        /* ... */
+      });
+      await demoAccountApiFixture.step('Subscribe to the plan', async () => {
+        /* ... */
+      });
+    });
+
+    await demoAccountApiFixture.step('(3413) Start a trial', async () => {
+      await demoAccountApiFixture.step('Start the trial', async () => {
+        /* ... */
+      });
+    });
+  },
+);
+```
+
+A test that covers a single case has no IDs in its step titles.
+
 ## 9. Write each fact once, where it's authoritative
 
 If a page object method or fixture already documents a behavior in its own
@@ -273,15 +310,33 @@ Rename a helper file to match its exported function/class name exactly
 `registerNewAccount()`). A directory listing becomes self-documenting — the
 right helper is findable without opening files.
 
-## 14. Wait for the save after every change in a file
+## 14. Wait for the save only when the next step depends on it
 
-Penpot saves file changes in the background. After an action that changes the
-file, wait for the saved state before the next step or assertion:
+Penpot saves file changes in the background. Do **not** call
+`waitForChangeIsSaved()` after every action by default: a blanket wait slows
+the suite and hides real issues (a UI that doesn't update until the save
+round-trip, a missing re-render, a race the user would hit). Assert on the
+visible result of the action instead, and let the locator's auto-wait handle
+timing.
+
+Wait for the save only when the next step needs the change persisted on the
+server, for example:
+
+- Navigating away from the file (dashboard, another
+  file, view mode, inspect in a new tab) and expecting the change to be there.
+- Another session or account reading the file (shared team, comments,
+  multiplayer).
+- Reading the file through the API, exporting or downloading it.
+- Checking the save indicator itself.
 
 ```javascript
 await mainPage.createDefaultRectangleByCoordinates(200, 300);
-await mainPage.waitForChangeIsSaved();
+await mainPage.waitForChangeIsSaved(); // needed: the next step leaves the file
+await mainPage.backToDashboardFromFileEditor();
 ```
+
+If a test only passes with an extra save wait and none of the reasons above
+applies, treat it as a possible product bug and investigate before adding it.
 
 `waitForChangeIsSaved()` / `waitForChangeIsUnsaved()` live in
 `pages/base-page.js` and wait for the save status icon.
