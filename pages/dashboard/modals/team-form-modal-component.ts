@@ -2,12 +2,12 @@ import { BaseComponent } from '@pages/base-component';
 import { type Locator, type Page, expect } from '@playwright/test';
 
 /**
- * Titles of the team form modal, for `checkTitle()`. A title that names
- * something (e.g. the organization) is a function returning it.
+ * Titles of the team form modal, for `ModalComponent.checkTitle()`. A title
+ * that names something (e.g. the organization) is a function returning it.
  */
 export const TeamFormTitle = {
   addTeamToOrg: 'Add team to an organization',
-  /** Also the title of TeamOrganizationModalComponent when moving a team. */
+  /** Also the title of SelectOrganizationModalComponent when moving a team. */
   changeTeamOrg: "Change team's organization",
   createTeam: 'Create new team',
   createTeamInOrg: (orgName: string) => `Create new team in ${orgName}`,
@@ -32,8 +32,8 @@ export const TeamFormMessage = {
 
 /**
  * The team form modal: the modal Penpot uses for the create team form and for
- * the messages that block an action on a team. It has a title and a "Close"
- * button over one of two contents:
+ * the messages that block an action on a team. Under its title and "Close"
+ * button (checked by ModalComponent) it shows one of two contents:
  * - The create team form ("Enter new team name"), opened from the teams
  *   dropdown: titled "Create new team in <org>", or just "Create new team"
  *   (seen too with an organization selected in the sidebar).
@@ -47,43 +47,20 @@ export const TeamFormMessage = {
  *     teams permission).
  *
  * The title alone doesn't tell the form from a message: check the content.
- * This modal's titles and messages are the entries of `TeamFormTitle` and
+ * Its titles are the entries of `TeamFormTitle` and its messages those of
  * `TeamFormMessage`. The organization picker for adding or moving a team is a
- * different modal, TeamOrganizationModalComponent.
+ * different modal, SelectOrganizationModalComponent.
  */
 export class TeamFormModalComponent extends BaseComponent {
-  readonly closeButton: Locator;
-  readonly heading: Locator;
   readonly teamNameInput: Locator;
 
-  /** @param page - A page on the dashboard. */
-  constructor(page: Page) {
-    // The modal has no role, accessible name or test id, and the dashboard
-    // behind it has its own "Close" button, so it is found by class
-    super(page, page.locator('[class*="team_form__modal-container"]'));
-    this.closeButton = this.root.getByRole('button', { name: 'Close' });
-    this.heading = this.root.getByRole('heading');
-    this.teamNameInput = this.root.getByRole('textbox', {
-      name: 'Enter new team name',
-    });
-  }
-
-  /** Closes the modal with its "Close" button, without creating or adding a team. */
-  async close() {
-    await this.closeButton.click();
-    await expect(this.root, 'Team form modal is closed').toBeHidden();
-  }
-
   /**
-   * Checks the modal's title.
-   *
-   * @param title - The title, an entry of `TeamFormTitle`, e.g.
-   * `TeamFormTitle.createTeamInOrg(orgName)`.
+   * @param page - A page on the dashboard.
+   * @param root - The modal portal, ModalComponent's `root`.
    */
-  async checkTitle(title: string) {
-    await expect(this.heading, `Team form modal is titled "${title}"`).toHaveText(
-      title,
-    );
+  constructor(page: Page, root: Locator) {
+    super(page, root);
+    this.teamNameInput = root.getByRole('textbox', { name: 'Enter new team name' });
   }
 
   /**
@@ -95,10 +72,10 @@ export class TeamFormModalComponent extends BaseComponent {
   async checkMessageIsVisible(message: string, visible = true) {
     const messageText = this.root.getByText(message, { exact: true });
     visible
-      ? await expect(messageText, `Team form modal shows "${message}"`).toBeVisible()
+      ? await expect(messageText, `The modal shows "${message}"`).toBeVisible()
       : await expect(
           messageText,
-          `Team form modal doesn't show "${message}"`,
+          `The modal doesn't show "${message}"`,
         ).toBeHidden();
   }
 
