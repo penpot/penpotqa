@@ -74,6 +74,7 @@ export class AdvancedPermissionsPage extends BasePage {
   readonly cancelRevokeInvitationsButton: Locator;
   readonly applyAndRevokeInvitationsButton: Locator;
 
+  readonly createTeams: PermissionControlComponent;
   readonly moveTeams: MoveTeamsPermissionComponent;
   readonly sendInvitations: PermissionControlComponent;
 
@@ -100,6 +101,26 @@ export class AdvancedPermissionsPage extends BasePage {
     this.applyAndRevokeInvitationsButton = page.getByRole('button', {
       name: 'Apply and revoke invitations',
     });
+
+    // The Create Teams block has no role or name either: it's the one holding its
+    // dropdown and description, and not Move teams' dropdown (as its parents do)
+    const createTeamsTitle = PERMISSION_TITLES[CreateTeamsPermission.AnyMember];
+    const createTeamsBlock = page
+      .locator('main div')
+      .filter({
+        has: page.getByRole('button', { name: new RegExp(`${createTeamsTitle}$`) }),
+      })
+      .filter({ hasText: 'Decide who can create teams in your organization.' })
+      .filter({
+        hasNot: page.getByRole('button', {
+          name: new RegExp(`${PERMISSION_TITLES[MoveTeamsPermission.TeamOwners]}$`),
+        }),
+      });
+    this.createTeams = new PermissionControlComponent(
+      page,
+      createTeamsBlock,
+      createTeamsTitle,
+    );
 
     // The Move teams block has no role or name: it's the one holding its dropdown
     // and description, and not the other permissions' dropdowns (as its parents do)
@@ -276,13 +297,21 @@ export class AdvancedPermissionsPage extends BasePage {
         ).not.toBeVisible();
   }
 
-  /** Opens the permission's dropdown, checks the option is listed, and closes it. */
+  /**
+   * Opens the permission's dropdown, checks the option is listed, and closes
+   * it. Retries the click: right after a navigation, it can land before the
+   * dropdown is hydrated and open nothing (same race as selectPermission()).
+   */
   async isPermissionVisible(value: AdvancedPermissionValue) {
-    await this.getPermissionDropdown(value).click();
-    await expect(
-      this.getPermissionOption(value),
-      `"${value}" permission option is listed`,
-    ).toBeVisible();
+    const option = this.getPermissionOption(value);
+    await expect(async () => {
+      if (!(await option.isVisible())) {
+        await this.getPermissionDropdown(value).click({ timeout: 5000 });
+      }
+      await expect(option, `"${value}" permission option is listed`).toBeVisible({
+        timeout: 3000,
+      });
+    }).toPass({ timeout: 20000 });
     await this.page.keyboard.press('Escape');
     await expect(this.getPermissionOption(value)).toHaveCount(0);
   }

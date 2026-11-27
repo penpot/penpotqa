@@ -5,7 +5,7 @@
  * — the owner is Enterprise-entitled via the activation-code path,
  * skipping the Stripe checkout UI. PRE/dev environments only — skips
  * automatically wherever `LICENSES_MANAGER_URL` is unset. `invitee` needs
- * a real, readable inbox (see the enterprise-demo-account-email memory).
+ * a real, readable inbox (see tests/enterprise/README.md).
  */
 import { qase } from 'playwright-qase-reporter/playwright';
 import { waitMessage, waitSecondMessage } from 'helpers/gmail';
@@ -40,7 +40,7 @@ ownerAndInviteeActivatedTest.describe(
 
         try {
           await ownerAndInviteeActivatedTest.step(
-            'Setup: create an org (Enterprise-activated) and invite the second account',
+            'Setup: Enterprise already active (activation code), create an org and invite the second account',
             async () => {
               await createOrgForLicensedAccount(orgPage, orgName);
               await adminConsolePage.invitePersonToOrganization(invitee.email);

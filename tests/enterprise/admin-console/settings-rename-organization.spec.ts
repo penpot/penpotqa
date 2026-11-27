@@ -1,9 +1,6 @@
 /**
  * Qase suite: Admin Console > Settings > Rename organization
  *
- * Stubs below (`test.skip`) await automation — see the Enterprise Plan
- * automation plan.
- *
  * Base: `enterpriseActivatedPageTest` (see enterprise-fixtures.ts) — these
  * cases don't exercise the checkout UI itself, so the account is
  * Enterprise-entitled via the activation-code path (PRE/dev only) instead
@@ -18,20 +15,23 @@ enterpriseActivatedPageTest.describe(
   'Admin Console > Settings > Rename organization',
   () => {
     enterpriseActivatedPageTest(
-      qase([3165], 'Rename organization'),
+      qase(
+        [3165, 3166],
+        'Rename organization, and the header and organization lists show the new name',
+      ),
       async ({ orgPage, adminConsolePage }) => {
         const orgName = createOrgName();
         const newOrgName = createOrgName();
 
         await enterpriseActivatedPageTest.step(
-          'Setup: create an organization',
+          'Setup: Enterprise already active (activation code), create an organization',
           async () => {
             await createOrgForLicensedAccount(orgPage, orgName);
           },
         );
 
         await enterpriseActivatedPageTest.step(
-          'Open the organization settings modal → pre-filled with current name, creation date shown, Save disabled',
+          '(3165) Open the organization settings modal → pre-filled with current name, creation date shown, Save disabled',
           async () => {
             await adminConsolePage.openSettings();
             await adminConsolePage.isOrgNameInputValue(orgName);
@@ -48,28 +48,11 @@ enterpriseActivatedPageTest.describe(
             await adminConsolePage.renameOrganization(newOrgName);
           },
         );
-      },
-    );
-
-    enterpriseActivatedPageTest(
-      qase([3166], 'Successful rename updates header and organization lists'),
-      async ({ orgPage, adminConsolePage }) => {
-        const orgName = createOrgName();
-        const newOrgName = createOrgName();
 
         await enterpriseActivatedPageTest.step(
-          'Setup: create an organization and rename it',
+          '(3166) Close the settings modal and observe the Admin Console header → displays the new organization name',
           async () => {
-            await createOrgForLicensedAccount(orgPage, orgName);
-            await adminConsolePage.openSettings();
-            await adminConsolePage.renameOrganization(newOrgName);
             await adminConsolePage.closeSettingsModal();
-          },
-        );
-
-        await enterpriseActivatedPageTest.step(
-          'Observe the Admin Console header → displays the new organization name',
-          async () => {
             await adminConsolePage.isDisplayingOrganization(newOrgName);
           },
         );

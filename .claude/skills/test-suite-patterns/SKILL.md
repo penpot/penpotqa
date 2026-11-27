@@ -1,198 +1,7 @@
-# JS to TS Migration Guide
-
-Steps to migrate a `.spec.js` test file to `.spec.ts`.
-
-## 1. Convert imports
-
-Replace `require` with `import`. Always use path aliases instead of relative paths for project modules:
-
-```js
-// Before
-const { mainTest } = require('../../fixtures');
-const { qase } = require('playwright-qase-reporter/playwright');
-const { ProfilePage } = require('../../pages/profile-page');
-
-// After
-import { ProfilePage } from '@pages/profile-page';
-import { mainTest } from 'fixtures';
-import { qase } from 'playwright-qase-reporter/playwright';
-```
-
-Apply this rule to all imports from project modules: `fixtures`, page objects, helpers, etc. Only third-party packages keep their original import paths.
-
-Sort all import statements alphabetically by module path:
-
-```typescript
-// Correct — sorted alphabetically
-import { DashboardPage } from '@pages/dashboard/dashboard-page';
-import { TeamPage } from '@pages/dashboard/team-page';
-import { MainPage } from '@pages/workspace/main-page';
-import { expect } from '@playwright/test';
-import { mainTest } from 'fixtures';
-import { createTeamName } from 'helpers/teams/create-team-name';
-import { qase } from 'playwright-qase-reporter/playwright';
-```
-
-Before finishing a migration, remove any import or variable that is not referenced in the file. Common leftovers are page objects imported and instantiated in `beforeEach` but never used in any test:
-
-```typescript
-// Incorrect — imported and instantiated but never used in tests
-import { AssetsPanelPage } from '@pages/workspace/assets-panel-page';
-
-let assetsPanelPage: AssetsPanelPage;
-
-mainTest.beforeEach(async ({ page }) => {
-  assetsPanelPage = new AssetsPanelPage(page); // remove this too
-});
-```
-
-## 2. Declare page objects and variables at file scope
-
-Declare page object instances as `let` variables **outside** of `beforeEach`, and assign them inside `beforeEach`. This applies at every scope level: outer `describe`, inner `describe`, etc.
-
-```typescript
-// Correct
-let profilePage: ProfilePage;
-
-mainTest.beforeEach(async ({ page }) => {
-  profilePage = new ProfilePage(page);
-});
-
-// Incorrect — declaring inside beforeEach makes them unavailable to tests
-mainTest.beforeEach(async ({ page }) => {
-  const profilePage: ProfilePage = new ProfilePage(page);
-});
-```
-
-Always generate the team name using `createTeamName()` — never `random().concat('autotest')`:
-
-```typescript
-// Correct
-import { createTeamName } from 'helpers/teams/create-team-name';
-
-const teamName = createTeamName();
-
-// Incorrect
-import { random } from 'helpers/string-generator';
-
-const teamName = random().concat('autotest');
-```
-
-## 3. Migrate local fixture files
-
-If the spec imports from a local fixture file (e.g. `your-account-fixture.js`), migrate that fixture to `.ts` too. Add a type for the **new** fixtures only and pass it as a generic to `.extend<T>()`:
-
-```ts
-import { ProfilePage } from '@pages/profile-page';
-import { mainTest } from 'fixtures';
-
-type YourAccountFixtures = {
-  profilePage: ProfilePage;
-};
-
-export const profileTest = mainTest.extend<YourAccountFixtures>({
-  profilePage: async ({ page }, use) => {
-    const profilePage = new ProfilePage(page);
-    // setup...
-    await use(profilePage);
-  },
-});
-```
-
-Because `profileTest` extends `mainTest`, it automatically inherits all of `mainTest`'s fixtures (e.g. `page`). You only need to declare the **new** fixtures in the generic type. Both base and custom fixtures are available in every test:
-
-```ts
-profileTest(qase([205], 'Logout from Account'), async ({ page, profilePage }) => {
-  // page comes from mainTest, profilePage comes from YourAccountFixtures
-});
-```
-
-Replace `module.exports = { ... }` with named `export` on each const.
-
-## 4. Handle nullable return values explicitly
-
-When an async helper returns `T | null | undefined` (e.g. `getRegisterMessage`, `waitMessage`, Stripe helpers), add an explicit null guard instead of using the non-null assertion operator (`!`). A null guard narrows the type for TypeScript and produces a clear failure message if the value is missing:
-
-```ts
-// Avoid — suppresses the error but crashes at runtime with no useful message
-await checkNewEmailText(changeEmail!.inviteText, name, newEmail);
-await page.goto(changeEmail!.inviteUrl);
-
-// Prefer — fails fast with an explicit message and narrows the type
-const changeEmail = await getRegisterMessage(email);
-if (!changeEmail) throw new Error('Email confirmation not received');
-await checkNewEmailText(changeEmail.inviteText, name, newEmail);
-await page.goto(changeEmail.inviteUrl);
-```
-
-## 5. Migrate test steps
-
-When migrating a test to TypeScript, **always wrap the test body in `mainTest.step()` calls** grouping actions by logical phase. The step syntax is identical in JS and TS.
-
-If the original JS test already has steps, keep them as-is. If it has no steps, add them during migration using descriptive names that reflect what each group of actions does:
-
-```typescript
-// JS (before) — no steps
-mainTest(qase([607], 'Add flex layout to board from right click'), async () => {
-  await mainPage.addFlexLayoutViaRightClick();
-  await mainPage.waitForChangeIsSaved();
-  await expect(mainPage.flexLayoutSection).toBeVisible();
-});
-
-// TS (after) — steps added
-mainTest(qase([607], 'Add flex layout to board from right click'), async () => {
-  await mainTest.step('Add flex layout via right click', async () => {
-    await mainPage.addFlexLayoutViaRightClick();
-    await mainPage.waitForChangeIsSaved();
-  });
-
-  await mainTest.step('Verify flex layout is applied', async () => {
-    await expect(mainPage.flexLayoutSection).toBeVisible();
-  });
-});
-```
-
-**Step naming rules:**
-- Use action-oriented names: `'Add flex layout via right click'`, `'Verify flex layout is applied'`
-- Group setup actions together, assertions together
-- Keep step names short and descriptive — no Qase IDs in the step name unless the original JS had them
-
-**Qase IDs:** always wrap the Qase ID(s) in an array, even for a single ID — never pass a bare number:
-
-```typescript
-// Correct
-qase([607], 'Add flex layout to board from right click')
-qase([2905, 2873], 'Selecting via the Token Icon and detaching via the detach button')
-
-// Incorrect — bare number, not wrapped in an array
-qase(607, 'Add flex layout to board from right click')
-```
-
-## 6. Rename snapshot folder and clean up
-
-If a `<spec-name>.spec.js-snapshots` directory exists next to the spec file, rename it to `<spec-name>.spec.ts-snapshots`. Snapshots live directly at the root of that directory (no OS/browser subfolders) — flatten any `linux/chrome` (or other OS/browser) snapshots into the root and delete the rest:
-
-```bash
-# 1. Rename the folder
-mv tests/path/to/foo.spec.js-snapshots tests/path/to/foo.spec.ts-snapshots
-
-# 2. Flatten linux/chrome snapshots to the root and delete all other OS/browser directories
-SNAPSHOTS="tests/path/to/foo.spec.ts-snapshots"
-if [ -d "$SNAPSHOTS/linux/chrome" ]; then
-  mv "$SNAPSHOTS/linux/chrome"/* "$SNAPSHOTS/"
-fi
-find "$SNAPSHOTS" -mindepth 1 -maxdepth 1 -type d -exec rm -rf {} +
-```
-
-Do this as part of the migration, before confirming it is complete.
-
-## 7. Keep `.js` originals during migration
-
-Do not delete the original `.js` files until the user confirms the migration is complete.
-
-## 8. Verify
-
-Run `npx playwright test <path-to-new-ts-file> --list` to confirm Playwright resolves all tests correctly.
+---
+name: test-suite-patterns
+description: Conventions for building a Playwright test suite for a new penpotqa feature area — assertions in page objects, fixture composition, two-account tests, typed constants, self-healing retries for UI races, shared setup helpers, test data helpers, test.step grouping, debugging through the DOM, live/websocket updates, durable signals, file naming, waiting for saves, polling email and payments, slow tests, debugging tools and a do/don't list. Use this skill whenever you write a new suite or several new specs for a feature area, add fixtures or helpers for them, or fix a flaky test caused by timing, even if the user only says "add tests for this feature".
+---
 
 # Feature-Area Test Suite Patterns
 
@@ -206,18 +15,18 @@ Every `expect()` a test needs should be a named method on the relevant page
 object, with its own descriptive assertion message. Spec files call these
 methods; they don't write raw `expect()` calls themselves.
 
-Name new assertion methods with a `check` prefix, so a spec reads clearly as
-actions vs. checks:
+Both naming styles are valid for now:
 
-- Visibility: `check<Thing>IsVisible()` (matching Playwright's `toBeVisible()`),
-  not "Displayed" — e.g. `checkItemIsVisible()`.
-- A field's value: `check<Thing>HasValue…()` — e.g.
-  `checkWidthHasValueGreaterThan()`, `checkFontSizeHasMixedValue()`.
-- Anything else (computed results, attributes): `check<Thing>()` — e.g.
-  `checkEvenHorizontalSpacing()`.
+- `check…`: `check<Thing>IsVisible()` (matching Playwright's `toBeVisible()`,
+  not "Displayed"), `check<Thing>HasValue…()` (e.g.
+  `checkWidthHasValueGreaterThan()`), or `check<Thing>()` for anything else
+  (e.g. `checkEvenHorizontalSpacing()`).
+- `is…` / `has…`: e.g. `isMemberListedInPeopleTable()`, `hasCurrentPlanSidebarText()`, as
+  used in `tests/enterprise/`.
 
-Older methods still use `is…`, `has…` or "Displayed"; don't rename them just
-for this, but use `check…` for new ones.
+Follow the style of the file or feature area you're working in, and don't
+rename existing methods just to switch style. What matters is that the
+assertion lives in the page object and has a descriptive message.
 
 ```ts
 // Correct — page object owns the assertion
@@ -386,6 +195,43 @@ async () => {...})` blocks, grouping setup / action / verification
 separately. Step names are action-oriented and describe what happens, not
 raw ticket IDs or generic labels.
 
+**Exception: tests that cover more than one Qase case.** When one test covers
+several cases, the test title lists every covered ID in one array
+(`qase([a, b], ...)`), and each case's steps go inside a parent
+step titled `(ID) <Qase case title>`, so the report shows which steps cover
+which case. The ID goes only on the parent step, never on the child steps.
+Steps shared by several cases go inside the parent step of the case they
+belong to first, and carry that one ID only, never `(a, b)`. `Setup:` steps
+that belong to no case stay outside, without an ID.
+
+```ts
+demoAccountApiFixture(
+  qase([3336, 3413], 'Subscribe to a plan and start a trial'),
+  async () => {
+    await demoAccountApiFixture.step('Setup: create a team', async () => {
+      /* ... */
+    });
+
+    await demoAccountApiFixture.step('(3336) Subscribe to a plan', async () => {
+      await demoAccountApiFixture.step('Open the subscription page', async () => {
+        /* ... */
+      });
+      await demoAccountApiFixture.step('Subscribe to the plan', async () => {
+        /* ... */
+      });
+    });
+
+    await demoAccountApiFixture.step('(3413) Start a trial', async () => {
+      await demoAccountApiFixture.step('Start the trial', async () => {
+        /* ... */
+      });
+    });
+  },
+);
+```
+
+A test that covers a single case has no IDs in its step titles.
+
 ## 9. Write each fact once, where it's authoritative
 
 If a page object method or fixture already documents a behavior in its own
@@ -412,6 +258,18 @@ console.log(info);
 
 A throwaway probe test (write it, run it, delete it once you have your
 answer) is usually faster than iterating on timeouts blind.
+
+Other debugging tools:
+
+- `npm run open`: UI mode, with time travel, watch mode, locator picker and
+  trace viewer.
+- `npx playwright test <spec> --project=chrome --debug`: step through one test.
+- `headless: false` in `playwright.config.ts` (locally only) to watch it run.
+- `npx playwright show-trace trace.zip`: open a trace from a failed run.
+- Clipboard not working: check the `clipboard-read` / `clipboard-write`
+  permissions of the project in `playwright.config.ts`.
+- Fails only in CI: check the CI settings (retries, timeout), the trace and
+  video artifacts, and the environment secrets.
 
 ## 11. A fresh connection, not just a longer wait, for live/websocket updates
 
@@ -451,3 +309,72 @@ Rename a helper file to match its exported function/class name exactly
 (e.g. `register-account.ts` → `register-new-account.ts` for
 `registerNewAccount()`). A directory listing becomes self-documenting — the
 right helper is findable without opening files.
+
+## 14. Wait for the save only when the next step depends on it
+
+Penpot saves file changes in the background. Do **not** call
+`waitForChangeIsSaved()` after every action by default: a blanket wait slows
+the suite and hides real issues (a UI that doesn't update until the save
+round-trip, a missing re-render, a race the user would hit). Assert on the
+visible result of the action instead, and let the locator's auto-wait handle
+timing.
+
+Wait for the save only when the next step needs the change persisted on the
+server, for example:
+
+- Navigating away from the file (dashboard, another
+  file, view mode, inspect in a new tab) and expecting the change to be there.
+- Another session or account reading the file (shared team, comments,
+  multiplayer).
+- Reading the file through the API, exporting or downloading it.
+- Checking the save indicator itself.
+
+```javascript
+await mainPage.createDefaultRectangleByCoordinates(200, 300);
+await mainPage.waitForChangeIsSaved(); // needed: the next step leaves the file
+await mainPage.backToDashboardFromFileEditor();
+```
+
+If a test only passes with an extra save wait and none of the reasons above
+applies, treat it as a possible product bug and investigate before adding it.
+
+`waitForChangeIsSaved()` / `waitForChangeIsUnsaved()` live in
+`pages/base-page.js` and wait for the save status icon.
+
+## 15. Poll external services with a deadline
+
+Email (Gmail) and payments (Stripe) arrive with a delay. Poll them in a loop
+with an interval and a total timeout, and fail with a clear error when the
+deadline passes, as `waitMessage()` in `helpers/gmail.js` and
+`waitCustomersWithPenpotId()` in `helpers/stripe.js` do. Reuse those helpers
+instead of adding a fixed wait.
+
+## 16. Mark slow tests instead of raising timeouts
+
+For a test that is legitimately slow, mark it as slow (it multiplies the
+timeout by 3) instead of hardcoding longer timeouts:
+
+```typescript
+demoAccountApiFixture.beforeEach(async () => {
+  demoAccountApiFixture.slow();
+});
+```
+
+This doesn't fix a timing race: for that, see sections 5, 10 and 11.
+
+## 17. Do and don't
+
+Do:
+
+- Use page objects and a disposable-account fixture (one account per test).
+- Name teams and organizations with `createTeamName()` / `createOrgName()`.
+- Give each test a descriptive title and its Qase ID.
+- Keep tests independent so they run fully in parallel.
+
+Don't:
+
+- Leave `test.only()` in the code (CI fails with `forbidOnly`).
+- Hardcode timeouts or use `waitForTimeout` unless there's no other signal.
+- Share accounts, teams or state between tests, or rely on execution order.
+- Use `workers: 1` unless necessary.
+- Commit with failing tests.

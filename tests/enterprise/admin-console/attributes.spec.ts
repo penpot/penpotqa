@@ -40,7 +40,7 @@ enterpriseActivatedPageTest.describe(
         const agil = 'Ágil';
 
         await enterpriseActivatedPageTest.step(
-          `Setup: create an org with ${attributes.length} attributes, in reverse alphabetical order`,
+          `Setup: Enterprise already active (activation code), create an org with ${attributes.length} attributes, in reverse alphabetical order`,
           async () => {
             await createOrgForLicensedAccount(orgPage, createOrgName());
             await adminConsolePage.openAttributesTab();
@@ -87,9 +87,10 @@ enterpriseActivatedPageTest.describe(
         const opsUpperCase = 'OPS';
         const opsLowerCase = 'ops';
         const opsTeam = 'Ops team';
+        const createDialog = attributesPage.createDialog;
 
         await enterpriseActivatedPageTest.step(
-          `Setup: create an org with the attribute "${ops}"`,
+          `Setup: Enterprise already active (activation code), create an org with the attribute "${ops}"`,
           async () => {
             await createOrgForLicensedAccount(orgPage, createOrgName());
             await adminConsolePage.openAttributesTab();
@@ -101,25 +102,25 @@ enterpriseActivatedPageTest.describe(
           `Click "New attribute", type "${opsUpperCase}" and click "Create attribute" → duplicate name error, name kept and "Create attribute" disabled`,
           async () => {
             await attributesPage.openCreateAttributeDialog();
-            await attributesPage.typeAttributeName(opsUpperCase);
-            await attributesPage.clickCreateAttributeButton();
-            await attributesPage.checkDuplicateNameErrorIsVisible(opsUpperCase);
+            await createDialog.typeName(opsUpperCase);
+            await createDialog.clickSubmit();
+            await createDialog.checkDuplicateNameErrorIsVisible(opsUpperCase);
           },
         );
 
         await enterpriseActivatedPageTest.step(
           `Change the name to "${opsLowerCase}" → the error clears`,
           async () => {
-            await attributesPage.typeAttributeName(opsLowerCase);
-            await attributesPage.checkDuplicateNameErrorIsHidden();
+            await createDialog.typeName(opsLowerCase);
+            await createDialog.checkDuplicateNameErrorIsHidden();
           },
         );
 
         await enterpriseActivatedPageTest.step(
           'Click "Create attribute" → the error appears again and nothing is created',
           async () => {
-            await attributesPage.clickCreateAttributeButton();
-            await attributesPage.checkDuplicateNameErrorIsVisible(opsLowerCase);
+            await createDialog.clickSubmit();
+            await createDialog.checkDuplicateNameErrorIsVisible(opsLowerCase);
             await attributesPage.checkAttributeNames([ops]);
           },
         );
@@ -127,9 +128,9 @@ enterpriseActivatedPageTest.describe(
         await enterpriseActivatedPageTest.step(
           `Change the name to "${opsTeam}" and click "Create attribute" → "${ops}" kept as typed and "${opsTeam}" created`,
           async () => {
-            await attributesPage.typeAttributeName(opsTeam);
-            await attributesPage.clickCreateAttributeButton();
-            await attributesPage.checkCreateAttributeDialogIsHidden();
+            await createDialog.typeName(opsTeam);
+            await createDialog.clickSubmit();
+            await createDialog.checkIsHidden();
             await attributesPage.checkAttributeNames([ops, opsTeam]);
           },
         );

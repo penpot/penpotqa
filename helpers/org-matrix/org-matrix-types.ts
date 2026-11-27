@@ -20,6 +20,9 @@ export type MatrixOrgDefinition = {
   /** Attributes of the organization: attribute name → users who hold it.
    * Every holder must be a member of this organization. */
   attributes?: Record<string, string[]>;
+  /** Descriptions of some of its attributes: attribute name → description.
+   * Every name must be one of `attributes`. */
+  attributeDescriptions?: Record<string, string>;
 };
 
 /**

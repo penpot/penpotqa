@@ -1,5 +1,5 @@
 import type { Point } from '@pages/workspace/toolbar/path-editor/path-geometry';
-import { pathEditorTest } from '@tests/composition/path-editor/path-editor-fixture';
+import { pathEditorTest } from '@tests/composition/path/path-fixture';
 import {
   A,
   B,
@@ -8,7 +8,7 @@ import {
   D,
   PATH_NODES,
   PATH_SEGMENTS,
-} from '@tests/composition/path-editor/straight-curved-path';
+} from '@tests/composition/path/straight-curved-path';
 import { qase } from 'playwright-qase-reporter/playwright';
 
 pathEditorTest(

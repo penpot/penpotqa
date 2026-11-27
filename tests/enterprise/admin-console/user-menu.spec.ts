@@ -1,13 +1,8 @@
 /**
  * Qase suite: Admin Console > User menu (Organization owner)
  *
- * Stubs below (`test.skip`) await automation — see the Enterprise Plan
- * automation plan.
- *
- * Base: `enterprisePageTest` (see enterprise-fixtures.ts) for a single
- * actor; `ownerAndInviteeTest` for cases needing a real second account.
- * Per-case "Accounts:" notes cover invitees needing a real, readable
- * inbox instead (see the enterprise-demo-account-email memory).
+ * Base: `enterprisePageTest` (see enterprise-fixtures.ts). The user menu
+ * needs no organization, so no Enterprise plan is set up.
  */
 import { qase } from 'playwright-qase-reporter/playwright';
 import { AdminConsoleUserMenuItem } from '@pages/admin-console/admin-console-page';

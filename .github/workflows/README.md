@@ -1,19 +1,19 @@
 # Workflows
 
-GitHub Actions used in this repo. Detailed docs are filled in as we need them — for now only **Report triage** is documented below.
+GitHub Actions used in this repo. Detailed docs are filled in as we need them — for now **Report triage** and **OpenCode Agent** are documented below.
 
-| Workflow                                       | File                               | Trigger                    | Docs                           |
-| ---------------------------------------------- | ---------------------------------- | -------------------------- | ------------------------------ |
-| Report triage                                  | `release-triage.yml`               | Manual                     | ⬇️ [see below](#report-triage) |
-| Daily Penpot Regression Tests on PRE           | `playwright_pre_daily.yml`         | Scheduled + manual         | _TBD_                          |
-| Manual Penpot Tests for PR                     | `playwright_pr_manual.yml`         | Manual                     | _TBD_                          |
-| Manual Penpot Tests (TESTS environment)        | `playwright_tests_manual.yml`      | Manual                     | _TBD_                          |
-| Manual Enterprise Plan Tests (PRE environment) | `playwright_enterprise_manual.yml` | Manual                     | _TBD_                          |
-| GitHub dashboard                               | `github-dashboard.yml`             | ?                          | _TBD_                          |
-| OpenCode Agent                                 | `opencode-agent.yml`               | ?                          | _TBD_                          |
-| CodeQL                                         | `github-code-scanning/codeql`      | Scheduled (GitHub-managed) | —                              |
-| Copilot code review                            | `copilot-pull-request-reviewer/*`  | On PR (GitHub-managed)     | —                              |
-| pages-build-deployment                         | `pages/pages-build-deployment`     | On push (GitHub-managed)   | —                              |
+| Workflow                                       | File                               | Trigger                    | Docs                            |
+| ---------------------------------------------- | ---------------------------------- | -------------------------- | ------------------------------- |
+| Report triage                                  | `release-triage.yml`               | Manual                     | ⬇️ [see below](#report-triage)  |
+| Daily Penpot Regression Tests on PRE           | `playwright_pre_daily.yml`         | Scheduled + manual         | _TBD_                           |
+| Manual Penpot Tests for PR                     | `playwright_pr_manual.yml`         | Manual                     | _TBD_                           |
+| Manual Penpot Tests (TESTS environment)        | `playwright_tests_manual.yml`      | Manual                     | _TBD_                           |
+| Manual Enterprise Plan Tests (PRE environment) | `playwright_enterprise_manual.yml` | Manual                     | _TBD_                           |
+| GitHub dashboard                               | `github-dashboard.yml`             | ?                          | _TBD_                           |
+| OpenCode Agent                                 | `opencode-agent.yml`               | PR comment + manual        | ⬇️ [see below](#opencode-agent) |
+| CodeQL                                         | `github-code-scanning/codeql`      | Scheduled (GitHub-managed) | —                               |
+| Copilot code review                            | `copilot-pull-request-reviewer/*`  | On PR (GitHub-managed)     | —                               |
+| pages-build-deployment                         | `pages/pages-build-deployment`     | On push (GitHub-managed)   | —                               |
 
 ---
 
@@ -109,3 +109,31 @@ In `group_by: folder` mode, **screenshot/visual-diff failures** are bundled into
 - Resolved tasks in Taiga are auto-assigned to `qa.integrations.bot`.
 - If no completed scheduled daily run exists on `main`, the job fails early with a clear error.
 - `reset_state` deletes the old release story in Taiga itself (best-effort — if that call fails, e.g. the story was already gone, it logs and carries on rather than blocking the reset). You never need to delete it by hand first.
+
+---
+
+## OpenCode Agent
+
+On-demand AI review of a PR against the team skills in `.claude/skills/`, posted as inline review comments.
+
+**File:** `opencode-agent.yml`
+
+### How to run it
+
+- **From the PR:** write a comment in the PR conversation that starts with `/oc review-qa-pr`. Anything after the command is ignored: the review always follows the same prompt.
+- **Manually:** Actions → OpenCode Agent → Run workflow, pick the branch and type the PR number. Useful to try changes to the workflow or the prompt from a branch before merging.
+
+Only `estefafdez`, `lugarbos`, `tdelatorre` and `daniel-herrero` can trigger it — to add someone, add their GitHub login to both lists in the job's `if`.
+
+### What it does
+
+1. Reacts with 👀 to the comment.
+2. Builds the prompt from [`.github/opencode/review-prompt.md`](../opencode/review-prompt.md), the name and description of every skill in `.claude/skills/`, and the PR diff. The PR code is never checked out.
+3. Runs OpenCode (pinned V1 CLI, same as penpot/penpot) with the `OPENCODE_GO_API_KEY` repository secret. The model opens only the skills the diff touches and can't edit files, run commands or fetch URLs ([`.github/opencode/review.json`](../opencode/review.json)).
+4. Posts a review, headed with the model, reasoning level, commit and tokens used, with one inline comment per finding: the skill, the rule it breaks and why, plus a one-click `suggestion` when the fix fits in the commented line. The model writes the review and the workflow publishes it as is, like penpot/penpot: if a comment points to a line outside the diff, GitHub rejects the whole review and the run fails. If the run fails, it leaves a short comment with a link to it.
+
+### Things to know
+
+- **Skills and prompt come from the branch the workflow runs on**: `main` for comments, the chosen branch for manual runs. A new skill in `.claude/skills/` is picked up with no workflow change.
+- **Model:** `deepseek-v4.1-flash` with `high` reasoning by default. Set the `OPENCODE_MODEL` Actions variable to change the model (OpenCode Go model ID without the `opencode-go/` prefix, e.g. `hy4-flash-free` or `minimax-m3.1-flash`) and `OPENCODE_EFFORT` to change the reasoning level.
+- **Diff size:** the model gets the diff without removed lines. Over 150 KB, the PR is not reviewed and the workflow leaves a comment saying so. The review step stops after 15 minutes.

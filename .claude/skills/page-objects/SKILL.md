@@ -56,7 +56,8 @@ put them in `helpers/`.
    scrollable list live in `pages/components/` and are composed wherever
    they're needed, not copied into each panel.
 4. **Assertions are methods on the component that owns the UI**, named
-   `check…` (see `.claude/SKILLS.md`, "Assertions live in page objects").
+   `check…` or `is…`/`has…` (see the `test-suite-patterns` skill, "Assertions live in page
+   objects").
 5. **TypeScript only** for new and moved files. Name each file after the
    class it exports.
 6. **Prefer `getByRole` / `getByTestId` / `getByText`** over CSS selectors,
@@ -149,7 +150,7 @@ demoAccountFileTest(qase(1234, 'Add fill to rectangle'), async ({ page }) => {
 ```
 
 If a feature area uses fixtures, expose `workspacePage` as a fixture instead
-(`.claude/SKILLS.md`, "Fixture composition").
+(the `test-suite-patterns` skill, "Fixture composition").
 
 ## Where things go
 

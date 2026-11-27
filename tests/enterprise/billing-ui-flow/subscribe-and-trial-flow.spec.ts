@@ -1,19 +1,14 @@
 /**
  * Qase suite: Cross-cutting: Enterprise Dashboard (direct) / Admin Console > Subscriptions & Billing / Admin Console (direct)
  *
- * These cases drive the real Stripe test-mode checkout/trial UI itself, not just an org that happens to have the Enterprise plan. Kept in their own file per the automation plan (section 2.6) — inherently slower/flakier than the rest of the suite.
+ * These cases drive the real Stripe checkout, so they're slower and flakier
+ * than the rest of the suite, and kept in their own file.
  *
- * Stubs below (`test.skip`) await automation — see the Enterprise Plan
- * automation plan.
- *
- * Base: `enterprisePageTest` (see enterprise-fixtures.ts) for a single
- * actor; `ownerAndInviteeTest` for cases needing a real second account.
- * Per-case "Accounts:" notes cover invitees needing a real, readable
- * inbox instead (see the enterprise-demo-account-email memory).
+ * Base: `enterprisePageTest` (see enterprise-fixtures.ts), which goes through
+ * the real Stripe checkout.
  */
 import { qase } from 'playwright-qase-reporter/playwright';
 import { createOrgName } from 'helpers/organizations/create-org-name';
-import { subscribeAndCreateOrg } from 'helpers/organizations/subscribe-and-create-org';
 import { requestActivationCode } from 'helpers/organizations/activate-enterprise-license';
 import { enterprisePageTest } from '@tests/enterprise/fixtures/enterprise-fixtures';
 
@@ -22,14 +17,15 @@ enterprisePageTest.describe(
   () => {
     enterprisePageTest(
       qase(
-        [3235],
-        'Create organization from dashboard when user is not part of any organization',
+        [3235, 3236],
+        'Create an organization from the dashboard when the user is not part of any organization, then a second one from the org navigation dropdown',
       ),
       async ({ page, orgPage, adminConsolePage, stripePage }) => {
         const orgName = createOrgName();
+        const secondOrgName = createOrgName();
 
         await enterprisePageTest.step(
-          'Click "+ Create org" → "Unlock Enterprise features" modal opens',
+          '(3235) Click "+ Create org" → "Unlock Enterprise features" modal opens',
           async () => {
             await orgPage.clickCreateOrgFromSidebar();
             await orgPage.isEnterpriseModalVisible();
@@ -65,67 +61,24 @@ enterprisePageTest.describe(
             await adminConsolePage.isOnOrganizationAdminConsole();
           },
         );
-      },
-    );
-
-    enterprisePageTest(
-      qase([3236], 'Create organization from the org navigation dropdown'),
-      async ({ orgPage, adminConsolePage, stripePage }) => {
-        const firstOrgName = createOrgName();
-        const secondOrgName = createOrgName();
 
         await enterprisePageTest.step(
-          'Setup: subscribe to Enterprise and create a first organization',
+          '(3236) Open organizations navigation dropdown → existing org listed, "Create org" option visible',
           async () => {
-            await subscribeAndCreateOrg(
-              orgPage,
-              adminConsolePage,
-              stripePage,
-              firstOrgName,
-            );
-            await adminConsolePage.goToFiles(firstOrgName);
-          },
-        );
-
-        await enterprisePageTest.step(
-          'Open organizations navigation dropdown → existing org listed, "Create org" option visible',
-          async () => {
+            await adminConsolePage.goToFiles(orgName);
             await orgPage.openOrgSwitcher();
-            await orgPage.isOrgListedInDropdown(firstOrgName);
+            await orgPage.isOrgListedInDropdown(orgName);
             await orgPage.isCreateOrgDropdownItemVisible();
           },
         );
 
         await enterprisePageTest.step(
-          'Click Create org → follow every step to create a new organization → lands on its Admin Console',
+          'Click Create org → follow every step to create a new organization → lands on its Admin Console, with no new checkout',
           async () => {
             await orgPage.clickCreateOrgFromDropdown();
             await orgPage.createOrganization(secondOrgName);
             await adminConsolePage.isOnOrganizationAdminConsole();
             await stripePage.isOnStripeCheckoutPage(false);
-          },
-        );
-      },
-    );
-
-    enterprisePageTest(
-      qase(
-        [3336],
-        'Check the "Unlock Enterprise features" widget starts the subscription process from the dashboard',
-      ),
-      async ({ orgPage }) => {
-        await enterprisePageTest.step(
-          'Navigate to the dashboard → "Unlock Enterprise features" widget is shown',
-          async () => {
-            await orgPage.isSidebarPromoVisible();
-          },
-        );
-
-        await enterprisePageTest.step(
-          'Click "Try it free for 14 days" → Enterprise subscription flow starts (modal opens)',
-          async () => {
-            await orgPage.sidebarPromoTryItFreeButton.click();
-            await orgPage.isEnterpriseModalVisible();
           },
         );
       },
@@ -161,13 +114,8 @@ enterprisePageTest.describe(
           async () => {
             await adminConsolePage.clickTryItFreeButton();
             await stripePage.completeEnterpriseTrialCheckout();
-            // This entry point's post-checkout redirect goes
-            // through /admin-console/licenses/finish?session_id=...&callback=
-            // and lands back on plain /admin-console/ — no
-            // subscription-confirmation URL marker like the dashboard entry
-            // point (PENPOT-3235) has. The welcome CTA being clickable again
-            // is the real signal that checkout succeeded and we're back,
-            // ready to name the org.
+            // No confirmation URL marker on this entry point (unlike 3235's):
+            // the welcome CTA coming back is the signal checkout finished.
             await stripePage.isOnStripeCheckoutPage(false);
             await adminConsolePage.isWelcomeCreateOrganizationButtonVisible();
           },
@@ -186,12 +134,12 @@ enterprisePageTest.describe(
 
     enterprisePageTest(
       qase(
-        [3413],
-        'Check 14-day free trial copy across the Enterprise subscription flow',
+        [3336, 3413],
+        'The "Unlock Enterprise features" widget starts the subscription process, with the 14-day free trial copy across the flow',
       ),
       async ({ orgPage, stripePage }) => {
         await enterprisePageTest.step(
-          'Dashboard → "Unlock Enterprise features" widget shown, reads "Try it free for 14 days"',
+          '(3336) Dashboard → "Unlock Enterprise features" widget shown, reads "Try it free for 14 days"',
           async () => {
             await orgPage.isSidebarPromoVisible();
             await orgPage.hasSidebarPromoTryButtonText('Try it free for 14 days');
@@ -199,7 +147,7 @@ enterprisePageTest.describe(
         );
 
         await enterprisePageTest.step(
-          'Click it → modal opens, button reads the same',
+          'Click it → Enterprise subscription flow starts (modal opens), button reads the same',
           async () => {
             await orgPage.sidebarPromoTryItFreeButton.click();
             await orgPage.isEnterpriseModalVisible();
@@ -208,33 +156,38 @@ enterprisePageTest.describe(
         );
 
         await enterprisePageTest.step(
-          '"See my current plan" → subscriptions settings page → Enterprise plan\'s own button',
+          '(3413) Check 14-day free trial copy across the Enterprise subscription flow',
           async () => {
-            await orgPage.currentPlanLink.click();
-            await orgPage.isOnSubscriptionsSettingsPage();
-            await orgPage.hasSubscriptionsPageEnterpriseTryButtonText(
-              'Try 14 days for free',
+            await enterprisePageTest.step(
+              '"See my current plan" → subscriptions settings page → Enterprise plan\'s own button',
+              async () => {
+                await orgPage.currentPlanLink.click();
+                await orgPage.isOnSubscriptionsSettingsPage();
+                await orgPage.hasSubscriptionsPageEnterpriseTryButtonText(
+                  'Try 14 days for free',
+                );
+              },
             );
-          },
-        );
 
-        await enterprisePageTest.step(
-          'Click it → its own confirmation modal reopens with matching copy',
-          async () => {
-            await orgPage.clickSubscriptionsPageEnterpriseTryButton();
-            await orgPage.isSubscriptionConfirmModalVisible();
-            await orgPage.hasSubscriptionConfirmModalTryButtonValue(
-              'Try 14 days for free',
+            await enterprisePageTest.step(
+              'Click it → its own confirmation modal reopens with matching copy',
+              async () => {
+                await orgPage.clickSubscriptionsPageEnterpriseTryButton();
+                await orgPage.isSubscriptionConfirmModalVisible();
+                await orgPage.hasSubscriptionConfirmModalTryButtonValue(
+                  'Try 14 days for free',
+                );
+              },
             );
-          },
-        );
 
-        await enterprisePageTest.step(
-          'Continue to Stripe → checkout shows the trial duration and post-trial price',
-          async () => {
-            await orgPage.clickSubscriptionConfirmModalPrimaryButton();
-            await stripePage.isOnStripeCheckoutPage();
-            await stripePage.isTrialCopyVisible();
+            await enterprisePageTest.step(
+              'Continue to Stripe → checkout shows the trial duration and post-trial price',
+              async () => {
+                await orgPage.clickSubscriptionConfirmModalPrimaryButton();
+                await stripePage.isOnStripeCheckoutPage();
+                await stripePage.isTrialCopyVisible();
+              },
+            );
           },
         );
       },
@@ -279,24 +232,6 @@ enterprisePageTest.describe(
             await orgPage.hasCurrentPlanSidebarText('Enterprise');
           },
         );
-      },
-    );
-
-    enterprisePageTest.skip(
-      qase([3664], 'Complete the Enterprise onboarding survey in the Admin Console'),
-      async ({ page }) => {
-        /**
-         * Qase steps (see PENPOT-3664 for full detail):
-         * 1. Land on Admin Console welcome page after a fresh signup + Stripe payment → no survey yet
-         * 2. Wait / move cursor → "Help us get to know you" modal appears with 2 dropdowns, Send disabled
-         * 3. Modal explains why the answers are collected
-         * 4. Answer "What kind of work do you do?" → Send still disabled
-         * 5. Answer "What is your company size?" → Send enabled
-         * 6. Click Send → modal closes
-         * 7. User remains on the Admin Console, no redirect
-         */
-        // TODO: automate — see automation plan (not yet unblocked, or not yet reached
-        // in the implementation order from section 4).
       },
     );
   },

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "{env:MODEL}",
+  "small_model": "{env:MODEL}",
+  "enabled_providers": ["opencode-go"],
+  "share": "disabled",
+  "provider": {
+    "opencode-go": {
+      "options": { "apiKey": "{env:OPENCODE_GO_API_KEY}" }
+    }
+  },
+  "permission": {
+    "edit": "deny",
+    "bash": "deny",
+    "webfetch": "deny"
+  }
+}

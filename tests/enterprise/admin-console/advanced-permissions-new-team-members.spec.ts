@@ -49,7 +49,7 @@ enterpriseActivatedPageTest.describe(
         const orgInviteEmail = `pending-org-${Date.now()}@demo.example.com`;
 
         await enterpriseActivatedPageTest.step(
-          'Setup: create an organization and a team with a pending external team invitation, plus a pending direct org invitation',
+          'Setup: Enterprise already active (activation code), create an organization and a team with a pending external team invitation, plus a pending direct org invitation',
           async () => {
             await createOrgForLicensedAccount(orgPage, orgName);
             await adminConsolePage.goToFiles(orgName);
@@ -152,7 +152,7 @@ enterpriseActivatedPageTest.describe(
 
         try {
           await ownerAndInviteeActivatedTest.step(
-            'Setup: create an organization and team, add the org member, promote a second real account to team admin, then restrict new team members',
+            'Setup: Enterprise already active (activation code), create an organization and team, add the org member, promote a second real account to team admin, then restrict new team members',
             async () => {
               await createOrgForLicensedAccount(orgPage, orgName);
               await adminConsolePage.goToFiles(orgName);
@@ -324,7 +324,7 @@ enterpriseActivatedPageTest.describe(
           );
 
           await ownerAndInviteeActivatedTest.step(
-            "Setup: owner creates a restricted OrgA and an open OrgB, invites User2 into both — confirmed live that an org must be a membership, not just exist, to appear in someone else's own org picker at all",
+            "Setup: Enterprise already active (activation code), owner creates a restricted OrgA and an open OrgB, invites User2 into both — confirmed live that an org must be a membership, not just exist, to appear in someone else's own org picker at all",
             async () => {
               await createOrgForLicensedAccount(orgPage, orgAName);
               await adminConsolePage.openAdvancedPermissionsTab();
@@ -373,7 +373,7 @@ enterpriseActivatedPageTest.describe(
               await goToOtherTeam(inviteeOrgPage, inviteeTeamPage, teamName);
               await inviteeTeamPage.openTeamSettingsPageViaOptionsMenu();
               await inviteeTeamPage.openAddTeamToOrgModal();
-              await inviteeTeamPage.teamOrgModal.openOrgPicker();
+              await inviteeTeamPage.selectOrgModal.openOrgPicker();
               await inviteeTeamPage.isOrgPickerOptionDisabled(orgAName);
               await inviteeTeamPage.isOrgPickerOptionDisabled(orgBName, false);
               await invitee.page.keyboard.press('Escape');
@@ -446,7 +446,7 @@ enterpriseActivatedPageTest.describe(
         );
 
         await ownerAndInviteeActivatedTest.step(
-          "Setup: owner (User1) creates a restricted org and invites Team-Coconut's owner (User2) into it",
+          "Setup: Enterprise already active (activation code), owner (User1) creates a restricted org and invites Team-Coconut's owner (User2) into it",
           async () => {
             await createOrgForLicensedAccount(orgPage, orgName);
             await adminConsolePage.openAdvancedPermissionsTab();
@@ -469,7 +469,7 @@ enterpriseActivatedPageTest.describe(
           "User2 selects the org (eligible — they're a member) in the picker → a cancellation warning appears but doesn't block the move; confirming moves the team and revokes the pending invitation",
           async () => {
             await inviteeTeamPage.openAddTeamToOrgModal();
-            await inviteeTeamPage.teamOrgModal.openOrgPicker();
+            await inviteeTeamPage.selectOrgModal.openOrgPicker();
             await inviteeTeamPage.selectOrgInPicker(orgName);
             await inviteeTeamPage.isExternalInvitationsCancelWarningVisible();
 
